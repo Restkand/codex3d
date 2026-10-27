@@ -1,0 +1,92 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: #0b0b10;
+  color: #f2f2f5;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Kanvas menutupi seluruh viewport dan tetap di tempat saat halaman di-scroll */
+.webgl {
+  position: fixed;
+  inset: 0;
+  outline: none;
+}
+
+/* Konten HTML berada di atas kanvas. pointer-events: none agar teks tidak
+   menghalangi event mouse yang dipakai untuk tilt dan raycasting. */
+main {
+  position: relative;
+  pointer-events: none;
+  user-select: none;
+}
+
+.section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 clamp(16px, 8vw, 120px);
+}
+
+.section--left {
+  align-items: flex-start;
+}
+
+.section--right {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.hero {
+  justify-content: flex-end;
+  padding-bottom: clamp(24px, 10vh, 96px);
+}
+
+.section__eyebrow {
+  margin: 0 0 8px;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #ffcc33;
+}
+
+.section__title {
+  margin: 0;
+  max-width: 12ch;
+  font-size: clamp(32px, 6vw, 72px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* <main> memakai pointer-events: none, jadi link harus mengaktifkannya kembali */
+.section__link {
+  margin-top: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0b0b10;
+  background: #ffcc33;
+  border-radius: 6px;
+  text-decoration: none;
+  pointer-events: auto;
+}
+
+.section__link:hover {
+  background: #ffe08a;
+}
+
+.section__text {
+  margin: 16px 0 0;
+  max-width: 36ch;
+  font-size: 15px;
+  line-height: 1.5;
+  opacity: 0.7;
+}

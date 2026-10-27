@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eksperimen 3D</title>
+  </head>
+  <body>
+    <!-- Kanvas fixed di belakang; konten HTML di bawah ini yang membuat halaman bisa di-scroll -->
+    <canvas class="webgl"></canvas>
+
+    <main>
+      <!-- Hero: teksnya dianimasikan oleh timeline intro -->
+      <section class="section section--left hero">
+        <p class="section__eyebrow">Eksperimen 01</p>
+        <h1 class="section__title">Graphics Pipeline</h1>
+        <p class="section__text">Arahkan kursor &amp; klik objek &middot; scroll ke bawah &middot; H untuk panel debug</p>
+        <a class="section__link" href="./guide.html">Buka Codex 3D →</a>
+      </section>
+
+      <!-- Section berikutnya: teksnya dianimasikan oleh ScrollTrigger -->
+      <section class="section section--left reveal">
+        <p class="section__eyebrow">02 &middot; ScrollTrigger</p>
+        <h2 class="section__title">Scroll sebagai timeline</h2>
+        <p class="section__text">Posisi scroll diterjemahkan menjadi progres 0&ndash;1 sebuah timeline GSAP. Objek bergeser dan berputar mengikuti scroll Anda.</p>
+      </section>
+
+      <section class="section section--right reveal">
+        <p class="section__eyebrow">03 &middot; Raycaster</p>
+        <h2 class="section__title">Sinar dari kursor</h2>
+        <p class="section__text">Sebuah sinar ditembakkan dari kamera melewati posisi kursor. Jika sinar mengenai objek, objek bereaksi.</p>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Codex 3D</title>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar__brand">
+        <a class="topbar__back" href="./index.html">← Eksperimen</a>
+        <p class="topbar__title">Codex <span>3D</span></p>
+        <nav class="tabs" aria-label="Mode">
+          <a class="tabs__tab" href="#/belajar" data-tab="learn">Jalur Belajar</a>
+          <a class="tabs__tab" href="#/codex" data-tab="codex">Codex</a>
+        </nav>
+      </div>
+      <div class="player" aria-live="polite">
+        <div class="player__rank">
+          <span class="player__rank-label">Rank</span>
+          <strong class="player__rank-name" data-rank>Rookie</strong>
+        </div>
+        <div class="player__xp">
+          <div class="player__xp-bar"><div class="player__xp-fill" data-xp-fill></div></div>
+          <span class="player__xp-text" data-xp-text>0 XP</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Tampilan 1: Jalur Belajar -->
+    <div class="layout" data-view="learn">
+      <nav class="sidebar" aria-label="Pelajaran">
+        <p class="sidebar__heading">Pelajaran</p>
+        <div data-learn-nav></div>
+        <button class="sidebar__reset" type="button" data-reset>Reset progres</button>
+      </nav>
+      <main class="content" data-learn-main></main>
+    </div>
+
+    <!-- Tampilan 2: Codex (kamus istilah) -->
+    <div class="layout" data-view="codex" hidden>
+      <nav class="sidebar" aria-label="Bab">
+        <p class="sidebar__heading">Bab</p>
+        <ul class="sidebar__list" data-nav></ul>
+        <button class="sidebar__reset" type="button" data-reset>Reset progres</button>
+      </nav>
+
+      <main class="content">
+        <section class="filters" aria-label="Filter">
+          <input class="filters__search" type="search" placeholder="Cari istilah… (mis. shader, normal, easing)" data-search />
+          <div class="filters__chips" data-levels>
+            <button type="button" class="chip is-active" data-level="all">Semua</button>
+            <button type="button" class="chip chip--1" data-level="1">Dasar</button>
+            <button type="button" class="chip chip--2" data-level="2">Menengah</button>
+            <button type="button" class="chip chip--3" data-level="3">Lanjut</button>
+          </div>
+          <label class="filters__toggle"><input type="checkbox" data-hide-learned /> Sembunyikan yang sudah dipahami</label>
+        </section>
+
+        <section class="map" id="peta">
+          <h2 class="map__title">Peta Pipa Grafis</h2>
+          <p class="map__intro">Perjalanan satu frame, dari kode JavaScript sampai piksel di layar. Klik setiap tahap untuk membaca entrinya.</p>
+          <ol class="map__flow" data-pipeline></ol>
+        </section>
+
+        <div data-chapters></div>
+        <p class="empty" data-empty hidden>Tidak ada istilah yang cocok dengan filter.</p>
+      </main>
+    </div>
+
+    <!-- Panel samping: penjelasan istilah tanpa meninggalkan pelajaran -->
+    <div class="backdrop" data-backdrop hidden></div>
+    <aside class="drawer" data-drawer hidden aria-label="Penjelasan istilah">
+      <div class="drawer__bar">
+        <span class="drawer__label">Codex</span>
+        <button type="button" class="drawer__close" data-drawer-close aria-label="Tutup">✕</button>
+      </div>
+      <div class="drawer__body" data-drawer-body></div>
+    </aside>
+
+    <script type="module" src="/src/guide/guide.js"></script>
+  </body>
+</html>
