@@ -65,7 +65,7 @@ Node **Camera3D** dengan `projection` bernilai `PROJECTION_ORTHOGONAL`. Ukuranny
 
 Karena tidak ada perspektif, kamera ortografis tidak memberi petunjuk kedalaman dari ukuran objek. Game isometrik mengakalinya dengan sudut kamera miring (misalnya memandang dari atas serong), bayangan, dan urutan tumpukan objek, sehingga pemain tetap bisa membaca mana yang di depan.
 
-[Depth Buffer](/kamus/geometri/depth-buffer/) pada kamera ortografis membagi presisinya merata di sepanjang rentang near–far, berbeda dengan kamera perspektif yang presisinya menumpuk di dekat kamera.
+[Depth Buffer](/kamus/geometri/depth-buffer/) pada kamera ortografis membagi presisinya merata di sepanjang rentang antara near dan far, berbeda dengan kamera perspektif yang presisinya menumpuk di dekat kamera.
 
 <Aside type="note" title="Di Lab (Three.js)">
 Lab memakai kamera perspektif untuk tampilan utama, tetapi bayangan cahaya directional dirender dari kamera ortografis. Lihat `directional.shadow.camera` di `src/experiment/world/lights.js`: batas `left`, `right`, `top`, dan `bottom` menentukan kotak area yang bisa menerima bayangan. Coba ubah nilai -4 dan 4 di sana menjadi -1 dan 1, lalu perhatikan bayangan yang terpotong.

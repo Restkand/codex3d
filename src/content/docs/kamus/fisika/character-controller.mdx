@@ -27,12 +27,12 @@ import EngineTabs from '~/components/EngineTabs.astro'
 
 Karakter pemain jarang dibuat sebagai [rigidbody](/kamus/fisika/rigidbody/) dynamic biasa. Rigidbody bereaksi pada semua gaya: terpeleset di lereng, terguling saat ditabrak, terpental dari sudut. Hasilnya terasa licin dan sulit dikendalikan. Pemain ingin karakter yang langsung berhenti saat tombol dilepas dan berbelok tajam saat diminta.
 
-**Character controller** adalah jalan tengah. Gerakannya ditentukan **kode** (seperti kinematic), tetapi ia tetap menangani tabrakan dengan cerdas:
+**Character controller** adalah jalan tengah: gerakannya ditentukan kode (seperti kinematic), tetapi ia tetap menangani tabrakan:
 
-- **Berhenti di dinding** dan **meluncur** di sepanjang permukaannya, bukan menempel atau tembus.
-- **Tahu kapan berdiri di tanah**, untuk menentukan boleh melompat atau sedang jatuh.
-- **Batas kemiringan**: lereng di bawah sudut tertentu dianggap lantai, di atasnya dianggap dinding.
-- **Naik anak tangga** setinggi tertentu tanpa harus melompat.
+- Berhenti di dinding dan meluncur di sepanjang permukaannya, bukan menempel atau tembus.
+- Tahu kapan berdiri di tanah, untuk menentukan boleh melompat atau sedang jatuh.
+- Batas kemiringan: lereng di bawah sudut tertentu dianggap lantai, di atasnya dianggap dinding.
+- Naik anak tangga setinggi tertentu tanpa harus melompat.
 
 Gravitasi, lompatan, dan percepatan ditulis sendiri di kode. Kedengarannya repot, tetapi justru di sinilah *game feel* dibentuk: seberapa cepat karakter berakselerasi, seberapa tinggi lompatannya, berapa lama ia melayang di puncak lompatan.
 

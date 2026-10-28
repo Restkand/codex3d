@@ -32,7 +32,7 @@ import EngineTabs from '~/components/EngineTabs.astro'
 
 Dijalankan sekali untuk setiap [vertex](/kamus/geometri/vertex/). Tugas wajibnya: menghitung posisi titik itu di layar dengan [matriks model, view, dan projection](/kamus/ruang/matrices/). Di engine, bagian wajib ini sudah dikerjakan otomatis.
 
-Yang menarik adalah apa yang bisa ditambahkan sebelumnya: **menggeser titik** langsung di GPU, tanpa mengubah data mesh dan tanpa beban CPU. Rumput dan daun bergoyang, bendera berkibar, ombak air, atau objek yang "bernapas" biasanya dibuat dengan cara ini.
+Sebelum langkah itu, kamu bisa **menggeser titik** langsung di GPU, tanpa mengubah data mesh dan tanpa beban CPU. Rumput dan daun bergoyang, bendera berkibar, ombak air, atau objek yang "bernapas" biasanya dibuat dengan cara ini.
 
 ```text title="Pseudocode: rumput bergoyang"
 goyang = sin(waktu * 2.0 + posisi.x) * 0.1 * tinggi_titik   // pangkal diam, ujung bergoyang

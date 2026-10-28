@@ -34,9 +34,9 @@ import EngineTabs from '~/components/EngineTabs.astro'
 | Menurunkan resolusi | hampir tidak berpengaruh | FPS naik jelas |
 | Solusi | kurangi kerja per frame, batching, sebar kerja ke beberapa frame | turunkan resolusi atau kualitas efek, sederhanakan shader |
 
-Aturan terpenting: **ukur dulu, baru optimasi**. Mengoptimasi shader tidak akan membantu jika masalahnya ada di CPU, dan sebaliknya. Banyak waktu terbuang karena menebak.
+Aturan terpenting: **ukur dulu, baru optimasi**. Mengoptimasi shader tidak akan membantu jika masalahnya ada di CPU, dan sebaliknya.
 
-**Tes cepat yang dianjurkan dokumentasi Godot:** matikan V-Sync, lalu bandingkan FPS di jendela besar dan jendela sangat kecil. Jika FPS naik jauh di jendela kecil, game dibatasi [fill rate](/kamus/performa/fill-rate/) (GPU). Jika hampir sama, masalahnya di tempat lain.
+Dokumentasi Godot menganjurkan tes cepat: matikan V-Sync, lalu bandingkan FPS di jendela besar dan jendela sangat kecil. Jika FPS naik jauh di jendela kecil, game dibatasi [fill rate](/kamus/performa/fill-rate/) (GPU). Jika hampir sama, masalahnya di tempat lain.
 
 ## Di engine
 

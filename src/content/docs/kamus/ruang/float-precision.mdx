@@ -38,7 +38,7 @@ sidebar:
 import Aside from '~/components/Aside.astro'
 import EngineTabs from '~/components/EngineTabs.astro'
 
-Posisi, rotasi, dan skala di engine disimpan sebagai **floating point**, biasanya 32-bit (*single precision*). Format ini menyimpan sekitar tujuh digit penting. Akibatnya, **ketelitian paling tinggi di dekat titik nol** dan makin kasar saat angkanya membesar: di dekat (0, 0, 0) kamu bisa menggeser objek sepersekian milimeter, tetapi puluhan kilometer dari sana langkah terkecilnya sudah beberapa milimeter.
+Posisi, rotasi, dan skala di engine disimpan sebagai **floating point**, biasanya 32-bit (*single precision*). Format ini menyimpan sekitar tujuh digit penting. Akibatnya, ketelitian paling tinggi di dekat titik nol dan makin kasar saat angkanya membesar: di dekat (0, 0, 0) kamu bisa menggeser objek sepersekian milimeter, tetapi puluhan kilometer dari sana langkah terkecilnya sudah beberapa milimeter.
 
 <Aside type="note" title="Analogi">
 Bayangkan penggaris yang jumlah garis skalanya tetap. Penggaris 30 cm bisa ditandai per milimeter. Jika penggaris yang sama harus mencakup 30 km dengan jumlah garis yang sama, jarak antar-garisnya menjadi jauh lebih lebar.
@@ -48,10 +48,10 @@ Dokumentasi Godot memberi gambaran langkah terkecil float 32-bit:
 
 | Jarak dari titik nol | Langkah terkecil | Batas yang disarankan Godot |
 | --- | --- | --- |
-| 2.048–4.096 m | ~0,0002 m | game 3D orang pertama |
-| 4.096–8.192 m | ~0,0005 m | game 3D orang ketiga |
-| 16.384–32.768 m | ~0,0019 m | game 3D top-down |
-| 32.768–65.536 m | ~0,0039 m | game 3D apa pun |
+| 2.048 sampai 4.096 m | ~0,0002 m | game 3D orang pertama |
+| 4.096 sampai 8.192 m | ~0,0005 m | game 3D orang ketiga |
+| 16.384 sampai 32.768 m | ~0,0019 m | game 3D top-down |
+| 32.768 sampai 65.536 m | ~0,0039 m | game 3D apa pun |
 
 Gejalanya mudah dikenali: objek, kamera, atau tangan karakter tampak **bergetar** (*jitter*) saat pemain berada jauh dari titik nol, dan physics berperilaku aneh hanya di area itu. Untuk dunia berukuran normal, kamu tidak perlu memikirkan ini.
 

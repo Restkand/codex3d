@@ -33,12 +33,12 @@ Rasio lebar dibagi tinggi layar atau jendela, misalnya 16:9 ≈ 1,78. Kamera mem
 
 ## Di engine
 
-Ketiga engine memperbarui aspect ratio kamera secara otomatis saat jendela berubah ukuran. Yang perlu diputuskan adalah **apa yang terjadi pada layar yang lebih lebar atau lebih tinggi** dari yang dirancang:
+Ketiga engine memperbarui aspect ratio kamera secara otomatis saat jendela berubah ukuran. Yang tersisa untuk diputuskan adalah apa yang terjadi pada layar yang lebih lebar atau lebih tinggi dari rancangan.
 
 <EngineTabs>
 <div slot="unity">
 
-Dengan FOV vertikal (bawaan), layar yang lebih lebar menampilkan **lebih banyak ke samping**, tinggi pandangan tetap. Dokumentasi `Camera.fieldOfView` menyebutnya langsung: FOV horizontal bergantung pada aspect ratio viewport. Untuk UI, komponen **Canvas Scaler** mengatur skala elemen terhadap ukuran layar lewat **UI Scale Mode**: Constant Pixel Size, Scale With Screen Size, atau Constant Physical Size.
+Dengan FOV vertikal (bawaan), layar yang lebih lebar menampilkan lebih banyak ke samping, sementara tinggi pandangan tetap. Dokumentasi `Camera.fieldOfView` menyebutnya langsung: FOV horizontal bergantung pada aspect ratio viewport. Untuk UI, komponen **Canvas Scaler** mengatur skala elemen terhadap ukuran layar lewat **UI Scale Mode**: Constant Pixel Size, Scale With Screen Size, atau Constant Physical Size.
 
 </div>
 <div slot="unreal">
