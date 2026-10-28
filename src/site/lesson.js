@@ -83,6 +83,7 @@ const DEMO_LINES = {
   ndc: 'Coba ke pojok kiri atas. Lihat tanda angkanya.',
   sine: 'Naikkan frekuensinya. Gerakan mengambang berubah jadi gemetar.',
   lerp: 'Hampir semua animasi dibangun dari rumus kecil ini.',
+  hierarchy: 'Putar induknya. Anak ikut berputar, padahal posisi lokalnya tidak berubah sama sekali.',
   easing: 'Bandingkan "none" dengan "elastic". Bedanya terasa sekali.',
   glslfn: 'Fungsi-fungsi ini muncul di hampir semua shader.',
   fresnel: 'Naikkan power-nya. Cahayanya makin menempel ke tepi.',

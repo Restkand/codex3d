@@ -1,0 +1,483 @@
+---
+title: "Ruang, Transform, dan Hierarki"
+description: "Koordinat 3D di tiap engine, posisi-rotasi-skala, induk dan anak, local vs world, dan matematika untuk menggerakkan objek menuju target."
+kind: lesson
+minutes: 30
+status: draf
+lastReviewed: 2026-10-28
+terms:
+  - coords
+  - vector
+  - transform
+  - radian
+  - quaternion
+  - hierarchy
+  - local-world
+  - normalize
+  - dot
+krekit:
+  gambaran-besar: "Aku juga punya alamat relatif. Posisiku di halaman ini dihitung dari panggung tempatku berdiri."
+  koordinat-tiap-engine-punya-arah-sendiri: "Kalau pindah dari Unity ke Unreal, angka posisi perlu dikali 100. Sentimeter, bukan meter."
+  transform-posisi-rotasi-dan-skala: "Tiga angka posisi, tiga angka rotasi, tiga angka skala. Semua objek di game punya ini."
+  rotasi-derajat-radian-dan-quaternion: "Di Godot, rotation memakai radian. Ini jebakan paling umum untuk pemula."
+  induk-dan-anak: "Geser slider putar di demonya. Anak ikut berputar mengelilingi induk."
+  local-dan-world: "Kalau angka posisi terasa salah, tanyakan dulu: ini lokal atau dunia?"
+  matematika-gerak-arah-jarak-dan-target: "Kurangi posisi, dapat arah. Normalisasi, dapat arah murni. Sisanya tinggal dikali kecepatan."
+  kesalahan-umum: "Kesalahan nomor dua membuat karakter lari lebih cepat saat bergerak serong. Tidak ada error, jadi mudah lolos."
+sidebar:
+  order: 2
+  label: "2 · Ruang, Transform, dan Hierarki"
+quiz:
+  - q: "Sebuah anak punya posisi lokal (1, 0, 0). Induknya berada di posisi dunia (2, 0, 0) tanpa rotasi dan berskala 1. Di mana posisi dunia anak itu?"
+    options:
+      - "(1, 0, 0)"
+      - "(3, 0, 0)"
+      - "(2, 0, 0)"
+      - "(−1, 0, 0)"
+    answer: 1
+    explain: "Posisi lokal dihitung dari induk. Induk di x = 2, anak 1 unit di kanannya, jadi posisi dunianya x = 3."
+  - q: "Di Godot, kamu menulis rotation.y = 90 dengan maksud memutar objek 90 derajat. Apa yang terjadi?"
+    options:
+      - "Objek berputar tepat 90 derajat"
+      - "Objek berputar 90 radian, sekitar 5157 derajat, sehingga arahnya tampak acak"
+      - "Godot menolak nilai di atas 2π"
+      - "Objek tidak berputar karena harus memakai quaternion"
+    answer: 1
+    explain: "Properti rotation di Node3D memakai radian. Untuk derajat, pakai rotation_degrees atau ubah dulu dengan deg_to_rad(90)."
+  - q: "Input keyboard W dan D ditekan bersamaan menghasilkan arah (1, 0, 1). Tanpa normalisasi, seberapa cepat karakter bergerak serong dibanding bergerak lurus?"
+    options:
+      - "Sama cepat"
+      - "Dua kali lebih cepat"
+      - "Sekitar 1,41 kali lebih cepat"
+      - "Lebih lambat"
+    answer: 2
+    explain: "Panjang vektor (1, 0, 1) adalah √2 ≈ 1,41. Dinormalisasi dulu agar panjangnya 1, baru dikali kecepatan."
+  - q: "Di Unity, sebuah objek dipindahkan ke induk baru dengan transform.SetParent(induk) tanpa argumen kedua. Apa yang terlihat di layar?"
+    options:
+      - "Objek tetap di tempatnya, karena posisi dunianya dipertahankan"
+      - "Objek melompat ke posisi induk"
+      - "Objek menghilang sampai induknya digeser"
+      - "Skala objek kembali ke 1"
+    answer: 0
+    explain: "Argumen worldPositionStays bawaannya true, jadi posisi, rotasi, dan skala dunia dipertahankan. Unity menghitung ulang nilai lokalnya terhadap induk baru."
+  - q: "Hasil dot product antara arah depan musuh (ternormalisasi) dan arah ke pemain (ternormalisasi) adalah −0,8. Di mana pemain berada?"
+    options:
+      - "Tepat di depan musuh"
+      - "Di samping musuh"
+      - "Di belakang musuh"
+      - "Tidak bisa ditentukan"
+    answer: 2
+    explain: "Dot product dua arah ternormalisasi bernilai positif jika keduanya searah, nol jika tegak lurus, dan negatif jika berlawanan. Nilai −0,8 berarti pemain hampir tepat di belakang."
+sources:
+  - title: "Transform component"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-Transform.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Quaternion and Euler rotations in Unity"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/QuaternionAndEulerRotationsInUnity.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Transform.SetParent"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Transform.SetParent.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Transform.TransformPoint"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Transform.TransformPoint.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Transform.forward"
+    url: "https://docs.unity.com/en-us/engine/current/script-reference/unityengine/transform/forward"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Vector3.MoveTowards"
+    url: "https://docs.unity.com/en-us/engine/current/script-reference/unityengine/vector3/movetowards"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Vector3.normalized"
+    url: "https://docs.unity.com/en-us/engine/current/script-reference/unityengine/vector3/normalized"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Coordinate System and Spaces in Unreal Engine"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/coordinate-system-and-spaces-in-unreal-engine"
+    publisher: "Epic Games Developer Documentation"
+    accessed: 2026-10-28
+  - title: "Introduction to 3D"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/introduction_to_3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Using 3D transforms"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/using_transforms.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Node3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_node3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Node"
+    url: "https://docs.godotengine.org/en/stable/classes/class_node.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Vector3"
+    url: "https://docs.godotengine.org/en/stable/classes/class_vector3.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+---
+
+import Aside from '~/components/Aside.astro'
+import Demo from '~/components/Demo.astro'
+import Quiz from '~/components/Quiz.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Membaca arah sumbu dan satuan di Unity, Unreal, dan Godot tanpa tertukar.
+- Menjelaskan isi sebuah transform: posisi, rotasi, dan skala.
+- Memilih antara derajat, radian, dan quaternion saat memutar objek.
+- Menyusun objek dalam hierarki induk-anak dan membedakan nilai lokal dan dunia.
+- Menggerakkan objek menuju target dengan kecepatan yang sama di semua arah.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: alamat yang relatif">
+"Gelas ada di atas meja, meja ada di dapur, dapur ada di rumah nomor 5." Setiap alamat ditulis relatif terhadap tempat yang lebih besar. Saat rumahnya dipindah, kamu tidak perlu menulis ulang letak gelas: gelas tetap di atas meja, dan meja tetap di dapur.
+</Aside>
+
+Di [Pelajaran 1](/belajar/fondasi-engine/01-frame/), kamu memutar kubus setiap frame. Pelajaran ini menjawab pertanyaan berikutnya: **di mana** kubus itu berada, **menghadap ke mana**, dan **relatif terhadap apa**.
+
+Setiap objek di dunia 3D menyimpan tiga hal: posisi, rotasi, dan skala. Ketiganya disebut [transform](/kamus/ruang/transform/), dan nilainya selalu relatif terhadap induk objek itu, persis seperti alamat gelas tadi.
+
+Contoh pertama: objek yang bergerak lurus menuju target, berhenti tepat di target, dengan kecepatan tetap per detik.
+
+<EngineTabs>
+<div slot="unity">
+
+```csharp title="Kejar.cs"
+using UnityEngine;
+
+public class Kejar : MonoBehaviour
+{
+    public Transform target;
+    public float kecepatan = 3f; // meter per detik
+
+    void Update()
+    {
+        // position = posisi dunia. MoveTowards tidak pernah melewati target.
+        transform.position = Vector3.MoveTowards(
+            transform.position, target.position, kecepatan * Time.deltaTime);
+    }
+}
+```
+
+</div>
+<div slot="unreal">
+
+```cpp title="Kejar.cpp"
+// Target (AActor*) dan Kecepatan (float) dideklarasikan sebagai UPROPERTY di Kejar.h
+void AKejar::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+    const FVector Sekarang = GetActorLocation();       // posisi dunia
+    const FVector Tujuan = Target->GetActorLocation();
+    // Kecepatan dalam unit Unreal (sentimeter) per detik
+    SetActorLocation(FMath::VInterpConstantTo(Sekarang, Tujuan, DeltaSeconds, Kecepatan));
+}
+```
+
+</div>
+<div slot="godot">
+
+```gdscript title="kejar.gd"
+extends Node3D
+
+@export var target: Node3D
+@export var kecepatan := 3.0 # meter per detik
+
+func _process(delta: float) -> void:
+    # global_position = posisi dunia. move_toward tidak pernah melewati target.
+    global_position = global_position.move_toward(target.global_position, kecepatan * delta)
+```
+
+</div>
+</EngineTabs>
+
+Ketiga contoh membaca dan menulis posisi **dunia**, bukan posisi lokal. Alasannya dibahas di bagian Local dan world.
+
+## Koordinat: tiap engine punya arah sendiri
+
+Setiap titik ditulis dengan tiga angka: X, Y, dan Z. Semua engine memakai tiga sumbu, tetapi [arah sumbu dan satuannya](/kamus/ruang/coords/) berbeda:
+
+| | Sumbu atas | Sumbu depan | Tangan | Satu unit |
+| --- | --- | --- | --- | --- |
+| Unity | +Y | +Z | kiri | 1 meter |
+| Unreal | +Z | +X | kiri | 1 sentimeter |
+| Godot | +Y | −Z | kanan | 1 meter |
+
+Perbedaan ini terasa saat memindahkan aset atau angka antar-engine. Karakter setinggi 2 unit di Unity berarti 2 meter, tetapi di Unreal hanya 2 sentimeter. Model dari Blender (Z ke atas) juga perlu diputar saat diimpor ke engine yang memakai Y ke atas, dan importer engine biasanya melakukannya otomatis.
+
+Arah "depan" di Godot adalah −Z, tetapi model 3D yang diimpor dianggap menghadap +Z. Itu sebabnya `look_at()` punya opsi `use_model_front`.
+
+## Transform: posisi, rotasi, dan skala
+
+Transform berisi tiga bagian:
+
+- **Posisi**: di mana objek berada. Satu [vektor](/kamus/ruang/vector/) X, Y, Z.
+- **Rotasi**: ke mana objek menghadap.
+- **Skala**: seberapa besar objek dibanding ukuran aslinya. Skala 1 berarti ukuran asli.
+
+Engine menerapkannya dengan urutan skala, lalu rotasi, lalu posisi. Karena itu objek membesar dan berputar di sekitar titik pusatnya sendiri, bukan di sekitar titik nol dunia.
+
+<EngineTabs>
+<div slot="unity">
+
+Setiap GameObject punya komponen **Transform** dengan `position`, `rotation`, dan `localScale`. Nilai di Inspector adalah nilai **lokal**, relatif terhadap induk.
+
+</div>
+<div slot="unreal">
+
+`FTransform` berisi **Location**, **Rotation**, dan **Scale3D**. Panel Details sebuah Actor menampilkan ketiganya.
+
+</div>
+<div slot="godot">
+
+Node3D punya `position`, `rotation`, dan `scale`, digabung dalam satu nilai `transform` bertipe `Transform3D`. Nilai di Inspector juga relatif terhadap induk.
+
+</div>
+</EngineTabs>
+
+Hindari skala 0 di sumbu mana pun. Perhitungan matriksnya menjadi tidak valid dan bisa menghasilkan nilai NaN yang merusak objek lain di sekitarnya.
+
+## Rotasi: derajat, radian, dan quaternion
+
+Cara paling mudah dibaca untuk menulis rotasi adalah **sudut Euler**: tiga sudut, satu untuk setiap sumbu. Masalahnya, saat dua sumbu putar menjadi segaris, satu arah putaran hilang. Kondisi ini disebut **gimbal lock**. Karena itu engine menyimpan rotasi sebagai [quaternion](/kamus/ruang/quaternion/), empat angka yang tidak mengalami gimbal lock dan bisa diinterpolasi dengan mulus.
+
+Kamu hampir tidak pernah mengisi angka quaternion secara manual. Engine menyediakan fungsi untuk membuatnya dari sudut Euler, dari sumbu dan sudut, atau dari arah yang ingin dihadap.
+
+Yang perlu diperhatikan adalah **satuan sudutnya**:
+
+<EngineTabs>
+<div slot="unity">
+
+`transform.rotation` bertipe `Quaternion`. Untuk sudut yang mudah dibaca, pakai `transform.eulerAngles` atau `Quaternion.Euler(x, y, z)`, keduanya dalam **derajat**.
+
+```csharp
+transform.rotation = Quaternion.Euler(0f, 90f, 0f); // menghadap 90° ke kanan
+```
+
+</div>
+<div slot="unreal">
+
+Editor dan `FRotator` memakai **derajat** dengan urutan (Pitch, Yaw, Roll). Untuk perhitungan rotasi di C++, tersedia `FQuat`.
+
+```cpp
+SetActorRotation(FRotator(0.f, 90.f, 0.f)); // Yaw 90°
+```
+
+</div>
+<div slot="godot">
+
+Properti `rotation` memakai **radian**. Untuk derajat, pakai `rotation_degrees`, atau ubah dulu dengan `deg_to_rad()`. Rotasi yang sama juga tersedia sebagai `quaternion`.
+
+```gdscript
+rotation_degrees.y = 90.0          # derajat
+rotation.y = deg_to_rad(90.0)      # sama, ditulis dalam radian
+```
+
+Dokumentasi Godot menyarankan sudut Euler hanya untuk editor dan rotasi sederhana. Untuk rotasi yang rumit, pakai `Basis` atau `Quaternion`.
+
+</div>
+</EngineTabs>
+
+Satu radian kira-kira 57,3 derajat, dan satu putaran penuh = 2π radian. Penjelasan lengkapnya ada di [Radian & Sudut Euler](/kamus/ruang/radian/).
+
+## Induk dan anak
+
+Objek bisa menjadi anak objek lain. Transform anak dihitung relatif terhadap induknya, sehingga jika induk bergeser, berputar, atau membesar, semua anaknya ikut. Satu induk boleh punya banyak anak, tetapi setiap anak hanya punya satu induk. Susunan ini disebut [hierarki](/kamus/ruang/hierarchy/).
+
+<Demo name="hierarchy" caption="Tampak atas. Putar dan geser induk: posisi lokal anak tetap, posisi dunianya berubah." />
+
+Hierarki dipakai di hampir semua game:
+
+- Senjata menjadi anak dari tangan karakter, sehingga ikut setiap gerakan animasi.
+- Kamera orang ketiga menjadi anak dari objek kosong di belakang pemain.
+- Roda menjadi anak dari mobil. Mobil bergerak maju, roda berputar di tempatnya sendiri.
+
+Objek kosong yang tidak terlihat sering dipakai sebagai induk, berfungsi seperti engsel. Induk kosong biasanya dibiarkan berskala 1. Induk yang diskalakan tidak seragam (misalnya X dua kali lipat) bisa membuat anak yang berputar tampak miring atau gepeng. Dokumentasi Godot juga menyarankan untuk tidak menskalakan node yang akan digerakkan atau diputar, tetapi menskalakan anaknya.
+
+Saat memindahkan objek ke induk baru, ada dua pilihan: pertahankan posisi **dunia** (objek tetap di tempatnya) atau pertahankan nilai **lokal** (objek bisa melompat, karena nilainya kini dihitung dari induk baru).
+
+<EngineTabs>
+<div slot="unity">
+
+`transform.SetParent(induk)` mempertahankan posisi, rotasi, dan skala dunia, karena argumen `worldPositionStays` bawaannya `true`. Isi `false` untuk mempertahankan nilai lokal.
+
+</div>
+<div slot="unreal">
+
+`AttachToActor` atau `AttachToComponent` dengan `FAttachmentTransformRules`, misalnya `KeepWorldTransform` atau `KeepRelativeTransform`.
+
+</div>
+<div slot="godot">
+
+`anak.reparent(induk_baru)` mempertahankan transform dunia, karena `keep_global_transform` bawaannya `true`. Sementara itu, `induk.add_child(anak)` mempertahankan nilai lokal anak.
+
+</div>
+</EngineTabs>
+
+## Local dan world
+
+**Local space** adalah koordinat relatif terhadap induk. **World space** adalah koordinat akhir di dunia, setelah semua transform induknya diterapkan. Objek tanpa induk punya nilai lokal yang sama dengan nilai dunianya. [Penjelasan lengkap](/kamus/ruang/local-world/).
+
+<EngineTabs>
+<div slot="unity">
+
+| | Lokal | Dunia |
+| --- | --- | --- |
+| Posisi | `localPosition` | `position` |
+| Rotasi | `localRotation` | `rotation` |
+| Skala | `localScale` | `lossyScale` (hanya baca) |
+
+Mengubah titik antar-ruang: `TransformPoint()` (lokal ke dunia) dan `InverseTransformPoint()` (dunia ke lokal).
+
+</div>
+<div slot="unreal">
+
+Pada komponen: `GetRelativeLocation()` (relatif ke induk) dan `GetComponentLocation()` (dunia). Pada Actor: `GetActorLocation()` (dunia).
+
+</div>
+<div slot="godot">
+
+| | Lokal | Dunia |
+| --- | --- | --- |
+| Posisi | `position` | `global_position` |
+| Transform lengkap | `transform` | `global_transform` |
+
+Mengubah titik antar-ruang: `to_global()` (lokal ke dunia) dan `to_local()` (dunia ke lokal). Fungsi `rotate()` memutar relatif terhadap induk. Untuk memutar pada sumbu objek sendiri, pakai `rotate_object_local()`.
+
+</div>
+</EngineTabs>
+
+Aturan praktisnya: saat membandingkan dua objek yang punya induk berbeda, misalnya menghitung jarak musuh ke pemain, pakai nilai **dunia** keduanya.
+
+## Matematika gerak: arah, jarak, dan target
+
+Hampir semua gerakan dibangun dari beberapa operasi [vektor](/kamus/ruang/vector/):
+
+```text title="Pseudocode: menuju target"
+selisih = posisi_target - posisi        // vektor dari kita ke target
+jarak   = panjang(selisih)
+arah    = normalisasi(selisih)          // panjangnya 1, hanya berisi arah
+
+posisi  = posisi + arah * kecepatan * delta
+```
+
+[Normalisasi](/kamus/ruang/normalize/) membuat panjang vektor menjadi 1 tanpa mengubah arahnya. Langkah ini penting. Tanpanya, objek yang jauh dari target bergerak lebih cepat daripada objek yang dekat, karena selisihnya lebih panjang.
+
+<EngineTabs>
+<div slot="unity">
+
+`Vector3.Distance(a, b)` untuk jarak, `selisih.normalized` untuk arah (menghasilkan vektor nol jika selisihnya terlalu kecil). Arah depan objek di ruang dunia: `transform.forward`, yaitu sumbu biru (Z) yang sudah ternormalisasi.
+
+</div>
+<div slot="unreal">
+
+`FVector::Dist(A, B)` untuk jarak, `Selisih.GetSafeNormal()` untuk arah. Arah depan Actor: `GetActorForwardVector()`, yaitu sumbu +X.
+
+</div>
+<div slot="godot">
+
+`a.distance_to(b)` untuk jarak, `a.direction_to(b)` untuk arah (sama dengan `(b - a).normalized()`). Arah depan node di ruang dunia: `-global_transform.basis.z`, karena depan adalah −Z.
+
+</div>
+</EngineTabs>
+
+Untuk mengetahui apakah sesuatu ada di depan atau di belakang, pakai [dot product](/kamus/ruang/dot/) antara arah depan objek dan arah ke target. Untuk dua arah yang sudah dinormalisasi, hasilnya mendekati 1 jika searah, 0 jika tegak lurus, dan negatif jika target ada di belakang.
+
+```text title="Pseudocode: apakah pemain terlihat dari depan?"
+arah_ke_pemain = normalisasi(posisi_pemain - posisi_musuh)
+if dot(depan_musuh, arah_ke_pemain) > 0.5:   // kira-kira dalam sudut 60° dari depan
+    kejar_pemain()
+```
+
+## Kesalahan umum
+
+Sebagian besar kesalahan berikut tidak memunculkan error. Objek tetap bergerak, hanya posisinya salah.
+
+### Derajat dimasukkan ke properti radian
+
+```gdscript title="✗ Keliru (Godot)"
+rotation.y = 90          # 90 radian, sekitar 5157°
+```
+
+```gdscript title="✓ Benar"
+rotation_degrees.y = 90
+```
+
+Periksa satuan sudut setiap kali memakai API rotasi baru, terutama saat pindah engine.
+
+### Bergerak serong lebih cepat
+
+```text title="✗ Keliru"
+arah = Vector3(input_x, 0, input_z)     // (1, 0, 1) saat dua tombol ditekan
+posisi += arah * kecepatan * delta
+```
+
+```text title="✓ Benar"
+arah = normalisasi(Vector3(input_x, 0, input_z))
+posisi += arah * kecepatan * delta
+```
+
+Panjang (1, 0, 1) adalah √2 ≈ 1,41, jadi tanpa normalisasi karakter 41% lebih cepat saat bergerak serong. Di Godot, `Input.get_vector()` sudah mengembalikan vektor dengan panjang maksimum 1.
+
+### Mencampur posisi lokal dan dunia
+
+```text title="✗ Keliru"
+jarak = panjang(pemain.posisi_lokal - musuh.posisi_dunia)
+```
+
+```text title="✓ Benar"
+jarak = panjang(pemain.posisi_dunia - musuh.posisi_dunia)
+```
+
+Hasilnya tampak benar selama induk pemain berada di titik nol, lalu tiba-tiba salah saat induknya dipindahkan.
+
+### Menskalakan induk yang diputar
+
+```text title="✗ Keliru"
+Mobil (skala 2, 1, 1)
+└── Roda (berputar)          // tampak gepeng saat berputar
+```
+
+```text title="✓ Benar"
+Mobil (skala 1)
+├── Badan (skala 2, 1, 1)
+└── Roda (berputar)
+```
+
+Taruh skala pada anak yang tidak punya keturunan, bukan pada induk yang menggerakkan anak lain.
+
+### Menyalin angka posisi antar-engine
+
+```text title="✗ Keliru"
+// Unity (0, 2, 5)  →  Unreal (0, 2, 5)
+```
+
+```text title="✓ Benar"
+// Unity (x=0, y=2, z=5) meter  →  Unreal (X=500, Y=0, Z=200) sentimeter
+```
+
+Satuannya dikali 100, dan sumbunya ditukar: atas Unity (Y) menjadi Z di Unreal, depan Unity (Z) menjadi X di Unreal.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan di engine pilihanmu.
+
+1. Buat dua objek, A dan B. Pasang skrip `Kejar` dari bagian Gambaran besar pada A dengan target B. Geser B saat game berjalan dan perhatikan A mengejarnya dengan kecepatan tetap.
+2. Buat tata surya kecil: objek kosong "Pusat" yang berputar pelan, bola "Planet" sebagai anaknya (geser 5 unit ke samping), lalu bola "Bulan" sebagai anak Planet (geser 1 unit). Cukup putar Pusat dan Planet. Bulan ikut mengorbit tanpa kode tambahan.
+3. Tampilkan posisi lokal dan dunia Bulan di konsol setiap detik. Angka mana yang berubah saat Pusat berputar?
+4. Gerakkan sebuah kubus dengan keyboard tanpa normalisasi, lalu dengan normalisasi. Ukur waktunya untuk menempuh jarak yang sama secara serong.
