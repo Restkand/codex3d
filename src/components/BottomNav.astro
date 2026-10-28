@@ -1,0 +1,94 @@
+---
+/**
+ * Navigasi bawah untuk layar HP (≤767px), seperti bilah tab aplikasi: mudah dijangkau jempol.
+ * Di layar lebih besar disembunyikan; navigasi atas yang dipakai.
+ * Tinggi bilah disimpan di --bnav-h agar konten, pendamping Krekit, dan gelembung tidak tertutup.
+ */
+import { withBase } from '../lib/inline.js'
+
+const path = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`
+const home = withBase('/')
+const ICONS = {
+  home: '<path d="M4 11.5 12 5l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z"/>',
+  belajar: '<path d="M4 6.5C6.5 5 9.5 5 12 6.5c2.5-1.5 5.5-1.5 8 0V19c-2.5-1.5-5.5-1.5-8 0-2.5-1.5-5.5-1.5-8 0z"/><path d="M12 6.5V19"/>',
+  kamus: '<path d="M6 4h11a1 1 0 0 1 1 1v15H7a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1z"/><path d="M5 18a2 2 0 0 1 2-2h11"/><path d="M9 8h6M9 11h4"/>',
+  lab: '<path d="M10 4h4M11 4v5.5L6 18a1.5 1.5 0 0 0 1.3 2h9.4a1.5 1.5 0 0 0 1.3-2L13 9.5V4"/><path d="M8.5 14h7"/>',
+  progres: '<path d="M12 4.5 14.3 9l5 .7-3.6 3.5.9 5-4.6-2.4-4.6 2.4.9-5L4.7 9.7l5-.7z"/>',
+}
+const items = [
+  { href: '/', label: 'Beranda', icon: ICONS.home },
+  { href: '/belajar/', label: 'Belajar', icon: ICONS.belajar },
+  { href: '/kamus/', label: 'Kamus', icon: ICONS.kamus },
+  { href: '/lab/', label: 'Lab', icon: ICONS.lab },
+  { href: '/progres/', label: 'Progres', icon: ICONS.progres },
+].map((item) => {
+  const url = withBase(item.href)
+  // Beranda hanya aktif tepat di beranda; lainnya aktif juga di halaman turunannya
+  const active = url === home ? path === home : path.startsWith(url)
+  return { ...item, url, active }
+})
+---
+
+<nav class="bnav" aria-label="Navigasi utama">
+  {
+    items.map((item) => (
+      <a class:list={['bnav__item', { 'is-active': item.active }]} href={item.url} aria-current={item.active ? 'page' : undefined}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={item.icon} />
+        <span>{item.label}</span>
+      </a>
+    ))
+  }
+</nav>
+
+<style is:global>
+  :root {
+    --bnav-h: 0px;
+  }
+
+  .bnav {
+    display: none;
+  }
+
+  @media (max-width: 767px) {
+    :root {
+      --bnav-h: calc(60px + env(safe-area-inset-bottom, 0px));
+    }
+
+    body {
+      padding-bottom: var(--bnav-h);
+    }
+
+    .bnav {
+      position: fixed;
+      inset: auto 0 0;
+      z-index: 40;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      height: var(--bnav-h);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      background: rgba(8, 8, 13, 0.94);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+    }
+
+    .bnav__item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-size: 11px;
+      color: #8f8fa3;
+      text-decoration: none;
+    }
+
+    .bnav__item svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .bnav__item.is-active {
+      color: #ffcc33;
+    }
+  }
+</style>

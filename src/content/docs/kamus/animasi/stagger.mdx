@@ -1,0 +1,63 @@
+---
+title: "Stagger"
+description: "Menjalankan animasi yang sama pada banyak objek dengan jeda bertahap, sehingga muncul satu per satu seperti efek domino. Umum di menu, daftar item, dan efek muncul."
+kind: term
+level: 1
+aka: "delay bertahap, cascade"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Tween"
+    url: "https://docs.godotengine.org/en/stable/classes/class_tween.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 4
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Menjalankan animasi yang sama pada banyak objek dengan **jeda bertahap**, sehingga muncul satu per satu seperti efek domino. Tombol menu yang masuk berurutan, kartu hadiah yang terbuka satu per satu, atau ubin lantai yang naik bergelombang.
+
+```text title="Pseudocode"
+untuk setiap item ke-i:
+    mulai_tween(item, tunda = i * 0.05)
+```
+
+Stagger bukan fitur khusus engine, hanya pola: [tween](/kamus/animasi/tween/) yang sama dengan penundaan yang naik sesuai urutan. Jeda kecil (0,03–0,1 detik) terasa rapi. Jeda besar terasa lambat jika itemnya banyak, jadi batasi total waktunya.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Tanpa fitur bawaan. Jalankan coroutine yang menunggu `WaitForSeconds(jeda)` di antara item, atau pakai fungsi delay dari pustaka tween seperti DOTween.
+
+</div>
+<div slot="unreal">
+
+Tanpa fitur bawaan. Di UMG (UI), animasi widget bisa diputar dengan waktu mulai berbeda per item. Di Blueprint: loop dengan **Delay** atau timer.
+
+</div>
+<div slot="godot">
+
+Dengan satu Tween paralel dan `set_delay` per item:
+
+```gdscript
+var tween = create_tween().set_parallel()
+for i in tombol.size():
+    tween.tween_property(tombol[i], "modulate:a", 1.0, 0.3).set_delay(i * 0.05)
+```
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+GSAP punya opsi bawaan `stagger: 0.12`. Teks pembuka Lab memakainya agar muncul baris demi baris, di `src/experiment/intro.js`.
+</Aside>
+
+## Terkait
+
+- [Timeline & Keyframe](/kamus/animasi/timeline/)
+- [Tween](/kamus/animasi/tween/)

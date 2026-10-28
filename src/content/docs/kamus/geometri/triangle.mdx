@@ -1,0 +1,67 @@
+---
+title: "Triangle / Face"
+description: "Bentuk dasar yang dipahami GPU. Semua permukaan 3D, termasuk bola yang tampak mulus, sebenarnya kumpulan segitiga datar. Jumlah segitiga adalah salah satu ukuran utama berat sebuah model."
+kind: term
+level: 1
+aka: "segitiga, polygon, poly count"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Scene view View Options toolbar"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/ViewModes.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Rendering Statistics window"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/RenderingStatistics.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Mesh level of detail (LOD)"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/mesh_lod.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Performance"
+    url: "https://docs.godotengine.org/en/stable/classes/class_performance.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 4
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Bentuk dasar yang dipahami GPU. Semua permukaan 3D, termasuk bola yang tampak mulus, sebenarnya kumpulan segitiga datar. Segitiga dipilih karena tiga titik selalu berada di satu bidang datar, sehingga GPU tidak perlu menebak bentuk permukaannya.
+
+Aplikasi 3D boleh memakai segi empat (*quad*) atau segi banyak (*n-gon*), tetapi semuanya dipecah menjadi segitiga saat diimpor ke engine. Istilah **poly count** di industri biasanya berarti jumlah segitiga ini.
+
+## Di engine
+
+Cara melihat segitiga dan menghitung jumlahnya:
+
+<EngineTabs>
+<div slot="unity">
+
+Overlay **Draw Modes** di Scene view: pilih **Wireframe** atau **Shaded Wireframe**. Jumlah segitiga: masuk Play mode, lalu klik tombol **Stats** di pojok kanan atas Game view. Angka **Tris** dan **Verts** adalah jumlah segitiga dan vertex yang diproses dalam satu frame.
+
+</div>
+<div slot="unreal">
+
+View mode **Wireframe** di viewport (shortcut Alt+2). Jumlah segitiga yang digambar: perintah konsol `stat RHI`.
+
+</div>
+<div slot="godot">
+
+Di menu kiri atas viewport 3D (yang bertuliskan Perspective), pilih debug draw mode **Display Wireframe**. Jumlah primitif yang digambar: aktifkan **View Information** di menu yang sama, atau lihat tab **Debugger → Monitors**. Lewat kode: `Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)`. Angka ini ikut menghitung depth prepass dan bayangan, jadi biasanya 2–3 kali jumlah asli di scene.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Aktifkan "wireframe" di panel debug (folder Material) untuk melihat segitiganya. Jumlahnya tampil di [panel Performance](/kamus/web/perf-monitor/).
+</Aside>
+
+## Terkait
+
+- [Vertex](/kamus/geometri/vertex/)
+- [Segments](/kamus/geometri/segments/)
+- [Draw Call & Batching](/kamus/performa/draw-call/)

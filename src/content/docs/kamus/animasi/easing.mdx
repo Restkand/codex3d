@@ -1,0 +1,77 @@
+---
+title: "Easing"
+description: "Kurva yang mengatur percepatan animasi. Linear terasa robotik. Ease out cepat lalu melambat, alami untuk sesuatu yang datang. Elastic dan back melewati target lalu memantul. Easing membuat gerakan terasa hidup."
+kind: term
+level: 1
+aka: "ease in, ease out, interpolation curve, transition"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Tween"
+    url: "https://docs.godotengine.org/en/stable/classes/class_tween.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Introduction to the animation features"
+    url: "https://docs.godotengine.org/en/stable/tutorials/animation/introduction.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "AnimationCurve"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/AnimationCurve.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Ease"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Math/Interpolation/Ease"
+    publisher: "Epic Games Developer Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 2
+---
+
+import Aside from '~/components/Aside.astro'
+import Demo from '~/components/Demo.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Kurva yang mengatur **percepatan** animasi. Masukannya t dari 0 sampai 1 (waktu), keluarannya progres gerakan. Benda nyata tidak bergerak dengan kecepatan tetap: mereka butuh waktu untuk mulai dan berhenti. Easing meniru itu.
+
+- **Linear:** kecepatan tetap. Terasa robotik, tetapi cocok untuk putaran terus-menerus atau bilah progres.
+- **Ease out:** cepat di awal, melambat di akhir. Paling alami untuk sesuatu yang **datang**: menu masuk, objek mendarat.
+- **Ease in:** pelan di awal, cepat di akhir. Untuk sesuatu yang **pergi**: menu keluar, objek jatuh.
+- **Ease in-out:** pelan, cepat, pelan. Untuk perpindahan dari satu tempat ke tempat lain, seperti kamera.
+- **Back / elastic / bounce:** melewati target lalu kembali, berpegas, atau memantul. Memberi karakter yang ceria, tetapi melelahkan jika dipakai di mana-mana.
+
+## Demo
+
+<Demo name="easing" />
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+**AnimationCurve**: kurva yang bisa digambar di Inspector, lalu dibaca dengan `Evaluate(t)`. Ada pembuat bawaan `AnimationCurve.EaseInOut` dan `AnimationCurve.Linear`. Pada klip animasi, easing diatur lewat tangent keyframe di jendela Curves.
+
+</div>
+<div slot="unreal">
+
+Node Blueprint **Ease**: mencampur A ke B sesuai Alpha dengan fungsi easing yang dipilih. Di node Timeline, easing ditentukan oleh bentuk kurvanya.
+
+</div>
+<div slot="godot">
+
+Pada Tween, gabungkan **jenis kurva** (`set_trans`: `TRANS_SINE`, `TRANS_CUBIC`, `TRANS_BACK`, `TRANS_ELASTIC`, `TRANS_BOUNCE`, `TRANS_SPRING`, dan lainnya) dengan **arah** (`set_ease`: `EASE_IN`, `EASE_OUT`, `EASE_IN_OUT`, `EASE_OUT_IN`). Bawaannya linear. Di AnimationPlayer, easing diatur per keyframe.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Dalam UI game, durasi sama pentingnya dengan kurva. Animasi menu yang terlalu lama (lebih dari sekitar 0,3–0,4 detik) terasa lamban setelah dilihat puluhan kali. Animasi yang muncul hanya sesekali, seperti layar naik level, boleh lebih lama dan lebih "berpegas".
+
+<Aside type="note" title="Di Lab (Three.js)">
+Lab memakai easing GSAP dengan nama seperti `power3.out` dan `elastic.out(1, 0.4)`. Penamaannya sama dengan engine: jenis kurva + arah. Lihat `src/experiment/intro.js`.
+</Aside>
+
+## Terkait
+
+- [Tween](/kamus/animasi/tween/)
+- [Lerp](/kamus/ruang/lerp/)

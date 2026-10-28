@@ -1,0 +1,73 @@
+---
+/**
+ * Halaman satu bab Kamus (/kamus/<bab>/): daftar istilah sebagai kartu, dikelompokkan per level.
+ * Daftar dibuat otomatis dari file MDX istilah di src/content/docs/kamus/<bab>/.
+ */
+import { getCollection, getEntry } from 'astro:content'
+import LearnLayout from '../../../layouts/LearnLayout.astro'
+import ShardCount from '../../../components/ShardCount.astro'
+import { KAMUS_CHAPTERS } from '../../../lib/sections.js'
+import { withBase } from '../../../lib/inline.js'
+import { LEVELS } from '../../../lib/progress.js'
+
+export async function getStaticPaths() {
+  return KAMUS_CHAPTERS.map((chapter) => ({ params: { chapter: chapter.id }, props: { chapter } }))
+}
+
+const { chapter } = Astro.props
+const intro = await getEntry('docs', `kamus/${chapter.id}`)
+const terms = (await getCollection('docs', (e) => e.data.kind === 'term' && e.id.startsWith(`kamus/${chapter.id}/`))).sort(
+  (a, b) => (a.data.sidebar?.order ?? 0) - (b.data.sidebar?.order ?? 0),
+)
+const number = KAMUS_CHAPTERS.filter((c) => !c.extra).findIndex((c) => c.id === chapter.id) + 1
+---
+
+<LearnLayout
+  title={`${chapter.title} · Kamus`}
+  description={intro?.data.description ?? chapter.blurb}
+  editPath={intro?.filePath}
+  greeting={`Ada ${terms.length} istilah di bab ini. Setiap istilah yang kamu pahami jadi satu pecahan cangkangku.`}
+  crumbs={[{ label: 'Kamus', href: withBase('/kamus/') }, { label: chapter.title }]}
+>
+  <Fragment slot="side">
+    <p class="lside__label">Bab Kamus</p>
+    <ol class="quests">
+      {
+        KAMUS_CHAPTERS.map((c, i) => (
+          <li class:list={['quests__item', { 'is-current': c.id === chapter.id }]}>
+            <a href={withBase(`/kamus/${c.id}/`)}>
+              <span class="quests__num">{c.extra ? '+' : String(i + 1).padStart(2, '0')}</span>
+              <span class="quests__title">{c.title}</span>
+              <span />
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </Fragment>
+
+  <header class="lhead">
+    <p class="lhead__eyebrow">{chapter.extra ? 'Kamus · Bab Tambahan' : `Kamus · Bab ${String(number).padStart(2, '0')}`}</p>
+    <h1 class="lhead__title">{chapter.title}</h1>
+    <p class="lhead__lead">{intro?.data.description ?? chapter.blurb}</p>
+    <ShardCount ids={terms.map((t) => t.id)} />
+  </header>
+
+  <section class="terms" aria-label="Istilah">
+    {
+      terms.map((term) => (
+        <a class="term-card" href={withBase(`/${term.id}/`)} data-quest={term.id}>
+          <span class="term-card__top">
+            <span class={`level-badge level-badge--${term.data.level ?? 1}`}>{LEVELS[term.data.level ?? 1].name}</span>
+            <span class="quests__check" hidden>
+              ✓
+            </span>
+          </span>
+          <strong class="term-card__title">{term.data.title}</strong>
+          {term.data.aka && <span class="term-card__aka">{term.data.aka}</span>}
+          <span class="term-card__desc">{term.data.description}</span>
+        </a>
+      ))
+    }
+  </section>
+</LearnLayout>

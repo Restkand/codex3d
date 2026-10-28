@@ -1,0 +1,64 @@
+---
+title: "Material"
+description: "Aturan bagaimana permukaan bereaksi terhadap cahaya: warna, kilap, tekstur, transparansi. Di balik layar, setiap material menjalankan shader dengan nilai-nilai yang kamu atur."
+kind: term
+level: 1
+aka: "material instance"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Standard Material 3D and ORM Material 3D"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "ORMMaterial3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_ormmaterial3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Lit shader material Inspector window reference for URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/lit-shader.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 9
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Aturan bagaimana permukaan bereaksi terhadap cahaya: warna, kilap, tekstur, transparansi. Di balik layar, setiap material menjalankan [shader](/kamus/shader/shader/), dan material hanyalah kumpulan nilai (warna, angka, tekstur) yang diberikan ke shader itu.
+
+Hubungannya seperti cetakan dan adonan: shader adalah **cetakannya** (rumus), material adalah **isiannya** (nilai). Banyak material berbeda bisa memakai shader yang sama.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Aset **Material** selalu memilih satu shader, misalnya **URP/Lit** (PBR), **URP/Unlit** (tidak terpengaruh cahaya), atau shader buatan sendiri dari Shader Graph.
+
+</div>
+<div slot="unreal">
+
+**Material** adalah grafik node yang dikompilasi menjadi shader. **Material Instance** memakai Material induk dan hanya mengubah parameternya, tanpa kompilasi ulang. Ini cara standar membuat variasi.
+
+</div>
+<div slot="godot">
+
+`StandardMaterial3D` (PBR siap pakai, atur lewat inspector), `ORMMaterial3D` (sama, tetapi occlusion, roughness, dan metallic dibaca dari satu tekstur gabungan bernama tekstur ORM), dan `ShaderMaterial` (shader tulisan sendiri).
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Mengganti shader membutuhkan kompilasi, yang bisa memakan waktu dan menyebabkan patah-patah (*stutter*) saat game berjalan. Mengubah nilai material tidak membutuhkan kompilasi. Karena itu engine mendorong pola "sedikit shader, banyak variasi material", seperti Material Instance di Unreal.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Lab memakai `MeshStandardMaterial` (PBR) di `src/experiment/world/objects.js` dan [ShaderMaterial](/kamus/web/shader-material/) untuk hologram.
+</Aside>
+
+## Terkait
+
+- [PBR](/kamus/geometri/pbr/)
+- [Shader](/kamus/shader/shader/)

@@ -1,0 +1,65 @@
+---
+title: "Directional Light"
+description: "Sinar sejajar dari satu arah, seperti matahari. Yang penting hanya arahnya, bukan posisinya. Jenis lampu lain: point (ke segala arah) dan spot (kerucut)."
+kind: term
+level: 1
+aka: "sun light, point light, spot light"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Light component Inspector window reference for URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/light-component.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "3D lights and shadows"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/lights_and_shadows.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 2
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Sinar sejajar dari satu arah, seperti matahari. Karena sumbernya dianggap sangat jauh, semua sinar sejajar dan kekuatannya sama di seluruh dunia. Yang penting hanya **arahnya**, bukan posisinya: memindahkan lampu ini tidak mengubah apa pun, memutarnya mengubah segalanya.
+
+Hampir semua engine punya tiga jenis lampu utama:
+
+| Jenis | Bentuk sinar | Contoh |
+| --- | --- | --- |
+| Directional | sejajar, satu arah | matahari, bulan |
+| Point | dari satu titik ke segala arah | bohlam, obor, ledakan |
+| Spot | kerucut dari satu titik | senter, lampu panggung |
+
+Point dan spot melemah seiring jarak dan punya batas jangkauan, sehingga lebih murah jika jangkauannya kecil.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Komponen **Light** dengan Type: Directional, Point, Spot, atau Area. Jika Type diatur ke Area, Mode lampu otomatis menjadi **Baked**, jadi lampu area hanya berpengaruh lewat cahaya yang dipanggang. Point dan Spot punya **Range**, dan Spot juga punya sudut kerucut. Arah directional = rotasi GameObject.
+
+</div>
+<div slot="unreal">
+
+Aktor **Directional Light**, **Point Light**, **Spot Light**, dan **Rect Light**. Arah directional = rotasi aktor, dan bisa menggerakkan matahari di Sky Atmosphere.
+
+</div>
+<div slot="godot">
+
+Node `DirectionalLight3D`, `OmniLight3D` (point), dan `SpotLight3D`. Arah directional = rotasi node; posisinya tidak berpengaruh. Omni dan spot punya **Range** dan **Attenuation**, sedangkan spot menambah **Angle** dan **Angle Attenuation** untuk kerucutnya.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Three.js sedikit berbeda: arah `DirectionalLight` dihitung dari **posisinya menuju target** (bawaan titik 0,0,0), bukan dari rotasi. Quest: geser "dir x" dan "dir y" di panel debug Lab, lalu amati bayangan di lantai. Kodenya di `src/experiment/world/lights.js`.
+</Aside>
+
+## Terkait
+
+- [Shadow Map](/kamus/cahaya/shadow-map/)
+- [Ambient Light](/kamus/cahaya/ambient-light/)
+- [Dot Product](/kamus/ruang/dot/)

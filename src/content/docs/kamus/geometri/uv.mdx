@@ -1,0 +1,70 @@
+---
+title: "UV"
+description: "Koordinat 2D (0..1) di setiap vertex yang menentukan bagian tekstur mana yang ditempel di situ. Seperti pola kertas pembungkus kado yang dibentangkan rata."
+kind: term
+level: 2
+aka: "UV map, texture coordinates, unwrap"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Mesh"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Mesh.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Generating lightmap UVs"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/LightingGiUvs-GeneratingLightmappingUVs.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "ResourceImporterScene"
+    url: "https://docs.godotengine.org/en/stable/classes/class_resourceimporterscene.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "PrimitiveMesh"
+    url: "https://docs.godotengine.org/en/stable/classes/class_primitivemesh.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 7
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Koordinat 2D di setiap vertex, biasanya dalam rentang 0..1, yang menentukan bagian [tekstur](/kamus/geometri/texture/) mana yang ditempel di situ. Huruf U dan V dipakai agar tidak tertukar dengan X, Y, Z di ruang 3D.
+
+Proses membuat UV disebut **unwrap**: permukaan 3D "dibuka" menjadi lembaran datar, lalu tekstur dilukis di atas lembaran itu.
+
+<Aside type="note" title="Analogi">
+Pola kertas pembungkus kado yang dibentangkan rata. Setiap titik pada pola menunjukkan bagian kotak mana yang akan ditutupnya.
+</Aside>
+
+## Di engine
+
+Satu mesh bisa punya beberapa set UV. Set kedua biasanya dipakai untuk **lightmap** (cahaya yang dipanggang), karena lightmap butuh UV yang tidak saling tumpuk.
+
+<EngineTabs>
+<div slot="unity">
+
+`mesh.uv` (set pertama) sampai `mesh.uv8`. Lightmap yang dipanggang memakai `mesh.uv2`, yang di editor disebut juga **UV1** karena penomoran channel dimulai dari 0. Centang **Generate Lightmap UVs** di tab Model pada pengaturan impor, dan Unity akan menulis hasilnya ke `mesh.uv2`.
+
+</div>
+<div slot="unreal">
+
+Disebut **UV Channel**. Channel 0 untuk tekstur, dan Unreal bisa membuat UV lightmap otomatis saat impor (**Generate Lightmap UVs**).
+
+</div>
+<div slot="godot">
+
+`UV` dan `UV2`. UV2 dipakai untuk lightmap (`LightmapGI`). Untuk model impor, set opsi **Light Baking** ke **Static Lightmaps** agar UV2 dibuat saat impor. Untuk bentuk dasar, aktifkan `add_uv2` pada `PrimitiveMesh`.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Di efek post-processing Lab, UV menunjukkan posisi piksel di layar: (0,0) kiri bawah, (1,1) kanan atas. Lihat `vUv` di `src/experiment/shaders/glitch/vertex.glsl`.
+</Aside>
+
+## Terkait
+
+- [Texture](/kamus/geometri/texture/)
+- [Varying](/kamus/shader/varying/)

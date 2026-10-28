@@ -1,0 +1,69 @@
+---
+title: "Depth Buffer"
+description: "Gambar tak terlihat yang menyimpan jarak setiap piksel ke kamera. Dipakai agar objek dekat menutupi objek jauh, tanpa peduli urutan menggambar."
+kind: term
+level: 3
+aka: "z-buffer, depth write, depth test, z-fighting"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "ZWrite command in ShaderLab reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/SL-ZWrite.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "BaseMaterial3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_basematerial3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Standard Material 3D and ORM Material 3D"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 16
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Gambar tak terlihat seukuran layar yang menyimpan **jarak setiap piksel ke kamera**. Sebelum menggambar sebuah piksel, GPU membandingkan jaraknya dengan nilai yang sudah tersimpan. Jika lebih jauh, piksel dibuang. Dengan cara ini objek dekat selalu menutupi objek jauh, berapa pun urutan menggambarnya.
+
+Ada dua sakelar:
+
+- **Depth test:** apakah piksel ini dibandingkan dengan depth buffer?
+- **Depth write:** apakah piksel ini menulis jaraknya ke depth buffer?
+
+Objek transparan biasanya **tidak menulis** depth (depth write mati) agar tidak menghalangi objek transparan lain di belakangnya, tetapi tetap **menguji** depth agar tetap tertutup oleh objek padat.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Material transparan bawaan URP umumnya tidak menulis depth. Di shader tulisan sendiri (ShaderLab), atur dengan perintah `ZWrite On` / `ZWrite Off` dan `ZTest`.
+
+</div>
+<div slot="unreal">
+
+Material Translucent secara bawaan tidak menulis depth. Opsi **Disable Depth Test** ada di pengaturan Material.
+
+</div>
+<div slot="godot">
+
+`StandardMaterial3D`: `depth_draw_mode` (Opaque Only sebagai bawaan, Always, Never) mengatur depth write. `no_depth_test` mematikan depth test, sehingga objek digambar menurut urutan render dan tampak di atas (atau di bawah) semua objek lain.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Depth buffer punya presisi terbatas, dan presisinya paling banyak dipakai di dekat kamera. Dua permukaan yang hampir berimpit di kejauhan bisa saling berebut dan berkedip. Masalah ini disebut **z-fighting**. Solusinya: jangan buat permukaan berimpit, naikkan jarak near kamera, atau perkecil jarak far (lihat [Frustum & Clipping](/kamus/dasar/frustum/)).
+
+<Aside type="note" title="Di Lab (Three.js)">
+Hologram Lab memakai `depthWrite: false`, di `src/experiment/world/hologram.js`.
+</Aside>
+
+## Terkait
+
+- [Transparansi & Blending](/kamus/geometri/blending/)
+- [Rasterization](/kamus/shader/pipeline-raster/)

@@ -1,0 +1,20 @@
+---
+title: "EffectComposer & Pass"
+description: "Pengelola rangkaian efek. Setiap Pass membaca gambar dari pass sebelumnya (tDiffuse) dan menulis hasil baru. Proyek ini: RenderPass → ShaderPass (glitch) → OutputPass. Setiap pass = satu kali menggambar layar penuh."
+kind: term
+level: 3
+sidebar:
+  order: 14
+---
+
+import Aside from '~/components/Aside.astro'
+
+Pengelola rangkaian efek. Setiap Pass membaca gambar dari pass sebelumnya (`tDiffuse`) dan menulis hasil baru. Proyek ini: RenderPass → ShaderPass (glitch) → OutputPass. Setiap pass = satu kali menggambar layar penuh.
+
+**Di proyek ini:** `src/experiment/post.js`
+
+## Terkait
+
+- [Render Target](/kamus/post/render-target/)
+- [OutputPass](/kamus/web/output-pass/)
+- [Culling & Kerja Bersyarat](/kamus/performa/conditional-render/)

@@ -1,0 +1,66 @@
+---
+title: "Collider"
+description: "Bentuk tabrakan yang tak terlihat, terpisah dari model yang tampil di layar. Biasanya jauh lebih sederhana (kotak, bola, kapsul) agar perhitungan tabrakan cepat."
+kind: term
+level: 1
+aka: "collision shape, hitbox, mesh collider, convex"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Physics introduction"
+    url: "https://docs.godotengine.org/en/stable/tutorials/physics/physics_introduction.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Physics.Raycast"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Physics.Raycast.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 2
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Bentuk tabrakan yang tak terlihat, terpisah dari [mesh](/kamus/geometri/mesh/) yang tampil di layar. Physics engine tidak melihat model 3D, hanya collider. Objek tanpa collider tidak bisa ditabrak, diinjak, maupun dikenai [raycast](/kamus/interaksi/raycaster/).
+
+Collider sengaja dibuat **jauh lebih sederhana** daripada modelnya, karena menghitung tabrakan antar-bentuk rumit sangat mahal:
+
+| Bentuk | Kegunaan | Biaya |
+| --- | --- | --- |
+| **Kotak, bola, kapsul** (*primitive*) | hampir semua objek. Kapsul sangat umum untuk karakter | paling murah |
+| **Convex** (cembung, tanpa lekukan ke dalam) | objek bergerak yang bentuknya tidak cocok dengan primitive | sedang |
+| **Mesh / concave** (bentuk persis model) | medan dan bangunan statis yang rumit | mahal. Biasanya hanya boleh untuk objek static |
+
+Satu objek bisa memakai **beberapa collider sederhana sekaligus** (*compound collider*). Kursi misalnya cukup satu kotak untuk dudukan dan satu untuk sandaran, jauh lebih murah daripada mesh collider.
+
+Dalam game aksi, istilah **hitbox** (area yang bisa menyerang) dan **hurtbox** (area yang bisa diserang) biasanya juga berupa collider sederhana yang menempel di tulang karakter.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Komponen **Box Collider**, **Sphere Collider**, **Capsule Collider**, dan **Mesh Collider** (centang **Convex** untuk objek dynamic). Compound: beberapa collider pada anak-anak objek yang punya satu Rigidbody.
+
+</div>
+<div slot="unreal">
+
+Collision dasar biasanya disimpan di aset Static Mesh (dibuat di Static Mesh Editor atau diimpor dengan awalan nama khusus dari aplikasi 3D). Untuk Actor: **Box Collision**, **Sphere Collision**, dan **Capsule Collision** component.
+
+</div>
+<div slot="godot">
+
+Node **CollisionShape3D** (berisi resource seperti `BoxShape3D`, `SphereShape3D`, `CapsuleShape3D`, `ConvexPolygonShape3D`, `ConcavePolygonShape3D`) sebagai anak dari body. Satu body boleh punya banyak shape. Dokumentasi Godot memperingatkan agar shape tidak diskalakan di editor karena bisa membuat tabrakan berperilaku aneh. Ubah ukuran shape-nya, bukan skala node-nya.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Collider yang lebih kecil atau lebih besar dari modelnya adalah keputusan desain, bukan kesalahan. Collider karakter yang sedikit lebih ramping membuat pemain tidak tersangkut di celah sempit. Hitbox musuh yang sedikit lebih besar membuat tembakan terasa adil. Banyak keluhan "aku jelas kena!" dalam game berasal dari selisih antara collider dan model yang terlihat.
+
+## Terkait
+
+- [Rigidbody & Jenis Body](/kamus/fisika/rigidbody/)
+- [Trigger & Area](/kamus/fisika/trigger/)
+- [Raycast](/kamus/interaksi/raycaster/)

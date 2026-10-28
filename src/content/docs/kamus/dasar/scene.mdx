@@ -1,0 +1,63 @@
+---
+title: "Scene"
+description: "Wadah yang menampung semua objek, cahaya, dan kamera dalam satu dunia. Isinya tersusun seperti pohon: setiap objek bisa punya anak."
+kind: term
+level: 1
+aka: "level, map, scene graph"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Introduction to scenes"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/CreatingScenes.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Manage GameObjects in the Hierarchy window"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/Hierarchy.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Nodes and Scenes"
+    url: "https://docs.godotengine.org/en/stable/getting_started/step_by_step/nodes_and_scenes.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 4
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Wadah yang menampung semua objek, cahaya, dan kamera dalam satu dunia. Isinya tersusun seperti pohon (*scene graph*): setiap objek bisa punya anak, dan anak ikut bergerak bersama induknya. Hanya yang ada di dalam scene yang akan digambar.
+
+<Aside type="note" title="Analogi">
+Panggung teater. Semua yang tidak diletakkan di panggung tidak akan terlihat penonton.
+</Aside>
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+**Scene** adalah aset yang berisi sebagian atau seluruh game. Isinya berupa **GameObject** yang tampil di jendela **Hierarchy**, tersusun sebagai induk dan anak. Game biasanya terdiri dari beberapa scene, misalnya menu utama dan satu scene per level, yang dimuat bergantian. Beberapa scene juga bisa dibuka bersamaan (*multi-scene editing*).
+
+</div>
+<div slot="unreal">
+
+Padanannya adalah **Level** (file `.umap`) yang berisi **Actor**. Daftar isinya terlihat di panel **Outliner**. Saat game berjalan, level-level dimuat ke dalam satu **World**.
+
+</div>
+<div slot="godot">
+
+Di Godot, **scene** adalah pohon **node** yang bisa disimpan (file `.tscn`) dan dipakai ulang di dalam scene lain sebanyak yang kamu mau (*instancing*). Setelah disimpan, sebuah scene bekerja seperti jenis node baru. Satu karakter, satu bar nyawa, satu peti, sampai satu level penuh semuanya bisa berupa scene, dan game utuh adalah pohon dari scene-scene itu. Ini berbeda dari Unity dan Unreal, di mana scene/level biasanya berarti satu dunia utuh.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Scene dibuat dengan `new THREE.Scene()` di `src/experiment/core/setup.js`, lalu objek ditambahkan dengan `scene.add(objek)`. Coba hapus baris `scene.add(scrollGroup)` di `src/experiment/world/objects.js`. Apa yang hilang, dan kenapa?
+</Aside>
+
+## Terkait
+
+- [Hierarki](/kamus/ruang/hierarchy/)
+- [Kamera Perspektif](/kamus/dasar/camera/)
+- [Renderer](/kamus/dasar/renderer/)

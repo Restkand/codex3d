@@ -1,0 +1,107 @@
+---
+title: "Uniform"
+description: "Nilai yang dikirim dari kode game ke shader dan sama untuk semua titik dan piksel dalam satu gambar, misalnya waktu, warna, atau kekuatan efek. Inilah jembatan antara logika game dan shader."
+kind: term
+level: 2
+aka: "material parameter, shader property"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "ShaderMaterial"
+    url: "https://docs.godotengine.org/en/stable/classes/class_shadermaterial.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Shading language"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shading_language.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Spatial shaders"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/spatial_shader.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Material.SetFloat"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Material.SetFloat.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Renderer.material"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Renderer-material.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Renderer.sharedMaterial"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Renderer-sharedMaterial.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Shader.SetGlobalFloat"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Shader.SetGlobalFloat.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Time Node"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Time-Node.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 6
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Nilai yang dikirim dari kode game ke shader dan **sama** untuk semua titik dan piksel saat objek itu digambar, misalnya waktu, warna tim, kekuatan efek, atau persentase darah. Uniform adalah jembatan antara logika game di CPU dan shader di GPU: kode game mengubah angkanya, shader langsung memakainya pada frame berikutnya.
+
+Engine menyebutnya **parameter** atau **property** material.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Dideklarasikan di blok `Properties` (atau Blackboard di Shader Graph). Diubah dari C#:
+
+```csharp
+material.SetFloat("_Kekuatan", 0.8f);
+```
+
+Jika nilainya diubah setiap frame, simpan dulu ID-nya dengan `Shader.PropertyToID("_Kekuatan")`, lalu pakai versi `SetFloat(int nameID, float value)` agar Unity tidak mencari nama berupa teks berulang kali.
+
+Waktu tersedia otomatis sebagai `_Time` (`_Time.y` adalah waktu dalam detik). Di Shader Graph, pakai node **Time**, yang juga menyediakan Sine Time, Cosine Time, dan Delta Time.
+
+</div>
+<div slot="unreal">
+
+Node **Scalar Parameter** atau **Vector Parameter** di Material, nilainya diatur di Material Instance. Saat game berjalan: buat **Dynamic Material Instance**, lalu `SetScalarParameterValue`. Waktu: node **Time**.
+
+</div>
+<div slot="godot">
+
+Dideklarasikan di shader, diubah dari GDScript:
+
+```glsl title="efek.gdshader"
+shader_type spatial;
+
+uniform float kekuatan = 0.5;
+```
+
+```gdscript
+material.set_shader_parameter("kekuatan", 0.8)
+```
+
+Waktu tersedia otomatis sebagai `TIME`, dalam detik sejak engine berjalan. Secara bawaan nilainya kembali ke nol setiap 3.600 detik, jadi efek yang memakai `TIME` bisa melompat sesaat jika game berjalan lebih dari satu jam.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Mengubah parameter pada material yang **dipakai bersama** akan mengubah semua objek yang memakainya. Untuk mengubah satu objek saja, engine membuat salinan material. Di Unity, mengakses `renderer.material` otomatis membuat salinan khusus untuk renderer itu, sedangkan mengubah `renderer.sharedMaterial` mengubah semua objek pemakainya (di editor, perubahan itu juga tersimpan ke file material). Salinan dari `renderer.material` tidak terhapus sendiri, jadi hancurkan dengan `Destroy` saat objeknya dihancurkan. Unreal memakai Dynamic Material Instance. Salinan material bisa menambah [draw call](/kamus/performa/draw-call/) karena objek tidak lagi bisa digabung.
+
+Untuk nilai yang sama di **seluruh** scene, seperti arah angin atau waktu siang-malam, engine menyediakan parameter global: `Shader.SetGlobalFloat` di Unity, **Material Parameter Collection** di Unreal, dan `global uniform` di Godot. Di Unity, nilai global hanya dipakai jika material tidak mendefinisikan property dengan nama yang sama. Di Godot, global uniform harus didaftarkan dulu di **Project Settings → Shader Globals** (jika tidak, shader gagal dikompilasi), lalu nilainya diubah dengan `RenderingServer.global_shader_parameter_set("nama", nilai)`.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Three.js menulisnya sebagai `uniforms: { uTime: { value: 0 } }`, lalu `hologram.uniforms.uTime.value = elapsed` setiap frame di `src/experiment/main.js`. Slider panel debug dan animasi GSAP mengendalikan hologram lewat uniform yang sama. Lihat `src/experiment/world/hologram.js`.
+</Aside>
+
+## Terkait
+
+- [Attribute](/kamus/shader/attribute/)
+- [Varying](/kamus/shader/varying/)
+- [Material](/kamus/geometri/material/)

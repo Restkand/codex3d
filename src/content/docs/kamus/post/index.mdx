@@ -1,0 +1,17 @@
+---
+title: "Post-processing"
+description: "Efek yang diterapkan pada gambar hasil render, seperti filter foto. Efeknya kuat, tetapi setiap efek berarti memproses ulang seluruh layar."
+sidebar:
+  order: 0
+  label: Ikhtisar bab
+---
+
+Efek yang diterapkan pada gambar hasil render, seperti filter foto: bloom, color grading, vignette, depth of field, motion blur. Efeknya kuat, tetapi setiap efek berarti memproses ulang seluruh layar.
+
+Unity dan Unreal mengatur post-processing dengan **volume**: area di dunia game yang membawa sekumpulan pengaturan efek. Saat kamera masuk ke sebuah volume, efeknya diterapkan, misalnya warna menjadi kebiruan saat masuk ke dalam air. Volume global berlaku di mana saja. Unity menyebutnya **Volume** dengan **Volume Profile**, Unreal menyebutnya **Post Process Volume**. Godot menyimpan sebagian besar efek di resource **Environment** dan **CameraAttributes**.
+
+- [Render Target](/kamus/post/render-target/): Tekstur yang dijadikan tujuan render, fondasi semua efek layar penuh.
+- [Glitch & Chromatic Aberration](/kamus/post/glitch/): Pecah warna dan sinyal rusak, sekaligus contoh efek kustom.
+- [Bloom](/kamus/post/bloom/): Piksel sangat terang berpendar ke sekitarnya.
+- [HDR & Format Float](/kamus/post/hdr/): Menyimpan kecerahan di atas 1, dan urutan efek sebelum dan sesudah tone mapping.
+- [Antialiasing](/kamus/post/antialias/): MSAA, FXAA/SMAA, dan TAA/TSR: cara menghaluskan tepi bergerigi.

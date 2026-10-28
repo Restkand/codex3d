@@ -1,0 +1,16 @@
+---
+title: "Physics"
+description: "Simulasi gerak dan tabrakan: benda jatuh, terdorong, memantul, dan saling menghalangi. Bab ini membahas komponen dasar yang dipakai di setiap engine."
+sidebar:
+  order: 0
+  label: Ikhtisar bab
+---
+
+Simulasi gerak dan tabrakan: benda jatuh karena gravitasi, terdorong, memantul, dan saling menghalangi. Engine menyediakan *physics engine* yang mengurus semua perhitungan ini. Tugas kita adalah memberi tahu objek mana yang ikut disimulasikan, bentuk tabrakannya, dan siapa yang boleh menabrak siapa.
+
+- [Rigidbody & Jenis Body](/kamus/fisika/rigidbody/): Static, dynamic, dan kinematic: siapa yang menggerakkan objek ini.
+- [Collider](/kamus/fisika/collider/): Bentuk tabrakan yang tak terlihat, biasanya lebih sederhana dari model aslinya.
+- [Trigger & Area](/kamus/fisika/trigger/): Zona yang mendeteksi objek masuk dan keluar, tanpa menghalangi.
+- [Fixed Timestep & Interpolasi](/kamus/fisika/fixed-timestep/): Physics berjalan dengan detak tetap, terpisah dari frame rate.
+- [Collision Layer & Mask](/kamus/fisika/collision-layers/): Mengatur siapa boleh bertabrakan dengan siapa.
+- [Character Controller](/kamus/fisika/character-controller/): Cara khusus menggerakkan karakter pemain agar responsif.

@@ -1,0 +1,58 @@
+---
+title: "Back-face Culling"
+description: "Secara bawaan GPU hanya menggambar sisi depan segitiga, karena sisi belakang objek tertutup biasanya tidak terlihat. Bidang tipis seperti daun atau kain butuh kedua sisi digambar."
+kind: term
+level: 2
+aka: "two-sided, double-sided, cull mode, side"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Lit shader material Inspector window reference for URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/lit-shader.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "BaseMaterial3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_basematerial3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 17
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Secara bawaan, GPU hanya menggambar **sisi depan** segitiga dan membuang sisi belakangnya. Untuk objek tertutup seperti batu atau karakter, sisi belakang selalu tersembunyi di dalam, jadi membuangnya menghemat hampir separuh kerja.
+
+Sisi depan ditentukan dari **urutan titik** segitiga: searah atau berlawanan jarum jam saat dilihat dari kamera. Karena itu model yang normalnya terbalik saat diimpor tampak "tembus" dari satu arah.
+
+Bidang tipis seperti daun, rambut, kain, atau objek transparan perlu **kedua sisi** digambar.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Material URP/Lit: **Render Face** (Front sebagai bawaan, Back, Both). Both = kedua sisi digambar.
+
+</div>
+<div slot="unreal">
+
+Centang **Two Sided** di pengaturan Material.
+
+</div>
+<div slot="godot">
+
+`StandardMaterial3D`: `cull_mode` (Back sebagai bawaan, Front, Disabled). Disabled = tidak ada yang dibuang, jadi sisi depan dan belakang sama-sama terlihat.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Three.js menyebutnya `side` (`FrontSide`, `BackSide`, `DoubleSide`). Hologram Lab memakai `DoubleSide` agar bagian belakangnya terlihat tembus, di `src/experiment/world/hologram.js`.
+</Aside>
+
+## Terkait
+
+- [Transparansi & Blending](/kamus/geometri/blending/)
+- [Normal](/kamus/geometri/normal/)

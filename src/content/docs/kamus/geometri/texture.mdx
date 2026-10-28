@@ -1,0 +1,77 @@
+---
+title: "Texture"
+description: "Gambar yang dikirim ke memori GPU dan dibaca shader. Bukan hanya foto warna: bisa juga peta roughness, normal map, atau hasil render frame sebelumnya."
+kind: term
+level: 2
+aka: "tekstur, texture map"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Draw a texture in a shader in URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/writing-shaders-urp-unlit-texture.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Sample Texture 2D Node"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Sample-Texture-2D-Node.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Shading language"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shading_language.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "VisualShaderNodeTexture"
+    url: "https://docs.godotengine.org/en/stable/classes/class_visualshadernodetexture.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "ResourceImporterTexture"
+    url: "https://docs.godotengine.org/en/stable/classes/class_resourceimportertexture.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 8
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Gambar yang dikirim ke memori GPU (VRAM) lalu dibaca shader, dengan [UV](/kamus/geometri/uv/) sebagai alamatnya. Tekstur bukan hanya foto warna. Satu material PBR biasanya memakai beberapa sekaligus:
+
+- **Base color / albedo:** warna dasar permukaan.
+- **[Normal map](/kamus/geometri/normal-map/):** arah [normal](/kamus/geometri/normal/) per piksel untuk detail tonjolan.
+- **Roughness, metalness, [ambient occlusion](/kamus/geometri/ao-map/):** sering digabung ke kanal R, G, B satu gambar agar hemat memori (*channel packing*).
+
+Tekstur juga bisa berupa hasil render, misalnya gambar dari kamera lain untuk cermin atau layar CCTV di dalam game (lihat [Render Target](/kamus/post/render-target/)).
+
+## Di engine
+
+Cara membaca tekstur di shader:
+
+<EngineTabs>
+<div slot="unity">
+
+Shader Graph: node **Sample Texture 2D** (input Texture, UV, Sampler; output RGBA). HLSL di URP: deklarasikan dengan `TEXTURE2D(_BaseMap)` dan `SAMPLER(sampler_BaseMap)`, lalu baca dengan `SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, uv)`.
+
+</div>
+<div slot="unreal">
+
+Material Editor: node **Texture Sample**, dengan input UVs.
+
+</div>
+<div slot="godot">
+
+Bahasa shader Godot: deklarasikan `uniform sampler2D nama_tekstur;`, lalu baca dengan `texture(nama_tekstur, UV)`. Visual Shader: node tekstur 2D (`VisualShaderNodeTexture`).
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Tekstur adalah pemakai VRAM terbesar di kebanyakan game. Gambar 2048×2048 RGBA tanpa kompresi memakan sekitar 16 MB. Karena itu engine mengompres tekstur ke format khusus GPU (misalnya BC/DXT di PC, ASTC di ponsel) yang bisa dibaca langsung tanpa dibuka dulu. Di Godot, ini mode impor **VRAM Compressed**.
+
+Engine juga bisa membuat **mipmap**: salinan tekstur yang makin kecil. Mipmap menambah sekitar sepertiga ukuran memori. Penjelasannya ada di [Texture Filtering & Mipmap](/kamus/geometri/texture-filtering/).
+
+## Terkait
+
+- [UV](/kamus/geometri/uv/)
+- [Texture Filtering & Mipmap](/kamus/geometri/texture-filtering/)
+- [Render Target](/kamus/post/render-target/)
+- [Material](/kamus/geometri/material/)

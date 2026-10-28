@@ -1,0 +1,30 @@
+---
+title: "Geometri & Material"
+description: "Bentuk dan permukaan. Setiap objek yang terlihat terdiri dari dua bagian ini."
+sidebar:
+  order: 0
+  label: Ikhtisar bab
+---
+
+Bentuk dan permukaan. Setiap objek yang terlihat terdiri dari dua bagian ini.
+
+- [Mesh](/kamus/geometri/mesh/): Objek yang terlihat = geometri (bentuk) + material (permukaan).
+- [Geometry](/kamus/geometri/geometry/): Daftar titik dan cara titik-titik itu membentuk segitiga.
+- [Vertex](/kamus/geometri/vertex/): Satu titik yang membawa data: posisi, normal, UV, dan lainnya.
+- [Triangle / Face](/kamus/geometri/triangle/): Bentuk dasar yang dipahami GPU, dan ukuran utama berat sebuah model.
+- [Segments](/kamus/geometri/segments/): Berapa kali sebuah sisi dipecah, dan LOD untuk objek jauh.
+- [Normal](/kamus/geometri/normal/): Arah hadap permukaan, dipakai untuk menghitung cahaya.
+- [UV](/kamus/geometri/uv/): Koordinat 2D yang menentukan bagian tekstur mana yang ditempel.
+- [Texture](/kamus/geometri/texture/): Gambar di memori GPU yang dibaca shader.
+- [Material](/kamus/geometri/material/): Kumpulan nilai yang diberikan ke shader untuk mengatur tampilan permukaan.
+- [PBR](/kamus/geometri/pbr/): Model pencahayaan yang meniru fisika nyata.
+- [Roughness](/kamus/geometri/roughness/): Seberapa kasar permukaan. Unity memakai kebalikannya: Smoothness.
+- [Metalness](/kamus/geometri/metalness/): Logam atau bukan, dan kenapa logam butuh sesuatu untuk dipantulkan.
+- [Emissive](/kamus/geometri/emissive/): Cahaya yang dipancarkan permukaan itu sendiri.
+- [Flat vs Smooth Shading](/kamus/geometri/flat-shading/): Tepi tegas atau halus, ditentukan oleh normal.
+- [Transparansi & Blending](/kamus/geometri/blending/): Cara warna digabung dengan yang ada di belakangnya.
+- [Depth Buffer](/kamus/geometri/depth-buffer/): Jarak setiap piksel ke kamera, agar objek dekat menutupi objek jauh.
+- [Back-face Culling](/kamus/geometri/side/): Hanya sisi depan segitiga yang digambar, kecuali diminta dua sisi.
+- [Normal Map](/kamus/geometri/normal-map/): Tekstur berisi arah normal per piksel untuk detail tanpa menambah segitiga.
+- [Ambient Occlusion Map](/kamus/geometri/ao-map/): Tekstur yang menggelapkan celah dari cahaya sekitar, dan tekstur gabungan ORM.
+- [Texture Filtering & Mipmap](/kamus/geometri/texture-filtering/): Cara GPU membaca tekstur dari dekat, dari jauh, dan dari sudut miring.

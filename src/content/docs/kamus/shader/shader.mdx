@@ -1,0 +1,60 @@
+---
+title: "Shader"
+description: "Program kecil yang dijalankan GPU untuk menentukan posisi titik dan warna piksel. Berjalan paralel untuk ribuan titik atau piksel sekaligus, sehingga tidak bisa melihat hasil tetangganya."
+kind: term
+level: 2
+aka: "shader program, shader graph"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Shading language"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shading_language.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 2
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Program kecil yang dijalankan GPU. Ada dua jenis utama yang selalu bekerja berpasangan:
+
+- **[Vertex shader](/kamus/shader/vertex-shader/):** menentukan posisi setiap titik di layar.
+- **[Fragment shader](/kamus/shader/fragment-shader/)** (*pixel shader*): menentukan warna setiap piksel.
+
+Shader berjalan **paralel**: ribuan titik atau piksel dihitung serentak oleh ribuan inti kecil GPU. Akibatnya, setiap salinan shader tidak bisa melihat hasil titik atau piksel tetangganya, dan percabangan `if` yang berbeda-beda antar-piksel bisa memperlambat. Cara berpikirnya berbeda dari kode game biasa: "rumus untuk satu piksel", bukan "langkah-langkah untuk seluruh gambar".
+
+Setiap [material](/kamus/geometri/material/) sebenarnya menjalankan shader. Kamu baru perlu menulis shader sendiri untuk efek yang tidak disediakan material bawaan, seperti hologram, air, atau gaya kartun.
+
+## Di engine
+
+Ada dua cara menulis shader: **grafik node** (menyambung kotak-kotak, tanpa mengetik kode) atau **kode teks**.
+
+<EngineTabs>
+<div slot="unity">
+
+**Shader Graph** (node, dipakai di URP/HDRP) atau kode **HLSL** yang dibungkus format ShaderLab (file `.shader`).
+
+</div>
+<div slot="unreal">
+
+**Material Editor** (node). Setiap Material dikompilasi menjadi shader HLSL. Kode HLSL langsung bisa disisipkan lewat node **Custom**.
+
+</div>
+<div slot="godot">
+
+**Godot Shading Language** (file `.gdshader`, mirip GLSL) atau **Visual Shader** (node). Setiap file `.gdshader` diawali `shader_type`, misalnya `shader_type spatial;` untuk objek 3D atau `shader_type canvas_item;` untuk 2D dan UI. Jenis ini menentukan variabel bawaan apa saja yang tersedia.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Shader Lab ditulis dalam GLSL di folder `src/experiment/shaders/`: hologram (vertex + fragment) dan efek glitch.
+</Aside>
+
+## Terkait
+
+- [Vertex Shader](/kamus/shader/vertex-shader/)
+- [Fragment Shader](/kamus/shader/fragment-shader/)
+- [Bahasa Shader (HLSL & GLSL)](/kamus/shader/glsl/)

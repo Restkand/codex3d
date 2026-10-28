@@ -1,0 +1,66 @@
+---
+title: "Memori & Membebaskan Aset"
+description: "Mesh, tekstur, dan suara memakan memori RAM dan VRAM. Aset yang tidak lagi dipakai harus dibebaskan, atau memori terus naik sampai game patah-patah atau crash. Setiap engine punya aturannya sendiri."
+kind: term
+level: 3
+aka: "memory leak, unload, garbage collection, VRAM, dispose"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Resources.UnloadUnusedAssets"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Resources.UnloadUnusedAssets.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Resource"
+    url: "https://docs.godotengine.org/en/stable/classes/class_resource.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 8
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Mesh, [tekstur](/kamus/geometri/texture/), suara, dan animasi memakan memori: **RAM** di CPU dan **VRAM** di kartu grafis. Memori terbatas, terutama di ponsel dan konsol. Aset yang tidak lagi dipakai harus **dibebaskan**. Jika tidak, memori terus naik setiap kali pemain berpindah level. Ini disebut **kebocoran memori** (*memory leak*), dan ujungnya game patah-patah atau crash setelah dimainkan lama.
+
+Sumber kebocoran yang umum:
+
+- Referensi yang terlupa: variabel, daftar, atau event listener yang masih menunjuk ke objek yang sudah "dibuang", sehingga objek itu tidak pernah dibersihkan.
+- Material atau tekstur yang dibuat lewat kode setiap frame atau setiap kali sesuatu terjadi, lalu tidak pernah dihapus.
+- Objek yang hanya disembunyikan, bukan dihapus.
+
+Cara melihatnya: amati angka memori di profiler sambil berpindah level bolak-balik. Angka yang terus naik dan tidak pernah turun kembali adalah tanda kebocoran.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+`Destroy(objek)` menghapus GameObject. Aset yang tidak lagi direferensikan dari hierarki atau variabel static bisa dibebaskan dengan `Resources.UnloadUnusedAssets()`. Aset akan dimuat lagi saat dipakai berikutnya, jadi ada biaya muat ulang. Material yang dibuat dari kode (misalnya lewat `renderer.material`) perlu di-`Destroy` sendiri.
+
+</div>
+<div slot="unreal">
+
+Objek turunan `UObject` dibersihkan oleh **garbage collector** Unreal saat tidak lagi direferensikan. Di C++, referensi harus ditandai `UPROPERTY()` agar dikenali GC. Aset besar dimuat dan dilepas lewat sistem streaming (misalnya *soft reference* dan level streaming).
+
+</div>
+<div slot="godot">
+
+Resource (mesh, tekstur, material) bersifat **reference-counted**: otomatis dibebaskan saat tidak ada lagi yang mereferensikannya. Resource yang dimuat juga disimpan di cache berdasarkan path, dan keluar dari cache saat semua referensinya dilepas. Node di scene **tidak** otomatis dibebaskan, hapus dengan `queue_free()`.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Jangan membuat dan menghapus objek terus-menerus untuk hal yang sering muncul, seperti peluru, percikan, atau angka damage. Selain beban memori, pembuatan dan penghapusan objek memicu pembersihan memori (*garbage collection*) yang bisa menyebabkan patah-patah sesaat. Solusinya **object pooling**: siapkan sejumlah objek di awal, lalu pakai ulang dengan menyembunyikan dan menampilkannya kembali.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Di Three.js, geometri, material, dan tekstur di GPU tidak dibersihkan otomatis oleh garbage collector JavaScript. Panggil `geometry.dispose()`, `material.dispose()`, dan `texture.dispose()` saat objek dibuang permanen. Angka geometries/textures di [panel Performance](/kamus/web/perf-monitor/) yang terus naik adalah tanda kebocoran.
+</Aside>
+
+## Terkait
+
+- [Texture](/kamus/geometri/texture/)
+- [CPU-bound vs GPU-bound](/kamus/performa/cpu-gpu-bound/)

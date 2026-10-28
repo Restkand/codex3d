@@ -1,0 +1,71 @@
+---
+title: "Bloom"
+description: "Piksel yang sangat terang dibuat berpendar ke sekitarnya, seperti cahaya yang menyebar di lensa. Dibuat dengan memburamkan bagian terang di beberapa resolusi lalu menambahkannya ke gambar asli."
+kind: term
+level: 3
+aka: "glow"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Bloom"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/bloom-in-unreal-engine"
+    publisher: "Epic Games Developer Documentation"
+    accessed: 2026-10-28
+  - title: "Environment and post-processing"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/environment_and_post_processing.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Post-processing effects in URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/EffectList.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 5
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Piksel yang sangat terang dibuat berpendar ke sekitarnya, seperti cahaya lampu yang menyebar di lensa kamera atau di mata. Bloom membuat lampu, [emissive](/kamus/geometri/emissive/), dan pantulan matahari terasa benar-benar terang, bukan sekadar putih.
+
+Cara kerjanya:
+
+1. Ambil hanya piksel yang lebih terang dari **ambang** (*threshold*).
+2. Buramkan berkali-kali di beberapa resolusi yang makin kecil. Unreal misalnya memakai lima tingkat, dari 1/2 sampai 1/32 resolusi layar. Buram yang lebar dihitung di resolusi kecil agar murah.
+3. Gabungkan semua tingkat, lalu **tambahkan** ke gambar asli.
+
+Agar ambang bekerja, gambar harus menyimpan kecerahan di atas 1 ([HDR](/kamus/post/hdr/)). Tanpa HDR, lampu dan dinding putih sama-sama bernilai 1 dan tidak bisa dibedakan.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Volume Override **Bloom** di URP. Untuk ponsel, dokumentasi Unity menyarankan mematikan **High Quality Filtering**.
+
+</div>
+<div slot="unreal">
+
+Bagian **Bloom** di Post Process Volume: **Intensity**, **Threshold**, serta Tint dan Size per tingkat. Method **Standard** (bawaan, murah) atau **Convolution** (bentuk cahaya dari tekstur kernel, untuk sinematik atau perangkat kelas atas).
+
+</div>
+<div slot="godot">
+
+Disebut **Glow**, di WorldEnvironment → Environment. Properti utama: **HDR Threshold**, **Intensity**, **Blend Mode** (bawaan Softlight), dan **Levels**. Level kecil memberi pendar di sekitar objek, level besar memberi kabut cahaya selebar layar.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Bloom termasuk efek post-processing yang mahal karena membaca dan menulis seluruh layar berkali-kali ([fill rate](/kamus/performa/fill-rate/)). Di perangkat lemah, kurangi jumlah tingkat buram atau resolusinya. Bloom yang terlalu kuat juga membuat gambar tampak berkabut dan susah dibaca. Dalam game, efek ini lebih baik dipakai seperlunya.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Lab pernah memakai efek bloom, lalu menghapusnya karena terlalu berat untuk GPU laptop. Sekarang pendar hologram dibuat dengan blending additive yang jauh lebih murah (lihat [Transparansi & Blending](/kamus/geometri/blending/)).
+</Aside>
+
+## Terkait
+
+- [HDR & Format Float](/kamus/post/hdr/)
+- [Emissive](/kamus/geometri/emissive/)
+- [Fill Rate](/kamus/performa/fill-rate/)

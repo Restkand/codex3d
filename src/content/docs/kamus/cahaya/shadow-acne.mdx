@@ -1,0 +1,75 @@
+---
+title: "Shadow Acne & Bias"
+description: "Artefak bergaris-garis ketika permukaan membayangi dirinya sendiri karena presisi shadow map terbatas. Diatasi dengan bias, tetapi bias terlalu besar membuat bayangan terlepas dari objek."
+kind: term
+level: 3
+aka: "depth bias, normal bias, peter panning"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Light component Inspector window reference for URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/light-component.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Universal Render Pipeline Asset reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/universalrp-asset.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Light component reference (Built-In Render Pipeline)"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-Light.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "3D lights and shadows"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/lights_and_shadows.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Light3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_light3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 4
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Artefak bergaris-garis atau berbintik ketika permukaan "membayangi dirinya sendiri". Penyebabnya, setiap piksel [shadow map](/kamus/cahaya/shadow-map/) mewakili area yang cukup luas, sehingga jarak yang tercatat sedikit meleset dan permukaan menganggap dirinya berada di belakang dirinya sendiri.
+
+Solusinya adalah **bias**: menggeser sedikit nilai perbandingan agar permukaan tidak membayangi dirinya.
+
+- **Depth bias:** menggeser perbandingan jarak sedikit menjauhi lampu.
+- **Normal bias:** menggeser titik pemeriksaan sedikit keluar searah [normal](/kamus/geometri/normal/) permukaan. Biasanya lebih efektif untuk permukaan miring.
+
+Bias terlalu besar menimbulkan masalah sebaliknya: bayangan terlepas dari kaki objek dan objek tampak melayang. Ini disebut **peter panning**. Menyetel bias selalu mencari titik tengah di antara keduanya.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+URP: komponen Light → **Realtime Shadows → Bias**. Pilihan **Use Pipeline Settings** memakai **Depth Bias** dan **Normal Bias** dari bagian Shadows di aset URP. Pilihan **Custom** memunculkan slider **Depth** dan **Normal** khusus untuk lampu itu.
+
+Built-in Render Pipeline: komponen Light langsung punya **Bias** (bawaan 0,05) dan **Normal Bias** (bawaan 0,4).
+
+</div>
+<div slot="unreal">
+
+Pada lampu: **Shadow Bias** dan **Shadow Slope Bias**.
+
+</div>
+<div slot="godot">
+
+Pada lampu (`Light3D`): `shadow_bias` (bawaan 0,1) dan `shadow_normal_bias` (bawaan 2,0), yang di Inspector tampil sebagai **Bias** dan **Normal Bias**. Tutorial Godot menyarankan menaikkan Normal Bias lebih dulu sebelum menaikkan Bias.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Lab memakai `directional.shadow.normalBias = 0.03`, di `src/experiment/world/lights.js`. Quest: ubah ke 0 dan perhatikan permukaan objek.
+</Aside>
+
+## Terkait
+
+- [Shadow Map](/kamus/cahaya/shadow-map/)
+- [Depth Buffer](/kamus/geometri/depth-buffer/)

@@ -1,0 +1,51 @@
+---
+title: "HDR & Format Float"
+description: "High Dynamic Range: menyimpan kecerahan di atas 1. Tekstur 8-bit biasa memotong nilai di 1, sedangkan format float 16-bit bisa menyimpannya. Dibutuhkan agar bloom, exposure, dan tone mapping bekerja benar."
+kind: term
+level: 3
+aka: "high dynamic range, HDR rendering, half float, RGBA16F"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Bloom"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/bloom-in-unreal-engine"
+    publisher: "Epic Games Developer Documentation"
+    accessed: 2026-10-28
+  - title: "Post Process Materials"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/post-process-materials-in-unreal-engine"
+    publisher: "Epic Games Developer Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 6
+---
+
+import Aside from '~/components/Aside.astro'
+
+**HDR** (*High Dynamic Range*) berarti menyimpan kecerahan di atas 1. Cahaya hasil perhitungan bisa bernilai 5 untuk lampu, 50 untuk matahari, dan 0,1 untuk sudut gelap. Tekstur biasa dengan 8 bit per kanal hanya bisa menyimpan 0 sampai 1, sehingga semua yang lebih terang terpotong menjadi 1.
+
+Karena itu engine merender scene ke [render target](/kamus/post/render-target/) dengan **format float**, biasanya 16-bit per kanal (*half float*, RGBA16F). Format ini memakan dua kali memori tekstur 8-bit, tetapi bisa menyimpan nilai jauh di atas 1.
+
+Urutannya di hampir semua engine:
+
+```text title="Alur HDR"
+render scene (float, HDR) → efek post-processing (bloom, exposure, dsb.) → tone mapping → gambar 0..1 untuk layar
+```
+
+Efek yang butuh tahu "seberapa terang", seperti [bloom](/kamus/post/bloom/) dan auto exposure, dijalankan **sebelum** [tone mapping](/kamus/cahaya/tone-mapping/). Efek gaya seperti vignette atau filter warna biasanya dijalankan **sesudahnya**, karena lebih murah dan nilainya sudah 0..1. Di Unreal pilihan ini terlihat jelas pada post process material: **Before Tonemapping** bekerja pada warna HDR, sedangkan **After Tonemapping** (bawaan) bekerja pada warna yang sudah dipetakan.
+
+## Pelajari lebih dalam
+
+"HDR" juga dipakai untuk dua hal lain yang sering tercampur:
+
+- **Layar HDR:** monitor atau TV yang bisa menampilkan cahaya lebih terang dari layar biasa. Game harus mengeluarkan sinyal khusus untuknya. Ini terpisah dari rendering HDR, yang dipakai semua game modern bahkan untuk layar biasa.
+- **Gambar HDRI:** foto 360° dengan rentang cahaya lebar, dipakai sebagai langit dan sumber pantulan ([Metalness](/kamus/geometri/metalness/)).
+
+<Aside type="note" title="Di Lab (Three.js)">
+Three.js menyebut format float 16-bit sebagai `HalfFloatType`. [EffectComposer](/kamus/web/effect-composer/) di Lab memakai render target, dan [OutputPass](/kamus/web/output-pass/) menerapkan tone mapping di akhir rangkaian.
+</Aside>
+
+## Terkait
+
+- [Tone Mapping](/kamus/cahaya/tone-mapping/)
+- [Bloom](/kamus/post/bloom/)
+- [Color Space (sRGB vs Linear)](/kamus/cahaya/color-space/)

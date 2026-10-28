@@ -1,0 +1,150 @@
+---
+title: Menulis artikel
+description: Struktur file, frontmatter, dan komponen yang tersedia untuk menulis artikel, pelajaran, dan istilah di Kamus.
+sidebar:
+  order: 3
+---
+
+import Aside from '~/components/Aside.astro'
+
+## Di mana file berada
+
+Setiap halaman adalah satu file `.mdx` di `src/content/docs/`. Alamat halaman mengikuti lokasi filenya.
+
+```text title="Struktur folder konten"
+src/content/docs/
+├── belajar/
+│   ├── fondasi-engine/
+│   │   ├── index.mdx        halaman pengantar jalur
+│   │   └── 01-frame.mdx     → /belajar/fondasi-engine/01-frame/
+│   └── bisnis-indie/
+│       └── index.mdx
+├── kamus/
+│   └── dasar/
+│       └── frame.mdx        → /kamus/dasar/frame/
+└── kontribusi/
+```
+
+## Template artikel
+
+```mdx
+---
+title: Menghitung pendapatan bersih dari harga jual
+description: Satu kalimat ringkasan, tampil di hasil pencarian dan pratinjau tautan.
+kind: article
+status: draf
+lastReviewed: 2026-10-27
+sources:
+  - title: Dokumen resmi yang dirujuk
+    url: https://contoh.com
+    accessed: 2026-10-27
+sidebar:
+  order: 2
+---
+
+import Aside from '~/components/Aside.astro'
+
+Paragraf pembuka: masalah apa yang dijawab artikel ini, dan untuk siapa.
+
+## Bagian pertama
+
+Isi...
+```
+
+### Field frontmatter
+
+| Field | Wajib | Keterangan |
+| --- | --- | --- |
+| `title`, `description` | Ya | Judul dan ringkasan satu kalimat |
+| `kind` | Tidak | `article`, `lesson` (pelajaran, memberi XP), atau `term` (istilah di Kamus) |
+| `status` | Disarankan | `kerangka`, `draf`, atau `ditinjau` (lihat [Standar konten](/kontribusi/standar-konten/)) |
+| `lastReviewed` | Disarankan | Tanggal terakhir isi diperiksa (YYYY-MM-DD) |
+| `reviewers` | Tidak | Nama peninjau |
+| `sources` | Wajib jika ada fakta industri | Daftar sumber: `title`, `url`, `publisher`, `accessed` |
+| `level`, `aka` | Untuk istilah di Kamus | Level 1–3 dan nama lain |
+| `minutes`, `terms`, `quiz` | Untuk pelajaran | Durasi, id istilah di Kamus yang dibahas, soal kuis |
+| `sidebar.order` | Tidak | Urutan di menu samping |
+
+## Menulis tautan
+
+Tulis tautan internal dimulai dari `/`, tanpa nama repo: `[Delta Time](/kamus/dasar/delta-time/)`. Alamat lengkapnya disesuaikan otomatis saat situs dibangun.
+
+<Aside type="caution">
+Tautan di dalam komponen (atribut `href`) tidak disesuaikan otomatis. Untuk kartu tautan, pakai `import LinkCard from '~/components/LinkCard.astro'`, yang sudah menangani alamatnya.
+</Aside>
+
+## Komponen yang tersedia
+
+**Catatan**: `note` (kuning), `tip` (cyan), dan `caution` (magenta).
+
+```mdx
+import Aside from '~/components/Aside.astro'
+
+<Aside type="tip" title="Judul opsional">Isi catatan.</Aside>
+```
+
+**Bedah kode dengan nomor baris** sesuai file aslinya:
+
+````mdx
+```js title="src/experiment/core/setup.js" showLineNumbers startLineNumber=13
+export function createSetup(canvas) {
+```
+````
+
+**Demo interaktif** (daftar nama demo: `src/lib/demos.js`):
+
+```mdx
+import Demo from '~/components/Demo.astro'
+
+<Demo name="lerp" caption="Geser t dari 0 ke 1." />
+```
+
+**Kuis**: tulis soal di frontmatter, lalu letakkan `<Quiz />` di posisi yang diinginkan. Indeks `answer` dimulai dari 0. Urutan opsi diacak otomatis saat ditampilkan.
+
+```mdx
+---
+quiz:
+  - q: "Pertanyaan?"
+    options:
+      - "Opsi A"
+      - "Opsi B (benar)"
+    answer: 1
+    explain: "Kenapa B benar."
+---
+
+import Quiz from '~/components/Quiz.astro'
+
+<Quiz />
+```
+
+**Tab per engine** untuk bagian "Di engine". Pilihan pembaca diingat dan berlaku di semua halaman. Beri baris kosong setelah `<div>` pembuka dan sebelum `</div>` penutup agar Markdown di dalamnya terbaca:
+
+```mdx
+import EngineTabs from '~/components/EngineTabs.astro'
+
+<EngineTabs>
+<div slot="unity">
+
+Penjelasan untuk Unity.
+
+</div>
+<div slot="unreal">
+
+Penjelasan untuk Unreal.
+
+</div>
+<div slot="godot">
+
+Penjelasan untuk Godot.
+
+</div>
+</EngineTabs>
+```
+
+**Kartu tautan**:
+
+```mdx
+import LinkCard from '~/components/LinkCard.astro'
+
+<LinkCard title="Kamus" href="/kamus/" description="Kamus istilah rekayasa 3D." />
+```

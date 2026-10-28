@@ -1,0 +1,73 @@
+---
+title: "Character Controller"
+description: "Cara khusus menggerakkan karakter pemain: digerakkan oleh kode, bukan oleh gaya physics, tetapi tetap berhenti di dinding, meluncur di sepanjang permukaan, naik tangga, dan tahu kapan berdiri di tanah."
+kind: term
+level: 2
+aka: "kinematic character, character movement, move and slide"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "CharacterController"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/CharacterController.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "CharacterBody3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_characterbody3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Physics introduction"
+    url: "https://docs.godotengine.org/en/stable/tutorials/physics/physics_introduction.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 6
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Karakter pemain jarang dibuat sebagai [rigidbody](/kamus/fisika/rigidbody/) dynamic biasa. Rigidbody bereaksi pada semua gaya: terpeleset di lereng, terguling saat ditabrak, terpental dari sudut. Hasilnya terasa licin dan sulit dikendalikan. Pemain ingin karakter yang langsung berhenti saat tombol dilepas dan berbelok tajam saat diminta.
+
+**Character controller** adalah jalan tengah. Gerakannya ditentukan **kode** (seperti kinematic), tetapi ia tetap menangani tabrakan dengan cerdas:
+
+- **Berhenti di dinding** dan **meluncur** di sepanjang permukaannya, bukan menempel atau tembus.
+- **Tahu kapan berdiri di tanah**, untuk menentukan boleh melompat atau sedang jatuh.
+- **Batas kemiringan**: lereng di bawah sudut tertentu dianggap lantai, di atasnya dianggap dinding.
+- **Naik anak tangga** setinggi tertentu tanpa harus melompat.
+
+Gravitasi, lompatan, dan percepatan ditulis sendiri di kode. Kedengarannya repot, tetapi justru di sinilah *game feel* dibentuk: seberapa cepat karakter berakselerasi, seberapa tinggi lompatannya, berapa lama ia melayang di puncak lompatan.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Komponen **CharacterController**: tidak dipengaruhi gaya, hanya bergerak saat `Move()` dipanggil. Ada `isGrounded`, `slopeLimit` (derajat), dan `stepOffset` (tinggi anak tangga). `OnControllerColliderHit` dipanggil saat menabrak sesuatu.
+
+</div>
+<div slot="unreal">
+
+Kelas **Character** sudah dilengkapi kapsul collision dan **Character Movement Component**, yang menangani jalan, lompat, jatuh, berenang, terbang, dan dukungan multiplayer.
+
+</div>
+<div slot="godot">
+
+Node **CharacterBody3D**: atur `velocity`, lalu panggil `move_and_slide()` di `_physics_process()`. Ada `is_on_floor()`, `floor_max_angle` (bawaan 45°), dan `floor_snap_length` agar tetap menempel di turunan. Dokumentasi Godot memperingatkan kesalahan umum: **jangan** mengalikan `velocity` dengan `delta`, karena `move_and_slide()` sudah melakukannya.
+
+</div>
+</EngineTabs>
+
+```gdscript title="Contoh Godot: gerak dasar dengan gravitasi"
+func _physics_process(delta):
+    if not is_on_floor():
+        velocity.y -= gravitasi * delta
+    var arah = Input.get_vector("kiri", "kanan", "maju", "mundur")
+    velocity.x = arah.x * kecepatan
+    velocity.z = arah.y * kecepatan
+    move_and_slide()
+```
+
+## Terkait
+
+- [Rigidbody & Jenis Body](/kamus/fisika/rigidbody/)
+- [Collider](/kamus/fisika/collider/)
+- [Input Action & Input Map](/kamus/interaksi/input-action/)

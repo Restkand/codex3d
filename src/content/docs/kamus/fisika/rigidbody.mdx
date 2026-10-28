@@ -1,0 +1,68 @@
+---
+title: "Rigidbody & Jenis Body"
+description: "Rigidbody membuat objek disimulasikan physics: jatuh, terdorong, memantul. Setiap objek physics punya satu dari tiga peran: static (tidak bergerak), dynamic (digerakkan physics), atau kinematic (digerakkan kode)."
+kind: term
+level: 1
+aka: "rigid body, static, dynamic, kinematic, physics body"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Rigidbody"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Rigidbody.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Collider types introduction"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/collider-types-introduction.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Physics introduction"
+    url: "https://docs.godotengine.org/en/stable/tutorials/physics/physics_introduction.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 1
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+**Rigidbody** (benda kaku) adalah objek yang gerakannya dihitung physics engine: jatuh karena gravitasi, terdorong saat ditabrak, memantul, dan berguling. "Kaku" berarti bentuknya tidak berubah saat bertabrakan, berbeda dengan kain atau jeli.
+
+Setiap objek yang ikut dalam physics punya salah satu dari tiga peran:
+
+| Peran | Siapa yang menggerakkan | Contoh |
+| --- | --- | --- |
+| **Static** | tidak bergerak sama sekali | lantai, dinding, batu besar |
+| **Dynamic** | physics engine (gravitasi, gaya, tabrakan) | peti yang bisa didorong, bola, puing |
+| **Kinematic** | kode atau animasi, tetapi tetap bisa mendorong objek dynamic | lift, pintu geser, platform bergerak |
+
+Aturan terpenting: **jangan pindahkan objek dynamic langsung lewat posisinya**. Physics engine menganggap dirinya pemilik posisi objek itu ([Satu Properti, Satu Pengendali](/kamus/interaksi/layered-control/)). Gerakkan lewat **gaya** (*force*), **dorongan sesaat** (*impulse*), atau **kecepatan** (*velocity*). Kalau objeknya memang harus dikendalikan kode, jadikan kinematic.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Komponen **Rigidbody**: `mass`, `useGravity`, `linearVelocity`, `AddForce()`. Centang **Is Kinematic** agar tidak dipengaruhi gaya, lalu gerakkan dengan `MovePosition()`. Objek dengan collider tanpa Rigidbody dianggap static, dan dokumentasi Unity menyarankan agar static collider tidak dipindahkan lewat Transform saat game berjalan. Gunakan kinematic untuk geometri yang bergerak.
+
+</div>
+<div slot="unreal">
+
+Centang **Simulate Physics** pada komponen primitif (misalnya Static Mesh Component) agar menjadi dynamic. **Mobility** (Static, Stationary, Movable) menentukan apakah objek boleh bergerak. Objek Movable tanpa Simulate Physics berperan seperti kinematic.
+
+</div>
+<div slot="godot">
+
+Node terpisah untuk setiap peran: **StaticBody3D** (tidak digerakkan physics), **RigidBody3D** (disimulasikan), **CharacterBody3D** (digerakkan kode). Untuk RigidBody3D, dokumentasi Godot melarang mengubah `position` atau `linear_velocity` secara langsung. Pakai `_integrate_forces()` bila perlu mengubah keadaan physics-nya.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Objek dynamic yang diam cukup lama akan **tidur** (*sleep*): physics engine berhenti menghitungnya sampai ada yang menyentuh. Inilah sebabnya ratusan peti diam di level tidak membebani CPU. Dokumentasi Unity juga menyebut bahwa mengganti objek antara dynamic dan kinematic saat game berjalan bisa menjadi cara menghemat performa.
+
+## Terkait
+
+- [Collider](/kamus/fisika/collider/)
+- [Fixed Timestep & Interpolasi](/kamus/fisika/fixed-timestep/)
+- [Character Controller](/kamus/fisika/character-controller/)

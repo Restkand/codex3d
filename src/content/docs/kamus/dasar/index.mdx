@@ -1,0 +1,24 @@
+---
+title: "Dasar Pipa Grafis"
+description: "Pemeran utama setiap aplikasi 3D (scene, kamera, renderer), dan bagaimana sebuah gambar dihasilkan berulang kali setiap detik."
+sidebar:
+  order: 0
+  label: Ikhtisar bab
+---
+
+Pemeran utama setiap aplikasi 3D (scene, kamera, renderer), dan bagaimana sebuah gambar dihasilkan berulang kali setiap detik.
+
+- [WebGL](/kamus/web/webgl/): API bawaan browser untuk menyuruh GPU menggambar grafis 2D/3D di dalam elemen `<canvas>`.
+- [Three.js](/kamus/web/threejs/): Pustaka JavaScript yang membungkus WebGL menjadi konsep yang mudah dipahami: scene, kamera, mesh, cahaya, material.
+- [CPU vs GPU](/kamus/dasar/gpu-cpu/): CPU menjalankan logika game dan mengirim perintah gambar, GPU menghitung jutaan titik dan piksel secara paralel.
+- [Scene](/kamus/dasar/scene/): Wadah yang menampung semua objek, cahaya, dan kamera dalam satu dunia.
+- [Kamera Perspektif](/kamus/dasar/camera/): Menentukan dari mana dan bagaimana scene dilihat.
+- [Frustum & Clipping](/kamus/dasar/frustum/): Area pandang kamera berbentuk piramida terpotong.
+- [Aspect Ratio & Resize](/kamus/dasar/aspect/): Rasio lebar dibagi tinggi layar atau jendela.
+- [Renderer](/kamus/dasar/renderer/): Bagian engine yang mengubah scene dan kamera menjadi piksel di layar.
+- [Frame & FPS](/kamus/dasar/frame/): Satu frame = satu gambar utuh.
+- [requestAnimationFrame](/kamus/web/raf/): Fungsi browser yang memanggil callback kamu tepat sebelum layar digambar ulang, mengikuti refresh rate monitor.
+- [Delta Time](/kamus/dasar/delta-time/): Waktu (detik) sejak frame sebelumnya.
+- [Pixel Ratio](/kamus/web/pixel-ratio/): Perbandingan piksel fisik layar dengan piksel CSS.
+- [Kamera Ortografis](/kamus/dasar/ortho/): Kamera tanpa perspektif; objek tampak sama besar berapa pun jaraknya.
+- [V-Sync & Batas Frame Rate](/kamus/dasar/vsync/): Menahan frame sampai layar siap agar tidak terjadi tearing, dan membatasi berapa frame yang digambar per detik.

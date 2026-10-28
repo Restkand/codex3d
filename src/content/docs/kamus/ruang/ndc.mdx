@@ -1,0 +1,82 @@
+---
+title: "NDC & Koordinat Layar"
+description: "NDC adalah koordinat layar yang dinormalisasi ke rentang −1..1 dengan (0,0) di tengah. Dipakai GPU setelah proyeksi, dan dipakai untuk mengubah posisi kursor menjadi sinar ke dunia 3D."
+kind: term
+level: 2
+aka: "Normalized Device Coordinates, screen space"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Input.mousePosition"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Input-mousePosition.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Camera.ScreenPointToRay"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Camera.ScreenPointToRay.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Camera3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_camera3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Mouse and input coordinates"
+    url: "https://docs.godotengine.org/en/stable/tutorials/inputs/mouse_and_input_coordinates.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Vector math"
+    url: "https://docs.godotengine.org/en/stable/tutorials/math/vector_math.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 8
+---
+
+import Aside from '~/components/Aside.astro'
+import Demo from '~/components/Demo.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+**NDC** (*Normalized Device Coordinates*) adalah koordinat layar yang dinormalisasi: rentang −1..1 di setiap sumbu, dengan (0, 0) di tengah layar. Dengan cara ini, logika yang sama berlaku di layar ukuran apa pun. GPU memakainya setelah [proyeksi](/kamus/ruang/matrices/), dan game memakainya untuk mengubah posisi kursor menjadi sinar ke dunia 3D.
+
+```text title="Pseudocode: piksel → NDC (asal piksel di kiri atas)"
+x_ndc = (x_piksel / lebar_layar) * 2 - 1
+y_ndc = -((y_piksel / tinggi_layar) * 2 - 1)   // dibalik: Y layar ke bawah, Y NDC ke atas
+```
+
+## Demo
+
+<Demo name="ndc" />
+
+## Di engine
+
+Engine menyediakan fungsi untuk langsung mengubah posisi kursor menjadi sinar ke dunia 3D, jadi rumus di atas jarang ditulis sendiri. Yang perlu diperhatikan adalah **di mana titik asal koordinat layar**:
+
+<EngineTabs>
+<div slot="unity">
+
+`Input.mousePosition` dalam piksel, dihitung dari **kiri bawah** layar: (0, 0) di kiri bawah, (`Screen.width`, `Screen.height`) di kanan atas. API ini bagian dari Input Manager lama; Unity menyarankan proyek baru memakai paket **Input System**.
+
+`Camera.main.ScreenPointToRay(posisi)` menghasilkan sinar di world space yang berawal di near plane kamera dan melewati titik layar itu. Fungsi ini juga memakai asal kiri bawah dan mengabaikan komponen z.
+
+</div>
+<div slot="unreal">
+
+Posisi layar dihitung dari **kiri atas**. `APlayerController::DeprojectScreenPositionToWorld()` menghasilkan titik dan arah sinar di dunia.
+
+</div>
+<div slot="godot">
+
+Posisi kursor didapat dari `event.position` pada event mouse, atau `get_viewport().get_mouse_position()`. Keduanya dalam koordinat viewport, dan seperti koordinat 2D Godot lainnya, asalnya di **kiri atas** dengan Y ke bawah.
+
+`camera.project_ray_origin(posisi)` dan `camera.project_ray_normal(posisi)` menghasilkan titik awal dan arah sinar di world space. Kebalikannya, `camera.unproject_position(titik_dunia)` memberi posisi di layar untuk sebuah titik 3D, berguna untuk menempelkan label di atas kepala karakter.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Rumus piksel → NDC ditulis langsung di `src/experiment/hover.js`, lalu dipakai Raycaster Three.js.
+</Aside>
+
+## Terkait
+
+- [Raycast](/kamus/interaksi/raycaster/)
+- [Matriks Model / View / Projection](/kamus/ruang/matrices/)

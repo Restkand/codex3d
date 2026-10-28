@@ -1,0 +1,79 @@
+---
+title: "Tween"
+description: "Satu animasi dari nilai awal ke nilai akhir dalam durasi tertentu: pintu terbuka, menu bergeser masuk, angka skor naik. Dibuat lewat kode, tanpa menyiapkan keyframe di editor."
+kind: term
+level: 1
+aka: "tweening, in-betweening, property animation"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Tween"
+    url: "https://docs.godotengine.org/en/stable/classes/class_tween.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "AnimationCurve"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/AnimationCurve.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Timelines"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/timelines-in-unreal-engine"
+    publisher: "Epic Games Developer Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 1
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Satu animasi dari nilai awal ke nilai akhir dalam durasi tertentu. Namanya berasal dari *in-betweening*: kamu menentukan awal dan akhirnya, mesin mengisi semua langkah di antaranya. Isinya hanyalah [lerp](/kamus/ruang/lerp/) yang nilai t-nya bergerak dari 0 ke 1 seiring waktu, biasanya dengan [easing](/kamus/animasi/easing/).
+
+```text title="Pseudocode: tween posisi pintu selama 0,5 detik"
+setiap frame:
+    t = min(waktu_berjalan / 0.5, 1)
+    pintu.x = lerp(tertutup_x, terbuka_x, ease_out(t))
+```
+
+Tween cocok untuk gerakan sederhana yang ditentukan saat game berjalan: pintu terbuka, menu bergeser masuk, koin melayang ke penghitung skor, kamera pindah ke target. Untuk gerakan rumit yang dirancang di editor, seperti animasi karakter atau cutscene, dipakai keyframe ([Timeline & Keyframe](/kamus/animasi/timeline/)).
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Unity tidak punya sistem tween bawaan untuk kode. Pilihannya: tulis sendiri dengan `AnimationCurve.Evaluate(t)` di dalam coroutine atau `Update`, atau pakai paket pihak ketiga seperti DOTween dan LeanTween yang sangat umum dipakai.
+
+</div>
+<div slot="unreal">
+
+Node **Timeline** di Blueprint: kurva float, vector, color, atau event yang diputar dengan **Play**, **PlayFromStart**, atau **Reverse**. Contoh bawaan dokumentasinya: membuka pintu dan mengubah lampu.
+
+</div>
+<div slot="godot">
+
+Kelas **Tween** bawaan, dibuat dengan `create_tween()`:
+
+```gdscript
+var tween = create_tween()
+tween.tween_property($Pintu, "position:x", 2.0, 0.5) \
+    .set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+```
+
+Tween berjalan langsung saat dibuat. Untuk memutar ulang, buat tween baru.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Masalah paling umum: dua tween mengubah properti yang sama bersamaan, misalnya tween "membesar" saat kursor masuk dan tween "mengecil" saat kursor keluar. Keduanya berebut dan hasilnya patah-patah. Solusinya, hentikan tween lama sebelum memulai yang baru. Dokumentasi Godot menyarankan pola ini: simpan tween di variabel, lalu `kill()` yang sebelumnya.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Lab memakai pustaka GSAP: `gsap.to(mesh.scale, { x: 1.2, duration: 0.8, ease: 'elastic.out(1, 0.4)' })` saat kursor menyentuh objek, di `src/experiment/hover.js`. Untuk target yang terus berubah seperti posisi mouse, Lab memakai [quickTo](/kamus/web/quickto/), dan aturan agar tween tidak berebut dibahas di [Overwrite & kill](/kamus/web/overwrite/).
+</Aside>
+
+## Terkait
+
+- [Easing](/kamus/animasi/easing/)
+- [Timeline & Keyframe](/kamus/animasi/timeline/)
+- [Lerp](/kamus/ruang/lerp/)

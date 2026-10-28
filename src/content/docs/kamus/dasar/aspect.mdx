@@ -1,0 +1,65 @@
+---
+title: "Aspect Ratio & Resize"
+description: "Rasio lebar dibagi tinggi layar atau jendela. Kamera harus tahu nilai ini; jika tidak cocok dengan layar, gambar tampak gepeng atau melar."
+kind: term
+level: 1
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Camera.fieldOfView"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Camera-fieldOfView.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Canvas Scaler"
+    url: "https://docs.unity3d.com/Packages/com.unity.ugui@2.0/manual/script-CanvasScaler.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Camera3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_camera3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Multiple resolutions"
+    url: "https://docs.godotengine.org/en/stable/tutorials/rendering/multiple_resolutions.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 7
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Rasio lebar dibagi tinggi layar atau jendela, misalnya 16:9 ≈ 1,78. Kamera memakai nilai ini untuk menghitung proyeksinya. Jika aspect ratio kamera tidak sama dengan layar, gambar tampak gepeng atau melar.
+
+## Di engine
+
+Ketiga engine memperbarui aspect ratio kamera secara otomatis saat jendela berubah ukuran. Yang perlu diputuskan adalah **apa yang terjadi pada layar yang lebih lebar atau lebih tinggi** dari yang dirancang:
+
+<EngineTabs>
+<div slot="unity">
+
+Dengan FOV vertikal (bawaan), layar yang lebih lebar menampilkan **lebih banyak ke samping**, tinggi pandangan tetap. Dokumentasi `Camera.fieldOfView` menyebutnya langsung: FOV horizontal bergantung pada aspect ratio viewport. Untuk UI, komponen **Canvas Scaler** mengatur skala elemen terhadap ukuran layar lewat **UI Scale Mode**: Constant Pixel Size, Scale With Screen Size, atau Constant Physical Size.
+
+</div>
+<div slot="unreal">
+
+Dengan FOV horizontal, layar yang lebih tinggi menampilkan lebih banyak ke atas-bawah. Opsi **Constrain Aspect Ratio** pada Camera Component memaksa rasio tetap dengan menambahkan pita hitam (*letterbox*).
+
+</div>
+<div slot="godot">
+
+`keep_aspect` pada Camera3D menentukan sumbu mana yang dipertahankan. Bawaannya `KEEP_HEIGHT` (disebut juga *Hor+*): layar yang lebih lebar otomatis mendapat pandangan horizontal lebih luas. Untuk game 3D mode potret, dokumentasi Godot menyarankan `KEEP_WIDTH` (*Vert-*), agar ponsel yang lebih tinggi mendapat pandangan vertikal lebih luas.
+
+Untuk keseluruhan game, pengaturan **Stretch** di Project Settings (`display/window/stretch/mode` dan `display/window/stretch/aspect`) mengatur cara gambar menyesuaikan ukuran jendela. Misalnya, aspect `keep` (bawaan) menambahkan pita hitam, sedangkan `expand` memperluas pandangan ke arah layar yang lebih panjang. Pengaturan ini paling terasa pada 2D dan UI.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Di Three.js, perubahan ukuran harus ditangani sendiri: `camera.aspect` diperbarui lalu `camera.updateProjectionMatrix()` dipanggil (`src/experiment/core/setup.js`). Coba komentari `updateProjectionMatrix()` lalu ubah ukuran jendela browser.
+</Aside>
+
+## Terkait
+
+- [Kamera Perspektif](/kamus/dasar/camera/)
+- [Pixel Ratio](/kamus/web/pixel-ratio/)

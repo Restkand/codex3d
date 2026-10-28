@@ -1,0 +1,34 @@
+---
+title: "Frustum & Clipping"
+description: "Area pandang kamera berbentuk piramida terpotong. Yang lebih dekat dari batas near atau lebih jauh dari batas far tidak digambar, dan objek yang sepenuhnya di luar area ini dilewati sama sekali."
+kind: term
+level: 2
+aka: "near / far plane, frustum culling"
+status: draf
+lastReviewed: 2026-10-28
+sidebar:
+  order: 6
+---
+
+import Aside from '~/components/Aside.astro'
+
+Area pandang kamera berbentuk piramida terpotong. Segala sesuatu yang lebih dekat dari batas **near** atau lebih jauh dari batas **far** dipotong (*clipping*). Semua engine juga melewati objek yang sepenuhnya berada di luar frustum (*frustum culling*), sehingga objek di belakang kamera tidak membebani GPU.
+
+<Aside type="note" title="Analogi">
+Senter di ruangan gelap. Hanya yang terkena cahaya senter yang terlihat, dan cahaya itu punya batas jangkauan.
+</Aside>
+
+## Pelajari lebih dalam
+
+Frustum culling hanya mengecek apakah objek berada di dalam area pandang, bukan apakah objek itu tertutup objek lain. Objek di balik dinding tetap digambar jika masih di dalam frustum. Untuk itu ada teknik terpisah, **occlusion culling**, yang tersedia di Unity, Unreal, dan Godot dengan nama dan cara pengaturan masing-masing.
+
+Pilih rentang near–far sesempit yang masih masuk akal. Rentang yang terlalu lebar (misalnya near 0,001 dan far 100.000) membuat presisi [Depth Buffer](/kamus/geometri/depth-buffer/) terbagi ke rentang yang sangat besar, sehingga permukaan yang berdekatan bisa berkedip saling menembus (*z-fighting*).
+
+<Aside type="note" title="Di Lab (Three.js)">
+Coba ubah nilai `far` kamera di `src/experiment/core/setup.js` menjadi 7. Bagian lantai yang jauh akan terpotong.
+</Aside>
+
+## Terkait
+
+- [Kamera Perspektif](/kamus/dasar/camera/)
+- [Depth Buffer](/kamus/geometri/depth-buffer/)

@@ -1,0 +1,62 @@
+[
+  {
+    "label": "Logika Game",
+    "sub": "CPU · input, physics, animasi",
+    "href": "/kamus/dasar/frame/",
+    "krekit": "Kode game berjalan di CPU. Input dibaca, physics dan animasi dihitung, posisi objek diperbarui."
+  },
+  {
+    "label": "Scene + Kamera",
+    "sub": "objek, cahaya, sudut pandang",
+    "href": "/kamus/dasar/scene/",
+    "krekit": "Semua objek dikumpulkan, lalu kamera menentukan dari mana dunia dilihat."
+  },
+  {
+    "label": "Culling",
+    "sub": "buang yang tak terlihat",
+    "href": "/kamus/dasar/frustum/",
+    "krekit": "Objek di luar pandangan kamera dibuang dulu, supaya GPU tidak menggambar hal yang tidak terlihat."
+  },
+  {
+    "label": "Draw Call",
+    "sub": "perintah CPU → GPU",
+    "href": "/kamus/performa/draw-call/",
+    "krekit": "CPU menyuruh GPU menggambar, kira-kira satu perintah untuk setiap objek dan materialnya."
+  },
+  {
+    "label": "Vertex Shader",
+    "sub": "posisi setiap titik",
+    "href": "/kamus/shader/vertex-shader/",
+    "krekit": "GPU menghitung letak setiap titik di layar."
+  },
+  {
+    "label": "Rasterization",
+    "sub": "segitiga → piksel",
+    "href": "/kamus/shader/pipeline-raster/",
+    "krekit": "Segitiga diubah menjadi kumpulan piksel."
+  },
+  {
+    "label": "Fragment Shader",
+    "sub": "warna setiap piksel",
+    "href": "/kamus/shader/fragment-shader/",
+    "krekit": "Setiap piksel diberi warna. Tahap ini sering jadi yang paling berat."
+  },
+  {
+    "label": "Depth & Blending",
+    "sub": "siapa di depan",
+    "href": "/kamus/geometri/depth-buffer/",
+    "krekit": "Yang dekat menutupi yang jauh, yang transparan dicampur."
+  },
+  {
+    "label": "Post-processing",
+    "sub": "efek layar penuh",
+    "href": "/kamus/post/",
+    "krekit": "Efek untuk seluruh layar, mirip filter foto: bloom, color grading, motion blur."
+  },
+  {
+    "label": "Layar",
+    "sub": "satu frame selesai",
+    "href": "/kamus/dasar/frame/",
+    "krekit": "Gambar dikirim ke layar. Lalu semuanya diulang untuk frame berikutnya, puluhan kali per detik."
+  }
+]

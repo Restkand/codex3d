@@ -1,0 +1,304 @@
+---
+title: "Bentuk, Permukaan, dan Cahaya"
+description: "Geometri, normal, material PBR, dua jenis cahaya, dan cara kerja bayangan."
+kind: lesson
+minutes: 30
+status: draf
+lastReviewed: 2026-10-27
+terms:
+  - mesh
+  - geometry
+  - vertex
+  - triangle
+  - segments
+  - normal
+  - dot
+  - flat-shading
+  - material
+  - pbr
+  - roughness
+  - metalness
+  - emissive
+  - ambient-light
+  - directional-light
+  - shadow-map
+  - shadow-acne
+  - tone-mapping
+  - color-space
+sidebar:
+  order: 3
+  label: "3 · Bentuk, Permukaan, dan Cahaya"
+quiz:
+  - q: "Untuk sebuah titik di permukaan, `dot(N, L) = 0`. Apa artinya?"
+    options:
+      - "Permukaan menghadap langsung ke cahaya"
+      - "Cahaya hanya menyerempet: permukaan tegak lurus terhadap arah cahaya"
+      - "Permukaan membelakangi cahaya"
+      - "Normal belum dihitung"
+    answer: 1
+    explain: "Dot = 0 berarti dua panah saling tegak lurus. Cahaya datang sejajar permukaan, sehingga tidak ada cahaya langsung yang diterima."
+  - q: "AmbientLight dihapus dari proyek. Apa yang terjadi pada sisi objek yang membelakangi DirectionalLight?"
+    options:
+      - "Tetap sama"
+      - "Menjadi hitam total"
+      - "Menjadi lebih terang"
+      - "Bayangannya hilang"
+    answer: 1
+    explain: "Sisi itu hanya mendapat cahaya dari ambient. Tanpa ambient, terangnya 0 (kecuali emissive)."
+  - q: "Dari mana angka 7.074 triangles di panel Performance?"
+    options:
+      - "Hanya dari hologram"
+      - "6.912 hologram + 80 objek + 2 lantai + 80 objek di shadow pass"
+      - "Jumlah piksel dibagi 100"
+      - "Batas maksimum WebGL"
+    answer: 1
+    explain: "Objek pemberi bayangan digambar dua kali: sekali untuk shadow map, sekali untuk gambar utama."
+  - q: "`light.castShadow` dan `mesh.castShadow` sudah true, tetapi bayangan di lantai tidak muncul. Apa yang paling mungkin terlupa?"
+    options:
+      - "mesh.receiveShadow"
+      - "floor.receiveShadow atau renderer.shadowMap.enabled"
+      - "scene.fog"
+      - "material.flatShading"
+    answer: 1
+    explain: "Permukaan penerima harus `receiveShadow = true`, dan renderer harus mengaktifkan shadow map."
+  - q: "Kenapa semua bentuk 3D dipecah menjadi segitiga?"
+    options:
+      - "Karena segitiga lebih indah"
+      - "Karena tiga titik selalu membentuk bidang datar, sehingga mudah dan cepat diproses GPU"
+      - "Karena WebGL tidak mendukung angka desimal"
+      - "Karena ukuran file lebih kecil"
+    answer: 1
+    explain: "Empat titik atau lebih bisa tidak sebidang (terlipat). Segitiga selalu datar dan jelas, sehingga cocok untuk rasterisasi yang cepat."
+---
+
+import Aside from '~/components/Aside.astro'
+import Demo from '~/components/Demo.astro'
+import Quiz from '~/components/Quiz.astro'
+import MeshDiagram from '~/components/diagrams/MeshDiagram.astro'
+import ShadowDiagram from '~/components/diagrams/ShadowDiagram.astro'
+
+<Aside type="note" title="Setelah pelajaran ini Anda bisa">
+- Memahami bahwa semua bentuk 3D tersusun dari titik dan segitiga.
+- Menjelaskan apa itu normal, dan kenapa cahaya membutuhkannya.
+- Menghitung terang-gelap permukaan dengan dot product (model Lambert).
+- Memahami roughness, metalness, dan perbedaan jenis material.
+- Menjelaskan cara kerja shadow map dan empat syarat agar bayangan muncul.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title={"Model mental: Patung kawat, cat, dan lampu studio"}>
+**Geometri** adalah patung kawat: ia menentukan *di mana* permukaan berada. **Material** adalah catnya: apakah mengilap, doff, atau logam. **Cahaya** adalah lampu studio: ia menentukan *berapa banyak* terang yang sampai ke setiap bagian. Warna akhir sebuah piksel adalah hasil pertemuan ketiganya.
+</Aside>
+
+<MeshDiagram />
+
+## Geometri: titik dan segitiga
+
+Geometri adalah daftar [titik](/kamus/geometri/vertex/) beserta aturan bagaimana titik-titik itu membentuk [segitiga](/kamus/geometri/triangle/). Kenapa segitiga? Karena tiga titik **selalu** membentuk bidang datar, tidak mungkin terlipat. Ini membuat GPU bisa menggambarnya dengan sangat cepat dan pasti. Bola yang tampak mulus pun sebenarnya kumpulan segitiga datar yang sangat banyak.
+
+Objek utama proyek memakai `IcosahedronGeometry(1, 1)`: jari-jari 1 dan detail 1. Icosahedron dasar punya 20 segitiga; detail 1 memecah setiap segitiga menjadi 4, jadi totalnya **80 segitiga**.
+
+Ingat angka **triangles = 7.074** di panel Performance? Asalnya bisa dihitung: hologram kubus 6 sisi × 24 × 24 segmen × 2 segitiga = **6.912**, ditambah objek **80**, lantai **2**, ditambah objek digambar sekali lagi untuk bayangan **80**. Totalnya 7.074. Hologram ternyata menyumbang 98% segitiga, sehingga [jumlah segmen](/kamus/geometri/segments/) sangat berpengaruh.
+
+<Aside type="tip">
+Aktifkan **wireframe** di panel debug (folder Material) untuk melihat segitiga objek utama.
+</Aside>
+
+## Normal: ke mana permukaan menghadap
+
+Setiap titik membawa [Normal](/kamus/geometri/normal/), yaitu panah sepanjang 1 yang tegak lurus permukaan dan menunjuk ke "luar". Normal tidak terlihat, tetapi tanpanya cahaya tidak bisa dihitung, karena renderer harus tahu apakah permukaan **menghadap** cahaya atau **membelakanginya**.
+
+Perhitungan paling dasar disebut model Lambert: terang = `max(dot(N, L), 0)` × intensitas cahaya. N adalah normal, L adalah arah menuju cahaya. [Dot product](/kamus/ruang/dot/) dua panah sepanjang 1 menghasilkan: **1** jika searah (permukaan menghadap langsung ke cahaya, paling terang), **0** jika tegak lurus (cahaya hanya menyerempet), dan **negatif** jika membelakangi. `max(..., 0)` memotong nilai negatif menjadi gelap.
+
+<Demo name="lambert" caption={"Putar arah cahaya dan atur ambient. Inilah inti perhitungan yang dilakukan GPU untuk setiap piksel."} />
+
+Perhatikan demonya: tanpa ambient, sisi yang membelakangi cahaya **hitam total**. Ambient menambahkan terang yang sama ke semua sisi. Rumus gabungannya: `warna = warnaMaterial × (ambient + directional × max(dot(N, L), 0))`. MeshStandardMaterial melakukan versi yang jauh lebih lengkap, termasuk pantulan mengilap, tetapi intinya tetap ini.
+
+## Flat vs smooth shading
+
+Pada [flat shading](/kamus/geometri/flat-shading/), setiap segitiga memakai satu normal, sehingga seluruh segitiga punya terang yang sama dan sisi-sisinya terlihat tegas (gaya low-poly, seperti objek proyek ini). Pada smooth shading, normal dihaluskan di antara segitiga yang bersebelahan, sehingga transisi terangnya mulus dan bentuknya tampak bulat walaupun segitiganya sama.
+
+## Material: tiga keluarga utama
+
+| Material | Bereaksi pada cahaya? | Biaya | Kapan dipakai |
+| --- | --- | --- | --- |
+| MeshBasicMaterial | Tidak, warna rata | Paling murah | UI, objek bercahaya, debug |
+| MeshStandardMaterial | Ya, model fisika (PBR) | Sedang | Hampir semua objek realistis |
+| ShaderMaterial | Terserah Anda | Terserah shadernya | Efek khusus seperti hologram (pelajaran shader) |
+
+[PBR](/kamus/geometri/pbr/) (Physically Based Rendering) meniru cara cahaya bekerja di dunia nyata, sehingga satu material tampak meyakinkan di kondisi cahaya apa pun. Dua kenop utamanya:
+
+- [Roughness](/kamus/geometri/roughness/): jika dilihat sangat dekat, permukaan kasar penuh dengan tonjolan mikroskopis yang menyebarkan pantulan ke banyak arah. Akibatnya highlight menjadi **lebar dan redup** (roughness 1). Permukaan licin memantulkan rapi, sehingga highlight **kecil dan tajam** (roughness 0).
+- [Metalness](/kamus/geometri/metalness/): logam tidak punya warna "dasar". Yang terlihat hanya **pantulan lingkungannya**. Di scene tanpa lingkungan untuk dipantulkan (tanpa HDRI), objek dengan metalness 1 tampak gelap kecuali di titik highlight.
+
+```js title="src/experiment/world/objects.js" showLineNumbers startLineNumber=22
+  // Icosahedron detail 1 memberi tampilan "low-poly" bersegi; naikkan detail -> makin bulat
+  const geometry = new THREE.IcosahedronGeometry(1, 1)
+  // MeshStandardMaterial = material PBR (Physically Based Rendering)
+  // roughness 0 = mengilap seperti cermin, 1 = doff
+  // metalness 0 = non-logam (plastik/kayu), 1 = logam
+  const material = new THREE.MeshStandardMaterial({
+    color: '#ffcc33',
+    roughness: 0.35,
+    metalness: 0.2,
+    flatShading: true,
+    // Emissive = cahaya yang "dipancarkan" sendiri oleh permukaan, tidak bergantung lampu.
+    // Intensitas 0 dulu; dinaikkan saat kursor hover (lihat hover.js)
+    emissive: '#ff5a1f',
+    emissiveIntensity: 0,
+  })
+  const mesh = new THREE.Mesh(geometry, material)
+  mesh.castShadow = true
+  tiltGroup.add(mesh)
+```
+
+- **L23** · Geometri dibuat sekali. Satu geometri boleh dipakai oleh banyak mesh sekaligus.
+- **L28–31** · Warna kuning, cukup mengilap (0,35), sedikit logam (0,2), dan flat shading untuk gaya bersegi.
+- **L34–35** · [Emissive](/kamus/geometri/emissive/) adalah warna yang dipancarkan sendiri. Nilainya 0 dulu, lalu dinaikkan GSAP saat hover sehingga objek tampak "menyala".
+- **L37** · Mesh = geometri + material. Satu baris ini yang membuat objek benar-benar ada.
+- **L38** · Objek ini **memberi** bayangan. Lantai di baris 48 **menerima** bayangan.
+
+## Dua lampu di proyek ini
+
+```js title="src/experiment/world/lights.js" showLineNumbers startLineNumber=10
+export function createLights(scene) {
+  const ambient = new THREE.AmbientLight('#ffffff', 0.4)
+  scene.add(ambient)
+
+  const directional = new THREE.DirectionalLight('#ffffff', 2.5)
+  directional.position.set(3, 4, 2)
+  directional.castShadow = true
+```
+
+- **L11** · [Ambient Light](/kamus/cahaya/ambient-light/) putih dengan intensitas 0,4. Ini "lantai minimum" terang agar sisi gelap tidak hitam total.
+- **L14** · [Directional Light](/kamus/cahaya/directional-light/) dengan intensitas 2,5 menjadi sumber kontras utama.
+- **L15** · Posisinya hanya menentukan **arah** sinar: dari (3, 4, 2) menuju target bawaan (0, 0, 0), yaitu dari kanan-atas-depan. Seperti matahari, jaraknya tidak memengaruhi terang. Posisi (30, 40, 20) menghasilkan terang yang sama.
+- **L16** · Lampu ini mampu menghasilkan bayangan. Ini salah satu dari empat syarat (lihat bagian berikutnya).
+
+## Bagaimana bayangan dibuat
+
+GPU tidak "tahu" apa itu bayangan. [Shadow map](/kamus/cahaya/shadow-map/) adalah trik dua tahap:
+
+<ShadowDiagram />
+
+Ada **empat syarat** dan semuanya wajib. Jika salah satu terlupa, bayangan tidak muncul dan tidak ada pesan error:
+
+1. `renderer.shadowMap.enabled = true` (setup.js baris 30)
+2. `light.castShadow = true` (lights.js baris 16)
+3. `mesh.castShadow = true` pada objek pemberi bayangan (objects.js baris 38)
+4. `floor.receiveShadow = true` pada permukaan penerima (objects.js baris 48)
+
+```js title="src/experiment/world/lights.js" showLineNumbers startLineNumber=18
+  // Shadow map = tekstur kedalaman yang dirender dari sudut pandang cahaya.
+  // Makin besar makin tajam, tapi makin mahal untuk GPU.
+  directional.shadow.mapSize.set(1024, 1024)
+  // Kamera bayangan (ortografis) cukup mencakup area di sekitar objek
+  const shadowCam = directional.shadow.camera
+  shadowCam.near = 0.5
+  shadowCam.far = 15
+  shadowCam.left = shadowCam.bottom = -4
+  shadowCam.right = shadowCam.top = 4
+  // Normal bias mengurangi artefak garis-garis ("shadow acne") di permukaan
+  directional.shadow.normalBias = 0.03
+```
+
+- **L20** · Resolusi shadow map 1024 × 1024. Makin besar, tepi bayangan makin tajam, tetapi memori dan waktu render naik.
+- **L22–26** · Tahap 1 memakai "kamera" milik cahaya berbentuk kotak (ortografis) selebar 8 × 8 unit. Objek di luar kotak ini tidak menghasilkan bayangan. Jika kotaknya terlalu besar, 1024 piksel tersebar ke area luas dan bayangan jadi buram.
+- **L28** · Keterbatasan presisi bisa membuat permukaan "membayangi dirinya sendiri" sehingga muncul garis-garis ([shadow acne](/kamus/cahaya/shadow-acne/)). `normalBias` menggeser titik perbandingan sedikit ke luar.
+
+Biayanya: setiap objek pemberi bayangan digambar **dua kali** per frame. Itu sebabnya panel Performance menunjukkan 4 draw call untuk 3 objek yang terlihat.
+
+## Warna yang benar: tone mapping dan color space
+
+Hasil perhitungan cahaya bisa melebihi 1,0, misalnya 2,5 × warna terang. Layar hanya bisa menampilkan 0..1. Tanpa penanganan, semua nilai di atas 1 dipotong menjadi putih datar. [Tone mapping](/kamus/cahaya/tone-mapping/) (proyek ini memakai ACES Filmic) "melipat" rentang terang itu dengan halus, seperti mata atau kamera yang beradaptasi.
+
+Selain itu, perhitungan cahaya dilakukan di ruang warna **linear** (akurat secara fisika), sedangkan warna hex yang Anda tulis dan warna yang ditampilkan layar berada di ruang **sRGB** ([Color Space (sRGB vs Linear)](/kamus/cahaya/color-space/)). Three.js mengurus konversinya otomatis: hex → linear → hitung → sRGB.
+
+## Kesalahan umum
+
+Kesalahan-kesalahan berikut sering terjadi, dan banyak di antaranya **tidak memunculkan error**. Mengenalinya lebih awal akan menghemat banyak waktu debugging.
+
+### Objek hitam total
+
+```js title="✗ Keliru"
+new THREE.MeshStandardMaterial({ color: "red" })
+// ...tanpa cahaya di scene
+```
+
+```js title="✓ Benar"
+scene.add(new THREE.AmbientLight("#fff", 0.4))
+scene.add(new THREE.DirectionalLight("#fff", 2))
+```
+
+Material PBR menghitung pantulan cahaya. Tanpa cahaya, tidak ada yang dipantulkan.
+
+### Bayangan tidak muncul
+
+```js title="✗ Keliru"
+light.castShadow = true
+mesh.castShadow = true
+```
+
+```js title="✓ Benar"
+renderer.shadowMap.enabled = true
+light.castShadow = true
+mesh.castShadow = true
+floor.receiveShadow = true
+```
+
+Keempat syarat wajib dipenuhi. Tidak ada error jika salah satu terlewat.
+
+### Bayangan terpotong lurus
+
+```js title="✗ Keliru"
+shadowCam.left = shadowCam.bottom = -1
+shadowCam.right = shadowCam.top = 1
+```
+
+```js title="✓ Benar"
+shadowCam.left = shadowCam.bottom = -4
+shadowCam.right = shadowCam.top = 4
+```
+
+Area kamera bayangan terlalu kecil, sehingga bagian objek di luar kotak tidak tercatat di shadow map.
+
+### Metalness 1 membuat objek gelap
+
+```js title="✗ Keliru"
+material.metalness = 1 // tanpa environment
+```
+
+```js title="✓ Benar"
+material.metalness = 1
+scene.environment = hdrTexture
+```
+
+Logam hanya memantulkan lingkungan. Jika tidak ada lingkungan, tidak ada yang bisa dipantulkan.
+
+### Mengubah flatShading tidak berefek
+
+```js title="✗ Keliru"
+material.flatShading = true
+```
+
+```js title="✓ Benar"
+material.flatShading = true
+material.needsUpdate = true
+```
+
+Beberapa opsi mengubah kode shader, dan shader harus dikompilasi ulang (lihat debug.js).
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah Anda menjawab, jadi bacalah juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan langsung di kode proyek. Simpan file, lalu lihat hasilnya di halaman eksperimen (dev server memuat ulang otomatis). Kembalikan kodenya setelah selesai.
+
+1. Di objects.js, ganti geometri menjadi `new THREE.SphereGeometry(1, 8, 6)`, lalu `(1, 64, 32)`. Bandingkan angka triangles di panel Performance dan tampilannya dengan flat shading.
+2. Ganti material objek menjadi `new THREE.MeshBasicMaterial({ color: "#ffcc33" })`. Apa yang hilang, dan kenapa? (Petunjuk: lihat tabel keluarga material.) Kembalikan setelahnya.
+3. Di lights.js, ubah batas kamera bayangan menjadi ±1, lalu scroll ke section 2 dan 3. Apa yang terjadi dengan bayangan saat objek bergeser?

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Krekit: telur retak dengan dua mata menyala. Disederhanakan agar terbaca di ukuran 16px. -->
+  <defs>
+    <clipPath id="egg">
+      <path d="M16 2.6C9.8 2.6 5.6 11 5.6 18.2 5.6 25.2 10.2 29.4 16 29.4S26.4 25.2 26.4 18.2C26.4 11 22.2 2.6 16 2.6Z" />
+    </clipPath>
+  </defs>
+  <!-- Cangkang -->
+  <path d="M16 2.6C9.8 2.6 5.6 11 5.6 18.2 5.6 25.2 10.2 29.4 16 29.4S26.4 25.2 26.4 18.2C26.4 11 22.2 2.6 16 2.6Z" fill="#fff3df" />
+  <g clip-path="url(#egg)">
+    <!-- Bayangan toon di sisi kanan bawah -->
+    <path d="M21 4 30 12V30H11C18 28 23 23 23.6 16 24 11 23 7 21 4Z" fill="#e9dcc6" />
+    <!-- Celah retakan: tepi atas = tepi bawah digeser ke atas, seperti tutup telur pecah yang diangkat -->
+    <path d="M0 14.8 3.5 13.2 5.2 14.2 8.3 12.2 10.4 14.5 13.1 13.5 15.6 15.2 18.4 13.2 20.1 13.9 23.2 12.4 25.6 14.6 28.4 13.4 32 14.6V21L28.4 19.8 25.6 21 23.2 18.8 20.1 20.3 18.4 19.6 15.6 21.6 13.1 19.9 10.4 20.9 8.3 18.6 5.2 20.6 3.5 19.6 0 21.2Z" fill="#1a1426" />
+    <!-- Retakan rambut di cangkang atas, menjauh dari mata agar tidak terbaca sebagai alis -->
+    <path d="M23.2 13.4 24.1 10.6 22.9 8.4M24.1 10.6 25.6 9.8" fill="none" stroke="#4a3d55" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  <!-- Mata menyala -->
+  <rect x="11" y="15" width="2.8" height="4.4" rx="1.4" fill="#7ff0ff" />
+  <rect x="18.2" y="15" width="2.8" height="4.4" rx="1.4" fill="#7ff0ff" />
+  <!-- Pipi -->
+  <ellipse cx="9.8" cy="24.2" rx="1.6" ry="1" fill="#ff8fc8" opacity="0.7" />
+  <ellipse cx="22.2" cy="24.2" rx="1.6" ry="1" fill="#ff8fc8" opacity="0.7" />
+  <!-- Garis tepi aura hologram -->
+  <path d="M16 2.6C9.8 2.6 5.6 11 5.6 18.2 5.6 25.2 10.2 29.4 16 29.4S26.4 25.2 26.4 18.2C26.4 11 22.2 2.6 16 2.6Z" fill="none" stroke="#00e5ff" stroke-width="0.9" opacity="0.85" />
+</svg>

@@ -1,0 +1,111 @@
+---
+title: "Lerp"
+description: "Mencari nilai di antara A dan B berdasarkan t dari 0 sampai 1: A + (B − A) × t. Dasar dari hampir semua animasi, transisi, dan pencampuran warna."
+kind: term
+level: 1
+aka: "linear interpolation, mix"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Mathf.Lerp"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Mathf.Lerp.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Mathf.LerpUnclamped"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Mathf.LerpUnclamped.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Vector3.Lerp"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Vector3.Lerp.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Color.Lerp"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Color.Lerp.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Mathf.LerpAngle"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Mathf.LerpAngle.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Quaternion.Slerp"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Quaternion.Slerp.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "@GlobalScope"
+    url: "https://docs.godotengine.org/en/stable/classes/class_%40globalscope.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Vector3"
+    url: "https://docs.godotengine.org/en/stable/classes/class_vector3.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Color"
+    url: "https://docs.godotengine.org/en/stable/classes/class_color.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Quaternion"
+    url: "https://docs.godotengine.org/en/stable/classes/class_quaternion.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Built-in functions (shading language)"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shader_functions.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 10
+---
+
+import Aside from '~/components/Aside.astro'
+import Demo from '~/components/Demo.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Mencari nilai di antara A dan B berdasarkan **t** dari 0 sampai 1: `A + (B − A) × t`. Dengan t = 0 hasilnya A, t = 1 hasilnya B, t = 0,5 tepat di tengah. Rumus sederhana ini adalah dasar dari hampir semua animasi, transisi kamera, dan pencampuran warna.
+
+```text title="Pseudocode"
+lerp(a, b, t) = a + (b - a) * t
+```
+
+Jika t di luar 0..1, rumus yang sama menghasilkan nilai di luar rentang A..B (ekstrapolasi). Sebagian fungsi lerp di engine membatasi (*clamp*) t ke 0..1, sebagian tidak. Periksa perilaku fungsi yang kamu pakai.
+
+## Demo
+
+<Demo name="lerp" />
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+`Mathf.Lerp(a, b, t)`, `Vector3.Lerp`, `Color.Lerp`. Ketiganya membatasi t ke 0..1. Untuk tanpa batas, pakai `Mathf.LerpUnclamped` atau `Vector3.LerpUnclamped`. Untuk rotasi, pakai `Quaternion.Slerp`.
+
+</div>
+<div slot="unreal">
+
+`FMath::Lerp(A, B, Alpha)`. Di Blueprint: node **Lerp**. Di Material Editor: node **LinearInterpolate** (Lerp).
+
+</div>
+<div slot="godot">
+
+`lerp(a, b, t)` untuk angka, juga bisa untuk `Vector3`, `Color`, dan tipe lain selama a dan b bertipe sama. Bentuk method-nya `a.lerp(b, t)` pada vektor dan warna. Berbeda dengan Unity, `lerp` di Godot **tidak** membatasi t; batasi sendiri dengan `clampf()` jika perlu. Untuk rotasi, pakai `a.slerp(b, t)` pada [Quaternion](/kamus/ruang/quaternion/).
+
+</div>
+</EngineTabs>
+
+Di bahasa shader, fungsinya bernama `lerp` (HLSL, dipakai Unity dan Unreal) atau `mix` (GLSL, WebGL, dan bahasa shader Godot).
+
+## Pelajari lebih dalam
+
+Pola "mengejar target dengan halus" sering ditulis sebagai `nilai = lerp(nilai, target, 0.1)` di setiap frame. Hasilnya bergantung frame rate: di layar 144 Hz pengejarannya lebih cepat daripada di 60 Hz. Versi yang adil memakai [delta time](/kamus/dasar/delta-time/): `nilai = lerp(nilai, target, 1 - exp(-kecepatan * delta))`.
+
+Lerp biasa tidak cocok untuk sudut dan rotasi. Lerp dari 350° ke 10° akan berputar mundur hampir satu lingkaran penuh, bukan maju 20°. Untuk satu sudut, pakai `Mathf.LerpAngle` (Unity, dalam derajat) atau `lerp_angle()` (Godot, dalam radian). Keduanya menangani sudut yang melewati batas satu putaran. Untuk rotasi 3D, interpolasinya memakai *slerp* pada quaternion.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Shader hologram memakai `mix()` untuk berubah bentuk dari bola ke kubus, di `src/experiment/shaders/hologram/vertex.glsl`.
+</Aside>
+
+## Terkait
+
+- [Easing](/kamus/animasi/easing/)
+- [Delta Time](/kamus/dasar/delta-time/)
+- [Quaternion](/kamus/ruang/quaternion/)
+- [quickTo](/kamus/web/quickto/)

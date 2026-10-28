@@ -1,0 +1,59 @@
+---
+title: "Flat vs Smooth Shading"
+description: "Smooth: normal dirata-ratakan antar-segitiga sehingga tampak bulat. Flat: setiap segitiga memakai satu normal sehingga sisinya terlihat tegas, seperti gaya low-poly."
+kind: term
+level: 2
+aka: "hard edge, soft edge, smoothing groups"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Model tab Import Settings reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/FBXImporter-Model.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "SurfaceTool"
+    url: "https://docs.godotengine.org/en/stable/classes/class_surfacetool.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 14
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+- **Smooth shading:** titik yang dipakai bersama memakai satu [normal](/kamus/geometri/normal/) rata-rata, sehingga cahaya bergradasi mulus melintasi segitiga dan bentuk tampak bulat.
+- **Flat shading:** setiap segitiga memakai normalnya sendiri, sehingga setiap sisi punya satu warna dan tepinya tegas. Ini ciri gaya visual *low-poly*.
+
+Bentuk geometrinya sama persis. Yang berbeda hanya normalnya.
+
+Kebanyakan model memakai campuran keduanya: halus di permukaan lengkung, tegas di sudut. Aplikasi 3D menyebutnya *hard/soft edge* atau *smoothing groups*, dan informasi ini ikut ke engine lewat normal.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Bawaannya, pengaturan impor model memakai **Normals: Import**, yaitu normal dari file, termasuk tepi tegas yang diatur di aplikasi 3D. Pilih **Normals: Calculate** agar Unity menghitung ulang berdasarkan **Normals Mode**, **Smoothness Source**, dan **Smoothing Angle**. Smoothing Angle menentukan tepi mana yang titiknya dipecah menjadi tepi tegas.
+
+</div>
+<div slot="unreal">
+
+Diatur dari aplikasi 3D lewat smoothing groups atau hard edges, lalu diimpor dengan normal dari file.
+
+</div>
+<div slot="godot">
+
+Untuk model impor, atur dari aplikasi 3D (misalnya Shade Flat/Smooth di Blender). Untuk mesh buatan kode dengan `SurfaceTool`, panggil `set_smooth_group(-1)` sebelum menambah titik, lalu `generate_normals()`. Hasilnya flat, karena `generate_normals()` memperhitungkan smooth group. Di C#, pakai `uint.MaxValue` sebagai ganti `-1`.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Three.js punya opsi `flatShading` pada material. Mengubahnya butuh `material.needsUpdate = true` karena shader harus dikompilasi ulang. Coba di panel debug Lab (folder Material), kodenya di `src/experiment/debug.js`.
+</Aside>
+
+## Terkait
+
+- [Normal](/kamus/geometri/normal/)
+- [Vertex](/kamus/geometri/vertex/)

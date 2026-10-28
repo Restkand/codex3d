@@ -1,0 +1,66 @@
+{
+  "fondasi-engine": [
+    {
+      "num": 2,
+      "title": "Ruang, Transform, dan Hierarki",
+      "subtitle": "Koordinat 3D, rotasi, induk-anak, local vs world, dan matematika gerak."
+    },
+    {
+      "num": 3,
+      "title": "Mesh, Material, dan Cahaya",
+      "subtitle": "Segitiga, normal, PBR, jenis cahaya, dan cara kerja shadow map."
+    },
+    {
+      "num": 4,
+      "title": "Shader: Program Kecil di GPU",
+      "subtitle": "Vertex & fragment shader, uniform, dan bahasa shader di tiap engine."
+    },
+    {
+      "num": 5,
+      "title": "Bayangan & Pencahayaan Global",
+      "subtitle": "Shadow map, baking, light probe, dan GI real-time."
+    },
+    {
+      "num": 6,
+      "title": "Post-processing",
+      "subtitle": "Bloom, tone mapping, anti-aliasing, dan biaya efek layar penuh."
+    },
+    {
+      "num": 7,
+      "title": "Animasi",
+      "subtitle": "Dari tween dan easing sampai skeletal animation dan blend tree."
+    },
+    {
+      "num": 8,
+      "title": "Profiling & Optimasi",
+      "subtitle": "Membaca profiler, draw call, batching, culling, dan LOD."
+    }
+  ],
+  "web-threejs": [
+    {
+      "num": 4,
+      "title": "Menulis Shader Pertama",
+      "subtitle": "Vertex & fragment shader, uniform, varying, dan GLSL dari nol."
+    },
+    {
+      "num": 5,
+      "title": "Shader Lanjut: Morph & Hologram",
+      "subtitle": "Membedah hologram proyek: morph, twist, gelombang, fresnel."
+    },
+    {
+      "num": 6,
+      "title": "Post-processing",
+      "subtitle": "Render target, composer, efek glitch, dan biaya layar penuh."
+    },
+    {
+      "num": 7,
+      "title": "Animasi dengan GSAP",
+      "subtitle": "Tween, easing, timeline, quickTo, dan ScrollTrigger."
+    },
+    {
+      "num": 8,
+      "title": "Interaksi & Performa",
+      "subtitle": "Raycaster, pola state change, dan membaca bottleneck."
+    }
+  ]
+}

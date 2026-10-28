@@ -1,0 +1,78 @@
+---
+title: "Normalize & Panjang Vektor"
+description: "Menormalisasi vektor berarti membuat panjangnya menjadi 1 tanpa mengubah arahnya. Berguna setiap kali yang penting hanya arah, bukan jarak."
+kind: term
+level: 2
+aka: "unit vector, magnitude"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Vector3.normalized"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Vector3-normalized.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Vector3.Normalize"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Vector3.Normalize.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Vector3.magnitude"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Vector3-magnitude.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Vector3"
+    url: "https://docs.godotengine.org/en/stable/classes/class_vector3.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Vector math"
+    url: "https://docs.godotengine.org/en/stable/tutorials/math/vector_math.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 11
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+**Panjang** sebuah [vektor](/kamus/ruang/vector/) adalah jaraknya dari titik nol: √(x² + y² + z²). **Menormalisasi** vektor berarti membagi setiap komponennya dengan panjang itu, sehingga panjangnya menjadi 1 tanpa mengubah arahnya. Vektor sepanjang 1 disebut *unit vector*.
+
+```text title="Pseudocode: bergerak ke arah target dengan kecepatan tetap"
+arah = normalize(posisi_target - posisi)
+posisi = posisi + arah * kecepatan * delta
+```
+
+Tanpa normalisasi, objek yang jauh dari target akan bergerak lebih cepat daripada objek yang dekat.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+`v.normalized` menghasilkan vektor baru dan tidak mengubah v. `v.Normalize()` mengubah v itu sendiri. Panjang: `v.magnitude`. Jika hanya perlu membandingkan panjang, `v.sqrMagnitude` (panjang kuadrat) lebih cepat karena tidak menghitung akar.
+
+</div>
+<div slot="unreal">
+
+`V.GetSafeNormal()`, aman untuk vektor nol. Panjang: `V.Size()`.
+
+</div>
+<div slot="godot">
+
+`v.normalized()` menghasilkan vektor baru. Panjang: `v.length()`.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Vektor nol (0, 0, 0) tidak bisa dinormalisasi karena tidak punya arah, dan rumusnya berujung pembagian dengan nol. Engine menanganinya dengan aman: Unity dan Godot mengembalikan vektor nol, dan Unreal punya `GetSafeNormal()`. Meski tidak error, hasil nol tetap bisa membuat logikamu diam-diam salah, misalnya objek berhenti total saat sudah tepat berada di posisi target. Periksa kasus ini secara eksplisit.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Shader hologram memakai `normalize(position) * r` untuk memproyeksikan setiap titik kubus ke permukaan bola berjari-jari r, di `src/experiment/shaders/hologram/vertex.glsl`.
+</Aside>
+
+## Terkait
+
+- [Vektor](/kamus/ruang/vector/)
+- [Normal](/kamus/geometri/normal/)
+- [Dot Product](/kamus/ruang/dot/)

@@ -1,0 +1,25 @@
+<div class="diagram not-content">
+<div class="dg-two">
+  <div class="dg-box">
+    <p class="dg-box__title">Sekali di awal</p>
+    <ol>
+      <li>Buat <b>Scene</b></li>
+      <li>Buat <b>Camera</b></li>
+      <li>Buat <b>Renderer</b> + sambungkan ke &lt;canvas&gt;</li>
+      <li>Buat objek &amp; cahaya, <code>scene.add(...)</code></li>
+      <li>Pasang resize handler &amp; event</li>
+    </ol>
+  </div>
+  <div class="dg-arrow" aria-hidden="true">→</div>
+  <div class="dg-box dg-box--loop">
+    <p class="dg-box__title">Setiap frame (loop)</p>
+    <ol>
+      <li>Hitung waktu (delta)</li>
+      <li>Ubah properti objek (update)</li>
+      <li><code>renderer.render(scene, camera)</code></li>
+      <li>Jadwalkan frame berikutnya</li>
+    </ol>
+    <span class="dg-box__repeat">↻ 60× per detik</span>
+  </div>
+</div>
+</div>

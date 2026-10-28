@@ -1,0 +1,73 @@
+---
+title: "Inverse Kinematics (IK)"
+description: "Menentukan posisi ujung (tangan atau kaki), lalu engine menghitung tekukan tulang-tulang di atasnya. Dipakai agar kaki menapak di tangga, tangan memegang gagang pintu, dan kepala menoleh ke target."
+kind: term
+level: 3
+aka: "IK, forward kinematics, foot IK, look-at"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Inverse Kinematics"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/InverseKinematics.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Two Bone IK"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/animation-blueprint-two-bone-ik-in-unreal-engine"
+    publisher: "Epic Games Developer Documentation"
+    accessed: 2026-10-28
+  - title: "IKModifier3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_ikmodifier3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "SkeletonModifier3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_skeletonmodifier3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 9
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Ada dua arah menggerakkan rantai tulang seperti lengan:
+
+- **Forward kinematics (FK):** putar bahu, lalu siku, lalu pergelangan. Posisi tangan adalah **hasil**. Begini cara klip animasi biasa bekerja.
+- **Inverse kinematics (IK):** tentukan posisi tangan sebagai **tujuan**, lalu engine menghitung bagaimana bahu dan siku harus menekuk agar tangan sampai di sana.
+
+Animasi dibuat di permukaan datar, sedangkan dunia game tidak rata. IK menyesuaikan animasi dengan dunia saat game berjalan:
+
+- **Foot IK:** kaki menapak tepat di anak tangga atau lereng, bukan melayang atau tenggelam.
+- **Hand IK:** tangan memegang gagang pintu, setir, atau senjata dua tangan dengan tepat.
+- **Look-at:** kepala atau mata menoleh ke arah pemain atau objek menarik.
+
+Kasus paling umum adalah **rantai dua tulang** (lengan atas + lengan bawah, paha + betis). Selain titik tujuan, dibutuhkan **petunjuk arah tekukan** (*pole* / *joint target*) agar lutut menekuk ke depan, bukan ke belakang.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+IK bawaan Animator khusus karakter **Humanoid**. Aktifkan **IK Pass** pada layer di Animator, lalu atur tujuan di callback `OnAnimatorIK` dengan `SetIKPositionWeight` dan `SetIKPosition` untuk `AvatarIKGoal` seperti `RightHand`. Kepala: `SetLookAtWeight` dan `SetLookAtPosition`.
+
+</div>
+<div slot="unreal">
+
+Node **Two Bone IK** di Animation Blueprint: **Effector Location** adalah tujuan ujung rantai (misalnya titik di tanah, atau socket pada objek yang dipegang), dan **Joint Target Location** menentukan arah tekukan sendi tengah.
+
+</div>
+<div slot="godot">
+
+Node turunan **IKModifier3D** sebagai anak Skeleton3D: **TwoBoneIK3D** untuk lengan dan kaki, **ChainIK3D** untuk rantai panjang. Ada juga **LookAtModifier3D** untuk menoleh. `SkeletonIK3D` versi lama sudah ditandai *deprecated*.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+IK dijalankan **setelah** animasi biasa. Engine memutar klip dulu, lalu IK mengoreksi pose akhirnya. Karena itu IK biasanya punya **bobot** (0 sampai 1): bobot 0 berarti animasi asli, bobot 1 berarti sepenuhnya mengikuti tujuan IK. Bobot ini sering dinaikkan dan diturunkan perlahan, misalnya hanya saat tangan sudah dekat dengan gagang pintu.
+
+## Terkait
+
+- [Skeletal Animation & Skinning](/kamus/animasi/skeletal/)
+- [Animation State Machine](/kamus/animasi/state-machine/)
+- [Hierarki](/kamus/ruang/hierarchy/)

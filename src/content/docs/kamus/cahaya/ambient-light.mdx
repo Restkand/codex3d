@@ -1,0 +1,67 @@
+---
+title: "Ambient Light"
+description: "Cahaya merata dari segala arah tanpa sumber yang jelas. Mencegah sisi objek yang membelakangi lampu menjadi hitam total. Di engine modern biasanya diambil dari langit."
+kind: term
+level: 1
+aka: "ambient, environment lighting, sky light"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Lighting window reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/lighting-window.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Environment and post-processing"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/environment_and_post_processing.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Environment"
+    url: "https://docs.godotengine.org/en/stable/classes/class_environment.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 1
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Cahaya merata dari segala arah tanpa sumber yang jelas. Tidak menghasilkan bayangan atau kontras. Fungsinya mencegah sisi objek yang membelakangi lampu menjadi hitam total, karena di dunia nyata cahaya selalu memantul ke mana-mana.
+
+Ambient berwarna satu dan rata tampak datar. Engine modern lebih sering mengambil ambient dari **langit** (*skybox*): sisi atas objek mendapat warna langit, sisi bawah mendapat warna tanah, sehingga terasa lebih alami.
+
+Ambient hanyalah tiruan murah dari cahaya pantulan. Kalau kamu butuh pantulan yang benar-benar dihitung dari bentuk ruangan, itu urusan [Global Illumination](/kamus/cahaya/global-illumination/).
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Jendela **Lighting → Environment → Environment Lighting → Source**:
+
+- **Skybox** (bawaan): warna diambil dari material skybox, jadi berbeda menurut arah.
+- **Gradient**: tiga warna terpisah untuk langit, cakrawala (*equator*), dan tanah, lalu dicampur.
+- **Color**: satu warna rata untuk semua ambient.
+
+</div>
+<div slot="unreal">
+
+Tidak ada aktor "ambient light". Perannya diambil **Sky Light**, yang menangkap langit dan memakainya sebagai cahaya dari segala arah. Dengan Lumen, pantulan cahaya antarpermukaan juga dihitung.
+
+</div>
+<div slot="godot">
+
+Resource **Environment** (di node `WorldEnvironment`) → **Ambient Light → Source**: Background, Disabled, Color, atau Sky. Background mengambil cahaya dari latar, sedangkan Sky selalu memakai langit walaupun latarnya diatur ke mode lain. Properti **Sky Contribution** mengatur seberapa banyak langit dicampur dengan warna ambient.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Lab memakai `AmbientLight` berwarna putih dengan intensitas 0,4, di `src/experiment/world/lights.js`. Geser slider "ambient" di panel debug untuk melihat sisi gelap objek berubah.
+</Aside>
+
+## Terkait
+
+- [Directional Light](/kamus/cahaya/directional-light/)
+- [Global Illumination & Lightmap](/kamus/cahaya/global-illumination/)
+- [Tone Mapping](/kamus/cahaya/tone-mapping/)

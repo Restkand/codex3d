@@ -1,0 +1,66 @@
+---
+/**
+ * Lab 3D: halaman mandiri (tanpa LearnLayout), memuat eksperimen Three.js layar penuh.
+ * Seluruh logika ada di src/experiment/, dimulai dari main.js.
+ */
+import { SITE } from '../site.config.mjs'
+import { withBase } from '../lib/inline.js'
+import BottomNav from '../components/BottomNav.astro'
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Lab 3D · {SITE.name}</title>
+    <meta name="description" content="Scene WebGL interaktif dengan Three.js dan GSAP, dibedah di Bab Tambahan Web & Three.js." />
+  </head>
+  <body>
+    <!-- Kanvas fixed di belakang; konten HTML di bawah ini yang membuat halaman bisa di-scroll -->
+    <canvas class="webgl"></canvas>
+
+    <!-- Navigasi di kiri atas: sisi kanan atas dipakai panel debug (tombol H) -->
+    <header class="labbar">
+      <a class="labbar__brand" href={withBase('/')}>
+        <img src={withBase('/favicon.svg')} alt="" width="20" height="20" />
+        <span>{SITE.name}</span>
+      </a>
+      <nav class="labbar__nav" aria-label="Utama">
+        <a href={withBase('/belajar/')}>Belajar</a>
+        <a href={withBase('/kamus/')}>Kamus</a>
+        <a href={withBase('/lab/')} aria-current="page">Lab</a>
+        <a href={SITE.repo}>GitHub</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Hero: teksnya dianimasikan oleh timeline intro -->
+      <section class="section section--left hero">
+        <p class="section__eyebrow">Lab 01</p>
+        <h1 class="section__title">Graphics Pipeline</h1>
+        <p class="section__text">Arahkan kursor &amp; klik objek &middot; scroll ke bawah &middot; H untuk panel debug</p>
+        <a class="section__link" href={withBase('/belajar/web-threejs/01-frame/')}>Pelajari cara kerjanya →</a>
+      </section>
+
+      <!-- Section berikutnya: teksnya dianimasikan oleh ScrollTrigger -->
+      <section class="section section--left reveal">
+        <p class="section__eyebrow">02 &middot; ScrollTrigger</p>
+        <h2 class="section__title">Scroll sebagai timeline</h2>
+        <p class="section__text">Posisi scroll diterjemahkan menjadi progres 0&ndash;1 sebuah timeline GSAP. Objek bergeser dan berputar mengikuti scroll Anda.</p>
+      </section>
+
+      <section class="section section--right reveal">
+        <p class="section__eyebrow">03 &middot; Raycaster</p>
+        <h2 class="section__title">Sinar dari kursor</h2>
+        <p class="section__text">Sebuah sinar ditembakkan dari kamera melewati posisi kursor. Jika sinar mengenai objek, objek bereaksi.</p>
+        <a class="section__link" href={withBase('/')}>Kembali ke {SITE.name} →</a>
+      </section>
+    </main>
+
+    <script>
+      import '../experiment/main.js'
+    </script>
+    <BottomNav />
+  </body>
+</html>

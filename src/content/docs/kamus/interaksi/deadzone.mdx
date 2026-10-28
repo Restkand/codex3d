@@ -1,0 +1,66 @@
+---
+title: "Dead Zone"
+description: "Rentang kecil di sekitar posisi diam stik analog yang sengaja diabaikan. Stik fisik jarang kembali tepat ke nol, jadi tanpa dead zone karakter bisa bergerak sendiri pelan-pelan (stick drift)."
+kind: term
+level: 2
+aka: "deadzone, stick drift, analog input"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Processors"
+    url: "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.11/manual/Processors.html"
+    publisher: "Unity Input System Documentation"
+    accessed: 2026-10-28
+  - title: "Input"
+    url: "https://docs.godotengine.org/en/stable/classes/class_input.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "InputMap"
+    url: "https://docs.godotengine.org/en/stable/classes/class_inputmap.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 6
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Stik analog dan pelatuk gamepad melaporkan angka, bukan sekadar ditekan atau tidak: −1 sampai 1 untuk stik, 0 sampai 1 untuk pelatuk. Masalahnya, stik fisik **jarang kembali tepat ke nol** saat dilepas. Ia bisa diam di 0,04 atau −0,07. Tanpa penanganan, karakter bergerak sendiri pelan-pelan atau kamera terus bergeser. Gejala ini disebut *stick drift*.
+
+**Dead zone** adalah rentang kecil di sekitar nol yang sengaja diabaikan. Biasanya ada dua batas:
+
+- **Batas bawah:** di bawah nilai ini dianggap 0. Membuang getaran stik saat diam.
+- **Batas atas:** di atas nilai ini dianggap penuh (1). Memastikan pemain bisa mencapai kecepatan maksimum walau stiknya tidak sempurna.
+
+Di antara keduanya, nilai **diskalakan ulang** ke 0..1 agar tidak ada lompatan tiba-tiba saat melewati batas bawah.
+
+**Bentuk** dead zone juga penting. Dead zone **per sumbu** (X dan Y dicek terpisah) membuat gerak diagonal halus terasa "lengket" ke arah lurus. Dead zone **radial** (memakai [panjang](/kamus/ruang/normalize/) vektor stik) memperlakukan semua arah sama dan biasanya terasa lebih alami untuk gerak karakter.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Input System: processor **Stick Deadzone** (radial, memakai panjang vektor) dan **Axis Deadzone** (satu sumbu), masing-masing dengan parameter `min` dan `max`. Stik gamepad sudah memakai Stick Deadzone secara bawaan.
+
+</div>
+<div slot="unreal">
+
+Pada Enhanced Input: **Dead Zone** modifier pada Input Action atau Input Mapping Context, dengan pilihan jenis per sumbu atau radial.
+
+</div>
+<div slot="godot">
+
+Setiap aksi di Input Map punya **deadzone** sendiri (bawaan **0,2** saat dibuat lewat `InputMap.add_action()`). `Input.get_vector()` menghasilkan vektor dengan dead zone **melingkar** dan panjang maksimum 1. Parameter `deadzone` bawaannya −1, artinya memakai rata-rata deadzone keempat aksinya.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Nilai dead zone yang pas berbeda per jenis game dan perangkat. Terlalu kecil membuat drift masih terasa pada stik yang sudah aus. Terlalu besar membuat bidikan halus sulit, karena stik harus didorong cukup jauh sebelum bereaksi. Banyak game PC dan konsol menyediakan pengaturan dead zone di menu agar pemain bisa menyesuaikan dengan gamepad mereka.
+
+## Terkait
+
+- [Input Action & Input Map](/kamus/interaksi/input-action/)
+- [Normalize & Panjang Vektor](/kamus/ruang/normalize/)

@@ -1,0 +1,108 @@
+---
+/**
+ * Halaman pengantar satu jalur belajar (/belajar/<jalur>/).
+ * Prosa pengantar diambil dari src/content/docs/belajar/<jalur>/index.mdx;
+ * daftar pelajaran & "segera hadir" dibuat otomatis dari data.
+ */
+import { getCollection, getEntry, render } from 'astro:content'
+import LearnLayout from '../../../layouts/LearnLayout.astro'
+import { TRACKS, EXTRA_TRACKS, ALL_TRACKS } from '../../../lib/sections.js'
+import { withBase } from '../../../lib/inline.js'
+import upcoming from '../../../data/upcoming-lessons.json'
+
+export async function getStaticPaths() {
+  return [
+    ...TRACKS.map((track, i) => ({ params: { track: track.id }, props: { track, eyebrow: `Jalur ${String(i + 1).padStart(2, '0')}` } })),
+    ...EXTRA_TRACKS.map((track) => ({ params: { track: track.id }, props: { track, eyebrow: 'Bab Tambahan' } })),
+  ]
+}
+
+const { track, eyebrow } = Astro.props
+const entry = await getEntry('docs', `belajar/${track.id}`)
+const { Content } = await render(entry)
+const lessons = (await getCollection('docs', (e) => e.data.kind === 'lesson' && e.id.startsWith(`belajar/${track.id}/`))).sort(
+  (a, b) => (a.data.sidebar?.order ?? 0) - (b.data.sidebar?.order ?? 0),
+)
+const later = upcoming[track.id] ?? []
+const isOutline = entry.data.status === 'kerangka'
+const docs = await getCollection('docs')
+const statusOf = (id) => docs.find((d) => d.id === `belajar/${id}`)?.data.status
+const pad2 = (n) => String(n).padStart(2, '0')
+const lessonNum = (e) => e.id.match(/\/(\d+)-/)?.[1] ?? ''
+---
+
+<LearnLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  editPath={entry.filePath}
+  greeting={track.krekit}
+  crumbs={[{ label: 'Jalur Belajar', href: withBase('/belajar/') }, { label: track.title }]}
+>
+  <Fragment slot="side">
+    <p class="lside__label">Jalur belajar</p>
+    <ol class="quests">
+      {
+        ALL_TRACKS.map((t, i) => (
+          <li class:list={['quests__item', { 'is-current': t.id === track.id, 'is-outline': statusOf(t.id) === 'kerangka' }]}>
+            <a href={withBase(`/belajar/${t.id}/`)}>
+              <span class="quests__num">{i < TRACKS.length ? pad2(i + 1) : '+'}</span>
+              <span class="quests__title">{t.title}</span>
+              <span />
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </Fragment>
+
+  <header class="lhead">
+    <p class="lhead__eyebrow">{eyebrow}</p>
+    <h1 class="lhead__title">{track.title}</h1>
+    <p class="lhead__lead">{entry.data.description}</p>
+    <ul class="lhead__chips">
+      {lessons.length > 0 && <li>{lessons.length} pelajaran tersedia</li>}
+      {isOutline && <li class="is-draft">Kerangka · terbuka untuk kontribusi</li>}
+    </ul>
+  </header>
+
+  {
+    lessons.length > 0 && (
+      <section class="lessons" aria-label="Pelajaran">
+        {lessons.map((lesson) => (
+          <a class="lesson-card" href={withBase(`/${lesson.id}/`)} data-quest={lesson.id}>
+            <span class="lesson-card__num">Pelajaran {lessonNum(lesson)}</span>
+            <strong class="lesson-card__title">{lesson.data.title}</strong>
+            <span class="lesson-card__desc">{lesson.data.description}</span>
+            <span class="lesson-card__meta">
+              {lesson.data.minutes && <span>±{lesson.data.minutes} menit</span>}
+              <span class="quests__check" hidden>
+                ✓ selesai
+              </span>
+            </span>
+          </a>
+        ))}
+        {later.map((l) => (
+          <div class="lesson-card is-locked" aria-disabled="true">
+            <span class="lesson-card__num">Pelajaran {pad2(l.num)} · segera</span>
+            <strong class="lesson-card__title">{l.title}</strong>
+            <span class="lesson-card__desc">{l.subtitle}</span>
+          </div>
+        ))}
+      </section>
+    )
+  }
+
+  <article class="lcontent">
+    <Content />
+  </article>
+
+  {
+    isOutline && (
+      <aside class="outline-cta">
+        <strong>Jalur ini belum ada isinya.</strong>
+        <span>Kalau kamu punya pengalaman di bidang ini, tulisanmu bisa menjadi pelajaran pertamanya.</span>
+        <a href={withBase('/kontribusi/')}>Lihat cara berkontribusi →</a>
+      </aside>
+    )
+  }
+</LearnLayout>

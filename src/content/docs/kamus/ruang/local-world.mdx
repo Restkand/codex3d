@@ -1,0 +1,64 @@
+---
+title: "Local vs World Space"
+description: "Local space adalah koordinat relatif terhadap induk. World space adalah koordinat akhir di dunia setelah semua transform induk diterapkan."
+kind: term
+level: 2
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Transform"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Transform.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Transform.TransformPoint"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Transform.TransformPoint.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Transform.TransformDirection"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Transform.TransformDirection.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Node3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_node3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 6
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+**Local space** adalah koordinat relatif terhadap induk. **World space** adalah koordinat akhir di dunia setelah semua transform induknya diterapkan. Anak dengan posisi lokal (1, 0, 0) di bawah induk yang berada di (2, 0, 0) berada di posisi dunia (3, 0, 0). Objek tanpa induk punya posisi lokal yang sama dengan posisi dunianya.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+`transform.localPosition` (lokal) dan `transform.position` (dunia). Hal yang sama berlaku untuk `localRotation`/`rotation`. Skala lokal ada di `localScale`; skala dunia hanya bisa dibaca lewat `lossyScale`.
+
+Untuk mengubah titik antar-ruang: `transform.TransformPoint()` (lokal ke dunia) dan `transform.InverseTransformPoint()` (dunia ke lokal). Hasil `TransformPoint` ikut terpengaruh skala.
+
+</div>
+<div slot="unreal">
+
+Pada komponen: `GetRelativeLocation()` (relatif ke induk) dan `GetComponentLocation()` (dunia). Pada Actor: `GetActorLocation()` (dunia).
+
+</div>
+<div slot="godot">
+
+`position` (lokal) dan `global_position` (dunia). Transform lengkapnya: `transform` dan `global_transform`. Untuk mengubah titik antar-ruang: `to_global()` (lokal ke dunia) dan `to_local()` (dunia ke lokal).
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Bedakan **posisi** dan **arah**. Posisi terpengaruh pergeseran induk, sedangkan arah (misalnya "depan" sebuah objek) hanya terpengaruh rotasi. Engine menyediakan cara terpisah untuk mengubah arah antar-ruang. Di Unity, `TransformDirection` tidak terpengaruh posisi maupun skala, dan panjang vektornya tetap.
+
+Kesalahan yang sering terjadi: membandingkan posisi lokal satu objek dengan posisi dunia objek lain. Hasilnya tampak benar selama induknya berada di titik nol, lalu tiba-tiba salah saat induknya dipindahkan.
+
+## Terkait
+
+- [Hierarki](/kamus/ruang/hierarchy/)
+- [Matriks Model / View / Projection](/kamus/ruang/matrices/)

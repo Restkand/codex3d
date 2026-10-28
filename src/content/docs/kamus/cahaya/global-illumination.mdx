@@ -1,0 +1,102 @@
+---
+title: "Global Illumination & Lightmap"
+description: "Cahaya langsung dari lampu ditambah cahaya tidak langsung yang memantul dari permukaan lain. Karena mahal dihitung, cahaya ini sering dipanggang ke tekstur lightmap sebelum game dijalankan."
+kind: term
+level: 2
+aka: "GI, indirect lighting, baked lighting, lightmapping, light probe"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Lightmapping"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/Lightmappers.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Choose a Light Mode"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/LightModes-choose.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Light Probes"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/LightProbes.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Introduction to global illumination"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/global_illumination/introduction_to_global_illumination.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Using Lightmap global illumination"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/using_lightmap_gi.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Light3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_light3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 8
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Cahaya di dunia nyata tidak berhenti di permukaan pertama yang ditabraknya. Sinar matahari yang mengenai lantai merah akan memantul dan membuat dinding di dekatnya agak kemerahan. **Global Illumination** (GI) adalah sebutan untuk pencahayaan yang menggabungkan dua hal:
+
+- **Cahaya langsung** (*direct*): dari lampu langsung ke permukaan.
+- **Cahaya tidak langsung** (*indirect*): cahaya yang sudah memantul dari permukaan lain.
+
+Cahaya tidak langsung inilah yang membuat sudut ruangan tidak hitam pekat dan membuat scene terasa "menyatu". [Ambient light](/kamus/cahaya/ambient-light/) adalah tiruan termurahnya, tetapi tidak tahu bentuk ruangan.
+
+Menghitung pantulan cahaya setiap frame sangat mahal. Cara klasiknya adalah **memanggang** (*bake*) hasilnya sebelum game dijalankan:
+
+- **Lightmap:** tekstur yang menyimpan terang-gelap setiap permukaan statis, termasuk bayangannya. Biaya per frame hampir nol, tetapi tidak bisa berubah saat game berjalan. Lightmap butuh set [UV](/kamus/geometri/uv/) kedua yang tidak saling tumpuk.
+- **Light probe:** titik-titik sampel di ruang kosong yang menyimpan cahaya tidak langsung. Objek yang bergerak (karakter, kendaraan) tidak bisa memakai lightmap, jadi mereka mengambil cahaya dari probe terdekat.
+
+Ada juga GI real-time yang menghitung pantulan sambil game berjalan. Hasilnya bereaksi pada lampu dan objek yang bergerak, tetapi jauh lebih mahal.
+
+<Aside type="note" title="Analogi">
+Lightmap seperti foto ruangan yang dicetak lalu ditempel di dindingnya sendiri. Hasilnya terlihat sangat bagus dan murah ditampilkan, tetapi kalau lampunya kamu matikan, "foto" itu tetap terang.
+</Aside>
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Setiap Light punya **Mode**:
+
+- **Baked:** dipanggang seluruhnya, tanpa biaya saat game berjalan. Cocok untuk lampu latar.
+- **Mixed:** gabungan cahaya yang dipanggang dan real-time. Cocok untuk lampu yang tidak bergerak tetapi tetap perlu memberi bayangan pada objek bergerak.
+- **Realtime:** dihitung setiap frame, paling mahal tetapi paling fleksibel. Cocok untuk lampu yang bergerak atau berkedip.
+
+Lightmap dipanggang oleh **Progressive Lightmapper** dari jendela Lighting. Hasilnya tidak bisa diubah saat game berjalan, tetapi lampu real-time masih bisa ditambahkan di atasnya. Untuk objek bergerak, pasang **Light Probe Group** di scene.
+
+</div>
+<div slot="unreal">
+
+Dengan **Lumen** (bawaan Unreal Engine 5), GI dihitung secara real-time. Untuk cahaya yang dipanggang, matikan Lumen lalu bake lightmap dengan **Lightmass**, memakai lampu ber-Mobility Static atau Stationary.
+
+</div>
+<div slot="godot">
+
+Godot punya beberapa teknik GI:
+
+- **`LightmapGI`:** dipanggang, didukung semua renderer, dan menjadi pilihan utama untuk perangkat mobile. Mesh harus punya UV2 dan diatur ke Bake Mode Static. Lampu dengan `light_bake_mode` **Static** ikut dipanggang cahaya langsung dan bayangannya; lampu **Dynamic** (bawaan) hanya menyumbang cahaya tidak langsung. Objek bergerak mendapat cahaya tidak langsung dari light probe (otomatis atau node `LightmapProbe`).
+- **`VoxelGI`** dan **SDFGI:** GI real-time atau semi-real-time. Tidak tersedia di renderer Mobile dan Compatibility.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Lightmap tidak menyimpan pantulan seperti cermin atau logam mengilap. Untuk itu kamu tetap butuh [Reflection Probe](/kamus/cahaya/reflection-probe/) atau langit. Dokumentasi Godot juga mencatat kelemahan praktis lightmap: proses bake bisa memakan waktu beberapa menit atau lebih, sehingga memperlambat iterasi saat kamu sering mengubah level.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Lab tidak memakai GI: cahaya tidak langsung hanya ditiru oleh `AmbientLight` di `src/experiment/world/lights.js`. Three.js sendiri tidak punya alat bake lightmap bawaan; lightmap biasanya dipanggang di aplikasi 3D lalu dipasang lewat properti `lightMap` pada material.
+</Aside>
+
+## Terkait
+
+- [Ambient Light](/kamus/cahaya/ambient-light/)
+- [Shadow Map](/kamus/cahaya/shadow-map/)
+- [Reflection Probe](/kamus/cahaya/reflection-probe/)
+- [UV](/kamus/geometri/uv/)
+- [Emissive](/kamus/geometri/emissive/)

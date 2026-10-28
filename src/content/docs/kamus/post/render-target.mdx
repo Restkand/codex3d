@@ -1,0 +1,66 @@
+---
+title: "Render Target"
+description: "Tekstur tak terlihat yang dijadikan tujuan render, bukan layar. Hasilnya bisa diproses shader lain atau ditempel ke objek. Fondasi semua efek post-processing, cermin, dan layar CCTV di dalam game."
+kind: term
+level: 3
+aka: "render texture, offscreen buffer, SubViewport"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Camera.targetTexture"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Camera-targetTexture.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Render Texture Inspector reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-RenderTexture.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Using Viewports"
+    url: "https://docs.godotengine.org/en/stable/tutorials/rendering/viewports.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 1
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Tekstur tak terlihat yang dijadikan **tujuan render**, bukan layar. Hasilnya adalah [tekstur](/kamus/geometri/texture/) biasa, sehingga bisa:
+
+- **diproses shader lain:** inilah dasar semua efek post-processing. Scene digambar ke render target, lalu shader layar penuh membaca tekstur itu dan menulis hasilnya ke layar.
+- **ditempel ke objek:** layar CCTV yang menampilkan ruangan lain, cermin, portal, atau minimap dari kamera di atas kepala.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Aset **Render Texture**. Isi properti **Target Texture** pada Camera (lewat kode: `camera.targetTexture`), maka kamera menggambar ke tekstur itu, bukan ke layar. Nilai `null` mengembalikannya ke layar.
+
+</div>
+<div slot="unreal">
+
+Aset **Texture Render Target 2D**, diisi oleh komponen **Scene Capture 2D** yang berfungsi seperti kamera kedua.
+
+</div>
+<div slot="godot">
+
+Node **SubViewport**. Isinya tidak tampil langsung. Ambil teksturnya dengan `get_texture()` (berupa `ViewportTexture`), lalu pasang di material atau sprite. **Update Mode** mengatur kapan ia digambar ulang: Once, Always, When Parent Visible, atau Never.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Setiap render target berarti **menggambar scene sekali lagi**. Layar CCTV dengan kamera kedua bisa hampir menggandakan biaya render. Cara menghematnya: perkecil resolusinya, perbarui hanya setiap beberapa frame, atau hentikan saat tidak terlihat. Mode **Once** di Godot misalnya cocok untuk foto yang cukup dirender sekali.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Three.js menyebutnya `WebGLRenderTarget`. Lab memakainya secara tidak langsung lewat [EffectComposer](/kamus/web/effect-composer/), yang menggambar scene ke render target sebelum efek glitch diterapkan. Lihat `src/experiment/post.js`.
+</Aside>
+
+## Terkait
+
+- [Texture](/kamus/geometri/texture/)
+- [Glitch & Chromatic Aberration](/kamus/post/glitch/)
+- [Bloom](/kamus/post/bloom/)

@@ -1,0 +1,88 @@
+---
+title: "Radian & Sudut Euler"
+description: "Radian adalah satuan sudut yang dipakai fungsi matematika: π radian = 180°. Sudut Euler menulis rotasi sebagai tiga sudut X, Y, Z, mudah dibaca tetapi rawan gimbal lock."
+kind: term
+level: 1
+aka: "derajat, Euler angles, gimbal lock"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Mathf.Deg2Rad"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Mathf.Deg2Rad.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Mathf.Sin"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Mathf.Sin.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Quaternion and Euler rotations in Unity"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/QuaternionAndEulerRotationsInUnity.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Node3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_node3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "@GlobalScope"
+    url: "https://docs.godotengine.org/en/stable/classes/class_%40globalscope.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Using 3D transforms"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/using_transforms.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 4
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+**Radian** adalah satuan sudut yang dipakai fungsi matematika seperti sinus dan kosinus. π radian = 180°, dan 2π radian = satu putaran penuh. Konversi: derajat × π / 180.
+
+| Derajat | Radian |
+| --- | --- |
+| 45° | π/4 ≈ 0,785 |
+| 90° | π/2 ≈ 1,571 |
+| 180° | π ≈ 3,142 |
+| 360° | 2π ≈ 6,283 |
+
+## Di engine
+
+Editor biasanya menampilkan derajat, sedangkan fungsi matematika memakai radian. Mencampur keduanya adalah salah satu bug paling umum.
+
+<EngineTabs>
+<div slot="unity">
+
+Inspector dan `transform.eulerAngles` memakai derajat. `Mathf.Sin`/`Mathf.Cos` memakai radian. Konversi: kalikan dengan konstanta `Mathf.Deg2Rad` atau `Mathf.Rad2Deg`.
+
+</div>
+<div slot="unreal">
+
+`FRotator` dan editor memakai derajat. `FMath::Sin`/`FMath::Cos` memakai radian. Konversi: `FMath::DegreesToRadians` dan `FMath::RadiansToDegrees`.
+
+</div>
+<div slot="godot">
+
+`rotation` pada Node3D disimpan dalam radian, tetapi diedit dalam derajat di Inspector. Di skrip, pakai `rotation_degrees` jika ingin derajat. Konversi: `deg_to_rad()` dan `rad_to_deg()`. Kecuali disebutkan lain, semua method Node3D yang menerima sudut memakai radian.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Kenapa radian? Pada lingkaran berjari-jari r, panjang busur = r × sudut (dalam radian). Rumus kecepatan sudut, turunan sinus/kosinus, dan hampir semua matematika rotasi menjadi sederhana dalam radian.
+
+Rotasi yang ditulis sebagai tiga sudut (X, Y, Z) disebut **sudut Euler** (*Euler angles*). Mudah dibaca, tetapi punya dua kelemahan. Pertama, hasilnya bergantung **urutan** penerapan sumbu, dan urutan itu berbeda antar-engine: Unity memutar di sumbu Z, lalu X, lalu Y, sedangkan Godot secara bawaan memakai urutan YXZ. Kedua, ada masalah **gimbal lock**: pada sudut tertentu dua sumbu putar menjadi sejajar, sehingga satu arah putaran hilang.
+
+Karena itu engine menyimpan rotasi secara internal sebagai [quaternion](/kamus/ruang/quaternion/), dan sudut Euler hanya dipakai untuk tampilan di editor atau rotasi sederhana di satu sumbu.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Three.js memakai radian untuk `rotation`. Lantai direbahkan dengan `floor.rotation.x = -Math.PI / 2` (−90°) di `src/experiment/world/objects.js`.
+</Aside>
+
+## Terkait
+
+- [Transform](/kamus/ruang/transform/)
+- [Quaternion](/kamus/ruang/quaternion/)
+- [Sinus & Kosinus](/kamus/ruang/sincos/)

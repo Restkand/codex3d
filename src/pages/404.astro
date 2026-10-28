@@ -1,0 +1,25 @@
+---
+/** Halaman tidak ditemukan */
+import LearnLayout from '../layouts/LearnLayout.astro'
+import { withBase } from '../lib/inline.js'
+---
+
+<LearnLayout
+  title="Halaman tidak ditemukan"
+  description="Alamat yang kamu buka tidak ada di Krekit."
+  greeting="Aku juga tidak menemukan halaman ini. Mungkin alamatnya sudah pindah."
+>
+  <header class="lhead">
+    <p class="lhead__eyebrow">404</p>
+    <h1 class="lhead__title">Halaman tidak ditemukan</h1>
+  </header>
+
+  <article class="lcontent">
+    <p>Alamat ini tidak ada, atau halamannya sudah dipindahkan. Coba mulai dari salah satu tempat ini:</p>
+    <ul>
+      <li><a href={withBase('/belajar/')}>Jalur belajar</a></li>
+      <li><a href={withBase('/kamus/')}>Kamus</a>, daftar istilah dengan pencarian</li>
+      <li><a href={withBase('/')}>Beranda</a></li>
+    </ul>
+  </article>
+</LearnLayout>

@@ -1,0 +1,70 @@
+---
+title: "Fragment Shader"
+description: "Dijalankan sekali untuk setiap piksel yang ditutupi objek, untuk menentukan warnanya. Karena piksel jauh lebih banyak daripada titik, fragment shader yang berat adalah sumber lag yang paling umum."
+kind: term
+level: 2
+aka: "pixel shader, surface shader"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Master Stack"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Master-Stack.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Built In Blocks"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Built-In-Blocks.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Spatial shaders"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/spatial_shader.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 5
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Dijalankan sekali untuk setiap fragment (calon piksel) yang ditutupi objek, untuk menentukan warnanya. Layar 1920×1080 punya lebih dari dua juta piksel, jauh lebih banyak daripada titik di kebanyakan model. Karena itu, fragment shader yang berat adalah sumber lag yang paling umum, apalagi jika objeknya memenuhi layar atau bertumpuk transparan ([overdraw](/kamus/performa/overdraw/)).
+
+Di engine, kamu jarang menulis warna akhir secara langsung. Yang kamu isi biasanya **sifat permukaan**: warna dasar, roughness, metalness, normal, emissive. Engine yang kemudian menghitung pencahayaan dari sifat-sifat itu. Dengan cara ini shader buatanmu tetap ikut aturan cahaya, bayangan, dan kabut di scene.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Shader Graph: konteks **Fragment** di Master Stack. Blok yang umum dipakai: Base Color, Normal (Tangent Space), Metallic, Smoothness, Emission, Ambient Occlusion, Alpha, dan Alpha Clip Threshold. Blok mana yang aktif bergantung pada pengaturan di Graph Settings. Jika ingin menentukan warna akhir sendiri tanpa perhitungan cahaya, pakai material jenis **Unlit**.
+
+</div>
+<div slot="unreal">
+
+Input Material seperti **Base Color**, **Roughness**, **Normal**, **Emissive Color** dihitung per piksel. Shading Model **Unlit** hanya memakai Emissive Color.
+
+</div>
+<div slot="godot">
+
+Fungsi `fragment()` mengisi `ALBEDO`, `ROUGHNESS`, `METALLIC`, `EMISSION`, `ALPHA`, dan lainnya. Begitu `ALPHA` dibaca atau ditulis, material otomatis masuk jalur transparan, yang lebih mahal. Fungsi opsional `light()` dijalankan untuk setiap lampu di setiap piksel, untuk mengatur cara cahaya dihitung, misalnya gaya kartun. Jika ingin warna akhir tanpa cahaya sama sekali, pakai `render_mode unshaded`.
+
+```glsl title="merah.gdshader"
+shader_type spatial;
+
+void fragment() {
+    ALBEDO = vec3(1.0, 0.0, 0.0);
+}
+```
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Di `ShaderMaterial` Three.js, kamu menulis warna akhir langsung lewat `gl_FragColor`, tanpa sistem cahaya engine. Lihat `src/experiment/shaders/hologram/fragment.glsl`. Quest: ganti seluruh isi `main()` dengan `gl_FragColor = vec4(1.0, 0.0, 0.0, 0.5);`.
+</Aside>
+
+## Terkait
+
+- [Vertex Shader](/kamus/shader/vertex-shader/)
+- [Fill Rate](/kamus/performa/fill-rate/)
+- [Material](/kamus/geometri/material/)
+- [Toon Shading](/kamus/shader/toon-shading/)

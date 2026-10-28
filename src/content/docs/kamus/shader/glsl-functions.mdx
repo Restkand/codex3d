@@ -1,0 +1,51 @@
+---
+title: "Fungsi Shader Penting"
+description: "Beberapa fungsi kecil yang dipakai di hampir semua shader: lerp/mix, step, smoothstep, fract, pow, clamp/saturate. Shader memakainya untuk menggantikan if/else."
+kind: term
+level: 2
+aka: "mix, lerp, step, smoothstep, fract, frac, pow, clamp, saturate"
+status: draf
+lastReviewed: 2026-10-28
+sidebar:
+  order: 10
+---
+
+import Aside from '~/components/Aside.astro'
+import Demo from '~/components/Demo.astro'
+
+Beberapa fungsi kecil yang dipakai di hampir semua shader. Nama-namanya sama di grafik node Shader Graph, Material Editor, dan Visual Shader, karena setiap node pada dasarnya satu fungsi.
+
+| HLSL (Unity, Unreal) | GLSL / Godot | Kegunaan |
+| --- | --- | --- |
+| `lerp(a, b, t)` | `mix(a, b, t)` | campuran a dan b sesuai t ([Lerp](/kamus/ruang/lerp/)) |
+| `step(batas, x)` | sama | 0 jika x di bawah batas, 1 jika tidak. Pengganti `if` |
+| `smoothstep(a, b, x)` | sama | seperti step tetapi peralihannya halus dari a ke b |
+| `frac(x)` | `fract(x)` | bagian pecahan saja. Menghasilkan pola berulang |
+| `pow(x, n)` | sama | menajamkan (n besar) atau melembutkan kurva |
+| `saturate(x)` | `clamp(x, 0.0, 1.0)` | membatasi nilai ke 0..1 |
+
+## Demo
+
+<Demo name="glslfn" />
+
+## Pelajari lebih dalam
+
+Kenapa menghindari `if`? GPU menjalankan sekelompok piksel dengan instruksi yang sama secara serentak. Jika sebagian piksel masuk cabang `if` dan sebagian lain masuk `else`, GPU harus menjalankan **kedua** cabang lalu membuang hasil yang tidak dipakai. Rumus seperti `step` dan `mix` menghitung keduanya tanpa percabangan, dan biasanya sama cepat atau lebih cepat.
+
+```text title="Pseudocode: if diganti step"
+// dengan if
+if x > 0.5: warna = merah  else: warna = biru
+// tanpa if
+warna = mix(biru, merah, step(0.5, x))
+```
+
+Kompiler shader modern sering bisa mengubah `if` sederhana menjadi bentuk seperti ini secara otomatis, jadi tidak perlu fanatik. Pola ini tetap penting untuk dikenali karena muncul di hampir setiap contoh shader.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Shader hologram membuat garis pindai dengan `mod(x, 1.0)` (setara `fract`), menajamkannya dengan `pow`, dan mencampur dua warna dengan `mix`. Lihat `src/experiment/shaders/hologram/fragment.glsl`.
+</Aside>
+
+## Terkait
+
+- [Bahasa Shader (HLSL & GLSL)](/kamus/shader/glsl/)
+- [Lerp](/kamus/ruang/lerp/)

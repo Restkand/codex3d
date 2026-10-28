@@ -1,0 +1,72 @@
+---
+title: "Sinus & Kosinus"
+description: "Fungsi yang berayun mulus antara −1 dan 1 seiring sudut bertambah. Dengan waktu sebagai masukan, keduanya menghasilkan gerakan naik-turun, berdenyut, atau melingkar."
+kind: term
+level: 1
+aka: "sin, cos"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Mathf.Sin"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Mathf.Sin.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Time.time"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Time-time.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Time"
+    url: "https://docs.godotengine.org/en/stable/classes/class_time.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 9
+---
+
+import Aside from '~/components/Aside.astro'
+import Demo from '~/components/Demo.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Fungsi yang berayun mulus antara −1 dan 1 seiring sudut (dalam [radian](/kamus/ruang/radian/)) bertambah. Dengan waktu sebagai masukan, keduanya menghasilkan gerakan berulang: naik-turun, berdenyut, atau berayun. **Amplitudo** (pengali hasil) menentukan seberapa jauh ayunannya, **frekuensi** (pengali waktu) menentukan seberapa cepat.
+
+```text title="Pseudocode"
+// Mengambang naik-turun
+posisi.y = tinggi_awal + sin(waktu * 1.5) * 0.15
+
+// Bergerak melingkar: sin dan cos dengan waktu yang sama
+posisi.x = cos(waktu) * jari_jari
+posisi.z = sin(waktu) * jari_jari
+```
+
+## Demo
+
+<Demo name="sine" />
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+`Mathf.Sin(Time.time * 1.5f)`. Masukan `Mathf.Sin` dalam radian. `Time.time` adalah detik sejak aplikasi dimulai, dan ikut melambat atau berhenti sesuai `Time.timeScale`.
+
+</div>
+<div slot="unreal">
+
+`FMath::Sin(GetWorld()->GetTimeSeconds() * 1.5f)`.
+
+</div>
+<div slot="godot">
+
+`sin(Time.get_ticks_msec() / 1000.0 * 1.5)`. `Time.get_ticks_msec()` adalah milidetik sejak engine dimulai. Jika gerakan perlu ikut berhenti saat game dijeda atau diperlambat, simpan sendiri waktu yang terus ditambah `delta` di `_process`.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Objek di Lab mengambang dengan `mesh.position.y = Math.sin(elapsed * 1.5) * params.floatAmplitude` di `src/experiment/main.js`. Amplitudonya bisa diubah dari panel debug. Coba tambahkan `mesh.position.x = Math.cos(elapsed * 1.5) * 0.5` agar objek bergerak melingkar.
+</Aside>
+
+## Terkait
+
+- [Delta Time](/kamus/dasar/delta-time/)
+- [Radian & Sudut Euler](/kamus/ruang/radian/)

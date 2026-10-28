@@ -1,0 +1,198 @@
+---
+/**
+ * Halaman depan bersama Krekit, maskot 3D (lihat src/site/landing.js dan src/site/krekit.js).
+ *
+ * Setiap section punya "panggung" [data-krekit-spot]: kotak kosong di layout tempat Krekit berdiri.
+ * Krekit tidak pernah menutupi teks karena tempatnya disediakan oleh layout itu sendiri.
+ * Elemen dengan [data-krekit-say] membuat Krekit menoleh dan berkomentar saat disorot.
+ */
+import { getCollection } from 'astro:content'
+import '../site/landing.css'
+import { SITE } from '../site.config.mjs'
+import { TRACKS } from '../lib/sections.js'
+import { withBase } from '../lib/inline.js'
+import BottomNav from '../components/BottomNav.astro'
+import { LEVELS, LESSON_XP } from '../lib/progress.js'
+import pipeline from '../data/pipeline.json'
+
+const docs = await getCollection('docs')
+const termCount = docs.filter((d) => d.data.kind === 'term').length
+const lessonCount = docs.filter((d) => d.data.kind === 'lesson').length
+const trackStatus = (id) => docs.find((d) => d.id === `belajar/${id}`)?.data.status
+const pad2 = (n) => String(n).padStart(2, '0')
+
+// Daftar halaman ber-XP, agar Krekit bisa membaca tahap pertumbuhan dari progres di browser
+const progressItems = docs
+  .filter((d) => d.data.kind === 'lesson' || d.data.kind === 'term')
+  .map((d) => ({ id: d.id, xp: d.data.kind === 'lesson' ? LESSON_XP : LEVELS[d.data.level ?? 1].xp }))
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>{SITE.name} · Belajar cara game dibuat, dari gamer untuk gamer</title>
+    <!-- Judul hero ("Lewat celah ini...") butuh visual; pratinjau tautan memakai kalimat yang lugas -->
+    <meta name="description" content="Selesai main? Intip cara game dibuat: engine dan shader, desain, produksi, sampai bisnis studio indie. Gratis dalam bahasa Indonesia, dari gamer untuk gamer." />
+    <meta property="og:title" content={`${SITE.name} · Belajar cara game dibuat`} />
+    <meta property="og:description" content="Selesai main? Intip cara game dibuat: engine dan shader, desain, produksi, sampai bisnis studio indie. Gratis dalam bahasa Indonesia." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <!-- Kelas "js" menyembunyikan teks sampai animasi masuk siap (mencegah kedipan) -->
+    <script is:inline>document.documentElement.classList.add('js')</script>
+  </head>
+  <body>
+    <canvas class="webgl" aria-hidden="true"></canvas>
+    <script type="application/json" id="progress-items" set:html={JSON.stringify(progressItems)} />
+
+    <header class="topnav" data-topnav>
+      <a class="topnav__brand" href={withBase('/')}>
+        <img src={withBase('/favicon.svg')} alt="" width="24" height="24" />
+        <span>{SITE.name}</span>
+      </a>
+      <nav class="topnav__links" aria-label="Utama">
+        <a href={withBase('/belajar/')}>Belajar</a>
+        <a href={withBase('/kamus/')}>Kamus</a>
+        <a href={withBase('/lab/')} class="hide-sm">Lab</a>
+        <a href={SITE.repo} class="topnav__gh">GitHub</a>
+      </nav>
+    </header>
+
+    <!-- Penanda di tepi jalan Pos 0: muncul saat Krekit lewat. data-waypoint = posisi di jalan (0..1) -->
+    <div class="waypoints" aria-hidden="true">
+      <span class="waypoint" data-waypoint="0.3">Engine &amp; shader</span>
+      <span class="waypoint" data-waypoint="0.5">Desain</span>
+      <span class="waypoint" data-waypoint="0.7">Produksi</span>
+      <span class="waypoint" data-waypoint="0.9">Bisnis studio indie</span>
+    </div>
+
+    <!-- Gelembung bicara Krekit: posisinya mengikuti kepala Krekit (landing.js) -->
+    <div class="bubble" data-bubble aria-live="polite">
+      <div class="bubble__box" data-bubble-box></div>
+    </div>
+
+    <main>
+      <!-- Pos 0 · Dunia belum di-render (landing.js + dunia.js). Desktop: hero di-pin, Krekit menggelinding. Layar sempit: diorama, ketuk untuk me-render -->
+      <section id="mulai" class="section section--split hero" data-section>
+        <div class="hero__text">
+          <p class="eyebrow">Gratis · Bahasa Indonesia · Dari gamer, untuk gamer</p>
+          <h1 class="display">Lewat celah ini, <span class="accent">kelihatan cara game dibuat.</span></h1>
+          <p class="lead">Krekit sudah mengintip duluan. Ikuti dia: dari engine dan shader, desain dan produksi, sampai bisnis studio indie.</p>
+          <div class="actions">
+            <a class="btn btn--primary" href={withBase('/belajar/')} data-krekit-say="Pelajaran 1 tidak butuh pengetahuan 3D sebelumnya.">Mulai belajar →</a>
+            <a class="btn btn--ghost" href={withBase('/lab/')} data-krekit-say="Scene ini dibedah di Bab Tambahan Web & Three.js. Tekan H di sana untuk membuka panel pengaturan.">Buka Lab 3D</a>
+          </div>
+          <p class="scroll-hint"><span class="only-pointer">Scroll untuk mengikuti Krekit · klik Krekit</span><span class="only-touch">Geser ke atas untuk mengikuti Krekit · ketuk Krekit</span></p>
+        </div>
+        <div class="krekit-spot krekit-spot--hero" data-krekit-spot>
+          <!-- Layar sempit: tahap render diorama Krekit (landing.js). Disembunyikan di layar lebar. -->
+          <div class="render-steps" role="group" aria-label="Tahap render dunia Krekit">
+            <button type="button" data-render-step="0" aria-pressed="true">Wireframe</button>
+            <button type="button" data-render-step="1" aria-pressed="false">Blockout</button>
+            <button type="button" data-render-step="2" aria-pressed="false">Render</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 01 · Kenapa -->
+      <section id="kenapa" class="section section--split section--flip reveal" data-section>
+        <div class="krekit-spot" data-krekit-spot aria-hidden="true"></div>
+        <div class="section__inner">
+          <p class="eyebrow" data-reveal>01 · Kenapa situs ini ada</p>
+          <h2 class="display display--md" data-reveal>Belajar berurutan,<br /><span class="accent">dari engine sampai bisnis.</span></h2>
+          <p class="lead" data-reveal>Media game meliput apa yang terjadi: rilis, ulasan, rumor. Di sini kita mempelajari cara industrinya bekerja: bagaimana engine merender dunia, dan bagaimana game diproduksi, didanai, lalu sampai ke pemain.</p>
+          <ul class="facts">
+            <li data-reveal data-krekit-say="Kalau ada istilah yang belum dijelaskan, berarti kami yang salah. Laporkan saja."><b>Bertahap</b><span>Materi disusun sebagai jalur belajar, dari pelajaran pertama sampai terakhir.</span></li>
+            <li data-reveal data-krekit-say="Aku juga dibuat dari kode yang sama. Suatu saat kamu bisa membongkarku."><b>Praktik</b><span>Bedah kode, demo interaktif, kuis, dan latihan.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 02 · Jalur belajar: Krekit berdiri di atas tepi kartu -->
+      <section id="jalur" class="section section--wide reveal" data-section>
+        <div class="section__inner">
+          <div class="section__head">
+            <div>
+              <p class="eyebrow" data-reveal>02 · Jalur belajar</p>
+              <h2 class="display display--md" data-reveal>Enam jalur, <span class="accent">satu peta.</span></h2>
+            </div>
+            <div class="krekit-spot krekit-spot--perch" data-krekit-spot aria-hidden="true"></div>
+          </div>
+          <div class="tracks">
+            {
+              TRACKS.map((track, i) => (
+                <a class="track-card" href={withBase(`/belajar/${track.id}/`)} data-reveal data-tilt data-krekit-say={track.krekit}>
+                  <span class="track-card__num">{pad2(i + 1)}</span>
+                  <strong class="track-card__title">{track.title}</strong>
+                  <span class="track-card__blurb">{track.blurb}</span>
+                  <span class={`track-card__status ${trackStatus(track.id) === 'kerangka' ? 'is-soon' : 'is-live'}`}>
+                    {trackStatus(track.id) === 'kerangka' ? 'Kerangka · terbuka untuk kontribusi' : `${lessonCount} pelajaran tersedia`}
+                  </span>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 · Kamus -->
+      <section id="kamus" class="section section--split reveal" data-section>
+        <div class="section__inner">
+          <p class="eyebrow" data-reveal>03 · Kamus</p>
+          <h2 class="display display--md" data-reveal><span data-count={termCount}>{termCount}</span> istilah,<br /><span class="accent">saling terhubung.</span></h2>
+          <p class="lead" data-reveal>Kamus teknis dengan analogi, demo, dan tautan antar-konsep. Mulai dari perjalanan satu frame:</p>
+          <ol class="pipeline-chips" data-reveal>
+            {pipeline.map((step, i) => (
+              <li><a href={withBase(step.href)} data-krekit-say={step.krekit}><span>{i + 1}</span>{step.label}</a></li>
+            ))}
+          </ol>
+          <div class="actions" data-reveal>
+            <a class="btn btn--primary" href={withBase('/kamus/')} data-krekit-say="Di halaman Kamus ada pencarian. Ketik saja istilah yang membuatmu bingung.">Buka Kamus →</a>
+          </div>
+        </div>
+        <div class="krekit-spot" data-krekit-spot aria-hidden="true"></div>
+      </section>
+
+      <!-- 04 · Prinsip -->
+      <section id="prinsip" class="section section--split section--flip reveal" data-section>
+        <div class="krekit-spot" data-krekit-spot aria-hidden="true"></div>
+        <div class="section__inner">
+          <p class="eyebrow" data-reveal>04 · Prinsip konten</p>
+          <h2 class="display display--md" data-reveal>Tiga aturan<br /><span class="accent">untuk setiap halaman.</span></h2>
+          <ul class="principles">
+            <li data-reveal data-krekit-say="Daftar sumber ada di bagian bawah setiap artikel."><b>Bersumber</b><span>Setiap angka, kebijakan platform, dan ketentuan lisensi wajib menautkan sumbernya, lengkap dengan tanggal akses.</span></li>
+            <li data-reveal data-krekit-say="Label draf muncul di bagian paling atas halaman."><b>Ditinjau</b><span>Status setiap halaman ditampilkan terbuka: kerangka, draf, atau ditinjau praktisi.</span></li>
+            <li data-reveal data-krekit-say="Aturannya tertulis lengkap di halaman Standar konten."><b>Netral</b><span>Kerja sama dengan mitra selalu diungkap dan tidak mengubah penilaian di konten edukasi.</span></li>
+          </ul>
+          <div class="actions" data-reveal>
+            <a class="btn btn--ghost" href={withBase('/kontribusi/standar-konten/')}>Baca standar konten</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 · Bergabung -->
+      <section id="bergabung" class="section section--center reveal" data-section>
+        <div class="krekit-spot krekit-spot--center" data-krekit-spot aria-hidden="true"></div>
+        <div class="section__inner">
+          <p class="eyebrow" data-reveal>05 · Bergabung</p>
+          <h2 class="display display--md" data-reveal>Dibangun <span class="accent">bersama komunitas.</span></h2>
+          <p class="lead" data-reveal>Programmer, artist, desainer, produser, dan pelaku bisnis bisa ikut mengisi situs ini. Tulis artikel, koreksi fakta, bagikan studi kasus, atau tinjau konten di bidang Anda.</p>
+          <div class="actions" data-reveal>
+            <a class="btn btn--primary" href={withBase('/kontribusi/')} data-krekit-say="Koreksi satu kalimat pun sudah membantu.">Cara berkontribusi →</a>
+            <a class="btn btn--ghost" href={SITE.repo} data-krekit-say="Semua kodenya terbuka, termasuk kodeku.">Repositori GitHub</a>
+          </div>
+          <footer class="site-foot" data-reveal>
+            © 2026 Krekit · Kode MIT ·
+            <a href={withBase('/tentang/')}>Tentang proyek</a>
+          </footer>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      import '../site/landing.js'
+    </script>
+    <BottomNav />
+  </body>
+</html>

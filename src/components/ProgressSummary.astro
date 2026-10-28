@@ -1,0 +1,60 @@
+---
+/**
+ * Ringkasan progres: XP, rank, dan jumlah yang sudah diselesaikan per bagian.
+ * Daftar halaman diambil saat build; status selesai dibaca dari localStorage di browser.
+ */
+import { getCollection } from 'astro:content'
+import { LEVELS, LESSON_XP } from '../lib/progress.js'
+
+const docs = await getCollection('docs', (e) => e.data.kind === 'lesson' || e.data.kind === 'term')
+const items = docs.map((e) => ({
+  id: e.id,
+  xp: e.data.kind === 'lesson' ? LESSON_XP : LEVELS[e.data.level ?? 1].xp,
+  group: e.data.kind === 'lesson' ? 'Pelajaran selesai' : 'Pecahan terkumpul (istilah Kamus)',
+}))
+---
+
+<div class="progress-summary not-content" data-progress-summary data-items={JSON.stringify(items)}>
+  <div class="progress-summary__rank">
+    <span>Rank</span>
+    <strong data-rank>Rookie</strong>
+  </div>
+  <div class="progress-summary__bar"><div data-xp-fill></div></div>
+  <p class="progress-summary__xp" data-xp-text></p>
+  <ul class="progress-summary__groups" data-groups></ul>
+  <button type="button" data-reset>Reset semua progres</button>
+</div>
+
+<script>
+  import { loadProgress, resetProgress, rankFor } from '../lib/progress.js'
+
+  const root = document.querySelector<HTMLElement>('[data-progress-summary]')
+  if (root) {
+    const items: { id: string; xp: number; group: string }[] = JSON.parse(root.dataset.items!)
+    const total = items.reduce((sum, i) => sum + i.xp, 0)
+
+    const render = () => {
+      const done = loadProgress()
+      const xp = items.filter((i) => done.has(i.id)).reduce((sum, i) => sum + i.xp, 0)
+      const ratio = total ? xp / total : 0
+      root.querySelector('[data-rank]')!.textContent = rankFor(ratio).name
+      root.querySelector<HTMLElement>('[data-xp-fill]')!.style.width = `${ratio * 100}%`
+      root.querySelector('[data-xp-text]')!.textContent = `${xp} / ${total} XP`
+      const groups = [...new Set(items.map((i) => i.group))]
+      root.querySelector('[data-groups]')!.innerHTML = groups
+        .map((g) => {
+          const inGroup = items.filter((i) => i.group === g)
+          return `<li><span>${g}</span><b>${inGroup.filter((i) => done.has(i.id)).length} / ${inGroup.length}</b></li>`
+        })
+        .join('')
+    }
+
+    root.querySelector('[data-reset]')!.addEventListener('click', () => {
+      if (confirm('Hapus semua progres?')) {
+        resetProgress()
+        render()
+      }
+    })
+    render()
+  }
+</script>

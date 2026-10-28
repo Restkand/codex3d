@@ -1,0 +1,99 @@
+---
+title: "Glitch & Chromatic Aberration"
+description: "Chromatic aberration: kanal merah dan biru sedikit bergeser sehingga tepi objek pecah warna, seperti lensa murah. Glitch: pita layar digeser acak seperti sinyal rusak. Contoh efek layar penuh buatan sendiri."
+kind: term
+level: 3
+aka: "RGB shift, color fringing, custom post-process"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Post-processing effects in URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/EffectList.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Post-processing in URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/integration-with-post-processing.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Full Screen Pass Renderer Feature reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/renderer-features/renderer-feature-full-screen-pass.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Post Process Effects"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/post-process-effects-in-unreal-engine"
+    publisher: "Epic Games Developer Documentation"
+    accessed: 2026-10-28
+  - title: "Post Process Materials"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/post-process-materials-in-unreal-engine"
+    publisher: "Epic Games Developer Documentation"
+    accessed: 2026-10-28
+  - title: "Custom post-processing"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/custom_postprocessing.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 4
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Dua efek layar penuh yang sering dipakai bersama:
+
+- **Chromatic aberration (RGB shift):** kanal merah dan biru dibaca dari posisi yang sedikit bergeser, sehingga tepi objek "pecah warna" seperti foto dari lensa murah. Dipakai untuk kesan kamera sungguhan, panik, atau terkena pukulan.
+- **Glitch:** pita horizontal layar digeser acak dan berganti beberapa kali per detik, seperti sinyal video rusak. Biasanya hanya muncul sesaat sebagai aksen.
+
+```text title="Pseudocode: RGB shift di shader layar penuh"
+merah = baca_layar(uv + geser)
+hijau = baca_layar(uv)
+biru  = baca_layar(uv - geser)
+warna = (merah.r, hijau.g, biru.b)
+```
+
+Chromatic aberration tersedia bawaan di Unity dan Unreal. Glitch tidak ada di engine mana pun, jadi ditulis sendiri sebagai **efek post-processing kustom**. Halaman ini memakainya sebagai contoh cara membuat efek layar penuh.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Chromatic aberration: Volume Override **Chromatic Aberration**. Efek kustom: **Full Screen Pass Renderer Feature** dengan material buatan sendiri di **Pass Material**. **Injection Point** menentukan kapan efek dijalankan, dan nilai bawaannya setelah post-processing bawaan.
+
+</div>
+<div slot="unreal">
+
+Chromatic aberration: bagian **Chromatic Aberration** di Post Process Volume (Intensity, Start Offset). Efek kustom: Material dengan **Material Domain: Post Process**, membaca layar lewat node **SceneTexture → PostProcessInput0**, mengeluarkan warna lewat **Emissive Color**, lalu dipasang di bagian **Blendables** pada Post Process Volume.
+
+</div>
+<div slot="godot">
+
+Tidak ada chromatic aberration bawaan. Efek kustom: **CanvasLayer** berisi **ColorRect** (anchor Full Rect) dengan ShaderMaterial yang membaca layar:
+
+```glsl title="rgb_shift.gdshader"
+shader_type canvas_item;
+uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_nearest;
+
+void fragment() {
+    float r = texture(screen_texture, SCREEN_UV + vec2(0.004, 0.0)).r;
+    float g = texture(screen_texture, SCREEN_UV).g;
+    float b = texture(screen_texture, SCREEN_UV - vec2(0.004, 0.0)).b;
+    COLOR = vec4(r, g, b, 1.0);
+}
+```
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Efek yang membuat layar bergetar atau pecah warna bisa memicu pusing pada sebagian pemain, terutama di VR. Dokumentasi Unity menyarankan menghindari chromatic aberration, lens distortion, dan motion blur di VR. Untuk game biasa pun, sediakan opsi mematikannya di menu pengaturan.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Efek glitch Lab ditulis sendiri di `src/experiment/shaders/glitch/fragment.glsl`: layar dibagi 24 pita, pita yang terpilih [acak](/kamus/shader/hash-random/) digeser, lalu RGB shift ditambahkan. Quest: klik "Glitch burst" di panel debug, lalu ubah angka `24.0` (jumlah pita).
+</Aside>
+
+## Terkait
+
+- [Random & Noise di Shader](/kamus/shader/hash-random/)
+- [Render Target](/kamus/post/render-target/)
+- [EffectComposer & Pass](/kamus/web/effect-composer/)

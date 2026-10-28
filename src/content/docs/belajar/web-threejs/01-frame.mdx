@@ -1,0 +1,323 @@
+---
+title: "Bagaimana Sebuah Frame Lahir"
+description: "Scene, kamera, renderer, dan render loop: kerangka yang sama di setiap aplikasi 3D."
+kind: lesson
+minutes: 20
+status: draf
+lastReviewed: 2026-10-27
+terms:
+  - webgl
+  - threejs
+  - gpu-cpu
+  - scene
+  - camera
+  - renderer
+  - frame
+  - raf
+  - delta-time
+  - aspect
+  - pixel-ratio
+  - frustum
+  - fog
+sidebar:
+  order: 1
+  label: "1 · Bagaimana Sebuah Frame Lahir"
+quiz:
+  - q: "Apa yang terjadi jika baris 94 di main.js (`requestAnimationFrame(tick)` di dalam tick) dihapus?"
+    options:
+      - "Tidak ada yang tampil sama sekali"
+      - "Satu frame tampil, lalu gambar membeku"
+      - "Animasi menjadi lebih cepat"
+      - "Muncul error di Console"
+    answer: 1
+    explain: "Baris 97 tetap memanggil `tick` sekali, sehingga satu frame dirender. Tetapi tidak ada lagi yang menjadwalkan frame berikutnya. Tidak ada error karena kodenya valid."
+  - q: "Kecepatan rotasi 0,6 rad/detik dikalikan delta. Berapa radian objek berputar dalam 2 detik di monitor 144 Hz?"
+    options:
+      - "0,6"
+      - "1,2"
+      - "2,88"
+      - "172,8"
+    answer: 1
+    explain: "Dengan delta, refresh rate tidak berpengaruh: 0,6 × 2 detik = 1,2 radian. Jawaban 2,88 adalah hasil jika memakai +0,01 per frame (144 × 2 × 0,01)."
+  - q: "FPS di perangkat Anda tepat 30, sementara panel Performance menunjukkan CPU time hanya 1,5 ms. Apa kesimpulan paling masuk akal?"
+    options:
+      - "JavaScript proyek terlalu berat"
+      - "Bukan JavaScript: GPU melewati anggaran, atau browser membatasi frame rate"
+      - "Terlalu banyak event listener"
+      - "Nilai far kamera terlalu besar"
+    answer: 1
+    explain: "CPU hanya memakai 1,5 dari 16,7 ms, jadi JavaScript bukan penyebabnya. Penyebabnya ada di GPU, atau browser sengaja menahan frame rate (mode hemat daya)."
+  - q: "Jendela diperlebar dua kali lipat, tetapi `updateProjectionMatrix()` tidak dipanggil. Apa yang terlihat?"
+    options:
+      - "Tidak ada perubahan sama sekali"
+      - "Objek tampak melar ke samping"
+      - "Scene menjadi hitam"
+      - "FPS turun setengah"
+    answer: 1
+    explain: "Kanvas melebar, tetapi kamera masih memproyeksikan dengan rasio lama, sehingga gambar diregangkan secara horizontal."
+---
+
+import Aside from '~/components/Aside.astro'
+import Demo from '~/components/Demo.astro'
+import Quiz from '~/components/Quiz.astro'
+import SetupLoopDiagram from '~/components/diagrams/SetupLoopDiagram.astro'
+import BudgetDiagram from '~/components/diagrams/BudgetDiagram.astro'
+
+<Aside type="note" title="Setelah pelajaran ini Anda bisa">
+- Menjelaskan peran Scene, Camera, dan Renderer dengan bahasa sendiri.
+- Memahami pembagian kerja CPU dan GPU dalam satu frame.
+- Mengerti kenapa ada batas 16,7 ms dan apa akibatnya jika terlewati.
+- Membaca dan menjelaskan render loop proyek ini baris demi baris.
+- Memahami kenapa gerakan harus dikali delta time, dan kenapa resize perlu ditangani.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title={"Model mental: Studio foto yang memotret 60 kali per detik"}>
+Bayangkan sebuah studio. [Scene](/kamus/dasar/scene/) adalah panggungnya, berisi properti dan lampu. [Camera](/kamus/dasar/camera/) menentukan dari mana panggung itu difoto. [Renderer](/kamus/dasar/renderer/) adalah fotografer yang menekan tombol rana dan mencetak hasilnya ke `<canvas>`. Animasi muncul karena fotografer memotret **berulang kali**, dan sebelum setiap jepretan properti di panggung digeser sedikit.
+</Aside>
+
+Seluruh aplikasi Three.js, sesederhana atau serumit apa pun, mengikuti pola yang sama: **siapkan sekali**, lalu **ulangi terus**. Jika pola ini sudah dipahami, kode 3D mana pun akan lebih mudah dibaca, karena Anda tahu harus mencari bagian "persiapan" dan bagian "loop".
+
+<SetupLoopDiagram />
+
+## Siapa mengerjakan apa: CPU dan GPU
+
+Komputer punya dua prosesor yang bekerja sama ([CPU vs GPU](/kamus/dasar/gpu-cpu/)). JavaScript Anda berjalan di **CPU**. CPU sebenarnya tidak menggambar piksel. Tugasnya menyiapkan data dan mengirim perintah ke GPU seperti "gambar mesh ini dengan material ini". Setiap perintah itu disebut [draw call](/kamus/performa/draw-call/).
+
+**GPU** menerima perintah itu lalu menjalankan pipa grafis. Setiap titik diposisikan oleh [Vertex Shader](/kamus/shader/vertex-shader/), segitiga diubah menjadi kumpulan piksel ([rasterisasi](/kamus/shader/pipeline-raster/)), setiap piksel diwarnai oleh [Fragment Shader](/kamus/shader/fragment-shader/), lalu [Depth Buffer](/kamus/geometri/depth-buffer/) memastikan objek yang dekat menutupi objek yang jauh.
+
+1. **CPU · update:** JavaScript mengubah angka-angka, misalnya rotasi, posisi, warna.
+2. **CPU · `renderer.render()`:** Three.js menghitung matriks setiap objek, membuang objek di luar pandangan kamera, mengurutkan objek, lalu mengirim draw call.
+3. **GPU · menggambar:** shader dijalankan untuk ribuan titik dan jutaan piksel secara paralel.
+4. **Browser · menampilkan:** gambar jadi ditampilkan saat layar melakukan refresh berikutnya.
+
+<Aside type="tip">
+Anda tidak perlu menulis shader untuk membuat scene biasa. Setiap material Three.js, seperti `MeshStandardMaterial`, sudah berisi shader buatan Three.js. Pelajaran shader nanti hanya "membuka kap mesin" itu.
+</Aside>
+
+## Bedah kode: persiapan di setup.js
+
+Seluruh persiapan proyek ini ada di satu fungsi. Buka `src/experiment/core/setup.js` di editor dan ikuti nomor barisnya.
+
+```js title="src/experiment/core/setup.js" showLineNumbers startLineNumber=13
+export function createSetup(canvas) {
+  // Scene: "semesta" yang menampung semua objek, cahaya, dan kamera
+  const scene = new THREE.Scene()
+  scene.background = new THREE.Color('#0b0b10')
+  // Fog membuat objek jauh memudar ke warna latar -> kesan kedalaman
+  scene.fog = new THREE.Fog('#0b0b10', 8, 20)
+
+  // PerspectiveCamera(fov, aspect, near, far)
+  // - fov: sudut pandang vertikal dalam derajat
+  // - aspect: rasio lebar/tinggi; jika salah, gambar akan gepeng/melar
+  // - near/far: objek di luar rentang ini tidak digambar (clipping)
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100)
+  camera.position.set(0, 0.6, 6)
+  scene.add(camera)
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true })
+  // Bayangan dinyalakan di renderer, lalu per-objek lewat castShadow/receiveShadow
+  renderer.shadowMap.enabled = true
+  // PCF = tepi bayangan dihaluskan (PCFSoftShadowMap sudah dihapus sejak Three r18x)
+  renderer.shadowMap.type = THREE.PCFShadowMap
+  // Tone mapping memetakan cahaya HDR ke rentang layar agar highlight tidak "pecah"
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
+```
+
+- **L15–16** · Scene dibuat dan diberi warna latar. Warna ini yang terlihat di area yang tidak tertutup objek apa pun.
+- **L18** · [Fog](/kamus/cahaya/fog/) `(warna, near, far)`: objek mulai memudar pada jarak 8 unit dari kamera dan hilang total pada jarak 20. Warnanya sengaja sama dengan latar, sehingga ujung lantai "larut" ke latar.
+- **L24** · Kamera: fov 45°, aspect diambil dari ukuran jendela, near 0,1, far 100. Jangan membuat rentang near–far terlalu ekstrem (mis. 0.0001 sampai 100000), karena presisi depth buffer akan terbagi ke rentang yang sangat lebar dan permukaan yang berdekatan bisa berkedip (z-fighting).
+- **L25** · Kamera mundur 6 unit ke arah +Z (ke arah Anda) dan naik 0,6. Objek ada di titik 0,0,0, jadi kamera berada di depannya. Koordinat dibahas di Pelajaran 2.
+- **L26** · Menambahkan kamera ke scene sebenarnya opsional. Ini baru diperlukan jika kamera punya anak (misalnya lampu yang menempel di kamera).
+- **L28** · Renderer memakai `<canvas>` yang sudah ada di halaman (`src/pages/eksperimen.astro`), bukan membuat kanvas baru. `antialias` menghaluskan tepi bergerigi.
+- **L30–34** · Pengaturan global: bayangan dan [Tone Mapping](/kamus/cahaya/tone-mapping/). Diatur sekali di sini dan berlaku untuk semua objek. Keduanya dibahas di Pelajaran 3.
+
+## Anggaran 16,7 milidetik
+
+Monitor 60 Hz menyegarkan gambarnya 60 kali per detik, berarti 1000 ÷ 60 ≈ **16,7 ms per frame**. Semua pekerjaan dalam satu frame harus selesai dalam anggaran itu: JavaScript, perintah render, dan kerja GPU. Di monitor 144 Hz anggarannya lebih ketat lagi: ±6,9 ms.
+
+<BudgetDiagram />
+
+Jika satu frame butuh 18 ms, gambarnya belum siap saat layar refresh, sehingga layar menampilkan gambar lama sekali lagi. Jika itu terjadi terus-menerus, gambar baru hanya muncul setiap refresh **kedua**. Akibatnya FPS tidak turun ke 55, tetapi **langsung jatuh ke sekitar 30**. Angka "tepat 30" yang Anda lihat saat laptop memakai baterai berasal dari mekanisme yang sama: browser sengaja hanya mengambil separuh refresh layar untuk menghemat daya.
+
+- **Waktu CPU habis** karena JavaScript yang berat, atau terlalu banyak objek terpisah (setiap objek minimal satu draw call).
+- **Waktu GPU habis** karena terlalu banyak piksel ([Pixel Ratio](/kamus/web/pixel-ratio/) tinggi), shader yang berat, atau efek layar penuh (post-processing).
+- Panel **Performance** di proyek ini membantu membedakan keduanya. Lihat entri [CPU-bound vs GPU-bound](/kamus/performa/cpu-gpu-bound/) dan [Membaca Panel Performance](/kamus/web/perf-monitor/).
+
+## Render loop
+
+Satu panggilan `renderer.render()` hanya menghasilkan **satu foto diam**. Untuk animasi, fungsi itu harus dipanggil terus, sekali di setiap refresh layar. Alatnya adalah [requestAnimationFrame](/kamus/web/raf/): "browser, panggil fungsi ini tepat sebelum kamu menggambar frame berikutnya".
+
+```js title="src/experiment/main.js" showLineNumbers startLineNumber=66
+function tick(timestamp) {
+  perf.begin()
+  timer.update(timestamp)
+  const delta = timer.getDelta()
+  const elapsed = timer.getElapsed()
+
+  const { mesh } = objects
+  mesh.rotation.y += delta * params.rotationSpeed
+  mesh.rotation.x += delta * params.rotationSpeed * 0.4
+  // Sinus berosilasi -1..1 -> objek naik-turun seperti mengambang
+  mesh.position.y = Math.sin(elapsed * 1.5) * params.floatAmplitude
+```
+
+- **L66** · Browser memanggil `tick` dengan `timestamp`, yaitu waktu (milidetik) saat frame ini dimulai.
+- **L67** · Mulai mengukur waktu CPU frame ini untuk panel Performance.
+- **L68–70** · `THREE.Timer` mengubah timestamp menjadi dua angka berguna: **delta** (detik sejak frame sebelumnya) dan **elapsed** (detik sejak awal).
+- **L73–74** · Rotasi bertambah sebesar *kecepatan × delta*. Kecepatannya dalam radian per **detik**, bukan per frame. Ini dibahas di bagian berikutnya.
+- **L76** · Posisi Y ditentukan langsung dari waktu lewat fungsi sinus, sehingga objek naik-turun. Fungsi sinus dibahas di Pelajaran 2.
+
+```js title="src/experiment/main.js" showLineNumbers startLineNumber=87
+  // Render bersyarat: post-processing hanya saat glitch aktif, selebihnya langsung ke layar.
+  // Hasil keduanya sama-sama melalui tone mapping + sRGB, jadi warnanya konsisten.
+  const usePost = post.isActive()
+  if (usePost) post.composer.render(delta)
+  else renderer.render(scene, camera)
+
+  perf.end(usePost ? 'composer' : 'direct')
+  requestAnimationFrame(tick)
+}
+
+requestAnimationFrame(tick)
+```
+
+- **L89–91** · Inilah "jepretan" frame ini. Biasanya `renderer.render()` langsung ke layar. Jalur composer hanya dipakai selama efek glitch (dibahas di pelajaran post-processing).
+- **L94** · **Kunci loop:** di akhir frame, `tick` menjadwalkan dirinya sendiri untuk frame berikutnya.
+- **L97** · Pemicu pertama. Tanpa baris ini, loop tidak pernah dimulai.
+
+|   | requestAnimationFrame | setInterval(fn, 16) |
+| --- | --- | --- |
+| Sinkron dengan refresh layar | Ya, dipanggil tepat sebelum layar digambar | Tidak, waktunya meleset sehingga gerakan patah-patah |
+| Saat tab tidak terlihat | Berhenti otomatis (hemat baterai) | Tetap berjalan |
+| Monitor 120/144 Hz | Otomatis mengikuti | Tetap ±60× per detik |
+
+## Delta time: kecepatan yang adil di semua monitor
+
+Misalkan objek diputar dengan `rotation.y += 0.01` di setiap frame. Di monitor 60 Hz objek bertambah 0,6 radian per detik, tetapi di monitor 144 Hz bertambah 1,44 radian per detik: **2,4 kali lebih cepat**. Animasinya bergantung pada perangkat penonton.
+
+Solusinya [Delta Time](/kamus/dasar/delta-time/): kalikan kecepatan dengan lama frame. Frame di monitor 144 Hz lebih pendek, jadi tambahannya per frame lebih kecil, tetapi totalnya per detik sama. Rumus umumnya: `nilaiBaru = nilaiLama + kecepatanPerDetik × delta`.
+
+<Demo name="delta" caption={"Geser refresh rate. Jarum magenta (per-frame) berubah-ubah, jarum cyan (delta) selalu sama."} />
+
+<Aside type="tip">
+**Kapan memakai elapsed, kapan delta?** Elapsed cocok untuk gerakan yang sepenuhnya ditentukan waktu, seperti osilasi sinus. Delta cocok untuk nilai yang *menumpuk* dan kecepatannya bisa berubah di tengah jalan. Coba bayangkan rotasi ditulis `rotation.y = elapsed × speed`, lalu speed diubah lewat GUI: objek akan *melompat* ke sudut baru, karena seluruh riwayat waktu dikalikan dengan speed yang baru.
+</Aside>
+
+<Aside type="caution">
+Saat tab disembunyikan, requestAnimationFrame berhenti. Ketika tab dibuka lagi, delta bisa bernilai puluhan detik dan objek seolah "teleport". `timer.connect(document)` (main.js baris 64) memakai Page Visibility API untuk mengabaikan jeda tersebut.
+</Aside>
+
+## Resize dan pixel ratio
+
+```js title="src/experiment/core/setup.js" showLineNumbers startLineNumber=38
+  function resize() {
+    sizes.width = window.innerWidth
+    sizes.height = window.innerHeight
+
+    // Kamera perlu tahu rasio baru, lalu matriks proyeksinya dihitung ulang
+    camera.aspect = sizes.width / sizes.height
+    camera.updateProjectionMatrix()
+
+    renderer.setSize(sizes.width, sizes.height)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO))
+  }
+
+  resize()
+  window.addEventListener('resize', resize)
+```
+
+- **L43–44** · Kamera menyimpan hasil hitungan proyeksinya (matriks proyeksi) dan **tidak** menghitung ulang otomatis karena jarang berubah. Setiap kali `aspect`, `fov`, `near`, atau `far` diubah, `updateProjectionMatrix()` wajib dipanggil.
+- **L46** · Mengubah ukuran kanvas. Kanvas punya dua ukuran: **ukuran tampil** (CSS) dan **resolusi gambar** (jumlah piksel yang benar-benar dirender).
+- **L47** · Resolusi gambar = ukuran tampil × [Pixel Ratio](/kamus/web/pixel-ratio/). Dibatasi 1,5 agar GPU tidak kewalahan di layar HiDPI.
+- **L50–51** · Dipanggil sekali di awal, lalu setiap kali jendela berubah ukuran.
+
+Kenapa pixel ratio sangat berpengaruh? Karena jumlah piksel naik **kuadratik**. Pixel ratio 2 bukan 2× lebih berat, melainkan 4× (lebar 2× dan tinggi 2×). Setiap piksel tambahan berarti fragment shader dijalankan sekali lagi.
+
+<Demo name="pixelratio" caption={"Geser pixel ratio dan perhatikan berapa kali lipat jumlah piksel yang harus digambar."} />
+
+## Kesalahan umum
+
+Kesalahan-kesalahan berikut sering terjadi, dan banyak di antaranya **tidak memunculkan error**. Mengenalinya lebih awal akan menghemat banyak waktu debugging.
+
+### Objek tidak bergerak, padahal nilainya berubah
+
+```js title="✗ Keliru"
+renderer.render(scene, camera) // dipanggil sekali
+setInterval(() => mesh.rotation.y += 0.01, 16)
+```
+
+```js title="✓ Benar"
+function tick() {
+  mesh.rotation.y += delta * speed
+  renderer.render(scene, camera)
+  requestAnimationFrame(tick)
+}
+```
+
+Mengubah angka tidak otomatis menggambar ulang. Gambar baru hanya ada jika `render()` dipanggil lagi.
+
+### Gambar gepeng setelah jendela diubah ukurannya
+
+```js title="✗ Keliru"
+camera.aspect = innerWidth / innerHeight
+```
+
+```js title="✓ Benar"
+camera.aspect = innerWidth / innerHeight
+camera.updateProjectionMatrix()
+```
+
+Matriks proyeksi masih memakai rasio lama sampai dihitung ulang.
+
+### Animasi lebih cepat di monitor gaming
+
+```js title="✗ Keliru"
+mesh.rotation.y += 0.01
+```
+
+```js title="✓ Benar"
+mesh.rotation.y += delta * 0.6 // rad per detik
+```
+
+Penambahan per frame bergantung pada berapa banyak frame per detik.
+
+### Lancar di laptop, berat di HP
+
+```js title="✗ Keliru"
+renderer.setPixelRatio(window.devicePixelRatio) // HP: 3
+```
+
+```js title="✓ Benar"
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
+```
+
+Pixel ratio 3 berarti 9× jumlah piksel dibanding pixel ratio 1.
+
+### Objek dibuat tetapi tidak muncul (tanpa error)
+
+```js title="✗ Keliru"
+const mesh = new THREE.Mesh(geometry, material)
+```
+
+```js title="✓ Benar"
+const mesh = new THREE.Mesh(geometry, material)
+scene.add(mesh)
+```
+
+Renderer hanya menggambar yang ada di dalam scene. Three.js tidak memberi peringatan jika objek lupa ditambahkan.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah Anda menjawab, jadi bacalah juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan langsung di kode proyek. Simpan file, lalu lihat hasilnya di halaman eksperimen (dev server memuat ulang otomatis). Kembalikan kodenya setelah selesai.
+
+1. Di setup.js baris 18, ubah fog menjadi `Fog(..., 4, 8)`. Apa yang terjadi dengan lantai dan objek? Kenapa?
+2. Tambahkan `console.log(1 / delta)` di dalam tick, lalu buka Console. Angka itu adalah FPS sesaat. Bandingkan dengan panel Performance. Hapus kembali setelahnya, karena console.log di setiap frame itu berat.
+3. Ubah `MAX_PIXEL_RATIO` menjadi 0.5. Perhatikan ketajaman gambar dan angka FPS, lalu kembalikan ke 1.5.

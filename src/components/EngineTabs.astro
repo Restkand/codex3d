@@ -1,0 +1,92 @@
+---
+/**
+ * Tab per engine: menampilkan versi Unity, Unreal, atau Godot dari konsep yang sama.
+ * Pilihan disimpan di browser dan disinkronkan ke semua grup tab di semua halaman.
+ *
+ * Pemakaian di MDX (beri baris kosong di sekitar blok kode di dalam div):
+ *   import EngineTabs from '~/components/EngineTabs.astro'
+ *
+ *   <EngineTabs>
+ *   <div slot="unity">
+ *
+ *   ```csharp
+ *   void Update() { ... }
+ *   ```
+ *
+ *   </div>
+ *   <div slot="unreal"> ... </div>
+ *   <div slot="godot"> ... </div>
+ *   </EngineTabs>
+ */
+const ENGINES = [
+  { id: 'unity', label: 'Unity' },
+  { id: 'unreal', label: 'Unreal' },
+  { id: 'godot', label: 'Godot' },
+].filter((engine) => Astro.slots.has(engine.id))
+---
+
+<div class="engine-tabs" data-engine-tabs>
+  <div class="engine-tabs__list" role="tablist" aria-label="Pilih engine">
+    {
+      ENGINES.map((engine, i) => (
+        <button type="button" role="tab" class="engine-tabs__tab" data-engine={engine.id} aria-selected={i === 0 ? 'true' : 'false'}>
+          {engine.label}
+        </button>
+      ))
+    }
+  </div>
+  {
+    ENGINES.map((engine, i) => (
+      <div class="engine-tabs__panel" role="tabpanel" data-engine-panel={engine.id} hidden={i !== 0}>
+        <slot name={engine.id} />
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  const KEY = 'krekit-engine'
+  const read = () => {
+    try {
+      return localStorage.getItem(KEY)
+    } catch {
+      return null
+    }
+  }
+  const write = (value: string) => {
+    try {
+      localStorage.setItem(KEY, value)
+    } catch {
+      // diabaikan: pilihan hanya berlaku selama halaman terbuka
+    }
+  }
+
+  /** Terapkan satu engine ke SEMUA grup tab di halaman */
+  function select(engine: string) {
+    document.querySelectorAll<HTMLElement>('[data-engine-tabs]').forEach((group) => {
+      if (!group.querySelector(`[data-engine="${engine}"]`)) return
+      group.querySelectorAll<HTMLButtonElement>('[data-engine]').forEach((tab) => {
+        tab.setAttribute('aria-selected', String(tab.dataset.engine === engine))
+      })
+      group.querySelectorAll<HTMLElement>('[data-engine-panel]').forEach((panel) => {
+        panel.hidden = panel.dataset.enginePanel !== engine
+      })
+    })
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-engine-tabs]').forEach((group) => {
+    group.addEventListener('click', (event) => {
+      const tab = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-engine]')
+      if (!tab) return
+      // Pertahankan posisi tab di layar walaupun tinggi panel lain di atasnya berubah
+      const before = tab.getBoundingClientRect().top
+      write(tab.dataset.engine!)
+      select(tab.dataset.engine!)
+      window.scrollBy(0, tab.getBoundingClientRect().top - before)
+      document.dispatchEvent(new CustomEvent('krekit:engine', { detail: { engine: tab.dataset.engine } }))
+    })
+  })
+
+  const saved = read()
+  if (saved) select(saved)
+</script>

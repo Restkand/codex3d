@@ -1,0 +1,62 @@
+---
+title: "Mesh"
+description: "Objek yang bisa dilihat terdiri dari dua bagian: geometri (bentuk) dan material (tampilan permukaan). Satu geometri bisa dipakai banyak objek dengan material berbeda."
+kind: term
+level: 1
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Mesh Renderer component reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-MeshRenderer.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "MeshInstance3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_meshinstance3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 1
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Objek yang bisa dilihat terdiri dari dua bagian: **geometri** (bentuk, yaitu kumpulan titik dan segitiga) dan **material** (tampilan permukaan). Keduanya terpisah, sehingga satu geometri bisa dipakai banyak objek dengan material berbeda, dan satu material bisa dipakai banyak bentuk.
+
+```text title="Pseudocode"
+batu_1 = objek_terlihat(bentuk = model_batu, material = batu_berlumut)
+batu_2 = objek_terlihat(bentuk = model_batu, material = batu_kering)   // bentuk sama, data tidak diduplikasi
+```
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Aset **Mesh** berisi bentuknya. Di GameObject, komponen **Mesh Filter** memegang mesh itu, dan **Mesh Renderer** (yang wajib ada bersama Mesh Filter di GameObject yang sama) menggambarnya dengan daftar **Materials** berisi satu atau lebih material.
+
+</div>
+<div slot="unreal">
+
+Aset **Static Mesh** (atau **Skeletal Mesh** untuk yang punya tulang) berisi bentuk dan slot material bawaannya. Di level, aset itu ditampilkan lewat **Static Mesh Component**, yang bisa menimpa material per slot.
+
+</div>
+<div slot="godot">
+
+Resource **Mesh** berisi bentuk dan material per surface. Node **MeshInstance3D** menampilkannya di scene. Material bisa ditimpa per surface dengan `set_surface_override_material()`, atau untuk semua surface sekaligus dengan `material_override` (properti warisan dari `GeometryInstance3D`).
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Satu mesh bisa terdiri dari beberapa bagian dengan material berbeda, misalnya karakter dengan material kulit, baju, dan mata. Unity menyebutnya **submesh**, Unreal **material slot** (material section), Godot **surface**. Setiap bagian biasanya menjadi satu [draw call](/kamus/performa/draw-call/) tersendiri, jadi semakin banyak material per objek, semakin banyak kerja CPU.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Three.js menggabungkan keduanya dengan `new THREE.Mesh(geometry, material)`. Lihat `src/experiment/world/objects.js`.
+</Aside>
+
+## Terkait
+
+- [Geometry](/kamus/geometri/geometry/)
+- [Material](/kamus/geometri/material/)

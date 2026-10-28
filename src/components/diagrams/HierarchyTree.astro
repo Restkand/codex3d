@@ -1,0 +1,23 @@
+<div class="diagram not-content">
+<div class="dg-tree">
+  <div class="dg-node dg-node--root">Scene</div>
+  <ul>
+    <li><div class="dg-node">scrollGroup <small>← ScrollTrigger: posisi x, rotasi z</small></div>
+      <ul>
+        <li><div class="dg-node">introGroup <small>← intro: scale · GUI: posisi</small></div>
+          <ul>
+            <li><div class="dg-node">tiltGroup <small>← mouse: rotasi x/y</small></div>
+              <ul>
+                <li><div class="dg-node dg-node--mesh">mesh <small>← render loop: rotasi, posisi y · hover: scale</small></div>
+                  <ul><li><div class="dg-node">hologram <small>(ikut semua induknya)</small></div></li></ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><div class="dg-node dg-node--dim">floor, cahaya, kamera <small>(langsung di Scene)</small></div></li>
+  </ul>
+</div>
+</div>

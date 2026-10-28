@@ -1,0 +1,24 @@
+---
+title: "Shader"
+description: "Program kecil yang berjalan langsung di GPU. Setiap material sebenarnya menjalankan shader. Bab ini menjelaskan cara kerjanya dan cara menulisnya di setiap engine."
+sidebar:
+  order: 0
+  label: Ikhtisar bab
+---
+
+Program kecil yang berjalan langsung di GPU. Setiap material sebenarnya menjalankan shader. Bab ini menjelaskan cara kerjanya dan cara menulisnya di setiap engine.
+
+- [Rasterization](/kamus/shader/pipeline-raster/): Tahap yang mengubah segitiga menjadi kumpulan piksel.
+- [Shader](/kamus/shader/shader/): Program GPU yang berjalan paralel, ditulis dengan node atau kode.
+- [Bahasa Shader (HLSL & GLSL)](/kamus/shader/glsl/): Dua keluarga bahasa shader dan perbedaannya.
+- [Vertex Shader](/kamus/shader/vertex-shader/): Dijalankan per titik. Tempat menggerakkan rumput, bendera, dan ombak.
+- [Fragment Shader](/kamus/shader/fragment-shader/): Dijalankan per piksel. Sumber lag yang paling umum.
+- [Uniform](/kamus/shader/uniform/): Nilai dari kode game ke shader, sama untuk semua titik dan piksel.
+- [Attribute](/kamus/shader/attribute/): Data milik masing-masing titik: posisi, normal, UV, warna vertex.
+- [Varying](/kamus/shader/varying/): Nilai dari vertex shader ke fragment shader, dicampur halus per piksel.
+- [Fungsi Shader Penting](/kamus/shader/glsl-functions/): lerp/mix, step, smoothstep, fract, pow, saturate.
+- [Efek Fresnel](/kamus/shader/fresnel/): Tepi bercahaya untuk hologram dan rim light.
+- [Random & Noise di Shader](/kamus/shader/hash-random/): Acak tanpa fungsi acak, dan noise yang halus.
+- [Morph & Blend Shape](/kamus/shader/morph/): Mencampur dua bentuk, dari ekspresi wajah sampai efek transformasi.
+- [Shader Variant & Stutter Kompilasi](/kamus/shader/shader-variant/): Kenapa satu shader punya banyak versi, dan kenapa game tersendat saat efek baru pertama kali muncul.
+- [Toon Shading](/kamus/shader/toon-shading/): Cahaya bergaya kartun dengan pita warna tegas.

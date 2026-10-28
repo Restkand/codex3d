@@ -1,0 +1,25 @@
+---
+title: "Vertex"
+description: "Satu titik di ruang 3D yang membawa data: posisi, normal, UV, warna, dan lainnya. Data per titik ini disebut attribute. GPU menjalankan vertex shader sekali untuk setiap vertex."
+kind: term
+level: 1
+aka: "titik sudut, vertices"
+status: draf
+lastReviewed: 2026-10-28
+sidebar:
+  order: 3
+---
+
+Satu titik di ruang 3D. Selain posisi, setiap vertex membawa data lain yang disebut **attribute**: [normal](/kamus/geometri/normal/) (arah hadap permukaan), [UV](/kamus/geometri/uv/) (koordinat tekstur), warna, dan untuk karakter beranimasi, bobot tulang. GPU menjalankan [vertex shader](/kamus/shader/vertex-shader/) sekali untuk setiap vertex.
+
+## Pelajari lebih dalam
+
+Jumlah vertex di engine sering **lebih besar** daripada yang terlihat di aplikasi 3D. Satu titik di Blender bisa dipecah menjadi beberapa vertex saat diimpor, karena GPU hanya mengenal satu set data per vertex. Titik yang berada di tepi tajam (normalnya berbeda per sisi) atau di sambungan UV (*UV seam*) harus diduplikasi. Sudut sebuah kubus misalnya disimpan tiga kali, satu untuk setiap sisi.
+
+Karena itu, untuk mengukur berat sebuah model, lihat angka vertex di statistik engine, bukan hanya di aplikasi 3D.
+
+## Terkait
+
+- [Triangle / Face](/kamus/geometri/triangle/)
+- [Attribute](/kamus/shader/attribute/)
+- [Vertex Shader](/kamus/shader/vertex-shader/)

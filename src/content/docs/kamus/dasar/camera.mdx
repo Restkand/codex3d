@@ -1,0 +1,76 @@
+---
+title: "Kamera Perspektif"
+description: "Menentukan dari mana dan bagaimana scene dilihat. Objek yang jauh tampak lebih kecil, seperti mata manusia. Diatur oleh field of view, aspect ratio, serta batas jarak dekat dan jauh."
+kind: term
+level: 1
+aka: "perspective camera, PerspectiveCamera (Three.js)"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Camera Inspector window reference for the Built-In Render Pipeline"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-Camera.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Camera.fieldOfView"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Camera-fieldOfView.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Camera3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_camera3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 5
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Menentukan dari mana dan bagaimana scene dilihat. Pada kamera perspektif, objek yang jauh tampak lebih kecil, seperti mata manusia. Pengaturan utamanya:
+
+- **Field of view (FOV):** seberapa lebar sudut pandang, dalam derajat.
+- **Aspect ratio:** lebar dibagi tinggi layar. Biasanya diatur engine secara otomatis.
+- **Near & far:** batas jarak terdekat dan terjauh yang masih digambar.
+
+<Aside type="note" title="Analogi">
+Lensa kamera: FOV kecil seperti lensa tele (zoom), FOV besar seperti lensa wide.
+</Aside>
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Komponen **Camera**, dengan **Projection: Perspective**. **Field of View** diukur dalam derajat sepanjang sumbu yang dipilih di **FOV Axis** (Vertical atau Horizontal). Lewat skrip, `Camera.fieldOfView` selalu berarti FOV **vertikal**, sedangkan FOV horizontal mengikuti aspect ratio. Batas jarak diatur di **Clipping Planes** (Near dan Far, dalam unit dunia). Jika **Physical Camera** dicentang, FOV dihitung dari focal length dan ukuran sensor, seperti kamera sungguhan.
+
+</div>
+<div slot="unreal">
+
+**Camera Component** dengan **Projection Mode: Perspective**. **Field of View** diukur **horizontal**, bawaannya 90°. Batas dekat (*near clip plane*) diatur secara global di Project Settings.
+
+</div>
+<div slot="godot">
+
+Node **Camera3D** dengan **Projection: Perspective**. Properti `fov` bawaannya 75° dan diukur **vertikal** selama `keep_aspect` bernilai `KEEP_HEIGHT` (bawaan). Batas jarak diatur di `near` dan `far` (bawaan 0,05 dan 4000).
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Karena satu engine mengukur FOV secara vertikal dan yang lain horizontal, angka yang sama bisa menghasilkan tampilan yang sangat berbeda. Di layar 16:9, FOV vertikal 60° setara dengan FOV horizontal sekitar 91°.
+
+**Zoom vs dolly:** mengecilkan FOV (zoom) memperbesar objek tanpa mengubah perspektif, sehingga bentuknya tampak lebih "datar" seperti foto lensa tele. Memindahkan kamera mendekat (dolly) mengubah perspektif, sehingga objek dekat membesar jauh lebih cepat daripada objek jauh. Efek sinematik "dolly zoom" menggabungkan keduanya.
+
+Alternatifnya adalah [kamera ortografis](/kamus/dasar/ortho/): tanpa perspektif, sehingga objek jauh dan dekat sama besar.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Kamera dibuat dengan `new THREE.PerspectiveCamera(45, aspect, 0.1, 100)` di `src/experiment/core/setup.js`. FOV-nya vertikal. Coba ubah 45 menjadi 90, lalu 20, dan perhatikan distorsi perspektifnya.
+</Aside>
+
+## Terkait
+
+- [Aspect Ratio & Resize](/kamus/dasar/aspect/)
+- [Frustum & Clipping](/kamus/dasar/frustum/)
+- [Kamera Ortografis](/kamus/dasar/ortho/)
+- [Matriks Model / View / Projection](/kamus/ruang/matrices/)

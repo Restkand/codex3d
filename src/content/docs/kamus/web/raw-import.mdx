@@ -1,0 +1,23 @@
+---
+title: "Import ?raw"
+description: "Fitur Vite: menambahkan ?raw di akhir path mengimpor isi file sebagai string. Cara praktis menyimpan shader di file .glsl terpisah (dengan syntax highlighting) alih-alih string panjang di JavaScript."
+kind: term
+level: 2
+sidebar:
+  order: 19
+---
+
+import Aside from '~/components/Aside.astro'
+
+Fitur Vite: menambahkan `?raw` di akhir path mengimpor isi file sebagai string. Cara praktis menyimpan shader di file `.glsl` terpisah (dengan syntax highlighting) alih-alih string panjang di JavaScript.
+
+```js
+import vertexShader from '../shaders/hologram/vertex.glsl?raw'
+```
+
+**Di proyek ini:** `src/experiment/world/hologram.js`
+
+## Terkait
+
+- [Vite](/kamus/web/vite/)
+- [Shader](/kamus/shader/shader/)

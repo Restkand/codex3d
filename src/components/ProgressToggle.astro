@@ -1,0 +1,41 @@
+---
+/**
+ * Tombol di akhir pelajaran ("tandai selesai") dan istilah Kamus.
+ * Istilah yang dipahami menjadi satu "pecahan" cangkang Krekit (lihat ShardCount.astro).
+ */
+interface Props {
+  id: string
+  xp: number
+  kind: 'lesson' | 'term'
+}
+const { id, xp, kind } = Astro.props
+const label = kind === 'lesson' ? 'Tandai pelajaran selesai' : 'Sudah paham, ambil pecahannya'
+const doneLabel = kind === 'lesson' ? '✓ Pelajaran selesai' : '✓ Pecahan terkumpul'
+---
+
+<div class="progress-toggle not-content">
+  <button type="button" data-progress-toggle={id} data-label={label} data-done-label={doneLabel} data-xp={xp}>
+    {label} · +{xp} XP
+  </button>
+</div>
+
+<script>
+  import { loadProgress, setDone } from '../lib/progress.js'
+
+  document.querySelectorAll<HTMLButtonElement>('[data-progress-toggle]').forEach((button) => {
+    const id = button.dataset.progressToggle!
+    const render = () => {
+      const done = loadProgress().has(id)
+      button.classList.toggle('is-done', done)
+      button.textContent = done ? `${button.dataset.doneLabel} (klik untuk membatalkan)` : `${button.dataset.label} · +${button.dataset.xp} XP`
+    }
+    button.addEventListener('click', () => {
+      const done = !loadProgress().has(id)
+      setDone(id, done)
+      render()
+      // Sinyal untuk pendamping (Krekit) atau komponen lain yang ingin bereaksi
+      document.dispatchEvent(new CustomEvent('krekit:progress', { detail: { id, done } }))
+    })
+    render()
+  })
+</script>

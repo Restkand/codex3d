@@ -1,0 +1,33 @@
+name: Koreksi fakta
+description: Laporkan informasi yang salah, usang, atau tanpa sumber
+title: "[Koreksi] "
+labels: ["konten", "koreksi"]
+body:
+  - type: input
+    id: halaman
+    attributes:
+      label: Halaman
+      description: URL halaman yang perlu dikoreksi
+      placeholder: https://restkand.github.io/krekit/...
+    validations:
+      required: true
+  - type: textarea
+    id: tertulis
+    attributes:
+      label: Yang tertulis saat ini
+      description: Salin kalimat atau bagian yang dimaksud
+    validations:
+      required: true
+  - type: textarea
+    id: seharusnya
+    attributes:
+      label: Yang seharusnya
+    validations:
+      required: true
+  - type: textarea
+    id: sumber
+    attributes:
+      label: Sumber
+      description: Tautan ke dokumen resmi atau sumber primer yang mendukung koreksi
+    validations:
+      required: true

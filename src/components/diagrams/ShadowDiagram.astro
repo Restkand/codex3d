@@ -1,0 +1,13 @@
+<div class="diagram not-content">
+<div class="dg-two">
+  <div class="dg-box">
+    <p class="dg-box__title">Tahap 1 · dari sudut pandang cahaya</p>
+    <p>Scene dirender <b>hanya kedalamannya</b>: seberapa jauh permukaan terdekat dari cahaya di setiap titik. Hasilnya disimpan sebagai tekstur: <b>shadow map</b>.</p>
+  </div>
+  <div class="dg-arrow" aria-hidden="true">→</div>
+  <div class="dg-box dg-box--loop">
+    <p class="dg-box__title">Tahap 2 · render biasa dari kamera</p>
+    <p>Untuk setiap piksel lantai: "jarak saya ke cahaya" dibandingkan dengan isi shadow map. Jika ada permukaan lain yang <b>lebih dekat</b> ke cahaya → piksel ini <b>di dalam bayangan</b>.</p>
+  </div>
+</div>
+</div>

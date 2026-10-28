@@ -1,0 +1,67 @@
+---
+title: "Skeletal Animation & Skinning"
+description: "Karakter digerakkan lewat kerangka tulang tak terlihat. Setiap titik mesh terikat ke beberapa tulang dengan bobot tertentu, sehingga kulit ikut melentur saat tulang bergerak."
+kind: term
+level: 2
+aka: "skeleton, bone, rig, skinning, bone weight"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Skinned Mesh Renderer component reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-SkinnedMeshRenderer.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Skeleton3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_skeleton3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 5
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Karakter tidak digerakkan dengan memindahkan ribuan titiknya satu per satu. Di dalamnya ada **kerangka** (*skeleton*): hierarki tulang tak terlihat, seperti panggul → tulang belakang → bahu → lengan atas → lengan bawah → tangan. Animasi hanya menyimpan rotasi setiap tulang dari waktu ke waktu.
+
+**Skinning** adalah cara mesh "kulit" mengikuti tulang. Setiap [vertex](/kamus/geometri/vertex/) terikat ke beberapa tulang dengan **bobot** (*bone weight*). Titik di siku misalnya terikat 50% ke lengan atas dan 50% ke lengan bawah, sehingga lipatan siku melentur halus, bukan patah seperti boneka kayu. Perhitungannya dilakukan setiap frame, biasanya di GPU.
+
+```text title="Pseudocode: posisi satu titik setelah skinning"
+posisi_akhir = 0.5 * (matriks_lengan_atas * posisi)
+             + 0.5 * (matriks_lengan_bawah * posisi)
+```
+
+Alur produksinya: artist membuat model, lalu **rigger** memasang tulang dan mengatur bobot (*rigging* dan *weight painting*) di aplikasi 3D. Animator membuat klip animasi pada kerangka itu, lalu semuanya diimpor ke engine.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Model berkerangka ditampilkan oleh komponen **Skinned Mesh Renderer**. **Quality** membatasi berapa tulang yang memengaruhi satu titik (1, 2, atau 4). Secara bawaan, skinning berhenti saat objek di luar layar, kecuali **Update When Offscreen** dinyalakan.
+
+</div>
+<div slot="unreal">
+
+Aset **Skeleton** menyimpan hierarki tulang, aset **Skeletal Mesh** menyimpan mesh berbobot, dan **Animation Sequence** menyimpan klip. Beberapa Skeletal Mesh bisa memakai Skeleton yang sama sehingga berbagi animasi.
+
+</div>
+<div slot="godot">
+
+Node **Skeleton3D** mengelola hierarki tulang, pose, dan rest pose. Mesh berbobot berupa `MeshInstance3D` yang dihubungkan ke Skeleton3D itu. Klip diputar oleh AnimationPlayer.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Skinning termasuk pekerjaan yang mahal untuk karakter dengan banyak tulang dan titik. Karena itu karakter jauh biasanya memakai [LOD](/kamus/geometri/segments/) dengan tulang lebih sedikit, dan engine berhenti menghitung skinning untuk karakter yang tidak terlihat.
+
+**Retargeting** adalah memakai animasi dari satu kerangka di kerangka lain yang proporsinya berbeda, misalnya animasi jalan manusia dewasa untuk karakter anak. Semua engine besar menyediakan alat untuk ini, sehingga satu pustaka animasi bisa dipakai banyak karakter.
+
+## Terkait
+
+- [Animation State Machine](/kamus/animasi/state-machine/)
+- [Inverse Kinematics (IK)](/kamus/animasi/ik/)
+- [Morph & Blend Shape](/kamus/shader/morph/)
+- [Hierarki](/kamus/ruang/hierarchy/)

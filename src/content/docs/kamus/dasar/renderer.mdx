@@ -1,0 +1,73 @@
+---
+title: "Renderer"
+description: "Bagian engine yang mengubah scene dan kamera menjadi piksel di layar. Setiap kali dijalankan, renderer menghasilkan satu frame."
+kind: term
+level: 1
+aka: "rendering pipeline, WebGLRenderer (Three.js)"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Render pipelines introduction"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/render-pipelines-overview.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Overview of renderers"
+    url: "https://docs.godotengine.org/en/stable/tutorials/rendering/renderers.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Fixing jitter, stutter and input lag"
+    url: "https://docs.godotengine.org/en/stable/tutorials/rendering/jitter_stutter.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 8
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Bagian engine yang mengubah scene dan kamera menjadi piksel di layar. Setiap kali dijalankan, renderer menghasilkan satu [frame](/kamus/dasar/frame/). Di dalamnya tersimpan banyak keputusan teknis: cara menghitung cahaya, cara membuat bayangan, efek layar penuh, dan anti-aliasing.
+
+## Di engine
+
+Setiap engine menyediakan lebih dari satu jenis renderer, dengan kompromi antara kualitas dan performa:
+
+<EngineTabs>
+<div slot="unity">
+
+Unity memakai **render pipeline** yang dipilih per proyek. **URP** (Universal Render Pipeline) ringan dan berjalan di banyak perangkat, termasuk mobile. **HDRP** (High Definition Render Pipeline) ditujukan untuk grafis kelas atas di platform bertenaga besar. Keduanya dibangun di atas **Scriptable Render Pipeline** (SRP), yang juga bisa dipakai untuk membuat pipeline sendiri. Selain itu masih ada **Built-In Render Pipeline**, pipeline lama yang lebih sedikit pilihan kustomisasinya.
+
+</div>
+<div slot="unreal">
+
+Unreal memakai renderer kelas atas secara bawaan, dengan fitur seperti **Lumen** (pencahayaan global real-time) dan **Nanite** (geometri sangat detail). Untuk perangkat yang lebih lemah, banyak fitur ini bisa dimatikan atau diganti alternatif yang lebih ringan.
+
+</div>
+<div slot="godot">
+
+Godot 4 punya tiga renderer: **Forward+** (fitur paling lengkap, khusus desktop), **Mobile** (untuk mobile dan desktop), dan **Compatibility** (paling sederhana, untuk desktop dan mobile kelas bawah). Untuk ekspor web, Compatibility adalah satu-satunya pilihan.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Secara garis besar, satu kali render berisi langkah-langkah ini:
+
+1. Posisi dunia setiap objek dihitung dari [hierarkinya](/kamus/ruang/hierarchy/).
+2. Objek di luar pandangan kamera dibuang ([frustum culling](/kamus/dasar/frustum/)).
+3. Objek diurutkan: yang **opak** dari dekat ke jauh agar piksel yang tertutup bisa dilewati, yang **transparan** dari jauh ke dekat agar pencampurannya benar.
+4. Jika ada cahaya yang memberi bayangan, [shadow map](/kamus/cahaya/shadow-map/) dibuat lebih dulu.
+5. Untuk setiap objek, satu atau beberapa [draw call](/kamus/performa/draw-call/) dikirim ke GPU.
+
+Saat sebuah material dipakai **pertama kali**, shadernya harus disiapkan (dikompilasi) untuk GPU. Proses ini bisa memakan puluhan milidetik, sehingga game sering tersendat saat efek atau objek baru pertama kali muncul. Semua engine besar punya cara untuk menyiapkan shader lebih awal, misalnya saat layar loading. Sebagai contoh, dokumentasi Godot menyebut renderer Forward+ dan Mobile memakai pendekatan *ubershader* sejak Godot 4.4 untuk mengurangi masalah ini, sedangkan di Compatibility kamu perlu memunculkan mesh dan efek sekali saat loading level.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Renderer dibuat dengan `new THREE.WebGLRenderer()` di `src/experiment/core/setup.js`. Satu panggilan `renderer.render(scene, camera)` menghasilkan satu frame.
+</Aside>
+
+## Terkait
+
+- [Frame & FPS](/kamus/dasar/frame/)
+- [Antialiasing](/kamus/post/antialias/)
+- [Tone Mapping](/kamus/cahaya/tone-mapping/)

@@ -1,0 +1,87 @@
+---
+title: "Hierarki"
+description: "Objek bisa menjadi anak objek lain. Transform anak dihitung relatif terhadap induknya, sehingga jika induk bergeser atau berputar, semua anaknya ikut."
+kind: term
+level: 2
+aka: "parent-child, scene graph"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Transform.SetParent"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Transform.SetParent.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Hierarchy window"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/Hierarchy.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Transform component"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-Transform.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Node"
+    url: "https://docs.godotengine.org/en/stable/classes/class_node.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Node3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_node3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 5
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Objek bisa menjadi anak objek lain. [Transform](/kamus/ruang/transform/) anak dihitung relatif terhadap induknya, sehingga jika induk bergeser, berputar, atau membesar, semua anaknya ikut. Satu induk boleh punya banyak anak, tetapi setiap anak hanya punya satu induk. Objek kosong yang tidak terlihat sering dipakai sebagai induk, berfungsi seperti "engsel" untuk mengatur gerakan.
+
+<Aside type="note" title="Analogi">
+Bulan mengorbit bumi, bumi mengorbit matahari. Bulan cukup tahu posisinya terhadap bumi.
+</Aside>
+
+## Di engine
+
+Saat memindahkan objek ke induk baru, ada dua pilihan: mempertahankan posisi **lokal** (objek bisa "melompat" karena kini relatif ke induk baru) atau mempertahankan posisi **dunia** (objek tetap di tempatnya).
+
+<EngineTabs>
+<div slot="unity">
+
+Di jendela **Hierarchy**, seret objek ke atas objek lain untuk menjadikannya anak. Klik kanan sebuah objek lalu pilih **Create Empty Parent** (Ctrl+Shift+G) untuk membungkusnya dengan induk kosong.
+
+Lewat kode: `transform.SetParent(induk, worldPositionStays)`. Nilai bawaan `worldPositionStays` adalah `true`: posisi, rotasi, dan skala dunia dipertahankan. Dengan `false`, nilai lokalnya yang dipertahankan.
+
+</div>
+<div slot="unreal">
+
+`AttachToActor` atau `AttachToComponent` dengan `FAttachmentTransformRules`, misalnya `KeepWorldTransform` atau `KeepRelativeTransform`. Induk tanpa bentuk biasanya berupa **Scene Component**.
+
+</div>
+<div slot="godot">
+
+`induk.add_child(anak)` tidak mengubah nilai transform anak. Karena nilai itu relatif ke induk, posisi dunianya akan mengikuti induk barunya.
+
+`anak.reparent(induk_baru)` memindahkan node yang sudah punya induk ke induk lain. Parameter kedua, `keep_global_transform`, bernilai bawaan `true`, jadi transform globalnya dipertahankan. Induk tanpa bentuk = node **Node3D** biasa.
+
+Jika sebuah Node3D tidak boleh ikut bergerak bersama induknya, aktifkan properti `top_level`.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Engine menyimpan transform setiap objek sebagai matriks, lalu menghitung posisi dunia secara berantai dari akar ke daun: posisi dunia anak = matriks dunia induk × matriks lokal anak. Karena itu mengubah satu induk otomatis memengaruhi seluruh keturunannya, tanpa perlu memperbarui setiap anak satu per satu.
+
+Skala induk juga menurun ke anak. Induk yang diskalakan tidak seragam (misalnya X dua kali lipat) bisa membuat anak yang berputar tampak miring atau gepeng. Karena itu induk kosong biasanya dibiarkan berskala 1.
+
+Hierarki juga berguna untuk memisahkan gerakan. Misalnya, induk mengatur posisi karakter sedangkan anak mengatur animasi bergoyang, sehingga keduanya tidak saling menimpa. Prinsip ini dibahas di [Satu Properti, Satu Pengendali](/kamus/interaksi/layered-control/).
+
+<Aside type="note" title="Di Lab (Three.js)">
+Objek di Lab memakai empat lapis induk (`scrollGroup` → `introGroup` → `tiltGroup` → `mesh`), masing-masing dikendalikan sistem yang berbeda. Lihat `src/experiment/world/objects.js`.
+</Aside>
+
+## Terkait
+
+- [Transform](/kamus/ruang/transform/)
+- [Local vs World Space](/kamus/ruang/local-world/)
+- [Satu Properti, Satu Pengendali](/kamus/interaksi/layered-control/)

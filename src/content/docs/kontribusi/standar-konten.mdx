@@ -1,0 +1,71 @@
+---
+title: Standar konten
+description: Aturan sumber, status, netralitas, dan gaya bahasa untuk semua konten.
+sidebar:
+  order: 2
+---
+
+import Aside from '~/components/Aside.astro'
+
+Kepercayaan pembaca adalah aset utama situs ini. Standar berikut berlaku untuk semua konten, siapa pun penulisnya.
+
+## 1. Sumber
+
+**Wajib bersumber:** angka (harga, persentase, pendapatan, statistik pasar), ketentuan lisensi atau kebijakan platform, ketentuan hukum dan pajak, serta kutipan dari orang atau perusahaan.
+
+**Tidak wajib bersumber:** konsep teknis yang bisa diverifikasi dengan menjalankan kode (misalnya cara kerja delta time), dan definisi umum.
+
+Urutan sumber yang diutamakan:
+
+1. Dokumen resmi: halaman lisensi vendor, dokumentasi platform, regulasi pemerintah.
+2. Pernyataan langsung pelaku: postmortem, talk konferensi, wawancara.
+3. Laporan riset dengan metodologi yang jelas.
+4. Media, hanya jika tidak ada sumber primer, dan disebut sebagai media.
+
+Sumber dicantumkan di frontmatter, lalu ditampilkan otomatis di akhir halaman:
+
+```yaml
+sources:
+  - title: Judul dokumen atau artikel
+    url: https://contoh.com/dokumen
+    publisher: Nama penerbit
+    accessed: 2026-10-27
+```
+
+## 2. Tanggal tinjauan dan status
+
+Dunia game bergerak cepat. Setiap artikel mencantumkan `lastReviewed` (kapan terakhir isinya diperiksa) dan `status`:
+
+| Status | Arti | Tampilan |
+| --- | --- | --- |
+| `kerangka` | Baru rencana isi | Catatan "Kerangka" + ajakan berkontribusi |
+| `draf` | Sudah ditulis, belum ditinjau praktisi | Catatan "Draf" |
+| `ditinjau` | Sudah diperiksa orang yang berpengalaman di bidangnya | Tanpa catatan; nama peninjau di `reviewers` |
+
+Artikel yang memuat fakta industri sebaiknya ditinjau ulang **setidaknya setahun sekali**.
+
+## 3. Netralitas dan keterbukaan kerja sama
+
+- Perbandingan (engine, platform, layanan) memakai kriteria yang sama untuk semua pilihan dan menyebut kelebihan serta kekurangan masing-masing.
+- Hindari klaim superlatif ("terbaik", "paling mudah") tanpa konteks dan alasan.
+- **Konten yang didukung atau bekerja sama dengan pihak luar** (platform, publisher, pembuat hardware, event) wajib diberi keterangan eksplisit di awal halaman. Kerja sama tidak boleh mengubah penilaian di konten edukasi.
+- Penulis yang punya hubungan dengan pihak yang dibahas (karyawan, mitra, investor) wajib menyebutkannya di deskripsi pull request.
+
+## 4. Gaya bahasa
+
+- Bahasa Indonesia yang baku tetapi santai, menyapa pembaca dengan **Anda**.
+- Istilah teknis bahasa Inggris boleh dipakai jika memang lazim (shader, frame, publisher), dijelaskan saat pertama muncul, dan ditautkan ke [Kamus](/kamus/) jika ada.
+- Satu paragraf, satu gagasan. Lebih baik contoh konkret daripada definisi abstrak.
+- Hindari singkatan yang tidak umum, slang, dan emoji di teks artikel.
+
+<Aside type="caution" title="Nasihat keuangan dan hukum">
+Artikel bisnis, pajak, dan legal bersifat edukasi. Tandai contoh perhitungan sebagai **ilustrasi** dan sarankan pembaca berkonsultasi dengan profesional untuk keputusan nyata.
+</Aside>
+
+## 5. Konten yang dibantu AI
+
+Alat AI boleh dipakai untuk membantu menyusun draf, dengan syarat:
+
+- Setiap fakta tetap diverifikasi ke sumber aslinya oleh penulis.
+- Penggunaan AI disebutkan di deskripsi pull request.
+- Konten masuk dengan status `draf` sampai ditinjau manusia yang memahami topiknya.

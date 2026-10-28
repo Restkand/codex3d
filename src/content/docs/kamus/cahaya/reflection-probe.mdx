@@ -1,0 +1,77 @@
+---
+title: "Reflection Probe"
+description: "Kamera kecil yang memotret sekelilingnya ke dalam cubemap, lalu dipakai sebagai pantulan oleh objek di dekatnya. Membuat logam dan permukaan mengilap memantulkan ruangan, bukan hanya langit."
+kind: term
+level: 2
+aka: "reflection capture, environment map, cubemap"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Reflection Probe component reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-ReflectionProbe.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Reflection probes"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/reflection_probes.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Introduction to global illumination"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/global_illumination/introduction_to_global_illumination.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 9
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Permukaan [logam](/kamus/geometri/metalness/) dan permukaan mengilap hampir hanya memantulkan sekitarnya. Kalau satu-satunya yang bisa dipantulkan adalah langit, bola besi di dalam gua akan tampak memantulkan langit biru. Aneh.
+
+**Reflection probe** memperbaikinya. Probe ini seperti kamera kecil yang dipasang di satu titik dan memotret ke enam arah sekaligus, lalu menyimpannya sebagai **cubemap** (gambar 360°). Objek di dalam jangkauan probe memakai cubemap itu sebagai sumber pantulan.
+
+Probe paling murah jika dipotret **sekali** (saat bake atau saat game dimulai). Memotret ulang setiap frame berarti merender scene enam kali lagi, jadi sangat mahal.
+
+Karena cubemap dipotret dari satu titik, pantulannya terasa "tidak bergeser" saat kamera bergerak di ruangan. Opsi **box projection** mengoreksi ini dengan menganggap ruangan berbentuk kotak, sehingga cocok untuk ruangan persegi.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Komponen **Reflection Probe** dengan Type:
+
+- **Baked:** dipotret saat bake, hanya menangkap objek yang ditandai Reflection Probe Static.
+- **Custom:** seperti Baked, tetapi bisa ikut menangkap objek dinamis.
+- **Realtime:** dipotret saat game berjalan. **Refresh Mode**-nya On Awake (sekali saat aktif), Every Frame, atau Via Scripting.
+
+Centang **Box Projection** untuk koreksi ruangan (di URP, fitur ini juga harus diaktifkan di aset URP). **Importance** menentukan probe mana yang menang jika objek berada di jangkauan beberapa probe.
+
+</div>
+<div slot="unreal">
+
+Aktor **Sphere Reflection Capture** dan **Box Reflection Capture** untuk pantulan yang ditangkap sekali. Dengan Lumen, pantulan sebagian besar dihitung secara real-time, dan reflection capture menjadi cadangan.
+
+</div>
+<div slot="godot">
+
+Node `ReflectionProbe`, didukung semua renderer. **Update Mode** **Once** (bawaan) memotret sekali setiap probe dipindahkan; **Always** memotret setiap frame dan mahal. Opsi lain:
+
+- **Box Projection:** koreksi paralaks untuk ruangan berbentuk kotak.
+- **Interior:** langit tidak ikut dipotret dan tidak menyumbang ambient. Cocok untuk ruangan tertutup.
+- **Ambient Mode:** probe juga bisa menyumbang cahaya ambient di area jangkauannya.
+
+Sampai 4 probe bisa dicampur di satu titik. Bersama `LightmapGI`, probe ini menjadi satu-satunya teknik GI yang tersedia untuk game mobile.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Lab belum memakai environment map. Quest: naikkan slider "metalness" objek ke 1 di panel debug, dan lihat objek menjadi gelap karena tidak ada sekitar yang bisa dipantulkan. Di Three.js, padanan reflection probe adalah `CubeCamera`, dan pantulan dari gambar langit dipasang lewat `scene.environment`.
+</Aside>
+
+## Terkait
+
+- [Metalness](/kamus/geometri/metalness/)
+- [Global Illumination & Lightmap](/kamus/cahaya/global-illumination/)
+- [Ambient Light](/kamus/cahaya/ambient-light/)

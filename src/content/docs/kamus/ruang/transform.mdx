@@ -1,0 +1,66 @@
+---
+title: "Transform"
+description: "Tiga nilai yang menentukan letak sebuah objek: posisi (di mana), rotasi (menghadap ke mana), dan skala (seberapa besar). Semuanya relatif terhadap induknya."
+kind: term
+level: 1
+aka: "position / rotation / scale"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Transform"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Transform.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Transform component"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-Transform.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Node3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_node3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Introduction to 3D"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/introduction_to_3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 3
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Tiga nilai yang menentukan letak sebuah objek: **posisi** (di mana), **rotasi** (menghadap ke mana), dan **skala** (seberapa besar). Ketiganya relatif terhadap induk objek itu. Urutan penerapannya selalu skala, lalu rotasi, lalu posisi, sehingga objek membesar dan berputar di sekitar titik pusatnya sendiri.
+
+Skala 1 berarti ukuran asli. Hindari skala 0 di sumbu mana pun: perhitungan matriks menjadi tidak valid dan bisa menghasilkan nilai NaN.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Setiap GameObject punya komponen **Transform**. `position`/`localPosition`, `rotation`/`localRotation` (disimpan sebagai [Quaternion](/kamus/ruang/quaternion/); `eulerAngles` untuk derajat), dan `localScale`. Skala dunia hanya bisa dibaca lewat `lossyScale`.
+
+</div>
+<div slot="unreal">
+
+`FTransform` berisi **Location**, **Rotation**, dan **Scale3D**. Rotasi di editor dan pada `FRotator` ditulis dalam **derajat** (Pitch, Yaw, Roll).
+
+</div>
+<div slot="godot">
+
+Node3D punya `position`, `rotation` (dalam **radian**), dan `scale`. Untuk derajat di skrip, pakai `rotation_degrees`. Rotasi yang sama juga tersedia sebagai `quaternion`. Ketiganya digabung dalam satu nilai `transform` bertipe `Transform3D`.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Di Three.js, setiap objek punya `position`, `rotation` (radian), dan `scale`. Lihat contohnya di `src/experiment/world/objects.js`.
+</Aside>
+
+## Terkait
+
+- [Radian & Sudut Euler](/kamus/ruang/radian/)
+- [Quaternion](/kamus/ruang/quaternion/)
+- [Hierarki](/kamus/ruang/hierarchy/)
+- [Local vs World Space](/kamus/ruang/local-world/)
