@@ -25,7 +25,7 @@ npm run preview  # pratinjau hasil build
 
 ```
 src/
-  content/docs/      # SEMUA konten (Markdown/MDX): belajar/, kamus/, kontribusi/, tentang, progres
+  content/docs/      # Seluruh konten (Markdown/MDX): belajar/, kamus/, kontribusi/, tentang, progres
   content.config.ts  # Skema frontmatter konten
   components/        # Komponen konten: Aside, EngineTabs, Demo, Quiz, LinkCard, diagram
   layouts/           # LearnLayout: bilah atas, navigasi samping, Krekit pendamping
@@ -35,14 +35,13 @@ src/
   lib/               # Daftar jalur & bab, progres belajar, demo kanvas, utilitas
   site.config.mjs    # Nama situs, URL repo, base path (ubah di sini saat rebrand)
 astro.config.mjs     # Konfigurasi Astro: MDX, blok kode (Expressive Code), plugin tautan
-docs/                # Catatan internal, mis. daftar verifikasi tertunda
 ```
 
 Dibangun dengan [Astro](https://astro.build/), [Expressive Code](https://expressive-code.com/), [Three.js](https://threejs.org/), dan [GSAP](https://gsap.com/).
 
 ## Berkontribusi
 
-Kontribusi dari programmer maupun non-programmer sangat diterima: koreksi, artikel, studi kasus, ulasan praktisi, terjemahan. Mulai dari [CONTRIBUTING.md](CONTRIBUTING.md).
+Programmer maupun bukan bisa ikut berkontribusi lewat koreksi, artikel, studi kasus, ulasan praktisi, atau terjemahan. Mulai dari [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Lisensi
 

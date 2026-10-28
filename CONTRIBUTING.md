@@ -14,7 +14,7 @@ Terima kasih sudah ingin membantu! Panduan lengkap ada di situs, di bagian **Kon
 
 ## Aturan penting
 
-- Setiap angka, kebijakan platform, atau ketentuan lisensi **wajib** punya sumber di field `sources` frontmatter.
+- Setiap angka, kebijakan platform, atau ketentuan lisensi wajib punya sumber di field `sources` frontmatter.
 - Konten baru masuk dengan `status: draf` sampai ditinjau.
 - Sebutkan jika Anda punya hubungan dengan pihak yang dibahas (karyawan, mitra, investor), dan jika memakai alat AI untuk menyusun draf.
 
