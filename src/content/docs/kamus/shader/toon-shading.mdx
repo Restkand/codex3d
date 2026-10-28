@@ -1,0 +1,85 @@
+---
+title: "Toon Shading"
+description: "Gaya pencahayaan kartun: gradasi terang-gelap yang halus diganti beberapa pita warna tegas. Caranya dengan memotong hasil perhitungan cahaya memakai step atau tekstur gradasi."
+kind: term
+level: 3
+aka: "cel shading, toon shader, NPR, ramp shading"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Spatial shaders"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/spatial_shader.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Unity Toon Shader overview"
+    url: "https://docs.unity3d.com/Packages/com.unity.toonshader@0.11/manual/index.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 15
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Gaya pencahayaan yang meniru gambar kartun atau anime. Pada material biasa, terang permukaan berubah halus dari sisi yang menghadap lampu ke sisi yang membelakanginya. Toon shading (*cel shading*) **memotong** gradasi itu menjadi beberapa pita warna tegas, misalnya hanya "terang" dan "bayangan".
+
+Dasarnya tetap rumus cahaya biasa: [dot product](/kamus/ruang/dot/) antara [normal](/kamus/geometri/normal/) permukaan dan arah ke lampu. Bedanya, hasilnya tidak dipakai langsung, melainkan dipotong dulu.
+
+```text title="Pseudocode"
+terang = dot(normal, arah_ke_lampu)        // -1..1, halus
+pita   = step(0.0, terang)                 // dua pita: 0 atau 1
+// atau: pita = smoothstep(0.0, 0.05, terang) agar tepinya tidak bergerigi
+// atau: baca tekstur gradasi kecil (ramp) dengan terang sebagai koordinat
+```
+
+Tekstur gradasi (*ramp*) memberi kendali paling besar: artist cukup menggambar strip warna kecil, dan jumlah serta warna pitanya mengikuti gambar itu.
+
+Toon shading biasanya dipasangkan dengan **garis tepi** (*outline*). Cara yang sering dipakai adalah menggambar objek sekali lagi dalam warna gelap, sedikit digembungkan searah normal di [vertex shader](/kamus/shader/vertex-shader/), dan hanya sisi belakangnya yang ditampilkan. Cara lain adalah mendeteksi tepi dari depth dan normal lewat post-processing.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+URP tidak punya material toon bawaan. Pilihannya: paket **Unity Toon Shader** (UTS3, masih berstatus preview) yang mendukung Built-in, URP, dan HDRP, atau membuat sendiri di Shader Graph dengan material Unlit, lalu menghitung `dot(normal, arah lampu)` dan memotongnya dengan node **Step**, **Smoothstep**, atau tekstur ramp.
+
+</div>
+<div slot="unreal">
+
+Tidak ada shading model toon khusus di material standar. Pendekatan yang umum adalah post-process material yang memotong hasil cahaya scene, atau material yang menghitung cahaya sendiri.
+
+</div>
+<div slot="godot">
+
+Cara cepat: `render_mode diffuse_toon, specular_toon;` membuat cahaya difus dan pantulan specular bergaya toon. Untuk kendali penuh, tulis fungsi `light()` sendiri. Fungsi ini dijalankan untuk setiap lampu di setiap piksel, dan hasilnya ditambahkan ke `DIFFUSE_LIGHT` dengan `+=` agar beberapa lampu bisa saling menjumlah:
+
+```glsl title="toon.gdshader"
+shader_type spatial;
+
+void fragment() {
+    ALBEDO = vec3(0.9, 0.4, 0.3);
+}
+
+void light() {
+    float terang = dot(NORMAL, LIGHT);
+    float pita = smoothstep(0.0, 0.05, terang);
+    DIFFUSE_LIGHT += pita * ATTENUATION * LIGHT_COLOR / PI;
+}
+```
+
+`NORMAL` dan `LIGHT` di `light()` sama-sama berada di ruang view. `LIGHT_COLOR` sudah dikalikan PI oleh Godot, sehingga dibagi `PI` lagi seperti contoh resmi Godot. Fungsi `light()` tidak dijalankan jika `render_mode vertex_lighting` aktif.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Analogi">
+Seperti mewarnai komik dengan spidol: tidak ada gradasi halus, hanya warna dasar dan satu warna bayangan yang batasnya tegas.
+</Aside>
+
+## Terkait
+
+- [Fragment Shader](/kamus/shader/fragment-shader/)
+- [Fungsi Shader Penting](/kamus/shader/glsl-functions/)
+- [Flat vs Smooth Shading](/kamus/geometri/flat-shading/)
+- [Dot Product](/kamus/ruang/dot/)

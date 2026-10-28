@@ -1,0 +1,274 @@
+---
+title: "Ruang, Posisi, dan Hierarki"
+description: "Koordinat 3D, transform, radian, hubungan induk-anak, dan matematika gerak."
+kind: lesson
+minutes: 25
+status: draf
+lastReviewed: 2026-10-27
+terms:
+  - coords
+  - vector
+  - transform
+  - radian
+  - hierarchy
+  - local-world
+  - sincos
+  - lerp
+  - ndc
+  - layered-control
+  - quickto
+  - pointer-events
+  - matrices
+sidebar:
+  order: 2
+  label: "2 · Ruang, Posisi, dan Hierarki"
+quiz:
+  - q: "Kamera di (0, 0.6, 6) menatap (0, 0, 0). Sebuah objek diletakkan di z = −3. Bagaimana objek itu terlihat?"
+    options:
+      - "Lebih dekat dan lebih besar"
+      - "Lebih jauh dan lebih kecil"
+      - "Di belakang kamera, jadi tidak terlihat"
+      - "Sama saja"
+    answer: 1
+    explain: "Kamera menatap ke −Z. Jarak objek ke kamera menjadi 9 (dari 6 ke −3), lebih jauh dari objek di z = 0, sehingga tampak lebih kecil."
+  - q: "`rotation.y = Math.PI` berarti berputar berapa derajat?"
+    options:
+      - "90°"
+      - "180°"
+      - "360°"
+      - "3,14°"
+    answer: 1
+    explain: "π radian = 180°, yaitu setengah putaran. Objek jadi menghadap ke belakang."
+  - q: "Induk di posisi (0, 1, 0) dengan scale 2. Anak di position (1, 0, 0). Di mana posisi world anak?"
+    options:
+      - "(1, 1, 0)"
+      - "(2, 1, 0)"
+      - "(1, 0, 0)"
+      - "(2, 2, 0)"
+    answer: 1
+    explain: "Posisi lokal anak dikali skala induk menjadi (2, 0, 0), lalu ditambah posisi induk (0, 1, 0), hasilnya (2, 1, 0)."
+  - q: "Kursor tepat di tengah layar. Berapa nilai NDC-nya?"
+    options:
+      - "(0.5, 0.5)"
+      - "(0, 0)"
+      - "(1, 1)"
+      - "Tergantung ukuran layar"
+    answer: 1
+    explain: "NDC berpusat di tengah layar: (0, 0) di tengah, ±1 di tepi, apa pun ukuran layarnya."
+  - q: "Kenapa tiltGroup dipisah dari mesh?"
+    options:
+      - "Agar lebih cepat dirender"
+      - "Agar rotasi dari mouse (GSAP) dan rotasi dari render loop tidak saling menimpa"
+      - "Karena Three.js mewajibkan Group"
+      - "Agar bayangan muncul"
+    answer: 1
+    explain: "Keduanya mengubah rotasi. Dengan lapisan berbeda, keduanya punya properti sendiri, dan hierarki menggabungkan efeknya."
+---
+
+import Aside from '~/components/Aside.astro'
+import Demo from '~/components/Demo.astro'
+import Quiz from '~/components/Quiz.astro'
+import AxesDiagram from '~/components/diagrams/AxesDiagram.astro'
+import HierarchyTree from '~/components/diagrams/HierarchyTree.astro'
+
+<Aside type="note" title="Setelah pelajaran ini Anda bisa">
+- Membayangkan arah X, Y, Z di Three.js tanpa melihat catatan.
+- Memakai position, rotation (radian), dan scale dengan benar.
+- Memahami hierarki induk-anak serta perbedaan local dan world space.
+- Menjelaskan kenapa proyek ini memakai 4 lapis Group.
+- Memakai sin, lerp, dan NDC untuk menggerakkan objek dan membaca mouse.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title={"Model mental: Alamat di dalam alamat"}>
+"Meja nomor 4, di lantai 3, gedung B." Meja tidak perlu tahu letak gedung di peta kota, cukup tahu letaknya di lantainya. Jika gedung dipindahkan, meja ikut pindah tanpa alamatnya diubah. Posisi di dunia 3D bekerja persis seperti ini: setiap objek menyimpan posisinya **relatif terhadap induknya**.
+</Aside>
+
+## Sistem koordinat
+
+<AxesDiagram />
+
+Three.js memakai [sistem tangan kanan](/kamus/ruang/coords/): **X ke kanan, Y ke atas, Z ke arah Anda** (keluar dari layar). Kamera bawaan menatap ke arah −Z. Karena itu kamera proyek ini diletakkan di `z = 6`: ia mundur ke arah Anda agar objek di `z = 0` berada di depannya.
+
+<Aside type="tip">
+Cara mengingat: angkat tangan kanan. Ibu jari ke kanan (X), telunjuk ke atas (Y), lalu jari tengah otomatis menunjuk ke arah Anda (Z).
+</Aside>
+
+Satuannya bebas, yang penting konsisten. Di proyek ini objek berjari-jari 1, lantai berukuran 30 × 30, dan kamera berjarak 6. Jika semua angka dikali 100, hasil di layar sama, tetapi nilai near/far, fog, dan bayangan juga harus ikut disesuaikan.
+
+## Transform: position, rotation, scale
+
+Setiap objek punya tiga properti [Transform](/kamus/ruang/transform/). Ketiganya disimpan sebagai tiga angka x, y, z ([Vector3](/kamus/ruang/vector/)).
+
+| Properti | Arti | Contoh | Catatan |
+| --- | --- | --- | --- |
+| position | Di mana | `mesh.position.set(1, 0, 0)` | Relatif terhadap induk |
+| rotation | Menghadap ke mana | `mesh.rotation.y = Math.PI / 2` | Dalam **radian**, berputar mengelilingi sumbu |
+| scale | Seberapa besar | `mesh.scale.setScalar(2)` | 1 = ukuran asli, 0 = tidak terlihat |
+
+Urutan penerapannya selalu: **skala → rotasi → posisi**. Artinya objek membesar dan berputar di sekitar titik pusatnya sendiri, baru kemudian dipindahkan. Itu sebabnya mengubah rotasi tidak menggeser objek dari tempatnya.
+
+## Radian
+
+Three.js dan `Math.sin/cos` memakai [Radian](/kamus/ruang/radian/), bukan derajat. Satu putaran penuh = 2π ≈ 6,283 radian.
+
+| Derajat | Radian | Di kode |
+| --- | --- | --- |
+| 45° | π/4 ≈ 0,785 | `Math.PI / 4` |
+| 90° | π/2 ≈ 1,571 | `Math.PI / 2` |
+| 180° | π ≈ 3,142 | `Math.PI` |
+| 360° | 2π ≈ 6,283 | `Math.PI * 2` |
+| 28,6° | 0,5 | `maxTilt` di interaction.js |
+
+Contoh di proyek: lantai direbahkan dengan `floor.rotation.x = -Math.PI / 2` (objects.js baris 46). Plane bawaan berdiri tegak menghadap +Z; diputar −90° di sumbu X membuatnya rebah menghadap ke atas. Untuk konversi, pakai `THREE.MathUtils.degToRad(90)`.
+
+## Hierarki: induk dan anak
+
+Dengan `induk.add(anak)`, anak menjadi bagian dari induk ([Hierarki & Group](/kamus/ruang/hierarchy/)). Semua transform induk otomatis diterapkan ke anak. Inilah struktur objek di proyek Anda:
+
+<HierarchyTree />
+
+```js title="src/experiment/world/objects.js" showLineNumbers startLineNumber=14
+export function createObjects(scene) {
+  const scrollGroup = new THREE.Group()
+  const introGroup = new THREE.Group()
+  const tiltGroup = new THREE.Group()
+  scrollGroup.add(introGroup)
+  introGroup.add(tiltGroup)
+  scene.add(scrollGroup)
+```
+
+- **L15–17** · `THREE.Group` adalah objek kosong yang tidak terlihat. Gunanya sebagai "engsel" untuk transform.
+- **L18–20** · Group disusun bertingkat: scroll → intro → tilt. Mesh nanti ditambahkan ke tiltGroup (baris 39).
+
+**Kenapa repot-repot memakai 4 lapis?** Bayangkan ScrollTrigger dan panel GUI sama-sama menulis ke `introGroup.position.x`. Setiap frame, siapa pun yang menulis terakhir akan menimpa yang lain, sehingga objek melompat-lompat dan bug-nya sulit dilacak. Dengan lapisan terpisah, setiap sistem punya propertinya sendiri, dan hierarki **menjumlahkan** efeknya secara alami. Prinsip ini disebut [satu properti, satu pengendali](/kamus/interaksi/layered-control/).
+
+## Local space vs world space
+
+`mesh.position` adalah posisi **lokal**, yaitu relatif terhadap induk. Posisi akhir di semesta disebut **world** ([Local vs World Space](/kamus/ruang/local-world/)). Contoh perhitungannya:
+
+1. Induk di `x = 2`, anak di `position.x = 1` → anak berada di **world x = 3**.
+2. Induk diberi `scale = 2` → jarak anak ke induk ikut berlipat: anak di **world x = 2 + 1×2 = 4**.
+3. Induk (skala 1) diputar 90° di sumbu Y → "lantai koordinat" anak ikut berputar. Arah +X lokal anak kini menunjuk ke −Z dunia, sehingga anak berada di **world (2, 0, −1)**.
+
+Untuk membaca posisi dunia di kode: `const p = new THREE.Vector3(); mesh.getWorldPosition(p)`. Di balik layar, Three.js menyimpan setiap transform sebagai [matriks](/kamus/ruang/matrices/) dan mengalikannya berantai dari Scene sampai ke objek.
+
+## Gerak dengan matematika: sinus
+
+[`Math.sin(t)`](/kamus/ruang/sincos/) menghasilkan angka yang berayun mulus antara −1 dan 1 seiring t bertambah. Dikalikan **amplitudo**, hasilnya menentukan seberapa jauh ayunannya. Mengalikan t dengan **frekuensi** menentukan seberapa cepat ayunannya.
+
+Baris 76 main.js: `mesh.position.y = Math.sin(elapsed * 1.5) * params.floatAmplitude`. Amplitudonya 0,15 unit dan frekuensinya 1,5.
+
+<Demo name="sine" caption={"Geser \"Waktu\" untuk melihat posisi y objek pada detik tertentu."} />
+
+<Aside type="tip">
+Sinus dan kosinus dengan t yang sama menghasilkan **lingkaran**: `x = Math.cos(t) * r`, `z = Math.sin(t) * r`. Ini dasar dari orbit, kamera berputar, dan partikel melingkar.
+</Aside>
+
+## Lerp dan smoothing
+
+[Lerp](/kamus/ruang/lerp/) mencari nilai di antara A dan B: `A + (B − A) × t`. Dengan t = 0 hasilnya A, dengan t = 1 hasilnya B. Hampir semua animasi pada dasarnya adalah lerp dengan t yang bergerak dari 0 ke 1.
+
+<Demo name="lerp" caption={"Geser t dari 0 ke 1."} />
+
+Efek "mengejar dengan halus" (smoothing) adalah lerp yang dilakukan berulang setiap frame menuju target: `current += (target − current) × 0.1`. Setiap frame jaraknya berkurang 10%, jadi gerakannya cepat di awal lalu melambat. Di proyek ini, [`gsap.quickTo`](/kamus/web/quickto/) melakukan hal serupa dengan kurva easing yang lebih bagus.
+
+<Aside type="caution">
+Smoothing dengan faktor tetap (`× 0.1` per frame) bergantung pada frame rate, masalah yang sama seperti di Pelajaran 1. Versi yang adil: `current += (target − current) × (1 − Math.exp(−kecepatan × delta))`.
+</Aside>
+
+## Dari mouse ke dunia 3D: NDC
+
+Event mouse memberi posisi dalam piksel (`clientX`, `clientY`), dengan (0,0) di **pojok kiri atas** dan Y bertambah ke **bawah**. Dunia 3D lebih mudah memakai [NDC](/kamus/ruang/ndc/): rentang −1..1, (0,0) di **tengah**, dan Y bertambah ke **atas**. Dengan begitu logikanya sama di layar ukuran apa pun.
+
+```js title="src/experiment/interaction.js" showLineNumbers startLineNumber=26
+  function onMove(event) {
+    const x = (event.clientX / window.innerWidth) * 2 - 1
+    const y = -((event.clientY / window.innerHeight) * 2 - 1)
+
+    // Kursor di kanan -> objek berputar pada sumbu Y ke arah kursor.
+    // Kursor di atas -> objek menunduk ke belakang (rotasi X negatif).
+    tiltY(x * maxTilt)
+    tiltX(-y * maxTilt)
+
+    camX(x * 0.4)
+    camY(baseCamY + y * 0.25)
+  }
+```
+
+- **L27** · Tiga langkah: `/ innerWidth` → 0..1, `× 2` → 0..2, `− 1` → −1..1.
+- **L28** · Sama seperti baris 27, lalu dibalik dengan tanda minus karena arah Y di DOM berlawanan dengan 3D.
+- **L32–33** · NDC (−1..1) dikali `maxTilt` (0,5 rad), jadi rotasi maksimal ±28,6°. Hasilnya dikirim ke quickTo, yang mengejar nilai itu dengan halus.
+- **L35–36** · Kamera digeser sedikit ke arah yang sama (parallax). Karena kamera selalu `lookAt(0,0,0)`, objek tampak dilihat dari sudut yang sedikit berbeda.
+
+<Demo name="ndc" caption={"Gerakkan kursor di dalam kotak dan bandingkan angka piksel dengan NDC."} />
+
+## Kesalahan umum
+
+Kesalahan-kesalahan berikut sering terjadi, dan banyak di antaranya **tidak memunculkan error**. Mengenalinya lebih awal akan menghemat banyak waktu debugging.
+
+### Objek berputar ke sudut yang aneh
+
+```js title="✗ Keliru"
+mesh.rotation.y = 90
+```
+
+```js title="✓ Benar"
+mesh.rotation.y = Math.PI / 2
+// atau THREE.MathUtils.degToRad(90)
+```
+
+90 radian ≈ 5157°, yaitu 14 putaran lebih sedikit, sehingga hasil akhirnya tampak acak.
+
+### Mouse ke atas, objek malah ke bawah
+
+```js title="✗ Keliru"
+const y = (clientY / innerHeight) * 2 - 1
+```
+
+```js title="✓ Benar"
+const y = -((clientY / innerHeight) * 2 - 1)
+```
+
+Y di DOM bertambah ke bawah, sedangkan Y di 3D bertambah ke atas.
+
+### Posisi objek "salah" saat dibaca
+
+```js title="✗ Keliru"
+console.log(mesh.position) // relatif ke induk
+```
+
+```js title="✓ Benar"
+mesh.getWorldPosition(target) // posisi di semesta
+```
+
+Jika induknya bergeser (misalnya oleh scroll), `position` anak tidak ikut berubah.
+
+### Animasi bergetar atau melompat-lompat
+
+```js title="✗ Keliru"
+// render loop: mesh.rotation.y += ...
+// GSAP:        gsap.to(mesh.rotation, { y: 1 })
+```
+
+```js title="✓ Benar"
+// render loop -> mesh.rotation
+// GSAP        -> tiltGroup.rotation
+```
+
+Dua sistem menulis properti yang sama, sehingga saling menimpa setiap frame.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah Anda menjawab, jadi bacalah juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan langsung di kode proyek. Simpan file, lalu lihat hasilnya di halaman eksperimen (dev server memuat ulang otomatis). Kembalikan kodenya setelah selesai.
+
+1. Di render loop (main.js), tambahkan `mesh.position.x = Math.cos(elapsed) * 0.5` dan `mesh.position.z = Math.sin(elapsed) * 0.5`. Objek akan bergerak melingkar. Kenapa properti x dan z aman diubah, sementara rotasi `tiltGroup` tidak?
+2. Ubah `maxTilt` di interaction.js menjadi `Math.PI / 2`. Seberapa jauh objek bisa miring sekarang?
+3. Tambahkan `const p = new THREE.Vector3()` di main.js, lalu `console.log(objects.mesh.getWorldPosition(p).x, objects.mesh.position.x)` di tick. Scroll ke section 2. Kenapa angkanya berbeda? (Hapus setelah dicoba.)

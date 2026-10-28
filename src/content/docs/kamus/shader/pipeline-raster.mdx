@@ -1,0 +1,33 @@
+---
+title: "Rasterization"
+description: "Tahap di antara vertex shader dan fragment shader: GPU menentukan piksel mana saja yang tertutup oleh setiap segitiga, lalu membuat satu fragment untuk masing-masing. Nilai dari ketiga titik dicampur halus di tahap ini."
+kind: term
+level: 2
+aka: "rasterisasi, fragment"
+status: draf
+lastReviewed: 2026-10-28
+sidebar:
+  order: 1
+---
+
+import Aside from '~/components/Aside.astro'
+
+Tahap di antara [vertex shader](/kamus/shader/vertex-shader/) dan [fragment shader](/kamus/shader/fragment-shader/). Setelah posisi ketiga titik sebuah segitiga diketahui di layar, GPU menentukan **piksel mana saja yang tertutup** segitiga itu, lalu membuat satu **fragment** untuk masing-masing. Fragment adalah calon piksel: ia baru menjadi piksel jika lolos [depth test](/kamus/geometri/depth-buffer/).
+
+Tahap ini tidak bisa diprogram. Semua engine memakainya dengan cara yang sama karena dijalankan oleh perangkat keras GPU.
+
+Di tahap ini juga nilai dari ketiga titik **dicampur halus** untuk setiap fragment, sesuai jaraknya ke masing-masing titik. Titik merah, hijau, dan biru menghasilkan segitiga dengan gradasi warna di antaranya. Mekanisme yang sama berlaku untuk UV, normal, dan data lain (lihat [Varying](/kamus/shader/varying/)).
+
+<Aside type="note" title="Analogi">
+Mewarnai gambar di kertas berpetak. Garis segitiga digambar dulu, lalu setiap petak yang tertutup diwarnai satu per satu.
+</Aside>
+
+## Pelajari lebih dalam
+
+GPU memproses fragment dalam kelompok kecil 2×2 piksel, agar bisa menghitung seberapa cepat nilai berubah antar-piksel (dipakai untuk memilih mipmap tekstur). Akibatnya, segitiga yang sangat kecil, seukuran satu piksel atau kurang, membuang banyak kerja karena satu kelompok 2×2 tetap dihitung penuh. Ini salah satu alasan [LOD](/kamus/geometri/segments/) penting untuk objek jauh.
+
+## Terkait
+
+- [Vertex Shader](/kamus/shader/vertex-shader/)
+- [Fragment Shader](/kamus/shader/fragment-shader/)
+- [Varying](/kamus/shader/varying/)

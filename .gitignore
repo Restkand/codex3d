@@ -1,3 +1,11 @@
 node_modules
 dist
+.astro
 *.log
+
+# Alat kerja internal (skill Claude Code dan catatan instalasinya), tidak untuk repo publik
+.claude/
+skills-lock.json
+
+# Catatan pribadi: klaim yang belum terverifikasi
+docs/verifikasi-tertunda.md

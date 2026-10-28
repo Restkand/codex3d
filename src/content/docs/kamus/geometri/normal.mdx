@@ -1,0 +1,68 @@
+---
+title: "Normal"
+description: "Vektor sepanjang 1 yang tegak lurus permukaan, menunjukkan ke arah mana permukaan menghadap. Dipakai untuk menghitung cahaya: permukaan yang menghadap cahaya lebih terang."
+kind: term
+level: 2
+aka: "vertex normal"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Model tab Import Settings reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/FBXImporter-Model.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "SurfaceTool"
+    url: "https://docs.godotengine.org/en/stable/classes/class_surfacetool.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "ResourceImporterScene"
+    url: "https://docs.godotengine.org/en/stable/classes/class_resourceimporterscene.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 6
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+[Vektor](/kamus/ruang/vector/) sepanjang 1 yang tegak lurus permukaan, menunjukkan ke arah mana permukaan "menghadap". Dipakai untuk menghitung cahaya: permukaan yang menghadap cahaya lebih terang, dan perhitungannya memakai [dot product](/kamus/ruang/dot/).
+
+Normal disimpan **per vertex**. Titik yang dipakai bersama dengan satu normal rata-rata menghasilkan tampilan halus. Titik yang diduplikasi dengan normal berbeda per sisi menghasilkan tepi tajam (lihat [Flat vs Smooth Shading](/kamus/geometri/flat-shading/)).
+
+## Di engine
+
+Normal biasanya ikut dari aplikasi 3D, dan engine bisa menghitung ulang saat impor:
+
+<EngineTabs>
+<div slot="unity">
+
+Pengaturan impor model → **Normals**: *Import* (bawaan, pakai dari file), *Calculate* (hitung ulang, antara lain dengan **Smoothing Angle**), atau *None* (tanpa normal, hanya untuk mesh yang tidak terkena cahaya realtime dan tidak memakai normal map).
+
+</div>
+<div slot="unreal">
+
+Opsi impor **Normal Import Method**: impor dari file atau hitung ulang. Tepi tajam/halus mengikuti *smoothing groups* dari aplikasi 3D.
+
+</div>
+<div slot="godot">
+
+Normal ikut dari file impor. Opsi impor `meshes/ensure_tangents` (bawaan aktif) membuat tangent jika file tidak menyertakannya, karena tangent dibutuhkan normal map. Untuk mesh buatan kode: `SurfaceTool.generate_normals()`, dipanggil setelah semua titik ditambahkan dan sebelum `commit()`.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Normal juga bisa disimpan **per piksel** di dalam tekstur. Teknik ini membuat permukaan datar tampak punya tonjolan dan lekukan tanpa menambah segitiga. Penjelasannya ada di [Normal Map](/kamus/geometri/normal-map/).
+
+<Aside type="note" title="Di Lab (Three.js)">
+Hologram di Lab mendorong titik **searah radial** (dari pusat objek), bukan searah normal. Alasannya: sudut kubus disimpan tiga kali dengan normal berbeda. Jika didorong searah normal, ketiga salinan itu bergerak ke tiga arah berbeda dan permukaannya retak. Lihat `src/experiment/shaders/hologram/vertex.glsl`.
+</Aside>
+
+## Terkait
+
+- [Flat vs Smooth Shading](/kamus/geometri/flat-shading/)
+- [Normal Map](/kamus/geometri/normal-map/)
+- [Dot Product](/kamus/ruang/dot/)
+- [Efek Fresnel](/kamus/shader/fresnel/)

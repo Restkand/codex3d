@@ -1,0 +1,74 @@
+---
+title: "Fixed Timestep & Interpolasi"
+description: "Physics berjalan dengan detak tetap (misalnya 50 atau 60 kali per detik), terpisah dari frame rate, agar hasil simulasi konsisten. Interpolasi menghaluskan tampilan di antara detak agar tidak patah-patah."
+kind: term
+level: 2
+aka: "physics tick, FixedUpdate, _physics_process, physics interpolation"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "MonoBehaviour.FixedUpdate"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/MonoBehaviour.FixedUpdate.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Rigidbody"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Rigidbody.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Physics introduction"
+    url: "https://docs.godotengine.org/en/stable/tutorials/physics/physics_introduction.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Introduction to physics interpolation"
+    url: "https://docs.godotengine.org/en/stable/tutorials/physics/interpolation/physics_interpolation_introduction.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 4
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+[Frame](/kamus/dasar/frame/) rate naik-turun: 144 FPS di PC kencang, 30 FPS di laptop lama, kadang anjlok sesaat. Kalau physics dihitung sekali per frame dengan [delta time](/kamus/dasar/delta-time/) yang berubah-ubah, hasilnya ikut berubah: lompatan bisa sedikit lebih tinggi di satu komputer, benda cepat bisa menembus dinding saat frame tersendat.
+
+Solusinya, physics berjalan dengan **detak tetap** (*fixed timestep*), misalnya tepat 60 kali per detik, apa pun frame rate-nya. Dalam satu frame, physics bisa berjalan **nol, satu, atau beberapa kali** untuk mengejar waktu nyata.
+
+```text title="Pseudocode: game loop dengan fixed timestep"
+akumulator += delta_frame
+while akumulator >= LANGKAH_TETAP:      // misalnya 1/60 detik
+    physics.langkah(LANGKAH_TETAP)
+    akumulator -= LANGKAH_TETAP
+render()
+```
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+`FixedUpdate()` dipanggil sebelum setiap langkah physics, dengan jarak `Time.fixedDeltaTime` (bawaan **0,02 detik = 50 kali per detik**, diatur di Time settings → Fixed Timestep). `Update()` tetap sekali per frame. Gaya ke Rigidbody sebaiknya diberikan di `FixedUpdate`. Untuk menghaluskan tampilan: properti **Interpolate** pada Rigidbody.
+
+</div>
+<div slot="unreal">
+
+Physics (Chaos) secara bawaan mengikuti frame, dengan opsi **Substepping** di Project Settings → Physics untuk membagi frame panjang menjadi beberapa langkah kecil.
+
+</div>
+<div slot="godot">
+
+`_physics_process(delta)` berjalan dengan detak tetap, bawaan **60 kali per detik** (Project Settings → Physics → Common → Physics Ticks per Second). `_process(delta)` sekali per frame. Untuk menghaluskan tampilan, aktifkan **physics interpolation**.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Detak tetap menciptakan masalah baru: physics di 60 Hz tetapi layar di 144 Hz berarti posisi objek hanya berubah di sebagian frame, sehingga gerakannya tampak bergetar (*jitter*). **Interpolasi** mengatasinya: engine menyimpan posisi detak sebelumnya dan sekarang, lalu menampilkan posisi di antara keduanya sesuai waktu frame. Dokumentasi Godot mencatat harga yang harus dibayar: tampilan tertinggal satu sampai dua detak dari posisi physics sebenarnya. Kebanyakan pemain tidak merasakannya, tetapi bisa terasa di game yang sangat bergantung refleks.
+
+Input sebaiknya dibaca setiap frame (karena tekanan tombol singkat bisa terlewat jika hanya dicek di detak physics), lalu hasilnya dipakai di langkah physics berikutnya.
+
+## Terkait
+
+- [Delta Time](/kamus/dasar/delta-time/)
+- [Frame & FPS](/kamus/dasar/frame/)
+- [Rigidbody & Jenis Body](/kamus/fisika/rigidbody/)

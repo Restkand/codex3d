@@ -1,0 +1,72 @@
+---
+title: "Segments"
+description: "Berapa kali sebuah sisi dipecah. Makin banyak segmen makin halus bentuknya, tetapi jumlah titik naik kuadratik. Engine mengatasinya dengan LOD: model detail untuk dekat, model sederhana untuk jauh."
+kind: term
+level: 2
+aka: "subdivisi, tessellation, detail, LOD"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "LOD Group component reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-LODGroup.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Primitive and placeholder objects"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/PrimitiveObjects.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "SphereMesh"
+    url: "https://docs.godotengine.org/en/stable/classes/class_spheremesh.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "BoxMesh"
+    url: "https://docs.godotengine.org/en/stable/classes/class_boxmesh.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Mesh level of detail (LOD)"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/mesh_lod.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "ResourceImporterScene"
+    url: "https://docs.godotengine.org/en/stable/classes/class_resourceimporterscene.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 5
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Berapa kali sebuah sisi dipecah. Makin banyak segmen, makin halus lengkungannya, tetapi jumlah titik naik **kuadratik**: sisi persegi dengan 10 segmen punya 121 titik, dengan 20 segmen menjadi 441 titik.
+
+Detail tinggi hanya berguna jika terlihat. Objek yang jauh dari kamera hanya menempati beberapa piksel, jadi engine memakai **LOD** (*Level of Detail*): beberapa versi model dengan detail berbeda, dan engine memilih versi yang sesuai dengan seberapa besar objek tampil di layar.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Bentuk dasar Unity tidak punya pengaturan segmen (Plane, misalnya, selalu 200 segitiga). Detail diatur di aplikasi 3D. LOD memakai komponen **LOD Group**: setiap level punya ambang berupa persentase tinggi objek di layar dibanding tinggi layar, dan renderer untuk tiap level biasanya berupa child dari GameObject itu.
+
+</div>
+<div slot="unreal">
+
+Static Mesh bisa membuat LOD otomatis di Static Mesh Editor. Mesh yang mengaktifkan **Nanite** mengatur detailnya sendiri secara dinamis, sehingga model sangat detail tetap bisa dipakai.
+
+</div>
+<div slot="godot">
+
+Bentuk dasar punya properti segmen, misalnya `radial_segments` (bawaan 64) dan `rings` (bawaan 32) di `SphereMesh`, atau `subdivide_width`, `subdivide_height`, `subdivide_depth` (bawaan 0) di `BoxMesh`. Scene 3D yang diimpor (glTF, .blend, FBX, dan lainnya) otomatis dibuatkan LOD lewat opsi impor `meshes/generate_lods` (bawaan aktif), yang bisa dimatikan di dock Import. Perpindahan LOD terjadi otomatis berdasarkan ukuran objek di layar.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Hologram di Lab memakai 24 segmen per sisi kubus (±3.700 titik), di `src/experiment/world/hologram.js`. Quest: lihat angka triangles di [panel Performance](/kamus/web/perf-monitor/), lalu ubah segmennya ke 8 dan 48.
+</Aside>
+
+## Terkait
+
+- [Triangle / Face](/kamus/geometri/triangle/)
+- [Vertex](/kamus/geometri/vertex/)

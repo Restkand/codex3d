@@ -1,0 +1,75 @@
+---
+title: "Antialiasing"
+description: "Menghaluskan tepi bergerigi (jaggies) dan kilau yang berkedip. Ada tiga keluarga: MSAA (sampel tambahan di tepi), filter layar seperti FXAA/SMAA, dan teknik temporal seperti TAA/TSR yang memakai frame sebelumnya."
+kind: term
+level: 2
+aka: "AA, MSAA, FXAA, SMAA, TAA, TSR, jaggies"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Anti-aliasing in URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/anti-aliasing.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Anti-Aliasing and Upscaling"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/anti-aliasing-and-upscaling-in-unreal-engine"
+    publisher: "Epic Games Developer Documentation"
+    accessed: 2026-10-28
+  - title: "Temporal Super Resolution"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/temporal-super-resolution-in-unreal-engine"
+    publisher: "Epic Games Developer Documentation"
+    accessed: 2026-10-28
+  - title: "3D antialiasing"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/3d_antialiasing.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 7
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Layar terdiri dari kotak-kotak piksel, sehingga garis miring tampak bergerigi seperti tangga (*jaggies*), dan detail kecil yang mengilap bisa berkedip saat kamera bergerak. **Antialiasing** menghaluskannya. Ada tiga keluarga teknik, masing-masing dengan kelebihan dan kekurangan:
+
+| Teknik | Cara kerja | Kelebihan | Kekurangan |
+| --- | --- | --- | --- |
+| **MSAA** | sampel tambahan hanya di tepi segitiga | tajam, tanpa buram | hanya tepi geometri. Kilau dan tekstur tetap bergerigi |
+| **FXAA / SMAA** | mencari tepi pada gambar jadi, lalu mengaburkannya | sangat murah | sedikit buram. SMAA lebih tajam dari FXAA |
+| **TAA / TSR** | menggabungkan beberapa frame terakhir | paling efektif melawan kilau berkedip | buram saat bergerak, bisa meninggalkan bayangan (*ghosting*) |
+
+Teknik temporal seperti TSR (Unreal) dan FSR (AMD) sekaligus bisa **upscaling**: merender di resolusi lebih rendah lalu merekonstruksi gambar beresolusi penuh. Inilah cara banyak game modern mempertahankan frame rate.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+URP: **FXAA**, **SMAA**, dan **TAA** dipilih di Camera → Rendering → **Anti-aliasing**. **MSAA** diatur di aset URP → Quality → **Anti Aliasing (MSAA)**. TAA tidak bisa digabung dengan MSAA. Dokumentasi Unity menyarankan FXAA untuk ponsel.
+
+</div>
+<div slot="unreal">
+
+Pilihan: **TSR** (aktif secara bawaan), **TAAU**, **FXAA**, dan **MSAA**. Diatur di Project Settings → Engine → Rendering. MSAA **hanya tersedia dengan Forward Renderer**, bukan renderer deferred bawaan.
+
+</div>
+<div slot="godot">
+
+Project Settings → Rendering → Anti Aliasing → Quality: **MSAA 3D**, **TAA** (Forward+ saja), dan **Screen Space AA** (FXAA atau SMAA). Tersedia juga **FSR 2.2** dan SSAA lewat Scaling 3D.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+MSAA dulu menjadi standar, tetapi sulit dipakai dengan renderer **deferred** yang umum di game modern. Renderer jenis ini menghitung cahaya setelah semua permukaan digambar, sehingga MSAA menjadi sangat mahal. Itu sebabnya Unreal hanya mengizinkan MSAA di Forward Renderer, dan game AAA beralih ke teknik temporal. MSAA tetap populer untuk VR dan ponsel, yang biasanya memakai renderer forward.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Lab mengaktifkan MSAA lewat `new THREE.WebGLRenderer({ antialias: true })` di `src/experiment/core/setup.js`. Opsi ini hanya berlaku saat scene digambar langsung ke layar. Render target milik EffectComposer tidak memakai MSAA secara bawaan, sehingga tepi objek sedikit lebih kasar saat efek glitch aktif.
+</Aside>
+
+## Terkait
+
+- [Render Target](/kamus/post/render-target/)
+- [Pixel Ratio](/kamus/web/pixel-ratio/)
+- [Rasterization](/kamus/shader/pipeline-raster/)

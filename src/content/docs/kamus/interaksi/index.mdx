@@ -1,0 +1,22 @@
+---
+title: "Interaksi"
+description: "Menghubungkan input pemain dengan dunia game: membaca tombol dan stik, memilih objek, dan bereaksi saat status berubah."
+sidebar:
+  order: 0
+  label: Ikhtisar bab
+---
+
+Menghubungkan input pemain dengan dunia game: membaca tombol dan stik, memilih objek, bereaksi saat status berubah, dan menyusun sistem agar tidak saling menimpa.
+
+**Input**
+
+- [Input Action & Input Map](/kamus/interaksi/input-action/): Aksi bernama yang terpisah dari tombol fisik, dan cara pemain mengganti tombol.
+- [Dead Zone](/kamus/interaksi/deadzone/): Mengabaikan getaran kecil stik analog agar karakter tidak bergerak sendiri.
+
+**Bereaksi pada dunia**
+
+- [Raycast](/kamus/interaksi/raycaster/): Sinar tak terlihat untuk klik objek, tembakan, garis pandang, dan cek tanah.
+- [Perubahan Status (State Change)](/kamus/interaksi/hover-state/): Periksa setiap frame, bereaksi hanya saat status berubah.
+- [Satu Properti, Satu Pengendali](/kamus/interaksi/layered-control/): Satu sistem per properti, dan lapisan induk untuk menggabungkannya.
+
+Untuk event input di browser (`pointermove`, `click`) dan panel debug yang dipakai di Lab, lihat bab tambahan [Web & Three.js](/kamus/web/).

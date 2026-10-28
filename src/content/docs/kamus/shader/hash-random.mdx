@@ -1,0 +1,86 @@
+---
+title: "Random & Noise di Shader"
+description: "Shader tidak punya fungsi acak seperti di kode game. Triknya: fungsi hash yang hasilnya tampak acak tetapi selalu sama untuk input yang sama, atau tekstur noise yang sudah disiapkan."
+kind: term
+level: 3
+aka: "hash function, noise, Perlin, value noise, Voronoi"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Simple Noise Node"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Simple-Noise-Node.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Gradient Noise Node"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Gradient-Noise-Node.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Voronoi Node"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Voronoi-Node.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Random Range Node"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Random-Range-Node.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "NoiseTexture2D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_noisetexture2d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 12
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Shader tidak punya fungsi acak seperti `Random.Range` di kode game. Setiap piksel berjalan terpisah tanpa memori, jadi tidak bisa menyimpan "angka acak berikutnya". Ada dua cara mengatasinya.
+
+**1. Fungsi hash:** rumus yang hasilnya tampak acak tetapi selalu sama untuk input yang sama. Inputnya biasanya posisi piksel atau UV, ditambah waktu jika ingin berubah-ubah. Rumus klasik yang banyak ditemukan di tutorial:
+
+```text title="Pseudocode: hash klasik"
+acak(p) = fract(sin(dot(p, (12.9898, 78.233))) * 43758.5453)
+```
+
+Hasilnya seperti bintik TV rusak: setiap piksel berbeda tanpa pola. Kelemahannya, ketelitian `sin` berbeda antar-GPU, sehingga polanya bisa sedikit berbeda di perangkat lain. Karena itu engine modern mulai menyediakan hash yang tidak memakai `sin`.
+
+**2. Noise:** acak yang **halus**, berubah perlahan antar-tetangga. Contohnya value noise, Perlin (gradient) noise, dan Voronoi (Worley) noise yang membentuk pola sel. Dipakai untuk awan, api, permukaan air, efek larut (*dissolve*), atau medan. Noise bisa dihitung di shader, tetapi dalam produksi sering dibaca dari **tekstur noise** yang sudah disiapkan, karena satu kali membaca tekstur biasanya lebih murah daripada menghitung noise berlapis.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Shader Graph menyediakan:
+
+- **Simple Noise**: value noise berdasarkan UV.
+- **Gradient Noise**: Perlin noise berdasarkan UV.
+- **Voronoi**: noise sel (Worley), dengan output nilai noise dan data sel.
+- **Random Range**: angka acak semu dari input Seed, dipetakan antara Min dan Max. Seed yang sama selalu menghasilkan angka yang sama.
+
+Node noise punya pilihan **Hash Type**. Bawaannya **Deterministic**, yang hasilnya sama di semua platform. **Legacy Sine** memakai hash berbasis `sin` seperti rumus di atas.
+
+</div>
+<div slot="unreal">
+
+Material Editor: node **Noise** (beberapa jenis), atau membaca tekstur noise dengan **Texture Sample**.
+
+</div>
+<div slot="godot">
+
+Resource `NoiseTexture2D` berisi tekstur yang diisi oleh resource `Noise`, biasanya `FastNoiseLite`. Opsi **Seamless** membuat teksturnya bisa diulang tanpa sambungan, dan **As Normal Map** mengubahnya menjadi normal map. Tekstur ini dibuat di thread terpisah, jadi jika kamu membaca gambarnya dari kode, tunggu sinyal `changed` dulu.
+
+Untuk hash, tulis fungsinya sendiri di `.gdshader`, karena bahasa shader Godot tidak punya fungsi acak bawaan.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Efek glitch Lab memakai fungsi hash klasik di atas untuk memilih pita layar yang bergeser, di `src/experiment/shaders/glitch/fragment.glsl`.
+</Aside>
+
+## Terkait
+
+- [Fungsi Shader Penting](/kamus/shader/glsl-functions/)
+- [Glitch & Chromatic Aberration](/kamus/post/glitch/)
+- [Texture](/kamus/geometri/texture/)

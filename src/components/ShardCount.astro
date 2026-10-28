@@ -1,0 +1,35 @@
+---
+/**
+ * Penghitung pecahan: berapa istilah Kamus yang sudah ditandai dipahami dari daftar `ids`.
+ * Setiap istilah yang dipahami = satu pecahan cangkang Krekit.
+ * Daftar dibuat saat build; status terkumpul dibaca dari progres di browser (localStorage).
+ */
+interface Props {
+  ids: string[]
+}
+const { ids } = Astro.props
+---
+
+<p class="shards not-content" data-shards={JSON.stringify(ids)}>
+  <svg class="shards__icon" viewBox="0 0 16 16" aria-hidden="true">
+    <path d="M8 1.5 14 6.2 11.6 14H4.4L2 6.2Z" />
+    <path d="M8 1.5 8 9 14 6.2M8 9 4.4 14M8 9 11.6 14M8 9 2 6.2" fill="none" />
+  </svg>
+  <span><strong data-shards-count>0</strong> dari {ids.length} pecahan terkumpul</span>
+</p>
+
+<script>
+  import { loadProgress } from '../lib/progress.js'
+
+  const update = () => {
+    const done = loadProgress()
+    document.querySelectorAll<HTMLElement>('[data-shards]').forEach((el) => {
+      const ids: string[] = JSON.parse(el.dataset.shards!)
+      const count = ids.filter((id) => done.has(id)).length
+      el.querySelector('[data-shards-count]')!.textContent = String(count)
+      el.classList.toggle('is-complete', count === ids.length && ids.length > 0)
+    })
+  }
+  update()
+  document.addEventListener('krekit:progress', update)
+</script>

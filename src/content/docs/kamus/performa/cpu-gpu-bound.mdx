@@ -1,0 +1,75 @@
+---
+title: "CPU-bound vs GPU-bound"
+description: "Game lambat karena salah satu dari dua prosesor kewalahan. CPU-bound: logika, physics, atau terlalu banyak draw call. GPU-bound: terlalu banyak piksel, shader berat, efek layar penuh. Ukur dulu dengan profiler sebelum mengoptimasi."
+kind: term
+level: 3
+aka: "bottleneck, profiler, frame time"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Profiler overview"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/Profiler.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "The Profiler"
+    url: "https://docs.godotengine.org/en/stable/tutorials/scripting/debug/the_profiler.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "GPU optimization"
+    url: "https://docs.godotengine.org/en/stable/tutorials/performance/gpu_optimization.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 3
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+[CPU dan GPU](/kamus/dasar/gpu-cpu/) bekerja bersamaan, dan frame baru selesai setelah keduanya selesai. Jadi yang menentukan kecepatan adalah **yang paling lambat** dari keduanya, yaitu *bottleneck*.
+
+| | CPU-bound | GPU-bound |
+| --- | --- | --- |
+| Penyebab umum | logika game, AI, physics, animasi, terlalu banyak [draw call](/kamus/performa/draw-call/) | resolusi tinggi, [fragment shader](/kamus/shader/fragment-shader/) berat, post-processing, [overdraw](/kamus/performa/overdraw/), bayangan |
+| Menurunkan resolusi | hampir tidak berpengaruh | FPS naik jelas |
+| Solusi | kurangi kerja per frame, batching, sebar kerja ke beberapa frame | turunkan resolusi atau kualitas efek, sederhanakan shader |
+
+Aturan terpenting: **ukur dulu, baru optimasi**. Mengoptimasi shader tidak akan membantu jika masalahnya ada di CPU, dan sebaliknya. Banyak waktu terbuang karena menebak.
+
+**Tes cepat yang dianjurkan dokumentasi Godot:** matikan V-Sync, lalu bandingkan FPS di jendela besar dan jendela sangat kecil. Jika FPS naik jauh di jendela kecil, game dibatasi [fill rate](/kamus/performa/fill-rate/) (GPU). Jika hampir sama, masalahnya di tempat lain.
+
+## Di engine
+
+Setiap engine punya **profiler**: alat yang mencatat berapa milidetik yang dipakai setiap bagian dalam satu frame.
+
+<EngineTabs>
+<div slot="unity">
+
+Jendela **Profiler** dengan modul-modul (CPU, GPU, Rendering, Memory, dan lainnya). Dokumentasi Unity menyarankan mengukur langsung di **perangkat target**, karena hasil di Editor berbeda dengan build sebenarnya.
+
+</div>
+<div slot="unreal">
+
+Perintah konsol `stat unit` menampilkan waktu Game (CPU logika), Draw (CPU render), dan GPU per frame. Angka terbesar adalah bottleneck-nya. Untuk analisis rinci: **Unreal Insights**.
+
+</div>
+<div slot="godot">
+
+Panel **Debugger → Profiler** (mati secara bawaan karena profiling sendiri memakan biaya; tekan Start). Ukuran utamanya: frame time, physics frame, idle time, physics time. Frame time sudah termasuk rendering, jadi efek visual bisa menyebabkan lonjakan.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Gunakan **frame time** (milidetik per frame), bukan FPS, saat membandingkan. 60 FPS = 16,7 ms, 30 FPS = 33,3 ms. Turun dari 60 ke 50 FPS berarti tambahan 3,3 ms, sedangkan turun dari 30 ke 20 FPS berarti tambahan 16,7 ms. Dalam FPS keduanya tampak sama-sama "turun 10", padahal bebannya sangat berbeda.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Panel Performance Lab menampilkan FPS, frame time, dan **CPU time** (lama JavaScript bekerja per frame). Jika FPS turun tetapi CPU time tetap kecil, berarti GPU yang kewalahan. Lihat `src/experiment/perf.js` dan [Membaca Panel Performance](/kamus/web/perf-monitor/).
+</Aside>
+
+## Terkait
+
+- [Fill Rate](/kamus/performa/fill-rate/)
+- [Draw Call & Batching](/kamus/performa/draw-call/)
+- [CPU vs GPU](/kamus/dasar/gpu-cpu/)

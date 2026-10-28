@@ -1,0 +1,63 @@
+---
+title: "Animation Blending & Blend Space"
+description: "Mencampur dua atau lebih klip animasi sekaligus. Dipakai untuk peralihan halus antar-klip dan untuk gerakan berkelanjutan, misalnya jalan perlahan berubah menjadi lari sesuai kecepatan."
+kind: term
+level: 2
+aka: "blend tree, blend space, crossfade"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Blend Trees"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-BlendTree.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Using AnimationTree"
+    url: "https://docs.godotengine.org/en/stable/tutorials/animation/animation_tree.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 7
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Mencampur dua atau lebih klip animasi sekaligus. Karena animasi hanyalah rotasi tulang, mencampurnya berarti [lerp](/kamus/ruang/lerp/) rotasi setiap tulang dari kedua klip. Ada dua pemakaian:
+
+- **Peralihan (*crossfade*):** saat berpindah dari diam ke lompat, klip lama memudar dan klip baru masuk selama misalnya 0,2 detik. Tanpa ini, pose karakter akan meloncat.
+- **Pencampuran berkelanjutan (*blend space* / *blend tree*):** beberapa klip dicampur terus-menerus sesuai parameter. Contoh paling umum: klip jalan dan lari dicampur sesuai kecepatan, sehingga karakter bisa bergerak di kecepatan berapa pun dengan langkah yang pas.
+
+**Blend space 1D** memakai satu parameter (kecepatan). **Blend space 2D** memakai dua parameter, misalnya kecepatan maju dan kecepatan ke samping, untuk karakter yang bisa jalan ke segala arah sambil menghadap ke depan.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+**Blend Tree**: jenis state khusus di Animator Controller. Pilih **Blend Type** 1D atau 2D, lalu tentukan parameter pengendalinya. Peralihan antar-state diatur lewat durasi transition.
+
+</div>
+<div slot="unreal">
+
+Aset **Blend Space** (2D) dan **Blend Space 1D**, dengan sumbu seperti Speed dan Direction, dipakai di dalam state machine Animation Blueprint.
+
+</div>
+<div slot="godot">
+
+Di AnimationTree: **AnimationNodeBlendSpace1D** dan **AnimationNodeBlendSpace2D**. Titik animasi ditempatkan di ruang parameter, dan segitiga di antaranya dibuat otomatis. Atur dari kode:
+
+```gdscript
+$AnimationTree.set("parameters/gerak/blend_position", kecepatan)
+```
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Agar campuran terlihat benar, klip yang dicampur harus **sinkron**. Dokumentasi Unity menekankan bahwa langkah kaki pada klip jalan dan lari harus jatuh di titik waktu yang sama (dalam waktu ternormalisasi), misalnya kaki kiri menyentuh tanah di awal klip pada keduanya. Jika tidak, kaki akan tampak terseret atau tersandung di tengah campuran. Godot menyediakan **Sync Mode** di blend space untuk keperluan yang sama.
+
+## Terkait
+
+- [Animation State Machine](/kamus/animasi/state-machine/)
+- [Lerp](/kamus/ruang/lerp/)
+- [Root Motion](/kamus/animasi/root-motion/)

@@ -1,0 +1,75 @@
+---
+title: "Dot Product"
+description: "Operasi dua vektor yang menghasilkan satu angka. Untuk vektor sepanjang 1, hasilnya menunjukkan seberapa searah keduanya: 1 searah, 0 tegak lurus, −1 berlawanan."
+kind: term
+level: 2
+aka: "perkalian titik, dot"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Vector3.Dot"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Vector3.Dot.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Vector math"
+    url: "https://docs.godotengine.org/en/stable/tutorials/math/vector_math.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Vector3"
+    url: "https://docs.godotengine.org/en/stable/classes/class_vector3.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Built-in functions (shading language)"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shader_functions.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 12
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Operasi dua vektor yang menghasilkan satu angka: `a.x*b.x + a.y*b.y + a.z*b.z`. Jika keduanya sudah [dinormalisasi](/kamus/ruang/normalize/), hasilnya adalah kosinus sudut di antara keduanya: **1** berarti searah, **0** tegak lurus, **−1** berlawanan.
+
+Dot product muncul di banyak tempat dalam game dan grafis:
+
+- **Pencahayaan:** seberapa terang permukaan = dot(normal, arah ke cahaya).
+- **Penglihatan musuh:** apakah pemain ada di depan musuh? Cek dot(arah depan musuh, arah ke pemain) > 0.
+- **Efek tepi bercahaya:** [Fresnel](/kamus/shader/fresnel/) memakai dot(normal, arah pandang).
+
+```text title="Pseudocode: apakah pemain ada di depan musuh?"
+ke_pemain = normalize(posisi_pemain - posisi_musuh)
+if dot(arah_depan_musuh, ke_pemain) > 0.5:   // dalam sudut ±60°
+    musuh_melihat_pemain()
+```
+
+Urutan argumen tidak berpengaruh: `dot(a, b)` sama dengan `dot(b, a)`. Ini berbeda dengan [cross product](/kamus/ruang/cross/), yang hasilnya berbalik arah jika urutannya ditukar.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+`Vector3.Dot(a, b)` (fungsi statis). Untuk dua vektor yang sudah dinormalisasi, dokumentasi Unity menyebut hasilnya 1 jika searah, −1 jika berlawanan, dan 0 jika tegak lurus.
+
+</div>
+<div slot="unreal">
+
+`FVector::DotProduct(A, B)`, atau operator `A | B`.
+
+</div>
+<div slot="godot">
+
+`a.dot(b)`. Tutorial *Vector math* di dokumentasi Godot memakai contoh yang sama dengan pseudocode di atas: zombie dapat melihat pemain jika hasil dot-nya lebih dari 0.
+
+</div>
+</EngineTabs>
+
+Di bahasa shader (HLSL, GLSL, dan bahasa shader Godot), fungsinya bernama `dot(a, b)`.
+
+## Terkait
+
+- [Efek Fresnel](/kamus/shader/fresnel/)
+- [Normal](/kamus/geometri/normal/)
+- [Normalize & Panjang Vektor](/kamus/ruang/normalize/)
+- [Cross Product](/kamus/ruang/cross/)

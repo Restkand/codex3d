@@ -1,0 +1,189 @@
+---
+/**
+ * Halaman utama Kamus (/kamus/): pencarian istilah, peta pipa grafis, dan kartu bab.
+ * Pencarian berjalan di browser dari daftar istilah yang dibuat saat build (tanpa server).
+ */
+import { getCollection, getEntry, render } from 'astro:content'
+import LearnLayout from '../../layouts/LearnLayout.astro'
+import ShardCount from '../../components/ShardCount.astro'
+import { KAMUS_CHAPTERS } from '../../lib/sections.js'
+import { withBase } from '../../lib/inline.js'
+import { LEVELS } from '../../lib/progress.js'
+import pipeline from '../../data/pipeline.json'
+
+const intro = await getEntry('docs', 'kamus')
+const { Content } = await render(intro)
+const terms = await getCollection('docs', (e) => e.data.kind === 'term')
+const chapterOf = (term) => term.id.split('/')[1]
+const countIn = (chapterId) => terms.filter((t) => chapterOf(t) === chapterId).length
+const mainChapters = KAMUS_CHAPTERS.filter((c) => !c.extra)
+const extraChapters = KAMUS_CHAPTERS.filter((c) => c.extra)
+
+// Data pencarian: hanya yang dibutuhkan untuk mencocokkan & menampilkan hasil
+const index = terms.map((t) => ({
+  title: t.data.title,
+  aka: t.data.aka ?? '',
+  description: t.data.description,
+  chapter: KAMUS_CHAPTERS.find((c) => c.id === chapterOf(t))?.title ?? '',
+  level: LEVELS[t.data.level ?? 1].name,
+  href: withBase(`/${t.id}/`),
+}))
+---
+
+<LearnLayout
+  title="Kamus"
+  description={intro.data.description}
+  editPath={intro.filePath}
+  greeting="Ketik istilah yang membuatmu bingung. Aku bantu carikan."
+  crumbs={[{ label: 'Kamus' }]}
+>
+  <Fragment slot="side">
+    <p class="lside__label">Bab Kamus</p>
+    <ol class="quests">
+      {
+        mainChapters.map((c, i) => (
+          <li class="quests__item">
+            <a href={withBase(`/kamus/${c.id}/`)}>
+              <span class="quests__num">{String(i + 1).padStart(2, '0')}</span>
+              <span class="quests__title">{c.title}</span>
+              <span class="quests__count">{countIn(c.id)}</span>
+            </a>
+          </li>
+        ))
+      }
+      {
+        extraChapters.map((c) => (
+          <li class="quests__item">
+            <a href={withBase(`/kamus/${c.id}/`)}>
+              <span class="quests__num">+</span>
+              <span class="quests__title">{c.title}</span>
+              <span class="quests__count">{countIn(c.id)}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </Fragment>
+
+  <header class="lhead">
+    <p class="lhead__eyebrow">Kamus</p>
+    <h1 class="lhead__title">{terms.length} istilah, saling terhubung.</h1>
+    <p class="lhead__lead">{intro.data.description}</p>
+    <ShardCount ids={terms.map((t) => t.id)} />
+  </header>
+
+  <section class="csearch" aria-label="Cari istilah">
+    <input type="search" class="csearch__input" placeholder="Cari istilah, mis. shader, normal" data-kamus-search autocomplete="off" />
+    <ol class="csearch__results" data-kamus-results hidden></ol>
+    <p class="csearch__empty" data-kamus-empty hidden>Tidak ada istilah yang cocok. Coba kata lain, atau usulkan istilah baru lewat GitHub.</p>
+    <script type="application/json" id="kamus-index" set:html={JSON.stringify(index)} />
+  </section>
+
+  <article class="lcontent">
+    <Content />
+  </article>
+
+  <section class="cmap" aria-label="Peta pipa grafis">
+    <h2 class="cmap__title">Perjalanan satu frame</h2>
+    <p class="cmap__intro">Urutan tahap sebuah frame dibuat. Pilih tahapnya untuk membaca istilahnya.</p>
+    <ol class="pipeline">
+      {
+        pipeline.map((step, i) => (
+          <li>
+            <a href={withBase(step.href)}>
+              <span class="pipeline__index">{i + 1}</span>
+              <strong>{step.label}</strong>
+              <small>{step.sub}</small>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="tracks-grid" aria-label="Bab">
+    {
+      mainChapters.map((c, i) => (
+        <a class="track-tile" href={withBase(`/kamus/${c.id}/`)}>
+          <span class="track-tile__num">Bab {String(i + 1).padStart(2, '0')}</span>
+          <strong class="track-tile__title">{c.title}</strong>
+          <span class="track-tile__blurb">{c.blurb}</span>
+          <span class="track-tile__status">{countIn(c.id)} istilah</span>
+        </a>
+      ))
+    }
+  </section>
+
+  <section class="extras" aria-label="Bab tambahan">
+    <p class="lside__label">Bab Tambahan</p>
+    <div class="tracks-grid">
+      {
+        extraChapters.map((c) => (
+          <a class="track-tile" href={withBase(`/kamus/${c.id}/`)}>
+            <span class="track-tile__num">+</span>
+            <strong class="track-tile__title">{c.title}</strong>
+            <span class="track-tile__blurb">{c.blurb}</span>
+            <span class="track-tile__status">{countIn(c.id)} istilah</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</LearnLayout>
+
+<script>
+  /** Pencarian sederhana: semua kata yang diketik harus muncul di judul, nama lain, atau definisi */
+  const input = document.querySelector<HTMLInputElement>('[data-kamus-search]')!
+  const list = document.querySelector<HTMLElement>('[data-kamus-results]')!
+  const empty = document.querySelector<HTMLElement>('[data-kamus-empty]')!
+  const index: { title: string; aka: string; description: string; chapter: string; level: string; href: string }[] = JSON.parse(
+    document.getElementById('kamus-index')!.textContent!,
+  )
+  const escape = (text: string) => text.replace(/[&<>"']/g, (ch) => `&#${ch.charCodeAt(0)};`)
+
+  // Petunjuk pintasan hanya untuk perangkat dengan keyboard & kursor (tidak relevan di layar sentuh)
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) input.placeholder += '  (Ctrl+K)'
+
+  // Pintasan: Ctrl+K / Cmd+K, atau "/" saat tidak sedang mengetik di kolom lain
+  window.addEventListener('keydown', (event) => {
+    const typing = event.target instanceof HTMLElement && event.target.closest('input, textarea, [contenteditable]')
+    const shortcut = ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') || (event.key === '/' && !typing)
+    if (!shortcut) return
+    event.preventDefault()
+    input.focus()
+    input.select()
+  })
+
+  input.addEventListener('input', () => {
+    const words = input.value.toLowerCase().trim().split(/\s+/).filter(Boolean)
+    if (!words.length) {
+      list.hidden = true
+      empty.hidden = true
+      return
+    }
+    const results = index
+      .map((item) => {
+        const title = item.title.toLowerCase()
+        const haystack = `${title} ${item.aka} ${item.description}`.toLowerCase()
+        if (!words.every((w) => haystack.includes(w))) return null
+        // Kecocokan di judul diurutkan lebih dulu
+        const score = words.reduce((sum, w) => sum + (title.includes(w) ? 2 : 0) + (item.aka.toLowerCase().includes(w) ? 1 : 0), 0)
+        return { item, score }
+      })
+      .filter(Boolean)
+      .sort((a, b) => b!.score - a!.score)
+      .slice(0, 12)
+
+    list.innerHTML = results
+      .map(
+        (r) => `<li><a href="${r!.item.href}">
+          <strong>${escape(r!.item.title)}</strong>
+          <span class="csearch__meta">${escape(r!.item.chapter)} · ${escape(r!.item.level)}</span>
+          <span class="csearch__desc">${escape(r!.item.description)}</span>
+        </a></li>`,
+      )
+      .join('')
+    list.hidden = results.length === 0
+    empty.hidden = results.length > 0
+  })
+</script>

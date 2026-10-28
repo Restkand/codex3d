@@ -1,0 +1,32 @@
+---
+/**
+ * Kotak catatan di dalam konten MDX.
+ * Pemakaian: <Aside type="note" title="Analogi">...</Aside>
+ *
+ * type: note (kuning, catatan/analogi/Lab), tip (cyan, saran/quest), caution (magenta, peringatan).
+ * "danger" diterima sebagai caution agar konten lama tetap jalan.
+ */
+interface Props {
+  type?: 'note' | 'tip' | 'caution' | 'danger'
+  title?: string
+}
+
+const { type = 'note', title } = Astro.props
+const kind = type === 'danger' ? 'caution' : type
+const DEFAULT_TITLES = { note: 'Catatan', tip: 'Tips', caution: 'Perhatian' }
+
+// Ikon garis sederhana: lingkaran "i", bintang kecil, dan segitiga peringatan
+const ICONS = {
+  note: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/>',
+  tip: '<path d="M12 3l2.2 5.6L20 9.3l-4.5 3.8L17 19l-5-3.1L7 19l1.5-5.9L4 9.3l5.8-.7z"/>',
+  caution: '<path d="M12 3.5 21.5 20h-19z"/><path d="M12 10v4.5M12 17.5v.01"/>',
+}
+---
+
+<aside class:list={['aside', `aside--${kind}`]} aria-label={title ?? DEFAULT_TITLES[kind]}>
+  <p class="aside__title" aria-hidden="true">
+    <svg class="aside__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={ICONS[kind]} />
+    {title ?? DEFAULT_TITLES[kind]}
+  </p>
+  <div class="aside__content"><slot /></div>
+</aside>

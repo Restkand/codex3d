@@ -1,0 +1,51 @@
+---
+title: "Fill Rate"
+description: "Berapa banyak piksel yang sanggup diwarnai GPU per detik. Dihabiskan oleh resolusi tinggi, fragment shader berat, efek layar penuh, dan objek transparan bertumpuk. Biasanya batas pertama di laptop dan ponsel."
+kind: term
+level: 3
+aka: "pixel throughput, resolution scale"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "GPU optimization"
+    url: "https://docs.godotengine.org/en/stable/tutorials/performance/gpu_optimization.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "3D antialiasing"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/3d_antialiasing.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 4
+---
+
+import Aside from '~/components/Aside.astro'
+
+Berapa banyak piksel yang sanggup diwarnai GPU per detik. Setiap piksel menjalankan [fragment shader](/kamus/shader/fragment-shader/), dan dokumentasi Godot mencatat bahwa biaya per piksel ini naik drastis seiring material makin canggih.
+
+Hitungannya cepat membengkak. Layar 1920×1080 punya 2 juta piksel. Pada 4K menjadi 8,3 juta, empat kali lipat. Kalikan dengan jumlah efek layar penuh dan berapa kali setiap piksel ditimpa ([overdraw](/kamus/performa/overdraw/)).
+
+Yang menghabiskan fill rate:
+
+- **Resolusi** (termasuk layar HiDPI pada laptop dan ponsel).
+- **Shader per piksel yang berat**: banyak tekstur, banyak lampu, perhitungan rumit.
+- **Efek layar penuh**: [bloom](/kamus/post/bloom/), blur, SSAO, setiap pass membaca dan menulis seluruh layar.
+- **Objek transparan bertumpuk**: asap, partikel, kaca, hologram.
+
+## Cara menghemat
+
+- **Render di resolusi lebih rendah lalu perbesar** (*resolution scale* / *upscaling*). Teknik temporal seperti TSR dan FSR melakukannya dengan kualitas tinggi ([Antialiasing](/kamus/post/antialias/)). Antarmuka (teks, HUD) tetap digambar di resolusi penuh agar tajam.
+- **Sederhanakan shader** dan kurangi jumlah atau ukuran tekstur.
+- **Kecilkan area transparan.** Dokumentasi Godot bahkan menyebut bahwa dalam beberapa kasus geometri opaque yang lebih rumit justru lebih cepat daripada transparansi.
+
+Tes apakah game dibatasi fill rate: lihat [CPU-bound vs GPU-bound](/kamus/performa/cpu-gpu-bound/).
+
+<Aside type="note" title="Di Lab (Three.js)">
+Lab membatasi *pixel ratio* maksimal 1,5 (`MAX_PIXEL_RATIO` di `src/experiment/core/setup.js`), agar layar HiDPI dengan rasio 2 atau 3 tidak merender 4–9 kali lebih banyak piksel. Lihat [Pixel Ratio](/kamus/web/pixel-ratio/).
+</Aside>
+
+## Terkait
+
+- [Overdraw](/kamus/performa/overdraw/)
+- [CPU-bound vs GPU-bound](/kamus/performa/cpu-gpu-bound/)
+- [Culling & Kerja Bersyarat](/kamus/performa/conditional-render/)

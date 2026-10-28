@@ -1,0 +1,127 @@
+---
+title: "Quaternion"
+description: "Cara engine menyimpan rotasi 3D dengan empat angka (x, y, z, w). Bebas gimbal lock dan bisa diinterpolasi dengan mulus lewat slerp."
+kind: term
+level: 2
+aka: "quat, rotasi, slerp"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Quaternion"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Quaternion.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Quaternion.Euler"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Quaternion.Euler.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Quaternion.LookRotation"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Quaternion.LookRotation.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Quaternion.AngleAxis"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Quaternion.AngleAxis.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Quaternion.RotateTowards"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Quaternion.RotateTowards.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Quaternion.Slerp"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Quaternion.Slerp.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Quaternion and Euler rotations in Unity"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/QuaternionAndEulerRotationsInUnity.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Quaternion"
+    url: "https://docs.godotengine.org/en/stable/classes/class_quaternion.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Using 3D transforms"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/using_transforms.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 14
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+**Quaternion** adalah cara engine menyimpan rotasi 3D dengan empat angka: x, y, z, dan w. Secara kasar, keempat angka itu menyandikan **sumbu putar** dan **besar sudut** di sekitar sumbu itu. Quaternion tidak mengalami [gimbal lock](/kamus/ruang/radian/) seperti sudut Euler, dan bisa diinterpolasi dengan mulus dari satu rotasi ke rotasi lain.
+
+Kamu hampir tidak pernah perlu mengisi x, y, z, w secara manual, dan dokumentasi Godot pun menyarankan untuk tidak mengubahnya langsung. Quaternion dibuat lewat fungsi bantu, lalu dipakai dengan beberapa operasi dasar:
+
+- **Membuat:** dari sudut Euler, dari sumbu + sudut, atau dari arah "depan" yang diinginkan.
+- **Menggabungkan:** `q1 * q2` berarti rotasi q2 lalu diputar lagi oleh q1. Urutannya berpengaruh: `q1 * q2` tidak sama dengan `q2 * q1`.
+- **Memutar vektor:** `q * v` menghasilkan vektor v yang sudah diputar.
+- **Interpolasi:** *slerp* (*spherical linear interpolation*) bergerak di sepanjang busur dengan kecepatan sudut tetap, sehingga rotasi tampak mulus.
+
+Quaternion tanpa rotasi disebut **identity**, dengan nilai (0, 0, 0, 1). Hanya quaternion sepanjang 1 (ternormalisasi) yang mewakili rotasi yang valid.
+
+```text title="Pseudocode: musuh berbalik menghadap pemain secara halus"
+rotasi_target = rotasi_menghadap(posisi_pemain - posisi_musuh)
+rotasi_musuh  = slerp(rotasi_musuh, rotasi_target, 1 - exp(-kecepatan * delta))
+```
+
+<Aside type="note" title="Analogi">
+Bayangkan menusuk sebuah apel dengan tusuk sate, lalu memutar tusuknya. Arah tusuk sate adalah sumbu, seberapa jauh kamu memutarnya adalah sudut. Setiap rotasi 3D bisa dinyatakan dengan satu tusuk sate dan satu sudut.
+</Aside>
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+`transform.rotation` bertipe `Quaternion`. Fungsi yang sering dipakai:
+
+- `Quaternion.Euler(x, y, z)`: dari sudut Euler dalam **derajat**, dengan urutan putar Z, X, lalu Y.
+- `Quaternion.AngleAxis(sudut, sumbu)`: dari sumbu dan sudut dalam derajat.
+- `Quaternion.LookRotation(depan, atas)`: rotasi yang menghadap ke arah `depan`; `atas` bawaannya `Vector3.up`.
+- `Quaternion.Slerp(a, b, t)`: interpolasi, t dibatasi ke 0..1.
+- `Quaternion.RotateTowards(dari, ke, sudutMaks)`: berputar menuju target dengan batas sudut (derajat) per langkah.
+- Operator `*` untuk menggabungkan rotasi atau memutar vektor.
+
+```csharp
+Vector3 arah = target.position - transform.position;
+Quaternion tujuan = Quaternion.LookRotation(arah);
+transform.rotation = Quaternion.Slerp(transform.rotation, tujuan, 1f - Mathf.Exp(-5f * Time.deltaTime));
+```
+
+</div>
+<div slot="unreal">
+
+`FQuat` untuk quaternion, sedangkan `FRotator` (Pitch, Yaw, Roll dalam derajat) dipakai di editor dan Blueprint. Interpolasi: `FQuat::Slerp`.
+
+</div>
+<div slot="godot">
+
+Tipe `Quaternion`. Node3D punya properti `quaternion` di samping `rotation`.
+
+- `Quaternion.from_euler(Vector3(...))`: dari sudut Euler dalam **radian**, urutan YXZ.
+- `Quaternion(sumbu, sudut)`: dari sumbu (harus ternormalisasi) dan sudut dalam radian.
+- `a.slerp(b, t)`: interpolasi; kedua quaternion harus ternormalisasi.
+- Operator `*`: induk di kiri, anak di kanan. `q * v` memutar vektor v.
+
+```gdscript
+var a := quaternion
+var b := Quaternion(Vector3.UP, PI / 2)
+quaternion = a.slerp(b, 0.5)
+```
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Setiap operasi floating point membawa sedikit galat. Jika sebuah quaternion terus dikalikan setiap frame, panjangnya pelan-pelan bergeser dari 1 dan rotasinya mulai tidak akurat. Normalisasi ulang (`normalized`) secara berkala mencegah hal ini.
+
+Satu rotasi yang sama bisa ditulis dengan dua quaternion: q dan −q. Implementasi slerp yang baik memilih jalur yang lebih pendek di antara keduanya, sehingga objek tidak berputar "jalan jauh". Godot, misalnya, menyediakan `slerpni()` sebagai versi yang sengaja melewati pengecekan ini.
+
+## Terkait
+
+- [Radian & Sudut Euler](/kamus/ruang/radian/)
+- [Transform](/kamus/ruang/transform/)
+- [Lerp](/kamus/ruang/lerp/)

@@ -1,0 +1,70 @@
+---
+title: "Fog"
+description: "Objek memudar ke satu warna seiring jarak dari kamera. Memberi kesan kedalaman dan suasana, serta menyembunyikan batas dunia atau objek yang baru muncul."
+kind: term
+level: 1
+aka: "kabut, distance fog, height fog, volumetric fog"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Lighting window reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/lighting-window.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Environment and post-processing"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/environment_and_post_processing.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Environment"
+    url: "https://docs.godotengine.org/en/stable/classes/class_environment.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Volumetric fog and fog volumes"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/volumetric_fog.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 5
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Objek memudar ke satu warna seiring jarak dari kamera. Kabut memberi kesan kedalaman dan suasana, dan punya fungsi teknis: menyembunyikan batas dunia, atau objek yang tiba-tiba muncul saat masuk jarak gambar kamera ([far plane](/kamus/dasar/frustum/)). Warna kabut biasanya disamakan dengan warna langit atau latar.
+
+Ada beberapa rumus:
+
+- **Linear:** mulai pada jarak tertentu, pekat penuh pada jarak lain.
+- **Exponential:** makin jauh makin pekat secara bertahap, tanpa batas tegas. Lebih alami.
+- **Height fog:** lebih pekat di dataran rendah, menipis ke atas. Cocok untuk lembah atau rawa.
+- **Volumetric fog:** kabut yang bereaksi pada cahaya, sehingga sinar lampu dan matahari terlihat menembusnya. Paling cantik, paling mahal.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Jendela **Lighting → Environment → Other Settings → Fog**. Fog Mode: **Linear** (atur Start dan End), **Exponential**, atau **Exponential Squared** (keduanya diatur lewat Density). Di Built-in Render Pipeline, kabut ini tidak tersedia untuk jalur render Deferred.
+
+</div>
+<div slot="unreal">
+
+Aktor **Exponential Height Fog**. Centang **Volumetric Fog** untuk kabut yang bereaksi pada cahaya.
+
+</div>
+<div slot="godot">
+
+Resource **Environment** (di node `WorldEnvironment`) → **Fog**. Mode **Exponential** (bawaan) diatur lewat kepadatan, sedangkan mode **Depth** memakai jarak mulai dan akhir dengan kurva sendiri. Height fog diatur dengan `fog_height` dan `fog_height_density`.
+
+**Volumetric Fog** juga ada di Environment, dan hanya didukung renderer Forward+ (bukan Mobile atau Compatibility). Node `FogVolume` bisa menambah atau mengurangi kabut di area tertentu, dan setiap lampu punya **Volumetric Fog Energy** untuk mengatur seberapa kuat ia menerangi kabut.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Lab memakai kabut linear `new THREE.Fog('#0b0b10', 8, 20)`: mulai pada jarak 8, pekat penuh pada jarak 20, dengan warna sama seperti latar. Lihat `src/experiment/core/setup.js`.
+</Aside>
+
+## Terkait
+
+- [Frustum & Clipping](/kamus/dasar/frustum/)

@@ -1,0 +1,64 @@
+---
+title: "Vektor"
+description: "Kumpulan tiga angka (x, y, z). Bisa berarti posisi (titik di ruang), arah (ke mana), atau skala. Posisi dan skala objek disimpan sebagai vektor."
+kind: term
+level: 1
+aka: "vector, Vector3"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Vector3"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Vector3.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Vector3"
+    url: "https://docs.godotengine.org/en/stable/classes/class_vector3.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Vector math"
+    url: "https://docs.godotengine.org/en/stable/tutorials/math/vector_math.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 2
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Kumpulan tiga angka (x, y, z). Angka yang sama bisa berarti tiga hal berbeda, tergantung pemakaiannya: **posisi** (titik di ruang), **arah** (ke mana), atau **skala** (seberapa besar di setiap sumbu).
+
+```text title="Pseudocode"
+posisi = (1, 0, -2)
+posisi.x = posisi.x + 0.5
+arah_ke_target = posisi_target - posisi_saya   // selisih dua posisi = arah
+```
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+`Vector3` (dan `Vector2` untuk 2D), dengan komponen bertipe `float`. Contoh: `transform.position = new Vector3(1, 0, -2);`
+
+</div>
+<div slot="unreal">
+
+`FVector`. Di Unreal Engine 5, komponennya bertipe `double` agar dunia yang sangat luas tetap presisi. Contoh: `SetActorLocation(FVector(100.f, 0.f, 0.f));`
+
+</div>
+<div slot="godot">
+
+`Vector3` (dan `Vector2` untuk 2D). Komponennya secara bawaan float 32-bit, kecuali engine dikompilasi dengan opsi `precision=double`. Contoh: `position = Vector3(1, 0, -2)`
+
+</div>
+</EngineTabs>
+
+Ketiga engine menyediakan operasi vektor yang sering dipakai sebagai fungsi siap pakai: panjang, normalisasi, jarak, [dot product](/kamus/ruang/dot/), [cross product](/kamus/ruang/cross/), dan interpolasi.
+
+## Terkait
+
+- [Sistem Koordinat 3D](/kamus/ruang/coords/)
+- [Normalize & Panjang Vektor](/kamus/ruang/normalize/)
+- [Dot Product](/kamus/ruang/dot/)
+- [Cross Product](/kamus/ruang/cross/)
+- [Presisi Floating Point](/kamus/ruang/float-precision/)

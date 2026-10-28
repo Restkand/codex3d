@@ -1,0 +1,52 @@
+---
+title: "Bahasa Shader (HLSL & GLSL)"
+description: "Shader ditulis dalam bahasa mirip C yang bertipe ketat. Dua keluarga utama: HLSL (dipakai Unity dan Unreal) dan GLSL (dipakai OpenGL, WebGL, dan menjadi dasar bahasa shader Godot)."
+kind: term
+level: 2
+aka: "GLSL, HLSL, Godot Shading Language, swizzle"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Shading language"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shading_language.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 3
+---
+
+import Aside from '~/components/Aside.astro'
+
+Shader ditulis dalam bahasa mirip C yang bertipe ketat. Ada dua keluarga utama:
+
+- **HLSL** (*High-Level Shading Language*): berasal dari DirectX. Dipakai Unity dan Unreal.
+- **GLSL** (*OpenGL Shading Language*): dipakai OpenGL dan WebGL. Bahasa shader Godot sangat mirip GLSL.
+
+Keduanya hampir sama. Perbedaan utamanya ada pada nama tipe dan beberapa fungsi:
+
+| | HLSL | GLSL / Godot |
+| --- | --- | --- |
+| Vektor 3 angka | `float3` | `vec3` |
+| Matriks 4×4 | `float4x4` | `mat4` |
+| Interpolasi | `lerp()` | `mix()` |
+| Bagian pecahan | `frac()` | `fract()` |
+| Batasi 0..1 | `saturate()` | `clamp(x, 0.0, 1.0)` |
+
+## Hal yang sering membuat bingung
+
+- **Angka desimal:** GLSL ketat soal tipe, jadi `1.0` dan `1` dianggap berbeda (float dan int). Bahasa shader Godot juga tidak mengubah tipe secara otomatis: `float x = 2;` ditolak, dan konversi harus ditulis eksplisit seperti `float(2)`. Biasakan selalu menulis `1.0`.
+- **Swizzle:** komponen vektor bisa diambil dan disusun ulang dengan bebas: `pos.xz`, `warna.rgb`, `v.yyx`. `.xyzw` dan `.rgba` adalah nama lain untuk komponen yang sama.
+- **Error tidak muncul di tempat biasa:** shader dikompilasi oleh compiler shader, terpisah dari compiler kode game (C#, C++, GDScript). Error shader biasanya muncul di console atau panel shader editor saat shader dimuat atau disimpan, dan untuk WebGL baru muncul di Console browser saat halaman berjalan. Di game, shader yang gagal dikompilasi biasanya tampil sebagai warna pengganti yang mencolok (misalnya magenta di Unity).
+
+## Pelajari lebih dalam
+
+Mempelajari satu bahasa shader berarti hampir menguasai semuanya. Tutorial GLSL dari Shadertoy atau *The Book of Shaders* tetap berguna untuk Unity dan Unreal: cukup ganti `vec3` menjadi `float3` dan `mix` menjadi `lerp`. Grafik node di Shader Graph dan Material Editor juga memakai nama fungsi yang sama, karena setiap node pada dasarnya satu fungsi shader.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Shader Lab ditulis dalam GLSL dan dimuat lewat [ShaderMaterial](/kamus/web/shader-material/). Contohnya di `src/experiment/shaders/glitch/fragment.glsl`. Kata `active` ternyata dicadangkan di GLSL, sehingga variabel itu harus diganti nama menjadi `isSliced`.
+</Aside>
+
+## Terkait
+
+- [Fungsi Shader Penting](/kamus/shader/glsl-functions/)
+- [Shader](/kamus/shader/shader/)

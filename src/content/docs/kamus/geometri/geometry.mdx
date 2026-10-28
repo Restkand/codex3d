@@ -1,0 +1,66 @@
+---
+title: "Geometry"
+description: "Data bentuk: daftar titik (vertex) dan cara titik-titik itu dihubungkan menjadi segitiga. Biasanya dibuat di aplikasi 3D seperti Blender, tetapi engine juga menyediakan bentuk dasar."
+kind: term
+level: 1
+aka: "mesh data, model"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Primitive and placeholder objects"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/PrimitiveObjects.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Mesh"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Mesh.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "PrimitiveMesh"
+    url: "https://docs.godotengine.org/en/stable/classes/class_primitivemesh.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 2
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Data bentuk: daftar [titik](/kamus/geometri/vertex/) dan cara titik-titik itu dihubungkan menjadi [segitiga](/kamus/geometri/triangle/). Dalam produksi game, bentuk hampir selalu dibuat di aplikasi 3D (Blender, Maya, 3ds Max), lalu diimpor sebagai file `.fbx`, `.gltf`/`.glb`, atau `.obj`. Engine juga menyediakan bentuk dasar untuk prototipe.
+
+```text title="Pseudocode: data sebuah persegi"
+titik     = [(0,0,0), (1,0,0), (1,1,0), (0,1,0)]
+segitiga  = [0,1,2,  0,2,3]   // dua segitiga, ditulis sebagai nomor urut titik
+```
+
+Menulis titik sebagai nomor urut (*index*) membuat titik yang dipakai bersama tidak perlu disimpan dua kali.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Bentuk dasar: **GameObject → 3D Object** (Cube, Sphere, Capsule, Cylinder, Plane, Quad). Plane terdiri dari 200 segitiga, sedangkan Quad hanya 2. Lewat kode, kelas `Mesh` punya `vertices`, `triangles`, `normals`, dan `uv`.
+
+</div>
+<div slot="unreal">
+
+Bentuk dasar ada di panel **Place Actors → Shapes**. Untuk membuat bentuk lewat kode atau Blueprint: **Procedural Mesh Component** atau **Geometry Script** (Dynamic Mesh).
+
+</div>
+<div slot="godot">
+
+Bentuk dasar berupa resource turunan `PrimitiveMesh`, misalnya `BoxMesh`, `SphereMesh`, `CapsuleMesh`, `CylinderMesh`, `PlaneMesh`, `PrismMesh`, dan `TorusMesh`. Lewat kode: `ArrayMesh` atau `SurfaceTool`.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Lab memakai `IcosahedronGeometry(1, 1)` di `src/experiment/world/objects.js`. Quest: ganti dengan `TorusKnotGeometry(0.7, 0.25, 100, 16)`.
+</Aside>
+
+## Terkait
+
+- [Vertex](/kamus/geometri/vertex/)
+- [Triangle / Face](/kamus/geometri/triangle/)
+- [Segments](/kamus/geometri/segments/)

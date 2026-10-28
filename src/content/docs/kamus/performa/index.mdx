@@ -1,0 +1,19 @@
+---
+title: "Performa"
+description: "Cara menjaga frame rate tetap stabil: menemukan bagian yang berat, lalu mengurangi pekerjaan CPU dan GPU."
+sidebar:
+  order: 0
+  label: Ikhtisar bab
+---
+
+Cara menjaga frame rate tetap stabil: menemukan bagian yang berat, lalu mengurangi pekerjaan CPU dan GPU. Aturan pertamanya selalu sama: **ukur dulu, baru optimasi**.
+
+- [CPU-bound vs GPU-bound](/kamus/performa/cpu-gpu-bound/): Prosesor mana yang kewalahan, dan cara mengukurnya dengan profiler.
+- [Draw Call & Batching](/kamus/performa/draw-call/): Ongkos setiap perintah gambar, dan cara menggabungkannya.
+- [GPU Instancing](/kamus/performa/instancing/): Ribuan salinan mesh yang sama dalam satu draw call.
+- [Fill Rate](/kamus/performa/fill-rate/): Batas jumlah piksel yang bisa diwarnai GPU.
+- [Overdraw](/kamus/performa/overdraw/): Piksel yang sama diwarnai berkali-kali, terutama oleh objek transparan.
+- [Culling & Kerja Bersyarat](/kamus/performa/conditional-render/): Membuang yang tidak terlihat, dan menjalankan pekerjaan hanya saat dibutuhkan.
+- [Memori & Membebaskan Aset](/kamus/performa/dispose/): Mencegah kebocoran memori dan patah-patah karena garbage collection.
+
+Untuk panel performa yang dipakai di Lab, lihat [Membaca Panel Performance](/kamus/web/perf-monitor/) di bab tambahan Web & Three.js.

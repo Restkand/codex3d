@@ -1,0 +1,28 @@
+---
+/**
+ * Demo interaktif kecil (kanvas 2D). Pemakaian di MDX:
+ *   import Demo from '~/components/Demo.astro'
+ *   <Demo name="lerp" caption="Geser t dari 0 ke 1." />
+ * Daftar nama demo: lihat objek DEMOS di src/lib/demos.js
+ */
+interface Props {
+  name: string
+  caption?: string
+}
+const { name, caption } = Astro.props
+---
+
+<div class="demo not-content" data-demo={name}>
+  <span class="demo__tag">Demo</span>
+  {caption && <p class="demo__caption">{caption}</p>}
+</div>
+
+<script>
+  import { mountDemo } from '../lib/demos.js'
+
+  document.querySelectorAll<HTMLElement>('[data-demo]').forEach((root) => {
+    if (root.dataset.mounted) return
+    root.dataset.mounted = 'true'
+    mountDemo(root.dataset.demo, root)
+  })
+</script>

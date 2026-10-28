@@ -1,0 +1,75 @@
+---
+title: "Transparansi & Blending"
+description: "Cara warna piksel baru digabung dengan warna yang sudah ada di belakangnya. Alpha blend mencampur berdasarkan tingkat transparansi. Additive menjumlahkan warna sehingga makin menumpuk makin terang."
+kind: term
+level: 3
+aka: "alpha blend, additive, translucent, alpha clip"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Lit shader material Inspector window reference for URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/lit-shader.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "BaseMaterial3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_basematerial3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Standard Material 3D and ORM Material 3D"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 15
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Cara warna piksel baru digabung dengan warna yang sudah ada di belakangnya.
+
+- **Alpha blend (normal):** dicampur berdasarkan alpha (tingkat transparansi). Untuk kaca, air, asap.
+- **Additive:** warna baru **dijumlahkan** ke warna di belakangnya, sehingga makin menumpuk makin terang dan tidak pernah menggelapkan. Untuk api, cahaya, hologram, percikan.
+- **Multiply:** warna dikalikan, sehingga hanya bisa menggelapkan. Untuk bayangan palsu atau noda.
+
+```text title="Pseudocode"
+alpha_blend = warna_baru * alpha + warna_lama * (1 - alpha)
+additive    = warna_baru + warna_lama
+multiply    = warna_baru * warna_lama
+```
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Material URP/Lit: **Surface Type → Transparent**, lalu pilih **Blending Mode** (Alpha, Premultiply, Additive, Multiply). Blending Mode baru muncul setelah Surface Type diubah ke Transparent. Untuk tepi tegas tanpa pengurutan, centang **Alpha Clipping** dan atur **Threshold** (bawaan 0,5).
+
+</div>
+<div slot="unreal">
+
+**Blend Mode** di Material: Opaque, Masked, Translucent, Additive, Modulate.
+
+</div>
+<div slot="godot">
+
+`StandardMaterial3D`: properti `transparency` (Disabled, Alpha, Alpha Scissor, Alpha Hash, Depth Pre-Pass) dan `blend_mode` (Mix, Add, Subtract, Multiply, Premultiplied Alpha). Mode selain Mix otomatis membuat objek digambar lewat jalur transparan. Untuk tepi tegas, pakai Alpha Scissor dengan `alpha_scissor_threshold`.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Objek transparan lebih mahal dan lebih rumit daripada objek padat. Agar campurannya benar, objek transparan harus digambar **dari yang terjauh ke yang terdekat**, setelah semua objek padat. Engine mengurutkan per objek, bukan per segitiga, jadi dua objek transparan yang saling menembus bisa tampil salah urutan. Additive tidak punya masalah ini karena penjumlahan tidak peduli urutan.
+
+Untuk tepi yang tegas seperti daun atau pagar kawat, pakai **alpha clip / masked**: piksel dibuang sepenuhnya jika alpha di bawah ambang. Cara ini tidak butuh pengurutan dan jauh lebih murah.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Hologram Lab memakai `AdditiveBlending` dengan `transparent: true`, di `src/experiment/world/hologram.js`.
+</Aside>
+
+## Terkait
+
+- [Depth Buffer](/kamus/geometri/depth-buffer/)
+- [Back-face Culling](/kamus/geometri/side/)
+- [Overdraw](/kamus/performa/overdraw/)

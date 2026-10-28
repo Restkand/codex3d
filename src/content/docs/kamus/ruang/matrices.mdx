@@ -1,0 +1,51 @@
+---
+title: "Matriks Model / View / Projection"
+description: "Tiga matriks 4×4 yang membawa sebuah titik dari model ke layar. Model: lokal ke dunia. View: dunia ke sudut pandang kamera. Projection: kamera ke clip space, termasuk efek perspektif."
+kind: term
+level: 3
+aka: "MVP"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Spatial shaders"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/spatial_shader.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Writing a basic unlit shader in URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/writing-shaders-urp-basic-unlit-structure.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 7
+---
+
+import Aside from '~/components/Aside.astro'
+
+Tiga matriks 4×4 yang membawa setiap titik sebuah model sampai ke layar:
+
+1. **Model**: dari koordinat lokal model ke koordinat dunia (posisi, rotasi, dan skala objek).
+2. **View**: dari dunia ke sudut pandang kamera, seolah kamera berada di titik nol.
+3. **Projection**: dari ruang kamera ke *clip space*, termasuk efek perspektif yang membuat objek jauh tampak kecil.
+
+```text title="Pseudocode: di dalam vertex shader"
+posisi_dunia = matriks_model * posisi_lokal
+posisi_clip  = matriks_projection * matriks_view * posisi_dunia
+```
+
+Engine menghitung ketiga matriks ini otomatis dari transform objek dan pengaturan kamera. Kamu baru berurusan langsung dengannya saat menulis shader sendiri.
+
+## Pelajari lebih dalam
+
+Setelah projection, GPU membagi koordinat clip dengan komponen keempatnya (w). Langkah ini yang membuat titik yang jauh "menyusut" ke tengah layar, dan hasilnya adalah [NDC](/kamus/ruang/ndc/).
+
+Di bahasa shader masing-masing engine, matriks ini tersedia dengan nama berbeda. Shader spatial Godot menyediakan `MODEL_MATRIX` (lokal ke dunia), `VIEW_MATRIX` (dunia ke view), dan `PROJECTION_MATRIX` (view ke clip space). Shader Unity di URP memakai fungsi bantu `TransformObjectToHClip`, yang langsung membawa posisi dari object space ke clip space. Unreal menyediakan node **Transform** di Material Editor.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Vertex shader hologram di `src/experiment/shaders/hologram/vertex.glsl` memakai `modelMatrix`, `viewMatrix`, dan `projectionMatrix` yang disediakan Three.js.
+</Aside>
+
+## Terkait
+
+- [Vertex Shader](/kamus/shader/vertex-shader/)
+- [NDC & Koordinat Layar](/kamus/ruang/ndc/)
+- [Local vs World Space](/kamus/ruang/local-world/)

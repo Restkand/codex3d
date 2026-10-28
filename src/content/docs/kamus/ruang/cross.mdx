@@ -1,0 +1,93 @@
+---
+title: "Cross Product"
+description: "Operasi dua vektor yang menghasilkan vektor ketiga yang tegak lurus terhadap keduanya. Dipakai untuk mencari normal permukaan, arah samping, dan menentukan kiri atau kanan."
+kind: term
+level: 2
+aka: "perkalian silang, cross"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Vector3.Cross"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Vector3.Cross.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Quaternion.LookRotation"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Quaternion.LookRotation.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Vector math"
+    url: "https://docs.godotengine.org/en/stable/tutorials/math/vector_math.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Vector3"
+    url: "https://docs.godotengine.org/en/stable/classes/class_vector3.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Vector2"
+    url: "https://docs.godotengine.org/en/stable/classes/class_vector2.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Built-in functions (shading language)"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shader_functions.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 13
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Operasi dua vektor yang menghasilkan **vektor ketiga yang tegak lurus terhadap keduanya**. Berbeda dengan [dot product](/kamus/ruang/dot/) yang menghasilkan satu angka, cross product menghasilkan arah.
+
+```text title="Pseudocode"
+cross(a, b) = (a.y*b.z - a.z*b.y,
+               a.z*b.x - a.x*b.z,
+               a.x*b.y - a.y*b.x)
+```
+
+Tiga sifat yang perlu diingat:
+
+- **Panjangnya** = panjang a × panjang b × sinus sudut di antara keduanya. Jika a dan b searah atau berlawanan, hasilnya vektor nol.
+- **Urutan berpengaruh:** `cross(b, a)` adalah kebalikan dari `cross(a, b)`.
+- **Arahnya ditentukan aturan tangan.** Rumusnya sama di semua engine, tetapi di sistem tangan kanan (Godot) arah hasilnya mengikuti aturan tangan kanan, sedangkan di sistem tangan kiri (Unity) mengikuti tangan kiri. Lihat [Sistem Koordinat 3D](/kamus/ruang/coords/).
+
+Pemakaian yang sering muncul:
+
+- **Normal permukaan:** normal sebuah segitiga = normalize(cross(B − A, C − A)).
+- **Arah samping:** dari arah depan dan arah atas, cross product memberi arah kanan (atau kiri). Cara ini dipakai engine saat membangun rotasi "menghadap ke" sebuah target.
+- **Kiri atau kanan?** Tanda komponen y dari cross(arah depan, arah ke target) menunjukkan sisi target.
+
+```text title="Pseudocode: target di kiri atau kanan? (dunia Y ke atas)"
+s = cross(arah_depan, posisi_target - posisi).y
+// Godot (tangan kanan): s > 0 berarti target di kiri
+// Unity (tangan kiri):  s > 0 berarti target di kanan
+```
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+`Vector3.Cross(a, b)` (fungsi statis). Dokumentasi Unity memakai aturan tangan kiri untuk menentukan arah hasilnya. `Quaternion.LookRotation` memakai cross product dari `forward` dan `upwards` untuk menentukan sumbu X.
+
+</div>
+<div slot="unreal">
+
+`FVector::CrossProduct(A, B)`, atau operator `A ^ B`.
+
+</div>
+<div slot="godot">
+
+`a.cross(b)`. Untuk 2D, `Vector2.cross()` menghasilkan satu angka, yang berguna untuk tes kiri/kanan yang sama.
+
+</div>
+</EngineTabs>
+
+Di bahasa shader (HLSL, GLSL, dan bahasa shader Godot), fungsinya bernama `cross(a, b)` dan menerima dua vektor 3 komponen.
+
+## Terkait
+
+- [Dot Product](/kamus/ruang/dot/)
+- [Normal](/kamus/geometri/normal/)
+- [Sistem Koordinat 3D](/kamus/ruang/coords/)
+- [Normalize & Panjang Vektor](/kamus/ruang/normalize/)

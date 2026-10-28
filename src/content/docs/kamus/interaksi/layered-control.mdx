@@ -1,0 +1,48 @@
+---
+title: "Satu Properti, Satu Pengendali"
+description: "Prinsip arsitektur: setiap properti hanya diubah oleh satu sistem (animasi, physics, kode gerak, atau UI). Jika butuh lebih, tambahkan lapisan induk baru. Mencegah bug saling menimpa yang sulit dilacak."
+kind: term
+level: 2
+aka: "single writer, layered transforms"
+status: draf
+lastReviewed: 2026-10-28
+sidebar:
+  order: 4
+---
+
+import Aside from '~/components/Aside.astro'
+
+Prinsip arsitektur: **setiap properti hanya diubah oleh satu sistem**. Jika dua sistem menulis ke properti yang sama, misalnya animasi idle menggoyang rotasi karakter dan kode gerak memutarnya menghadap arah jalan, hasilnya bergantung pada siapa yang menulis terakhir di frame itu. Gejalanya: gerakan patah-patah, objek "melompat", atau efek yang tiba-tiba hilang. Bug seperti ini sulit dilacak karena masing-masing sistem tampak benar jika dilihat sendiri.
+
+Solusinya adalah **lapisan**. Jika sebuah objek butuh dikendalikan beberapa sistem, beri ia beberapa induk kosong ([hierarki](/kamus/ruang/hierarchy/)), satu lapis untuk satu pengendali:
+
+```text title="Contoh lapisan untuk karakter yang bisa diambil pemain"
+Karakter (posisi & arah hadap: kode gerak / physics)
+└── Goyang (rotasi kecil: animasi idle)
+    └── Efek_Pukul (getaran: efek saat terkena)
+        └── Model (mesh yang terlihat)
+```
+
+Karena transform anak dihitung relatif terhadap induknya, efek semua lapisan otomatis tergabung tanpa saling menimpa.
+
+## Di engine
+
+Prinsip ini tidak butuh fitur khusus, hanya objek kosong sebagai induk: **Create Empty** di Unity, **Scene Component** di Unreal, dan node **Node3D** di Godot. Beberapa sistem engine juga sudah menerapkannya:
+
+- **Physics vs kode:** objek yang digerakkan physics sebaiknya tidak dipindahkan langsung lewat transform. Gerakkan lewat gaya atau kecepatan, atau jadikan objeknya *kinematic*, agar hanya satu pihak yang mengendalikan posisinya.
+- **Animasi vs kode:** klip animasi biasanya menulis ulang tulang setiap frame. Koreksi dari kode, seperti [IK](/kamus/animasi/ik/) atau kepala menoleh, dijalankan setelah animasi, sebagai lapisan terpisah.
+- **Lapisan animasi:** layer di Animator (Unity) atau AnimationTree (Godot) membagi kendali per bagian tubuh, misalnya badan atas dan kaki.
+
+## Pelajari lebih dalam
+
+Prinsip yang sama berlaku untuk data selain transform. Dua [tween](/kamus/animasi/tween/) yang mengubah nilai yang sama bersamaan akan berebut, jadi hentikan yang lama sebelum memulai yang baru. Dua skrip yang sama-sama mengubah volume musik akan saling membatalkan, jadi buat satu pengelola audio yang menerima permintaan dari skrip lain.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Objek Lab memakai empat lapis: `scrollGroup` (posisi dari scroll) → `introGroup` (skala dari intro) → `tiltGroup` (miring mengikuti mouse) → `mesh` (putaran dari render loop). Lihat `src/experiment/world/objects.js`. Maskot Krekit di situs ini memakai pola yang sama. Lihat komentar hierarki di `src/site/krekit.js`.
+</Aside>
+
+## Terkait
+
+- [Hierarki](/kamus/ruang/hierarchy/)
+- [Inverse Kinematics (IK)](/kamus/animasi/ik/)
+- [Overwrite & kill](/kamus/web/overwrite/)

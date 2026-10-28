@@ -1,0 +1,73 @@
+---
+title: "Morph & Blend Shape"
+description: "Mengubah satu bentuk menjadi bentuk lain dengan mencampur posisi setiap titik. Syaratnya: kedua bentuk punya titik yang sama. Dipakai untuk ekspresi wajah, otot, dan efek transformasi."
+kind: term
+level: 3
+aka: "morph target, blend shape, shape key"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "SkinnedMeshRenderer.SetBlendShapeWeight"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/SkinnedMeshRenderer.SetBlendShapeWeight.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "MeshInstance3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_meshinstance3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 13
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Mengubah satu bentuk menjadi bentuk lain dengan [lerp](/kamus/ruang/lerp/) posisi setiap titik: `posisi = lerp(bentuk_A, bentuk_B, t)`. Syaratnya, kedua bentuk punya **jumlah dan urutan titik yang sama**, sehingga setiap titik di bentuk A tahu pasangannya di bentuk B.
+
+Ada dua cara memakainya:
+
+- **Blend shape (morph target):** bentuk B dibuat artist di aplikasi 3D (di Blender disebut *shape key*), disimpan di mesh, lalu dicampur saat game berjalan. Ini cara standar untuk **ekspresi wajah** dan sinkronisasi bibir, karena wajah sulit digerakkan hanya dengan tulang.
+- **Dihitung di vertex shader:** bentuk B tidak disimpan, tetapi dihitung dengan rumus. Cocok untuk efek seperti objek menggelembung, meleleh, atau berubah menjadi bola.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Disebut **BlendShapes**, diatur di komponen **Skinned Mesh Renderer**. Lewat kode:
+
+```csharp
+skinnedMeshRenderer.SetBlendShapeWeight(indeks, 100f);
+```
+
+Rentang bobotnya mengikuti batas minimum dan maksimum yang tersimpan di model. Untuk model hasil impor biasa, rentangnya umumnya 0 sampai 100, bukan 0 sampai 1.
+
+</div>
+<div slot="unreal">
+
+Disebut **Morph Targets**, diimpor bersama Skeletal Mesh. Lewat Blueprint: `Set Morph Target`.
+
+</div>
+<div slot="godot">
+
+Disebut **Blend Shapes** pada `MeshInstance3D`. Lewat kode:
+
+```gdscript
+var i := find_blend_shape_by_name("Senyum")
+set_blend_shape_value(i, 1.0)
+```
+
+Nilai 0 berarti bentuk asli dan 1 berarti bentuk B penuh. `find_blend_shape_by_name` mengembalikan `-1` jika namanya tidak ditemukan.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Hologram Lab memakai cara kedua. Geometrinya kubus, dan versi bolanya dihitung dengan `normalize(position) * r` lalu dicampur dengan `mix`. Lihat `src/experiment/shaders/hologram/vertex.glsl`. Quest: geser slider "morph" dan "twist" di folder Hologram shader pada panel debug.
+</Aside>
+
+## Terkait
+
+- [Normalize & Panjang Vektor](/kamus/ruang/normalize/)
+- [Lerp](/kamus/ruang/lerp/)
+- [Vertex Shader](/kamus/shader/vertex-shader/)

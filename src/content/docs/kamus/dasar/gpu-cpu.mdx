@@ -1,0 +1,30 @@
+---
+title: "CPU vs GPU"
+description: "CPU menjalankan logika game dan mengirim perintah gambar. GPU adalah prosesor dengan ribuan inti kecil yang mengerjakan tugas yang sama secara paralel: menghitung jutaan titik dan piksel sekaligus."
+kind: term
+level: 1
+status: draf
+lastReviewed: 2026-10-28
+sidebar:
+  order: 3
+---
+
+import Aside from '~/components/Aside.astro'
+
+**CPU** menjalankan kode game yang kamu tulis, entah C#, C++, GDScript, atau Blueprint: logika, input, AI, animasi. CPU juga menyiapkan perintah untuk GPU. **GPU** adalah prosesor dengan ribuan inti kecil yang mengerjakan tugas yang sama secara paralel: menghitung posisi jutaan titik dan mewarnai jutaan piksel sekaligus.
+
+<Aside type="note" title="Analogi">
+CPU = beberapa profesor yang pintar menyelesaikan soal rumit satu per satu. GPU = ribuan murid yang masing-masing mewarnai satu kotak di lembar mewarnai pada waktu bersamaan.
+</Aside>
+
+## Pelajari lebih dalam
+
+CPU dan GPU bekerja bersamaan, bukan bergantian. Saat GPU menggambar frame ini, CPU biasanya sudah menyiapkan frame berikutnya. Karena itu, waktu satu frame ditentukan oleh **yang paling lambat** di antara keduanya, bukan jumlah keduanya.
+
+Pekerjaan yang sama untuk banyak data (misalnya mewarnai setiap piksel dengan rumus yang sama) cocok untuk GPU. Pekerjaan dengan banyak percabangan dan keputusan (misalnya AI musuh) cocok untuk CPU.
+
+## Terkait
+
+- [Shader](/kamus/shader/shader/)
+- [Draw Call & Batching](/kamus/performa/draw-call/)
+- [CPU-bound vs GPU-bound](/kamus/performa/cpu-gpu-bound/)

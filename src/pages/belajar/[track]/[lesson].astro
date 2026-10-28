@@ -1,0 +1,179 @@
+---
+/**
+ * Halaman pelajaran dengan layout belajar buatan sendiri.
+ * Isi diambil dari file MDX di src/content/docs/belajar/<jalur>/<pelajaran>.mdx.
+ * Alamat sama dengan sebelumnya (/belajar/<jalur>/<pelajaran>/), sehingga tautan lama tetap berlaku.
+ */
+import { getCollection, render } from 'astro:content'
+import LearnLayout from '../../../layouts/LearnLayout.astro'
+import ProgressToggle from '../../../components/ProgressToggle.astro'
+import { ALL_TRACKS } from '../../../lib/sections.js'
+import { withBase } from '../../../lib/inline.js'
+import { LESSON_XP } from '../../../lib/progress.js'
+import upcoming from '../../../data/upcoming-lessons.json'
+
+export async function getStaticPaths() {
+  const lessons = await getCollection('docs', (e) => e.data.kind === 'lesson')
+  return lessons.map((entry) => {
+    const [, track, lesson] = entry.id.split('/')
+    return { params: { track, lesson }, props: { entry } }
+  })
+}
+
+const { entry } = Astro.props
+// Dibaca oleh komponen di dalam MDX (mis. Quiz) yang butuh data frontmatter halaman ini
+Astro.locals.lessonData = entry.data
+const { Content, headings } = await render(entry)
+
+const { track: trackId } = Astro.params
+const track = ALL_TRACKS.find((t) => t.id === trackId)
+const siblings = (await getCollection('docs', (e) => e.data.kind === 'lesson' && e.id.startsWith(`belajar/${trackId}/`))).sort(
+  (a, b) => (a.data.sidebar?.order ?? 0) - (b.data.sidebar?.order ?? 0),
+)
+const index = siblings.findIndex((s) => s.id === entry.id)
+const prev = siblings[index - 1]
+const next = siblings[index + 1]
+const lessonNum = (e) => e.id.match(/\/(\d+)-/)?.[1] ?? ''
+const href = (e) => withBase(`/${e.id}/`)
+const toc = headings.filter((h) => h.depth === 2)
+const later = upcoming[trackId] ?? []
+const pad2 = (n) => String(n).padStart(2, '0')
+const minutes = entry.data.minutes
+const sources = entry.data.sources ?? []
+const dateFmt = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+---
+
+<LearnLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  editPath={entry.filePath}
+  readingProgress
+  krekitLines={entry.data.krekit}
+  lessonId={entry.id}
+  greeting={minutes ? `Pelajaran ini sekitar ${minutes} menit. Aku tunggu di pojok sini.` : undefined}
+  crumbs={[
+    { label: 'Jalur Belajar', href: withBase('/belajar/') },
+    { label: track?.title ?? trackId, href: withBase(`/belajar/${trackId}/`) },
+    { label: `Pelajaran ${lessonNum(entry)}` },
+  ]}
+>
+  <Fragment slot="side">
+    <p class="lside__label">{track?.title}</p>
+    <ol class="quests">
+      {
+        siblings.map((s) => (
+          <li class:list={['quests__item', { 'is-current': s.id === entry.id }]} data-quest={s.id}>
+            <a href={href(s)}>
+              <span class="quests__num">{lessonNum(s)}</span>
+              <span class="quests__title">{s.data.title}</span>
+              <span class="quests__check" aria-label="selesai" hidden>
+                ✓
+              </span>
+            </a>
+            {s.id === entry.id && (
+              <ol class="toc">
+                {toc.map((h) => (
+                  <li>
+                    <a href={`#${h.slug}`} data-toc={h.slug}>
+                      {h.text}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </li>
+        ))
+      }
+      {
+        later.map((l) => (
+          <li class="quests__item is-locked">
+            <span class="quests__row">
+              <span class="quests__num">{pad2(l.num)}</span>
+              <span class="quests__title">{l.title}</span>
+              <span class="quests__lock" aria-label="segera">
+                ·
+              </span>
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+  </Fragment>
+
+  <header class="lhead">
+    <p class="lhead__eyebrow">Pelajaran {lessonNum(entry)} · {track?.title}</p>
+    <h1 class="lhead__title">{entry.data.title}</h1>
+    <p class="lhead__lead">{entry.data.description}</p>
+    <ul class="lhead__chips">
+      {minutes && <li>±{minutes} menit</li>}
+      {entry.data.quiz && <li>{entry.data.quiz.length} soal kuis</li>}
+      <li>+{LESSON_XP} XP</li>
+      {entry.data.status === 'draf' && <li class="is-draft">Draf · belum ditinjau praktisi</li>}
+    </ul>
+  </header>
+
+  <article class="lcontent">
+    <Content />
+  </article>
+
+  {
+    (sources.length > 0 || entry.data.lastReviewed) && (
+      <section class="lsources" aria-label="Sumber">
+        {sources.length > 0 && (
+          <>
+            <h2>Sumber</h2>
+            <ol>
+              {sources.map((s) => (
+                <li>
+                  <a href={s.url} rel="noopener">
+                    {s.title}
+                  </a>
+                  {s.publisher && <span> · {s.publisher}</span>}
+                  {s.accessed && <span> · diakses {dateFmt.format(s.accessed)}</span>}
+                </li>
+              ))}
+            </ol>
+          </>
+        )}
+        {entry.data.lastReviewed && (
+          <p class="lsources__reviewed">
+            Terakhir ditinjau {dateFmt.format(entry.data.lastReviewed)}
+            {entry.data.reviewers?.length ? ` oleh ${entry.data.reviewers.join(', ')}` : ''}
+          </p>
+        )}
+      </section>
+    )
+  }
+
+  <section class="lfinish" aria-label="Selesai">
+    <ProgressToggle id={entry.id} xp={LESSON_XP} kind="lesson" />
+    <nav class="lfinish__nav" aria-label="Pelajaran lain">
+      {
+        prev ? (
+          <a class="lfinish__card" href={href(prev)}>
+            <small>← Sebelumnya</small>
+            <strong>{prev.data.title}</strong>
+          </a>
+        ) : (
+          <a class="lfinish__card" href={withBase(`/belajar/${trackId}/`)}>
+            <small>← Kembali</small>
+            <strong>Tentang jalur {track?.title}</strong>
+          </a>
+        )
+      }
+      {
+        next ? (
+          <a class="lfinish__card lfinish__card--next" href={href(next)}>
+            <small>Selanjutnya →</small>
+            <strong>{next.data.title}</strong>
+          </a>
+        ) : (
+          <a class="lfinish__card lfinish__card--next" href={withBase('/belajar/')}>
+            <small>Selanjutnya →</small>
+            <strong>Lihat semua jalur</strong>
+          </a>
+        )
+      }
+    </nav>
+  </section>
+</LearnLayout>

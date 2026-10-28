@@ -1,0 +1,76 @@
+---
+title: "Perubahan Status (State Change)"
+description: "Kondisi diperiksa setiap frame, tetapi reaksi (animasi, suara, efek) hanya dipicu saat statusnya berubah, misalnya dari tidak disorot menjadi disorot. Mencegah ratusan animasi atau suara dipicu per detik."
+kind: term
+level: 2
+aka: "edge detection, enter/exit, hover"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "MonoBehaviour.OnMouseEnter"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/MonoBehaviour.OnMouseEnter.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "CollisionObject3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_collisionobject3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 3
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Banyak kondisi dalam game diperiksa **setiap frame**: apakah kursor menyorot objek ini? Apakah pemain berada di dalam zona? Apakah darah di bawah 20%? Tetapi reaksinya, seperti animasi, suara, atau efek, hanya boleh dipicu **sekali saat statusnya berubah**. Tanpa pola ini, suara "bip" akan diputar 60 kali per detik selama kursor menyorot tombol.
+
+```text title="Pseudocode"
+sedang_disorot = raycast_kena(objek)       // diperiksa setiap frame
+
+if sedang_disorot and not tadinya_disorot:  // berubah: masuk
+    mulai_animasi_sorot()
+if not sedang_disorot and tadinya_disorot:  // berubah: keluar
+    mulai_animasi_normal()
+
+tadinya_disorot = sedang_disorot
+```
+
+Kenapa tidak cukup menunggu event "mouse bergerak"? Karena objek bisa bergerak ke bawah kursor yang diam, misalnya objek yang berputar, terbawa scroll, atau musuh yang berjalan. Memeriksa setiap frame menangkap semua kasus, sedangkan memicu saat berubah menjaga reaksi tetap sekali.
+
+## Di engine
+
+Engine menyediakan event masuk dan keluar siap pakai untuk kasus umum. Polanya sama: satu event saat masuk, satu saat keluar, dan opsional satu event yang terus berjalan selama berada di dalam.
+
+<EngineTabs>
+<div slot="unity">
+
+Pada objek dengan Collider: `OnMouseEnter` (sekali saat masuk), `OnMouseOver` (setiap frame selama di atasnya), `OnMouseExit` (sekali saat keluar). Untuk zona: `OnTriggerEnter` / `OnTriggerExit`.
+
+</div>
+<div slot="unreal">
+
+Event **OnBeginCursorOver** / **OnEndCursorOver** pada Actor (perlu mouse-over events diaktifkan di Player Controller). Untuk zona: **OnComponentBeginOverlap** / **OnComponentEndOverlap**.
+
+</div>
+<div slot="godot">
+
+Sinyal `mouse_entered` dan `mouse_exited` pada `CollisionObject3D`. Syaratnya `input_ray_pickable` aktif dan minimal satu bit `collision_layer` terpasang. Untuk zona: sinyal `body_entered` / `body_exited` pada `Area3D`.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Event bawaan tidak selalu bisa diandalkan. Dokumentasi Godot memperingatkan bahwa `mouse_entered`/`mouse_exited` bisa terlewat atau datang tidak berurutan saat mouse bergerak cepat di area kecil, atau tertutup objek lain yang tumpang tindih. Untuk interaksi yang penting, memeriksa sendiri setiap frame dengan [raycast](/kamus/interaksi/raycaster/) lalu membandingkan dengan status sebelumnya lebih bisa dikendalikan.
+
+Pola yang sama berlaku di luar input. Pencapaian (*achievement*) terbuka sekali saat skor melewati batas. Musik berganti saat pemain masuk area baru. Peringatan muncul sekali saat darah turun di bawah batas, bukan berulang selama darahnya rendah.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Hover di Lab dicek setiap frame dari render loop, lalu `onEnter()`/`onLeave()` hanya dipanggil saat status `isHovered` berubah. Lihat fungsi `update()` di `src/experiment/hover.js`.
+</Aside>
+
+## Terkait
+
+- [Raycast](/kamus/interaksi/raycaster/)
+- [Animation State Machine](/kamus/animasi/state-machine/)
+- [Tween](/kamus/animasi/tween/)

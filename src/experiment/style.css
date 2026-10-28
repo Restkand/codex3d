@@ -1,0 +1,136 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: #0b0b10;
+  color: #f2f2f5;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Kanvas menutupi seluruh viewport dan tetap di tempat saat halaman di-scroll */
+.webgl {
+  position: fixed;
+  inset: 0;
+  outline: none;
+}
+
+/* Konten HTML berada di atas kanvas. pointer-events: none agar teks tidak
+   menghalangi event mouse yang dipakai untuk tilt dan raycasting. */
+main {
+  position: relative;
+  pointer-events: none;
+  user-select: none;
+}
+
+.section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 clamp(16px, 8vw, 120px);
+}
+
+.section--left {
+  align-items: flex-start;
+}
+
+.section--right {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.hero {
+  justify-content: flex-end;
+  padding-bottom: clamp(24px, 10vh, 96px);
+}
+
+.section__eyebrow {
+  margin: 0 0 8px;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #ffcc33;
+}
+
+.section__title {
+  margin: 0;
+  max-width: 12ch;
+  font-size: clamp(32px, 6vw, 72px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* Navigasi situs di kiri atas (kanan atas dipakai panel debug lil-gui) */
+.labbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 16px clamp(16px, 3vw, 32px);
+  font-size: 14px;
+}
+
+.labbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  color: #f2f2f5;
+  text-decoration: none;
+}
+
+.labbar__nav {
+  display: flex;
+  gap: 18px;
+}
+
+.labbar__nav a {
+  color: #b8b8c6;
+  text-decoration: none;
+}
+
+.labbar__nav a:hover,
+.labbar__nav a[aria-current='page'] {
+  color: #ffcc33;
+}
+
+/* HP: tautan pindah ke bilah bawah (BottomNav), GitHub tetap di atas */
+@media (max-width: 767px) {
+  .labbar__nav a:not(:last-child) {
+    display: none;
+  }
+}
+
+/* <main> memakai pointer-events: none, jadi link harus mengaktifkannya kembali */
+.section__link {
+  margin-top: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0b0b10;
+  background: #ffcc33;
+  border-radius: 6px;
+  text-decoration: none;
+  pointer-events: auto;
+}
+
+.section__link:hover {
+  background: #ffe08a;
+}
+
+.section__text {
+  margin: 16px 0 0;
+  max-width: 36ch;
+  font-size: 15px;
+  line-height: 1.5;
+  opacity: 0.7;
+}

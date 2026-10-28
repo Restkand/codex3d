@@ -1,0 +1,150 @@
+---
+/**
+ * Halaman satu istilah di Kamus (/kamus/<bab>/<istilah>/).
+ * Isi dari src/content/docs/kamus/<bab>/<istilah>.mdx; navigasi & tautan "Dibahas di" dibuat otomatis.
+ */
+import { getCollection, render } from 'astro:content'
+import LearnLayout from '../../../layouts/LearnLayout.astro'
+import ProgressToggle from '../../../components/ProgressToggle.astro'
+import { KAMUS_CHAPTERS } from '../../../lib/sections.js'
+import { withBase } from '../../../lib/inline.js'
+import { LEVELS } from '../../../lib/progress.js'
+
+export async function getStaticPaths() {
+  const terms = await getCollection('docs', (e) => e.data.kind === 'term')
+  return terms.map((entry) => {
+    const [, chapter, term] = entry.id.split('/')
+    return { params: { chapter, term }, props: { entry } }
+  })
+}
+
+const { entry } = Astro.props
+const { chapter: chapterId, term: termKey } = Astro.params
+const { Content } = await render(entry)
+const chapter = KAMUS_CHAPTERS.find((c) => c.id === chapterId)
+const level = LEVELS[entry.data.level ?? 1]
+
+const siblings = (await getCollection('docs', (e) => e.data.kind === 'term' && e.id.startsWith(`kamus/${chapterId}/`))).sort(
+  (a, b) => (a.data.sidebar?.order ?? 0) - (b.data.sidebar?.order ?? 0),
+)
+const index = siblings.findIndex((s) => s.id === entry.id)
+const prev = siblings[index - 1]
+const next = siblings[index + 1]
+// Pelajaran yang membahas istilah ini (field `terms` di frontmatter pelajaran)
+const lessons = await getCollection('docs', (e) => e.data.kind === 'lesson' && (e.data.terms ?? []).includes(termKey))
+const sources = entry.data.sources ?? []
+const dateFmt = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+---
+
+<LearnLayout
+  title={`${entry.data.title} · Kamus`}
+  description={entry.data.description}
+  editPath={entry.filePath}
+  greeting={lessons.length ? `Istilah ini dipakai di ${lessons.length} pelajaran. Tautannya ada di bawah.` : undefined}
+  crumbs={[
+    { label: 'Kamus', href: withBase('/kamus/') },
+    { label: chapter?.title ?? chapterId, href: withBase(`/kamus/${chapterId}/`) },
+    { label: entry.data.title },
+  ]}
+>
+  <Fragment slot="side">
+    <p class="lside__label">{chapter?.title}</p>
+    <ol class="quests">
+      {
+        siblings.map((s) => (
+          <li class:list={['quests__item', { 'is-current': s.id === entry.id }]} data-quest={s.id}>
+            <a href={withBase(`/${s.id}/`)}>
+              <span class="quests__num">{LEVELS[s.data.level ?? 1].name.slice(0, 1)}</span>
+              <span class="quests__title">{s.data.title}</span>
+              <span class="quests__check" aria-label="pecahan terkumpul" hidden>
+                ✓
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </Fragment>
+
+  <header class="lhead">
+    <p class="lhead__eyebrow">Kamus · {chapter?.title}</p>
+    <h1 class="lhead__title">{entry.data.title}</h1>
+    <ul class="lhead__chips">
+      <li class={`is-level-${entry.data.level ?? 1}`}>{level.name}</li>
+      {entry.data.aka && <li>{entry.data.aka}</li>}
+      <li>+{level.xp} XP</li>
+      {entry.data.status === 'draf' && <li class="is-draft">Draf · belum ditinjau praktisi</li>}
+    </ul>
+  </header>
+
+  <article class="lcontent">
+    <Content />
+  </article>
+
+  {
+    (sources.length > 0 || entry.data.lastReviewed) && (
+      <section class="lsources" aria-label="Sumber">
+        {sources.length > 0 && (
+          <>
+            <h2>Sumber</h2>
+            <ol>
+              {sources.map((s) => (
+                <li>
+                  <a href={s.url} rel="noopener">
+                    {s.title}
+                  </a>
+                  {s.publisher && <span> · {s.publisher}</span>}
+                  {s.accessed && <span> · diakses {dateFmt.format(s.accessed)}</span>}
+                </li>
+              ))}
+            </ol>
+          </>
+        )}
+        {entry.data.lastReviewed && <p class="lsources__reviewed">Terakhir ditinjau {dateFmt.format(entry.data.lastReviewed)}</p>}
+      </section>
+    )
+  }
+
+  {
+    lessons.length > 0 && (
+      <p class="tlessons">
+        <span>Dibahas di</span>
+        {lessons.map((l) => (
+          <a href={withBase(`/${l.id}/`)}>{l.data.title}</a>
+        ))}
+      </p>
+    )
+  }
+
+  <section class="lfinish" aria-label="Selesai">
+    <ProgressToggle id={entry.id} xp={level.xp} kind="term" />
+    <nav class="lfinish__nav" aria-label="Istilah lain">
+      {
+        prev ? (
+          <a class="lfinish__card" href={withBase(`/${prev.id}/`)}>
+            <small>← Sebelumnya</small>
+            <strong>{prev.data.title}</strong>
+          </a>
+        ) : (
+          <a class="lfinish__card" href={withBase(`/kamus/${chapterId}/`)}>
+            <small>← Kembali</small>
+            <strong>Bab {chapter?.title}</strong>
+          </a>
+        )
+      }
+      {
+        next ? (
+          <a class="lfinish__card lfinish__card--next" href={withBase(`/${next.id}/`)}>
+            <small>Selanjutnya →</small>
+            <strong>{next.data.title}</strong>
+          </a>
+        ) : (
+          <a class="lfinish__card lfinish__card--next" href={withBase('/kamus/')}>
+            <small>Selanjutnya →</small>
+            <strong>Semua bab Kamus</strong>
+          </a>
+        )
+      }
+    </nav>
+  </section>
+</LearnLayout>

@@ -1,0 +1,97 @@
+---
+/**
+ * Peta jalur belajar (/belajar/).
+ * Kartu jalur dibuat dari data (src/lib/sections.js); prosa dari src/content/docs/belajar/index.mdx.
+ */
+import { getCollection, getEntry, render } from 'astro:content'
+import LearnLayout from '../../layouts/LearnLayout.astro'
+import { TRACKS, EXTRA_TRACKS } from '../../lib/sections.js'
+import { withBase } from '../../lib/inline.js'
+
+const entry = await getEntry('docs', 'belajar')
+const { Content } = await render(entry)
+const docs = await getCollection('docs')
+const statusOf = (id) => docs.find((d) => d.id === `belajar/${id}`)?.data.status
+const lessonCount = (id) => docs.filter((d) => d.data.kind === 'lesson' && d.id.startsWith(`belajar/${id}/`)).length
+const pad2 = (n) => String(n).padStart(2, '0')
+---
+
+<LearnLayout
+  title="Jalur Belajar"
+  description={entry.data.description}
+  editPath={entry.filePath}
+  greeting="Baru Fondasi Engine yang sudah ada pelajarannya. Lima jalur lain masih kerangka."
+  crumbs={[{ label: 'Jalur Belajar' }]}
+>
+  <Fragment slot="side">
+    <p class="lside__label">Jalur belajar</p>
+    <ol class="quests">
+      {
+        TRACKS.map((t, i) => (
+          <li class:list={['quests__item', { 'is-outline': statusOf(t.id) === 'kerangka' }]}>
+            <a href={withBase(`/belajar/${t.id}/`)}>
+              <span class="quests__num">{pad2(i + 1)}</span>
+              <span class="quests__title">{t.title}</span>
+              <span />
+            </a>
+          </li>
+        ))
+      }
+      {
+        EXTRA_TRACKS.map((t) => (
+          <li class="quests__item">
+            <a href={withBase(`/belajar/${t.id}/`)}>
+              <span class="quests__num">+</span>
+              <span class="quests__title">{t.title}</span>
+              <span />
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </Fragment>
+
+  <header class="lhead">
+    <p class="lhead__eyebrow">Jalur Belajar</p>
+    <h1 class="lhead__title">Pilih dari mana kamu mulai.</h1>
+    <p class="lhead__lead">{entry.data.description}</p>
+  </header>
+
+  <section class="tracks-grid" aria-label="Jalur">
+    {
+      TRACKS.map((track, i) => {
+        const outline = statusOf(track.id) === 'kerangka'
+        const count = lessonCount(track.id)
+        return (
+          <a class:list={['track-tile', { 'is-outline': outline }]} href={withBase(`/belajar/${track.id}/`)}>
+            <span class="track-tile__num">{pad2(i + 1)}</span>
+            <strong class="track-tile__title">{track.title}</strong>
+            <span class="track-tile__blurb">{track.blurb}</span>
+            <span class="track-tile__status">{outline ? 'Kerangka · terbuka untuk kontribusi' : `${count} pelajaran tersedia`}</span>
+          </a>
+        )
+      })
+    }
+  </section>
+
+  <section class="extras" aria-label="Bab tambahan">
+    <p class="lside__label">Bab Tambahan</p>
+    <p class="extras__intro">Penerapan konsep jalur utama pada teknologi tertentu. Bisa dibaca kapan saja, tapi paling bermanfaat setelah Fondasi Engine.</p>
+    <div class="tracks-grid">
+      {
+        EXTRA_TRACKS.map((track) => (
+          <a class="track-tile" href={withBase(`/belajar/${track.id}/`)}>
+            <span class="track-tile__num">+</span>
+            <strong class="track-tile__title">{track.title}</strong>
+            <span class="track-tile__blurb">{track.blurb}</span>
+            <span class="track-tile__status">{lessonCount(track.id)} pelajaran tersedia</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <article class="lcontent">
+    <Content />
+  </article>
+</LearnLayout>

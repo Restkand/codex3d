@@ -1,0 +1,74 @@
+---
+title: "Color Space (sRGB vs Linear)"
+description: "Warna yang kita pilih berada di ruang sRGB, yang disesuaikan dengan cara mata melihat. Perhitungan cahaya harus di ruang linear agar akurat. Tekstur data seperti normal map tidak boleh ditandai sRGB."
+kind: term
+level: 3
+aka: "gamma, linear workflow"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Set a project's color space"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/set-project-color-space.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Default texture type Import Settings reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/texture-type-default.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Shading language"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shading_language.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Importing images"
+    url: "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_images.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 6
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Warna yang kita pilih di color picker atau lukis di tekstur berada di ruang **sRGB**. Ruang ini menyimpan lebih banyak detail di warna gelap karena mata manusia lebih peka di sana. Akibatnya, angka sRGB tidak sebanding dengan jumlah cahaya: nilai 0,5 jauh lebih gelap dari setengah terang.
+
+Perhitungan cahaya harus di ruang **linear**, tempat angka sebanding dengan jumlah cahaya, agar dua lampu yang dijumlahkan benar-benar dua kali lebih terang. Alurnya:
+
+```text title="Alur warna (linear workflow)"
+tekstur & warna (sRGB) → diubah ke linear → perhitungan cahaya → diubah lagi ke sRGB → layar
+```
+
+Engine modern melakukan konversi ini otomatis. Yang perlu kamu perhatikan hanya **menandai tekstur dengan benar**: tekstur warna (albedo) adalah sRGB, sedangkan tekstur data (normal map, roughness, metalness, mask) adalah linear. Normal map yang salah ditandai sRGB akan menghasilkan pencahayaan yang aneh.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+**Edit → Project Settings → Player → Other Settings → Rendering → Color Space**: pilih **Linear** (pilihan lainnya Gamma).
+
+Per tekstur: centang **sRGB (Color Texture)** untuk tekstur warna non-HDR seperti albedo. Matikan untuk tekstur yang menyimpan data yang nilainya harus tepat. Untuk normal map, atur Texture Type ke **Normal map**.
+
+</div>
+<div slot="unreal">
+
+Selalu linear. Per tekstur: centang **sRGB** untuk tekstur warna. Atur Compression Settings ke **Normalmap** atau **Masks** untuk tekstur data, yang otomatis mematikan sRGB.
+
+</div>
+<div slot="godot">
+
+Godot merender dalam ruang linear. Saat impor, opsi **Compress → Normal Map** bawaannya **Detect**: begitu tekstur terdeteksi dipakai sebagai normal map, Godot mengimpornya ulang sebagai normal map secara otomatis.
+
+Di shader buatan sendiri, beri hint `source_color` pada sampler tekstur warna (sRGB). Tanpa hint itu, tekstur akan tampak pucat. Untuk normal map, pakai hint `hint_normal`.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Three.js juga mengonversi otomatis: warna yang ditulis sebagai hex dianggap sRGB, dihitung dalam linear, lalu dikonversi kembali ke sRGB saat ditampilkan. Di Lab yang memakai post-processing, konversi terakhir dilakukan oleh [OutputPass](/kamus/web/output-pass/).
+</Aside>
+
+## Terkait
+
+- [Tone Mapping](/kamus/cahaya/tone-mapping/)
+- [Texture](/kamus/geometri/texture/)

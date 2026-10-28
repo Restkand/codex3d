@@ -1,0 +1,17 @@
+---
+title: Progres saya
+description: Ringkasan pelajaran yang sudah selesai dan pecahan yang sudah terkumpul dari Kamus.
+---
+
+import ProgressSummary from '~/components/ProgressSummary.astro'
+
+Ada dua cara mengumpulkan XP:
+
+- **Pelajaran:** tandai selesai di akhir setiap pelajaran untuk mendapat 50 XP.
+- **Pecahan:** setiap istilah di [Kamus](/kamus/) yang sudah kamu pahami menjadi satu pecahan cangkang Krekit, bernilai 10–30 XP sesuai levelnya. Ambil pecahannya lewat tombol di akhir halaman istilah.
+
+Makin tinggi XP-mu, makin banyak retakan di cangkang Krekit.
+
+<ProgressSummary />
+
+Progres disimpan **hanya di browser ini** (localStorage), tanpa akun dan tanpa dikirim ke server mana pun. Membersihkan data browser atau berganti perangkat akan memulai progres dari awal.

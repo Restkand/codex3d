@@ -1,0 +1,41 @@
+---
+title: "Frame & FPS"
+description: "Satu frame adalah satu gambar utuh. Gerakan adalah ilusi dari banyak frame yang ditampilkan berurutan. 60 FPS berarti setiap frame harus selesai dalam sekitar 16,7 milidetik."
+kind: term
+level: 1
+aka: "frames per second, frame time"
+status: draf
+lastReviewed: 2026-10-28
+sidebar:
+  order: 9
+---
+
+import Aside from '~/components/Aside.astro'
+
+Satu frame adalah satu gambar utuh yang ditampilkan di layar. Gerakan dalam game adalah ilusi dari banyak frame yang ditampilkan berurutan dengan cepat. **FPS** (*frames per second*) adalah berapa banyak frame yang dihasilkan setiap detik.
+
+<Aside type="note" title="Analogi">
+Buku flipbook: setiap halaman adalah satu frame. Makin cepat dibalik, makin halus geraknya.
+</Aside>
+
+## Pelajari lebih dalam
+
+Untuk mengukur performa, **frame time** (milidetik per frame) lebih berguna daripada FPS. Turun dari 60 ke 50 FPS berarti frame bertambah lama 3,3 ms, sedangkan turun dari 30 ke 20 FPS berarti bertambah 16,7 ms. Angka FPS menyembunyikan perbedaan sebesar itu.
+
+| Target | Waktu per frame |
+| --- | --- |
+| 30 FPS | 33,3 ms |
+| 60 FPS | 16,7 ms |
+| 120 FPS | 8,3 ms |
+| 144 FPS | 6,9 ms |
+
+FPS rata-rata yang tinggi juga belum tentu terasa lancar. Satu frame yang sangat lambat di antara frame-frame cepat (*stutter*) lebih terasa daripada FPS yang sedikit lebih rendah tetapi stabil.
+
+Cara melihat frame time di Unity, Unreal, dan Godot dibahas di [Pelajaran 1 Fondasi Engine](/belajar/fondasi-engine/01-frame/).
+
+## Terkait
+
+- [Delta Time](/kamus/dasar/delta-time/)
+- [V-Sync & Batas Frame Rate](/kamus/dasar/vsync/)
+- [CPU-bound vs GPU-bound](/kamus/performa/cpu-gpu-bound/)
+- [requestAnimationFrame](/kamus/web/raf/)

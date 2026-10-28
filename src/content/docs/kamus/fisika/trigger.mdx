@@ -1,0 +1,65 @@
+---
+title: "Trigger & Area"
+description: "Collider yang tidak menghalangi, hanya mendeteksi objek yang masuk, berada di dalam, dan keluar. Dipakai untuk checkpoint, zona damage, pintu otomatis, dan area pemicu cutscene."
+kind: term
+level: 1
+aka: "trigger volume, overlap, sensor, Area3D"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Collider.isTrigger"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Collider-isTrigger.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Physics introduction"
+    url: "https://docs.godotengine.org/en/stable/tutorials/physics/physics_introduction.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 3
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+[Collider](/kamus/fisika/collider/) yang **tidak menghalangi**: objek bisa menembusnya, tetapi trigger mendeteksi saat objek **masuk**, **berada di dalam**, dan **keluar**. Ia adalah sensor tak terlihat yang ditempatkan di dunia game.
+
+Kegunaannya banyak sekali:
+
+- **Checkpoint** dan garis finis.
+- **Zona damage**: lava, racun, area radiasi.
+- **Pintu otomatis** yang terbuka saat pemain mendekat.
+- **Pemicu cerita**: cutscene, dialog, musuh muncul.
+- **Ganti musik atau suasana** saat memasuki area baru.
+- **Jangkauan**: apakah pemain cukup dekat untuk menekan tombol "ambil"?
+
+Event masuk dan keluar adalah contoh pola [Perubahan Status](/kamus/interaksi/hover-state/): reaksi dipicu sekali saat status berubah, bukan setiap frame.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Centang **Is Trigger** pada collider. Unity mengirim `OnTriggerEnter`, `OnTriggerStay` (setiap langkah selama di dalam), dan `OnTriggerExit` ke skrip di objek itu.
+
+</div>
+<div slot="unreal">
+
+Komponen collision (misalnya **Box Collision**) dengan preset **OverlapAll** atau sejenisnya, dan **Generate Overlap Events** aktif. Event: **OnComponentBeginOverlap** dan **OnComponentEndOverlap**. Ada juga aktor **Trigger Box** / **Trigger Volume** siap pakai.
+
+</div>
+<div slot="godot">
+
+Node **Area3D** dengan CollisionShape3D. Sinyal `body_entered` / `body_exited` (untuk body) dan `area_entered` / `area_exited` (untuk area lain). Area3D juga bisa **mengubah parameter physics** di wilayahnya, misalnya gravitasi berbeda di dalam zona.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Trigger hanya mendeteksi objek yang lapisannya sesuai ([Collision Layer & Mask](/kamus/fisika/collision-layers/)). Zona damage sebaiknya hanya melihat lapisan "Pemain" dan "Musuh", bukan semua peti dan puing di level. Selain lebih hemat, cara ini mencegah event yang tidak diharapkan.
+
+## Terkait
+
+- [Collider](/kamus/fisika/collider/)
+- [Perubahan Status (State Change)](/kamus/interaksi/hover-state/)
+- [Collision Layer & Mask](/kamus/fisika/collision-layers/)

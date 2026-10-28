@@ -1,0 +1,77 @@
+---
+title: "PBR"
+description: "Model pencahayaan yang meniru fisika nyata sehingga material tampak meyakinkan di berbagai kondisi cahaya. Dikendalikan terutama oleh warna dasar, roughness, dan metalness."
+kind: term
+level: 2
+aka: "Physically Based Rendering, metallic/roughness workflow"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Physically Based Materials"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/physically-based-materials-in-unreal-engine"
+    publisher: "Epic Games Developer Documentation"
+    accessed: 2026-10-28
+  - title: "Standard Material 3D and ORM Material 3D"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "BaseMaterial3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_basematerial3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Lit shader material Inspector window reference for URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/lit-shader.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Normal map (Bump mapping)"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/StandardShaderMaterialParameterNormalMap.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 10
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+**PBR** (*Physically Based Rendering*) adalah model pencahayaan yang meniru fisika nyata. Keuntungannya: material yang dibuat sekali akan tampak meyakinkan di bawah cahaya apa pun, dari siang terik sampai gua gelap, tanpa perlu disetel ulang untuk setiap adegan.
+
+Hampir semua engine modern memakai **alur metallic/roughness** dengan tiga nilai utama:
+
+- **Base color:** warna dasar, tanpa bayangan atau kilap yang dilukis.
+- **[Roughness](/kamus/geometri/roughness/):** seberapa kasar permukaan.
+- **[Metalness](/kamus/geometri/metalness/):** logam atau bukan.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Shader **URP/Lit** atau **HDRP/Lit**. Di URP/Lit, pilih **Workflow Mode: Metallic** untuk alur metallic/roughness (pilihan lainnya, Specular, memakai warna specular). Perhatikan bahwa Unity memakai **Smoothness**, kebalikan dari roughness (smoothness = 1 − roughness).
+
+</div>
+<div slot="unreal">
+
+Setiap Material dengan Shading Model **Default Lit** sudah PBR: input **Base Color**, **Metallic**, **Roughness**, dan **Specular**.
+
+</div>
+<div slot="godot">
+
+`StandardMaterial3D` dengan properti `albedo_color` (bawaan putih), `metallic` (bawaan 0), dan `roughness` (bawaan 1). Ada juga parameter **Specular** yang menurut dokumentasi Godot sebaiknya dibiarkan di 0,5 kecuali ada alasan khusus.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Karena aturannya sama, tekstur PBR bisa berpindah antar-engine dan antar-aplikasi (Substance Painter, Blender, engine) dengan hasil yang mirip. Ini juga yang membuat pustaka material seperti Poly Haven atau Quixel bisa dipakai di mana saja. Yang perlu diperhatikan hanya perbedaan konvensi, seperti Smoothness di Unity atau arah sumbu hijau pada [normal map](/kamus/geometri/normal-map/). Unity dan Godot sama-sama memakai format Y+ (gaya OpenGL), jadi normal map gaya DirectX harus dibalik kanal hijaunya dulu.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Three.js memakai `MeshStandardMaterial` untuk PBR. Lihat `src/experiment/world/objects.js`.
+</Aside>
+
+## Terkait
+
+- [Roughness](/kamus/geometri/roughness/)
+- [Metalness](/kamus/geometri/metalness/)
+- [Material](/kamus/geometri/material/)

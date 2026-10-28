@@ -1,0 +1,68 @@
+---
+title: "Metalness"
+description: "0 = non-logam (plastik, kayu, kulit). 1 = logam. Logam hanya memantulkan lingkungannya, jadi tanpa sesuatu untuk dipantulkan logam akan tampak gelap."
+kind: term
+level: 1
+aka: "metallic"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Lit shader material Inspector window reference for URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/lit-shader.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Standard Material 3D and ORM Material 3D"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "BaseMaterial3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_basematerial3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "ReflectionProbe"
+    url: "https://docs.godotengine.org/en/stable/classes/class_reflectionprobe.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 12
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+**0** = non-logam (plastik, kayu, kulit, batu). **1** = logam. Di dunia nyata hampir tidak ada yang di tengah-tengah, jadi nilai antara 0 dan 1 biasanya hanya dipakai di peralihan, misalnya tepi logam berkarat.
+
+## Pelajari lebih dalam
+
+Model [PBR](/kamus/geometri/pbr/) membagi pantulan menjadi dua: **diffuse** (cahaya masuk ke material lalu tersebar keluar, membawa warna material) dan **specular** (cahaya langsung memantul dari permukaan). Non-logam sebagian besar diffuse, dengan sedikit specular tak berwarna. Logam hampir tanpa diffuse, dan specular-nya berwarna, misalnya kuning pada emas.
+
+Karena logam hanya memantul, ia butuh sesuatu untuk dipantulkan. Tanpa itu, logam tampak gelap. Solusinya adalah gambar lingkungan 360°, biasanya dari langit (*skybox*/HDRI) atau tangkapan sekitar objek (*reflection probe*).
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Di URP/Lit dengan **Workflow Mode: Metallic**, atur properti **Metallic** (bisa dari Metallic Map). Workflow lainnya, **Specular**, memakai warna specular sebagai ganti nilai metallic. Sumber pantulan: Skybox dari pengaturan Lighting dan **Reflection Probe**.
+
+</div>
+<div slot="unreal">
+
+Input **Metallic**. Sumber pantulan: **Sky Light**, **Reflection Capture**, atau pantulan dari Lumen.
+
+</div>
+<div slot="godot">
+
+Properti `metallic` (bawaan 0). Saat memakai tekstur, `metallic_texture_channel` memilih kanal mana yang dibaca. Sumber pantulan: sky di **WorldEnvironment** dan node **ReflectionProbe**, yang merekam sekelilingnya menjadi cubemap.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Quest: set metalness ke 1 di panel debug Lab. Kenapa objeknya menjadi gelap? (Petunjuk: tidak ada yang bisa dipantulkan. Di Three.js, gambar lingkungan dipasang di `scene.environment`.)
+</Aside>
+
+## Terkait
+
+- [Roughness](/kamus/geometri/roughness/)
+- [PBR](/kamus/geometri/pbr/)

@@ -1,0 +1,85 @@
+---
+title: "Input Action & Input Map"
+description: "Kode game tidak membaca tombol fisik secara langsung, tetapi aksi bernama seperti lompat atau tembak. Tombol mana yang memicunya diatur terpisah, sehingga keyboard, gamepad, dan sentuh bisa dipakai bergantian, dan pemain bisa mengganti tombol."
+kind: term
+level: 1
+aka: "action mapping, key binding, rebinding, polling vs event"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Actions"
+    url: "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.11/manual/Actions.html"
+    publisher: "Unity Input System Documentation"
+    accessed: 2026-10-28
+  - title: "Input examples"
+    url: "https://docs.godotengine.org/en/stable/tutorials/inputs/input_examples.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "InputMap"
+    url: "https://docs.godotengine.org/en/stable/classes/class_inputmap.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 5
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Kode game sebaiknya tidak menulis "jika tombol Spasi ditekan". Yang ditulis adalah **aksi bernama**: "jika aksi *lompat* terjadi". Tombol mana yang memicu *lompat* diatur terpisah dalam **input map**: Spasi di keyboard, tombol A di gamepad, atau ketukan di layar sentuh.
+
+```text title="Input map"
+lompat  ← Spasi, Gamepad A, ketuk layar
+tembak  ← Klik kiri, Gamepad RT
+gerak   ← WASD, tombol panah, stik kiri gamepad
+```
+
+Keuntungannya:
+
+- **Banyak perangkat sekaligus** tanpa mengubah kode gameplay.
+- **Pemain bisa mengganti tombol** (*rebinding*). Ini fitur aksesibilitas penting, dan dokumentasi Unity menyebutnya kebutuhan umum dalam game.
+- **Kode lebih mudah dibaca**: `lompat` lebih jelas daripada `KeyCode.Space`.
+
+## Polling vs event
+
+Ada dua cara membaca input, dan keduanya biasa dipakai bersamaan:
+
+- **Event:** bereaksi **sekali** saat aksi terjadi. Cocok untuk lompat, tembak, buka menu.
+- **Polling:** bertanya **setiap frame** "apakah tombol sedang ditahan?" atau "ke mana stik diarahkan?". Cocok untuk gerak dan membidik.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Paket **Input System**: **Action** (tujuan, misalnya "Jump") dihubungkan ke tombol lewat **binding**. Action dikelompokkan dalam **Action Map** (misalnya "Gameplay" dan "Menu") dan disimpan di aset Input Actions. Action selain yang project-wide harus diaktifkan dulu dengan `Enable()`.
+
+</div>
+<div slot="unreal">
+
+Sistem **Enhanced Input**: aset **Input Action** (aksi) dan **Input Mapping Context** (pemetaan tombol, bisa ditumpuk dan diganti sesuai situasi, misalnya saat mengemudi), dengan *modifier* dan *trigger* untuk memproses nilai.
+
+</div>
+<div slot="godot">
+
+Aksi dibuat di **Project Settings → Input Map** (disarankan bernama `snake_case`). Event di `_input()`, polling lewat `Input`:
+
+```gdscript
+func _input(event):
+    if event.is_action_pressed("lompat"):
+        lompat()
+
+func _physics_process(delta):
+    if Input.is_action_pressed("gerak_kanan"):
+        position.x += kecepatan * delta
+```
+
+Rebinding dari kode: `InputMap.action_erase_events()` lalu `InputMap.action_add_event()`.
+
+</div>
+</EngineTabs>
+
+## Terkait
+
+- [Dead Zone](/kamus/interaksi/deadzone/)
+- [Character Controller](/kamus/fisika/character-controller/)
+- [Perubahan Status (State Change)](/kamus/interaksi/hover-state/)

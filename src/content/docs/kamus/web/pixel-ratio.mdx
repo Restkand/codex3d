@@ -1,0 +1,31 @@
+---
+title: "Pixel Ratio"
+description: "Perbandingan piksel fisik layar dengan piksel CSS. Laptop/HP modern sering 2–3. Kanvas 1000px CSS dengan DPR 2 dirender 2000px fisik, yaitu 4x jumlah piksel. Proyek ini membatasi DPR ke 1,5 agar stabil."
+kind: term
+level: 2
+aka: "devicePixelRatio, DPR"
+sidebar:
+  order: 4
+---
+
+import Aside from '~/components/Aside.astro'
+import Demo from '~/components/Demo.astro'
+
+Perbandingan piksel fisik layar dengan piksel CSS. Laptop/HP modern sering 2–3. Kanvas 1000px CSS dengan DPR 2 dirender 2000px fisik, yaitu 4x jumlah piksel. Proyek ini membatasi DPR ke 1,5 agar stabil.
+
+## Pelajari lebih dalam
+
+Elemen `<canvas>` punya dua ukuran: atribut `width/height` (resolusi gambar, jumlah piksel yang dirender) dan ukuran CSS (seberapa besar ditampilkan). `renderer.setSize(w, h)` mengatur ukuran CSS = w × h dan resolusi = w × h × pixelRatio.
+
+Teknik lanjutan: **adaptive resolution**. Pantau FPS; jika turun di bawah target selama beberapa detik, turunkan pixel ratio sedikit demi sedikit. Jika stabil, naikkan lagi. Banyak situs dan game web memakai teknik ini agar tetap lancar di perangkat lemah.
+
+## Demo
+
+<Demo name="pixelratio" />
+
+**Di proyek ini:** `src/experiment/core/setup.js`
+
+## Terkait
+
+- [Fill Rate](/kamus/performa/fill-rate/)
+- [Membaca Panel Performance](/kamus/web/perf-monitor/)

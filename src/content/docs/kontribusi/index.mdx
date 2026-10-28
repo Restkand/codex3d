@@ -1,0 +1,51 @@
+---
+title: Cara berkontribusi
+description: Alur kontribusi konten dan kode, dari koreksi kecil sampai artikel baru.
+sidebar:
+  order: 1
+---
+
+import Aside from '~/components/Aside.astro'
+
+Semua orang bisa berkontribusi, dan tidak harus programmer. Koreksi salah ketik, perbaikan fakta, artikel baru, studi kasus, terjemahan, atau ulasan dari praktisi sama berharganya.
+
+## Jenis kontribusi
+
+| Jenis | Cara tercepat |
+| --- | --- |
+| Koreksi kecil (typo, kalimat membingungkan) | Tautan **Edit halaman ini di GitHub** di bawah setiap halaman |
+| Koreksi fakta atau sumber usang | Buka issue **Koreksi fakta** di GitHub |
+| Usulan topik atau artikel | Buka issue **Usulan artikel** dulu, agar tidak dobel dengan kontributor lain |
+| Menulis artikel atau pelajaran | Pull request, mengikuti [Menulis artikel](/kontribusi/menulis-artikel/) |
+| Meninjau sebagai praktisi | Komentari pull request atau issue, lalu nama Anda dicantumkan di `reviewers` |
+
+## Koreksi kecil langsung dari browser
+
+1. Klik **Edit halaman ini di GitHub** di bagian bawah halaman yang ingin diperbaiki. GitHub akan membuka file Markdown-nya.
+2. Lakukan perubahan, lalu pilih **Propose changes**. GitHub otomatis membuat salinan (fork) untuk Anda.
+3. Klik **Create pull request** dan jelaskan singkat apa yang diubah dan kenapa.
+
+## Menjalankan situs di komputer sendiri
+
+Dibutuhkan [Node.js](https://nodejs.org/) versi 22 atau lebih baru.
+
+```sh
+git clone https://github.com/Restkand/krekit.git
+cd krekit
+npm install
+npm run dev
+```
+
+Situs berjalan di alamat yang ditampilkan terminal. Setiap file yang disimpan langsung terlihat di browser. Sebelum membuat pull request, jalankan `npm run build` untuk memastikan tidak ada error.
+
+<Aside type="tip" title="Jaringan kantor">
+Jika `npm install` gagal dengan error sertifikat (misalnya `UNABLE_TO_VERIFY_LEAF_SIGNATURE`), jaringan Anda kemungkinan memeriksa lalu lintas HTTPS. Jalankan dengan sertifikat sistem: `NODE_OPTIONS=--use-system-ca npm install`.
+</Aside>
+
+## Proses tinjauan
+
+- Setiap pull request konten ditinjau minimal oleh satu pengelola.
+- Konten baru masuk dengan status **draf** dan baru menjadi **ditinjau** setelah diperiksa oleh orang yang berpengalaman di bidangnya.
+- Klaim fakta tanpa sumber akan diminta sumbernya sebelum digabungkan.
+
+Kontribusi kode dirilis di bawah MIT. Ketentuan lisensi untuk kontribusi konten sedang disiapkan dan akan diumumkan sebelum pull request konten digabungkan. Semua kontributor mengikuti [Kode etik](https://github.com/Restkand/krekit/blob/main/CODE_OF_CONDUCT.md).

@@ -1,0 +1,67 @@
+---
+title: "Timeline & Keyframe"
+description: "Garis waktu yang mengurutkan banyak animasi dan kejadian. Setiap perubahan ditandai dengan keyframe, dan engine mengisi gerakan di antaranya. Dipakai untuk cutscene, intro, dan rangkaian animasi yang bisa diputar, dijeda, dan dibalik."
+kind: term
+level: 2
+aka: "keyframe, sequencer, cutscene, AnimationPlayer"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "About Timeline"
+    url: "https://docs.unity3d.com/Packages/com.unity.timeline@1.8/manual/index.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Sequencer Overview"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-sequencer-movie-tool-overview"
+    publisher: "Epic Games Developer Documentation"
+    accessed: 2026-10-28
+  - title: "Introduction to the animation features"
+    url: "https://docs.godotengine.org/en/stable/tutorials/animation/introduction.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 3
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Garis waktu yang mengurutkan banyak animasi dan kejadian sebagai satu kesatuan. Setiap perubahan ditandai dengan **keyframe**: "pada detik 2, pintu ada di sini". Engine mengisi gerakan di antara keyframe dengan [interpolasi](/kamus/ruang/lerp/) dan [easing](/kamus/animasi/easing/).
+
+Satu timeline bisa berisi banyak **track**: gerakan kamera, animasi karakter, suara, munculnya objek, sampai pemanggilan fungsi. Semuanya bisa diputar, dijeda, dibalik, atau diulang bersama-sama. Inilah alat untuk **cutscene**, intro level, atau rangkaian animasi UI yang rumit.
+
+Perbedaannya dengan [tween](/kamus/animasi/tween/): tween dibuat lewat kode saat game berjalan, sedangkan timeline biasanya **dirancang di editor** oleh animator atau desainer, tanpa menyentuh kode.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Paket **Timeline**: aset Timeline diedit di jendela **Timeline** dan diputar di scene lewat komponen Playable Director. Dipakai untuk cinematic, rangkaian gameplay, urutan audio, dan efek partikel kompleks.
+
+</div>
+<div slot="unreal">
+
+**Sequencer**: aset **Level Sequence** menyimpan track dan keyframe, dan aktor **Level Sequence Actor** menempatkannya di level dengan pengaturan Auto Play, Loop, dan Play Rate. Untuk animasi kecil di Blueprint, ada node **Timeline**.
+
+</div>
+<div slot="godot">
+
+Node **AnimationPlayer**: bisa menganimasikan properti apa pun yang tampil di Inspector, mengubah variabel skrip, bahkan memanggil fungsi. Interpolasi per track: Nearest, Linear, atau Cubic. Easing diatur per keyframe.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Timeline dan keyframe adalah dasar animasi apa pun, termasuk animasi karakter. Bedanya, animasi karakter biasanya dibuat di aplikasi 3D (Blender, Maya) dengan keyframe pada tulang, lalu diimpor sebagai klip animasi. Engine kemudian memilih dan mencampur klip-klip itu saat game berjalan.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Intro Lab memakai `gsap.timeline()` di `src/experiment/intro.js`. Posisi tiap animasi diatur dengan parameter seperti `'<'` (bersamaan dengan sebelumnya) dan `'-=1.2'` (mulai 1,2 detik sebelum yang sebelumnya selesai). Quest: klik "Replay intro" di panel debug, lalu ubah `'-=1.2'` menjadi `'+=0.5'`.
+</Aside>
+
+## Terkait
+
+- [Tween](/kamus/animasi/tween/)
+- [Easing](/kamus/animasi/easing/)
+- [Stagger](/kamus/animasi/stagger/)

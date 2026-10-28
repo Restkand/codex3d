@@ -1,0 +1,69 @@
+---
+title: "Animation State Machine"
+description: "Diagram yang menentukan klip animasi mana yang diputar sekarang (diam, jalan, lompat, jatuh) dan kapan berpindah ke klip lain. Kode game hanya mengirim parameter seperti kecepatan atau sedang di tanah."
+kind: term
+level: 2
+aka: "Animator Controller, Animation Blueprint, AnimationTree, transition"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Animation State Machines"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/AnimationStateMachines.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Using AnimationTree"
+    url: "https://docs.godotengine.org/en/stable/tutorials/animation/animation_tree.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 6
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Karakter punya banyak klip animasi: diam, jalan, lari, lompat, jatuh, mendarat, menyerang. **State machine** adalah diagram yang menentukan klip mana yang sedang diputar (**state**) dan kapan berpindah ke klip lain (**transition**).
+
+```text title="Contoh state machine sederhana"
+Diam ──(kecepatan > 0.1)──▶ Jalan
+Jalan ──(kecepatan < 0.1)──▶ Diam
+Diam/Jalan ──(tombol lompat)──▶ Lompat ──(tidak di tanah)──▶ Jatuh ──(di tanah)──▶ Mendarat ──▶ Diam
+```
+
+Kode game tidak memilih klip secara langsung. Kode hanya mengirim **parameter** ke state machine: kecepatan, sedang di tanah atau tidak, tombol serang ditekan. State machine yang memutuskan perpindahannya, dan setiap transisi biasanya **dicampur** selama sepersekian detik agar tidak patah ([Animation Blending](/kamus/animasi/blending/)). Pemisahan ini membuat animator bisa mengatur perpindahan klip tanpa mengubah kode gameplay.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Aset **Animator Controller**, diedit di jendela Animator dan dipasang di komponen **Animator**. Berisi state, transition dengan kondisi, dan parameter yang diatur dari skrip (misalnya `animator.SetFloat("Speed", v)`). **Layers** memungkinkan state machine terpisah per bagian tubuh, misalnya badan atas menembak sambil kaki berlari.
+
+</div>
+<div slot="unreal">
+
+**Animation Blueprint**: state machine dibuat di **AnimGraph**, dengan **transition rule** berupa ekspresi Blueprint. Nilai seperti kecepatan biasanya dihitung di **Event Graph** milik Animation Blueprint itu sendiri dari data karakter.
+
+</div>
+<div slot="godot">
+
+Node **AnimationTree** dengan root **AnimationNodeStateMachine**, memakai klip dari AnimationPlayer. Pindah state lewat transisi otomatis (Advance Condition atau Advance Expression), atau dari kode:
+
+```gdscript
+var sm = $AnimationTree["parameters/playback"]
+sm.travel("Lompat")
+```
+
+`travel()` mencari jalur lewat state perantara jika tidak ada transisi langsung.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+State machine cepat menjadi rumit seiring bertambahnya aksi: setiap state baru bisa butuh transisi ke banyak state lain. Cara engine mengatasinya: **sub-state machine** (mengelompokkan state, misalnya semua serangan), **layer** per bagian tubuh, dan transisi dari "state mana pun" untuk aksi yang bisa terjadi kapan saja, seperti terkena pukulan.
+
+## Terkait
+
+- [Animation Blending & Blend Space](/kamus/animasi/blending/)
+- [Skeletal Animation & Skinning](/kamus/animasi/skeletal/)
+- [Root Motion](/kamus/animasi/root-motion/)

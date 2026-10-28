@@ -1,0 +1,86 @@
+---
+title: "Draw Call & Batching"
+description: "Satu perintah dari CPU ke GPU: gambar mesh ini dengan material ini. Setiap perintah punya ongkos persiapan di CPU, jadi ribuan draw call bisa memperlambat game walau GPU masih santai. Batching menggabungkannya."
+kind: term
+level: 2
+aka: "draw call, batch, static batching, SRP Batcher, state change"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Draw call batching"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/DrawCallBatching.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "SRP Batcher"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/SRPBatcher-landing.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Optimizing 3D performance"
+    url: "https://docs.godotengine.org/en/stable/tutorials/performance/optimizing_3d_performance.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "GPU optimization"
+    url: "https://docs.godotengine.org/en/stable/tutorials/performance/gpu_optimization.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 2
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Satu perintah dari CPU ke GPU: "gambar mesh ini dengan material ini". Sebelum setiap perintah, CPU dan driver grafis harus menyiapkan banyak hal: memilih shader, mengikat tekstur, mengirim [uniform](/kamus/shader/uniform/), lalu memvalidasi semuanya. Ongkos persiapan ini dibayar **per draw call**, bukan per segitiga.
+
+Akibatnya, 5.000 objek kecil masing-masing dengan draw call sendiri bisa jauh lebih berat daripada satu objek besar berisi jumlah segitiga yang sama. GPU-nya santai, tetapi CPU kewalahan menyiapkan perintah ([CPU-bound](/kamus/performa/cpu-gpu-bound/)).
+
+Yang menambah draw call:
+
+- Setiap objek terlihat, dan setiap **material** di objek itu ([Mesh](/kamus/geometri/mesh/)).
+- Setiap lampu berbayangan, karena objek digambar lagi untuk [shadow map](/kamus/cahaya/shadow-map/).
+- Setiap efek post-processing (minimal satu draw call layar penuh).
+
+Biaya terbesar sering muncul saat **berganti keadaan** (*state change*), misalnya berganti shader atau tekstur. Karena itu engine mengurutkan objek berdasarkan material sebelum menggambar.
+
+## Batching
+
+**Batching** menggabungkan banyak objek menjadi lebih sedikit draw call. Syarat utamanya hampir selalu sama: **material yang sama**.
+
+<EngineTabs>
+<div slot="unity">
+
+- **Static batching:** objek yang ditandai static digabung menjadi satu buffer besar di world space.
+- **Dynamic batching:** penggabungan di CPU setiap frame, hanya untuk mesh kecil (maksimal 300 vertex). Dokumentasi Unity tidak menyarankannya untuk kebanyakan kasus karena biaya CPU-nya bisa melebihi penghematannya.
+- **SRP Batcher** (URP/HDRP): mengurangi pergantian keadaan antar-draw call. Diaktifkan di aset URP.
+- **[GPU Instancing](/kamus/performa/instancing/)** untuk banyak salinan mesh yang sama.
+
+Batching tidak berlaku untuk Skinned Mesh Renderer.
+
+</div>
+<div slot="unreal">
+
+Objek dengan mesh dan material yang sama digabung otomatis (*auto-instancing*). **Instanced Static Mesh** dan **Hierarchical Instanced Static Mesh** untuk banyak salinan. Mesh **Nanite** dirender dengan jalur khusus yang jauh lebih sedikit bergantung pada jumlah draw call.
+
+</div>
+<div slot="godot">
+
+**Instancing otomatis** untuk MeshInstance3D yang memakai mesh dan material yang sama, khusus material opaque atau alpha-tested. Godot juga mengurutkan objek berdasarkan material dan shader. Untuk objek transparan dalam jumlah banyak, pakai **MultiMesh**. Dokumentasi Godot juga menyarankan menggabungkan mesh statis lebih awal, dengan catatan objek yang digabung tidak bisa di-culling satu per satu.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Menggabungkan objek punya harga: objek gabungan dianggap satu, sehingga [culling](/kamus/performa/conditional-render/) tidak bisa membuang bagiannya yang tidak terlihat. Gabungkan objek yang memang **berdekatan** (satu ruangan, satu blok bangunan), bukan seluruh level.
+
+Cara cepat mengurangi draw call tanpa alat khusus: kurangi jumlah material dengan menggabungkan tekstur beberapa objek ke satu gambar besar (*texture atlas*), sehingga semuanya bisa memakai satu material.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Lab punya sekitar 4 draw call: lantai, objek, hologram, ditambah objek digambar lagi untuk shadow map. Angkanya tampil di [panel Performance](/kamus/web/perf-monitor/), dari `src/experiment/perf.js`. Quest: matikan "visible" hologram di panel debug dan perhatikan draw call turun satu.
+</Aside>
+
+## Terkait
+
+- [GPU Instancing](/kamus/performa/instancing/)
+- [CPU-bound vs GPU-bound](/kamus/performa/cpu-gpu-bound/)
+- [Shadow Map](/kamus/cahaya/shadow-map/)

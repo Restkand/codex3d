@@ -1,0 +1,79 @@
+---
+title: "Kamera Ortografis"
+description: "Kamera tanpa perspektif: objek tampak sama besar berapa pun jaraknya dari kamera. Yang diatur bukan sudut pandang, melainkan seberapa luas area dunia yang terlihat."
+kind: term
+level: 1
+aka: "orthographic camera, orthogonal projection, OrthographicCamera (Three.js)"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Camera Inspector window reference for the Built-In Render Pipeline"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-Camera.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Camera.orthographicSize"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Camera-orthographicSize.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Camera3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_camera3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 12
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Kamera tanpa perspektif. Objek tampak sama besar berapa pun jaraknya dari kamera, dan garis yang sejajar di dunia tetap sejajar di layar. Area pandangnya berbentuk kotak, bukan piramida terpotong seperti [frustum](/kamus/dasar/frustum/) kamera perspektif.
+
+Karena tidak ada sudut pandang, pengaturan utamanya berbeda:
+
+- **Ukuran (size):** seberapa luas area dunia yang terlihat. Makin besar nilainya, makin banyak yang muat di layar dan makin kecil tampilan setiap objek. Inilah cara "zoom" pada kamera ortografis.
+- **Near & far:** tetap ada, sama seperti kamera perspektif.
+
+Memindahkan kamera ortografis mendekat ke objek tidak membuat objek tampak lebih besar. Pemula sering bingung di sini: untuk zoom, ubah ukurannya, bukan posisinya.
+
+Kamera ortografis dipakai untuk game isometrik dan strategi dengan sudut pandang tetap, game 2D, tampilan peta atau minimap, tampak atas/depan/samping di editor, serta "kamera" milik cahaya matahari saat membuat [Shadow Map](/kamus/cahaya/shadow-map/).
+
+<Aside type="note" title="Analogi">
+Denah rumah buatan arsitek. Kursi di sudut jauh digambar sama besar dengan kursi di dekat pintu, karena tujuannya mengukur, bukan meniru mata.
+</Aside>
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Komponen **Camera** dengan **Projection: Orthographic**. Ukurannya diatur di **Size**, yang di skrip menjadi `Camera.orthographicSize`. Nilai ini adalah **setengah tinggi** area pandang: tinggi area yang terlihat sama dengan `orthographicSize * 2`, sedangkan lebarnya dihitung Unity dari ukuran itu dan aspect ratio kamera. Lewat skrip, mode ini dinyalakan dengan `Camera.orthographic = true`.
+
+</div>
+<div slot="unreal">
+
+**Camera Component** dengan **Projection Mode: Orthographic**. Lebar area pandang diatur lewat **Ortho Width**.
+
+</div>
+<div slot="godot">
+
+Node **Camera3D** dengan `projection` bernilai `PROJECTION_ORTHOGONAL`. Ukurannya diatur di `size` (bawaan 1,0), dalam meter, sebagai lebar atau tinggi area pandang tergantung `keep_aspect`. Lewat kode, `set_orthogonal(size, z_near, z_far)` mengatur semuanya sekaligus.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Karena tidak ada perspektif, kamera ortografis tidak memberi petunjuk kedalaman dari ukuran objek. Game isometrik mengakalinya dengan sudut kamera miring (misalnya memandang dari atas serong), bayangan, dan urutan tumpukan objek, sehingga pemain tetap bisa membaca mana yang di depan.
+
+[Depth Buffer](/kamus/geometri/depth-buffer/) pada kamera ortografis membagi presisinya merata di sepanjang rentang near–far, berbeda dengan kamera perspektif yang presisinya menumpuk di dekat kamera.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Lab memakai kamera perspektif untuk tampilan utama, tetapi bayangan cahaya directional dirender dari kamera ortografis. Lihat `directional.shadow.camera` di `src/experiment/world/lights.js`: batas `left`, `right`, `top`, dan `bottom` menentukan kotak area yang bisa menerima bayangan. Coba ubah nilai -4 dan 4 di sana menjadi -1 dan 1, lalu perhatikan bayangan yang terpotong.
+</Aside>
+
+## Terkait
+
+- [Kamera Perspektif](/kamus/dasar/camera/)
+- [Frustum & Clipping](/kamus/dasar/frustum/)
+- [Shadow Map](/kamus/cahaya/shadow-map/)
+- [Matriks Model / View / Projection](/kamus/ruang/matrices/)

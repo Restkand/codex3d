@@ -1,0 +1,59 @@
+---
+/**
+ * Halaman umum situs: Tentang (/tentang/), Progres (/progres/), dan Kontribusi (/kontribusi/...).
+ * Isi dari src/content/docs/<halaman>.mdx. Pelajaran dan istilah di Kamus punya halaman sendiri.
+ */
+import { getCollection, render } from 'astro:content'
+import LearnLayout from '../layouts/LearnLayout.astro'
+import { withBase } from '../lib/inline.js'
+
+export async function getStaticPaths() {
+  // Entri yang dirender halaman ini, diurutkan untuk kolom navigasi: Tentang, Progres, lalu Kontribusi
+  const isSitePage = (id: string) => id === 'tentang' || id === 'progres' || id === 'kontribusi' || id.startsWith('kontribusi/')
+  const rank = (id: string) => (id === 'tentang' ? 0 : id === 'progres' ? 1 : 2)
+  const pages = (await getCollection('docs', (e) => isSitePage(e.id))).sort(
+    (a, b) => rank(a.id) - rank(b.id) || (a.data.sidebar?.order ?? 0) - (b.data.sidebar?.order ?? 0),
+  )
+  return pages.map((entry) => ({ params: { page: entry.id }, props: { entry, pages } }))
+}
+
+const { entry, pages } = Astro.props
+const { Content } = await render(entry)
+const isContribution = entry.id.startsWith('kontribusi')
+const crumbs = isContribution && entry.id !== 'kontribusi'
+  ? [{ label: 'Kontribusi', href: withBase('/kontribusi/') }, { label: entry.data.title }]
+  : [{ label: entry.data.title }]
+---
+
+<LearnLayout title={entry.data.title} description={entry.data.description} editPath={entry.filePath} crumbs={crumbs}>
+  <Fragment slot="side">
+    <p class="lside__label">Situs</p>
+    <ol class="quests">
+      {
+        pages.map((p) => (
+          <li class:list={['quests__item', { 'is-current': p.id === entry.id }]}>
+            <a href={withBase(`/${p.id}/`)}>
+              <span class="quests__num">{p.id.startsWith('kontribusi') ? 'K' : '·'}</span>
+              <span class="quests__title">{p.data.title}</span>
+            </a>
+          </li>
+        ))
+      }
+      <li class="quests__item">
+        <a href={withBase('/lab/')}>
+          <span class="quests__num">·</span>
+          <span class="quests__title">Lab 3D</span>
+        </a>
+      </li>
+    </ol>
+  </Fragment>
+
+  <header class="lhead">
+    <p class="lhead__eyebrow">{isContribution ? 'Kontribusi' : 'Krekit'}</p>
+    <h1 class="lhead__title">{entry.data.title}</h1>
+  </header>
+
+  <article class="lcontent">
+    <Content />
+  </article>
+</LearnLayout>

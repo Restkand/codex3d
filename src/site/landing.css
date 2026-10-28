@@ -1,0 +1,715 @@
+/* Halaman depan: bahasa visual yang sama dengan eksperimen 3D */
+
+:root {
+  --bg: #0b0b10;
+  --text: #f2f2f5;
+  --muted: rgba(242, 242, 245, 0.68);
+  --line: rgba(255, 255, 255, 0.1);
+  --card: rgba(20, 20, 28, 0.92);
+  --accent: #ffcc33;
+  --cyan: #00e5ff;
+  --magenta: #ff2bd6;
+  --mono: ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+a {
+  color: inherit;
+}
+
+/* Kanvas 3D tetap di belakang seluruh halaman */
+.webgl {
+  position: fixed;
+  inset: 0;
+  outline: none;
+}
+
+/* Layar sempit setelah Pos 0: kanvas transparan di depan konten (di bawah gelembung & navigasi), lihat landing.js */
+.webgl.is-front {
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Sembunyikan teks animasi sampai GSAP mengambil alih (mencegah kedipan) */
+.js .hero__text > *,
+.js [data-reveal] {
+  visibility: hidden;
+}
+
+/* ---------- Navigasi atas ---------- */
+
+.topnav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px clamp(16px, 5vw, 64px);
+  transition: background 0.3s, border-color 0.3s;
+  border-bottom: 1px solid transparent;
+}
+
+.topnav.is-scrolled {
+  background: rgba(11, 11, 16, 0.82);
+  border-bottom-color: var(--line);
+}
+
+.topnav__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.topnav__links {
+  display: flex;
+  gap: clamp(12px, 3vw, 28px);
+  font-size: 14px;
+}
+
+.topnav__links a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.topnav__links a:hover {
+  color: var(--accent);
+}
+
+.topnav__gh {
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+}
+
+/* ---------- Section ---------- */
+
+/* pointer-events: none agar mouse tetap "menembus" ke kanvas untuk tilt & hover objek */
+main {
+  position: relative;
+  pointer-events: none;
+}
+
+main a,
+main button,
+main [data-krekit-say] {
+  pointer-events: auto;
+}
+
+.section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 120px clamp(16px, 8vw, 120px) 80px;
+}
+
+.section__inner {
+  max-width: 620px;
+}
+
+/* Section dua kolom: teks + panggung Krekit. --flip menaruh panggung di kiri */
+.section--split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(220px, 0.85fr);
+  align-items: center;
+  gap: clamp(24px, 5vw, 80px);
+}
+
+.section--flip {
+  grid-template-columns: minmax(220px, 0.85fr) minmax(0, 1.15fr);
+}
+
+/* ---------- Panggung Krekit ----------
+   Kotak kosong yang menentukan posisi & ukuran Krekit (landing.js membaca ukurannya).
+   Krekit berdiri di tepi BAWAH panggung, di tengah secara horizontal. */
+.krekit-spot {
+  height: clamp(220px, 40vh, 380px);
+  pointer-events: none;
+}
+
+.krekit-spot--hero {
+  align-self: center;
+  height: clamp(240px, 42vh, 400px);
+}
+
+/* Di section kartu: Krekit "duduk" di atas tepi deretan kartu */
+.krekit-spot--perch {
+  flex: 0 0 clamp(130px, 16vw, 200px);
+  height: clamp(130px, 16vw, 190px);
+  margin-bottom: -40px;
+}
+
+.krekit-spot--center {
+  width: 100%;
+  height: clamp(170px, 26vh, 240px);
+  margin-bottom: 8px;
+}
+
+.section__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.section--wide .section__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.section--center {
+  align-items: center;
+  text-align: center;
+}
+
+.section--center .actions {
+  justify-content: center;
+}
+
+/* Hero di-pin (Pos 0), jadi SELURUH isinya harus muat dalam satu layar: ukuran dan jarak
+   mengikuti lebar DAN tinggi layar (mana yang lebih sempit). Laptop dengan skala tampilan 125%
+   (mis. area 1536×730) atau layar pendek tetap menampilkan tombol dan ajakan scroll. */
+.hero {
+  align-items: end;
+  padding-top: clamp(80px, 12vh, 120px);
+  padding-bottom: clamp(28px, 8vh, 110px);
+}
+
+.hero .display {
+  max-width: 15ch;
+  font-size: clamp(36px, min(6.6vw, 10vh), 104px);
+}
+
+.hero .lead {
+  margin-top: clamp(12px, 2.4vh, 22px);
+}
+
+.hero .actions {
+  margin-top: clamp(16px, 3.4vh, 32px);
+}
+
+.hero .scroll-hint {
+  margin-top: clamp(14px, 3.6vh, 40px);
+}
+
+/* Layar laptop yang pendek: rapatkan sedikit lagi */
+@media (min-width: 768px) and (max-height: 700px) {
+  .hero .lead {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .hero .btn {
+    padding: 10px 18px;
+  }
+}
+
+.eyebrow {
+  margin: 0 0 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.display {
+  margin: 0;
+  max-width: 14ch;
+  font-size: clamp(44px, 7.2vw, 104px);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+}
+
+.display--md {
+  max-width: 16ch;
+  font-size: clamp(36px, 5.2vw, 72px);
+}
+
+.section--center .display {
+  margin-inline: auto;
+}
+
+.accent {
+  color: var(--accent);
+}
+
+.lead {
+  max-width: 46ch;
+  margin: 22px 0 0;
+  font-size: clamp(16px, 1.4vw, 19px);
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.section--center .lead {
+  margin-inline: auto;
+}
+
+.lead strong {
+  color: var(--text);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 22px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform 0.2s, background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn--primary {
+  color: var(--bg);
+  background: var(--accent);
+}
+
+.btn--primary:hover {
+  background: #ffe08a;
+}
+
+.btn--ghost {
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(11, 11, 16, 0.4);
+}
+
+.btn--ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Teks berbeda untuk perangkat ber-kursor dan layar sentuh */
+.only-touch {
+  display: none;
+}
+
+@media (hover: none) {
+  .only-pointer {
+    display: none;
+  }
+
+  .only-touch {
+    display: inline;
+  }
+}
+
+.scroll-hint {
+  margin: 40px 0 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  color: rgba(242, 242, 245, 0.45);
+}
+
+/* ---------- Fakta & prinsip ---------- */
+
+.facts,
+.principles {
+  list-style: none;
+  margin: 32px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.facts li,
+.principles li {
+  display: grid;
+  gap: 4px;
+  padding: 16px 18px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+}
+
+.facts b,
+.principles b {
+  font-size: 17px;
+}
+
+.facts span,
+.principles span {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+/* ---------- Kartu jalur ---------- */
+
+.tracks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.track-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 210px;
+  padding: 24px;
+  overflow: hidden;
+  text-decoration: none;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  transition: border-color 0.3s;
+  will-change: transform;
+}
+
+/* Kilau cahaya mengikuti posisi kursor (variabel --mx/--my diisi landing.js) */
+.track-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 0%), rgba(255, 204, 51, 0.16), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.track-card:hover {
+  border-color: rgba(255, 204, 51, 0.6);
+}
+
+.track-card:hover::before {
+  opacity: 1;
+}
+
+.track-card__num {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.track-card__title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.track-card__blurb {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.track-card__status {
+  margin-top: auto;
+  padding-top: 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.track-card__status.is-live {
+  color: #7cff6b;
+}
+
+.track-card__status.is-soon {
+  color: rgba(242, 242, 245, 0.45);
+}
+
+/* ---------- Chip pipa grafis ---------- */
+
+.pipeline-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+}
+
+.pipeline-chips a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  text-decoration: none;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.pipeline-chips a:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.pipeline-chips span {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+}
+
+/* ---------- Footer ---------- */
+
+.site-foot {
+  margin-top: 64px;
+  font-size: 13px;
+  color: rgba(242, 242, 245, 0.45);
+}
+
+.site-foot a {
+  color: var(--muted);
+}
+
+/* ---------- Responsif ---------- */
+
+/* HP: tautan atas pindah ke bilah bawah (BottomNav), GitHub tetap di atas */
+@media (max-width: 767px) {
+  .hide-sm,
+  .topnav__links a:not(.topnav__gh) {
+    display: none;
+  }
+}
+
+/* Layout bertumpuk: HP, dan tablet tegak (dua kolom terlalu sempit di sana) */
+@media (max-width: 767px), (max-width: 1024px) and (orientation: portrait) {
+  .section {
+    padding-top: 96px;
+  }
+
+  /* Layar sempit: satu kolom, panggung Krekit selalu DI ATAS teks agar tidak pernah menutupinya */
+  .section--split,
+  .section--flip {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .section--split > .krekit-spot {
+    order: -1;
+  }
+
+  /* Setelah Pos 0, Krekit berjaga di bawah layar (landing.js), jadi panggung di atas judul tidak dipakai */
+  .krekit-spot:not(.krekit-spot--hero) {
+    display: none;
+  }
+
+  /* Ruang di akhir halaman agar isi terakhir tidak tertutup Krekit */
+  main {
+    padding-bottom: 96px;
+  }
+
+  .section {
+    min-height: auto;
+    padding-bottom: 64px;
+  }
+
+  /* Pos 0 tanpa pin: panggung diorama besar di atas, teks langsung di bawahnya */
+  .hero {
+    min-height: auto;
+    padding-top: 64px;
+    padding-bottom: 48px;
+    row-gap: 22px;
+  }
+
+  .hero > .krekit-spot {
+    position: relative;
+    height: clamp(260px, 44svh, 520px);
+  }
+
+  .hero .eyebrow {
+    letter-spacing: 0.14em;
+  }
+
+  .hero .display {
+    font-size: clamp(32px, 8.6vw, 60px);
+  }
+
+  /* Ajakan diganti tombol tahap render di panggung */
+  .hero .scroll-hint,
+  .waypoints {
+    display: none;
+  }
+
+  .hero .render-steps {
+    display: flex;
+  }
+}
+
+/* ---------- Tahap render diorama (hanya layar sempit) ---------- */
+
+.render-steps {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: none;
+  gap: 4px;
+  padding: 4px;
+  transform: translateX(-50%);
+  background: rgba(8, 8, 13, 0.82);
+  border: 1px solid rgba(127, 240, 255, 0.22);
+  border-radius: 999px;
+}
+
+.render-steps button {
+  min-height: 34px;
+  padding: 0 14px;
+  font: 600 12px/1 var(--mono);
+  color: #9aa3b5;
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.render-steps button[aria-pressed='true'] {
+  color: #07070b;
+  background: #7ff0ff;
+}
+
+.render-steps button:focus-visible {
+  outline: 2px solid #ffcc33;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .track-card,
+  .track-card::before {
+    transition: none;
+  }
+
+  /* Tanpa perjalanan Pos 0, ajakan "scroll untuk mengikuti Krekit" tidak relevan */
+  .scroll-hint {
+    display: none;
+  }
+}
+
+/* ---------- Penanda jalan Pos 0 (posisi diatur landing.js) ---------- */
+
+.waypoint {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  padding: 6px 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  color: #b8f6ff;
+  background: rgba(7, 7, 11, 0.82);
+  border: 1px solid rgba(107, 219, 255, 0.45);
+  border-radius: 6px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+/* Tiang kecil: penanda "berdiri" di tepi jalan */
+.waypoint::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 1px;
+  height: 18px;
+  background: rgba(107, 219, 255, 0.45);
+}
+
+.waypoint.is-on {
+  opacity: 1;
+}
+
+/* ---------- Gelembung bicara Krekit ---------- */
+
+/* Pembungkus diposisikan oleh landing.js setiap frame; kotak di dalamnya dianimasikan GSAP */
+.bubble {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Gaya terminal: latar gelap, huruf monospace, kursor blok berkedip */
+.bubble__box {
+  position: relative;
+  max-width: 260px;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.5;
+  color: #d9fbff;
+  background: rgba(8, 8, 13, 0.92);
+  border: 1px solid rgba(159, 246, 255, 0.35);
+  border-radius: 6px;
+  box-shadow: 0 0 24px rgba(0, 184, 212, 0.15);
+  visibility: hidden;
+}
+
+.bubble__box::after {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 1em;
+  margin-left: 3px;
+  vertical-align: -2px;
+  background: #9ff6ff;
+  animation: caret 1s steps(1) infinite;
+}
+
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubble__box::after {
+    animation: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .bubble__box {
+    max-width: 180px;
+    font-size: 13px;
+  }
+}

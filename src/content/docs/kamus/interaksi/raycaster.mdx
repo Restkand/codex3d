@@ -1,0 +1,93 @@
+---
+title: "Raycast"
+description: "Menembakkan sinar tak terlihat dari satu titik ke satu arah, lalu mencari apa yang pertama kali tertabrak. Dasar dari klik objek, tembakan, garis pandang musuh, dan mengecek apakah karakter berdiri di tanah."
+kind: term
+level: 2
+aka: "raycaster, line trace, ray cast, picking, hit test"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Physics.Raycast"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Physics.Raycast.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Ray-casting"
+    url: "https://docs.godotengine.org/en/stable/tutorials/physics/ray-casting.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 2
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Menembakkan **sinar** tak terlihat dari satu titik ke satu arah, lalu mencari apa yang pertama kali tertabrak. Hasilnya biasanya berisi objek yang kena, titik tabrakan, jarak, dan [normal](/kamus/geometri/normal/) permukaan di titik itu.
+
+Satu alat sederhana ini dipakai di mana-mana dalam game:
+
+- **Klik objek di dunia 3D:** sinar dari kamera melewati posisi kursor ([NDC & Koordinat Layar](/kamus/ruang/ndc/)).
+- **Tembakan instan:** sinar dari ujung senjata ke arah bidikan.
+- **Garis pandang musuh:** apakah ada dinding di antara musuh dan pemain?
+- **Cek tanah:** sinar pendek ke bawah dari kaki karakter.
+- **Penempatan objek:** di mana bangunan akan diletakkan saat kursor menyorot tanah.
+
+```text title="Pseudocode: klik objek"
+sinar = kamera.sinar_dari_layar(posisi_kursor)
+hasil = dunia.raycast(sinar.asal, sinar.arah, jarak_maks = 100)
+if hasil ada:
+    pilih(hasil.objek)
+```
+
+## Di engine
+
+Di engine, raycast adalah bagian dari **sistem physics**: sinar hanya mengenai objek yang punya **collider** (bentuk tabrakan), bukan mesh yang terlihat. Objek tanpa collider tidak akan pernah tertabrak sinar.
+
+<EngineTabs>
+<div slot="unity">
+
+`Physics.Raycast(asal, arah, out RaycastHit hit, jarakMaks, layerMask)` mengembalikan `true` jika mengenai collider. Untuk klik: `Camera.main.ScreenPointToRay(posisiKursor)`. Collider yang membungkus titik asal sinar tidak terdeteksi.
+
+</div>
+<div slot="unreal">
+
+**Line Trace** (misalnya **Line Trace By Channel**) dengan *collision channel* untuk memilih jenis objek. Untuk kursor: `GetHitResultUnderCursor` pada Player Controller.
+
+</div>
+<div slot="godot">
+
+Dari node: **RayCast3D**. Dari kode, jalankan di `_physics_process()` karena ruang physics hanya aman diakses di sana:
+
+```gdscript
+var space = get_world_3d().direct_space_state
+var asal = kamera.project_ray_origin(posisi_kursor)
+var akhir = asal + kamera.project_ray_normal(posisi_kursor) * 100.0
+var query = PhysicsRayQueryParameters3D.create(asal, akhir)
+query.exclude = [self]
+var hasil = space.intersect_ray(query)
+if hasil:
+    print(hasil.collider, hasil.position)
+```
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Raycast murah, tetapi tidak gratis. Ratusan sinar per frame ke dunia yang rumit bisa terasa bebannya. Cara menghematnya:
+
+- **Batasi jarak** sinar.
+- **Filter dengan layer/mask**, misalnya sinar cek tanah hanya melihat layer "Tanah". Unity menyebutnya `layerMask`, Unreal *collision channel*, Godot *collision mask*.
+- **Kecualikan diri sendiri**, agar sinar dari dalam karakter tidak mengenai collider karakter itu.
+
+Kalau sinar terlalu tipis, misalnya untuk peluru besar atau deteksi yang lebih toleran, engine menyediakan versi bervolume: **sphere cast** atau **shape cast**.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Three.js punya kelas `Raycaster` yang mengetes langsung terhadap segitiga mesh, bukan collider, karena Three.js tidak punya sistem physics. Lab memakainya untuk hover di `src/experiment/hover.js`. Quest: ganti argumen `false` menjadi `true` pada `intersectObject`. Hover sekarang juga mengenai cangkang hologram, yang merupakan anak objek itu.
+</Aside>
+
+## Terkait
+
+- [NDC & Koordinat Layar](/kamus/ruang/ndc/)
+- [Perubahan Status (State Change)](/kamus/interaksi/hover-state/)
+- [Dot Product](/kamus/ruang/dot/)

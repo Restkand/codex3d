@@ -1,0 +1,46 @@
+name: Usulan artikel
+description: Usulkan topik baru atau tawarkan diri untuk menulisnya
+title: "[Usulan] "
+labels: ["konten", "usulan"]
+body:
+  - type: dropdown
+    id: jalur
+    attributes:
+      label: Jalur
+      options:
+        - 1 · Fondasi Engine
+        - 2 · Lanskap Engine
+        - 3 · Desain Game
+        - 4 · Produksi
+        - 5 · Bisnis Studio Indie
+        - 6 · Industri & Karier
+        - Kamus (istilah baru)
+    validations:
+      required: true
+  - type: textarea
+    id: topik
+    attributes:
+      label: Topik dan pertanyaan yang dijawab
+      description: Apa yang akan dipahami pembaca setelah membaca artikel ini?
+    validations:
+      required: true
+  - type: textarea
+    id: sumber
+    attributes:
+      label: Sumber awal
+      description: Dokumen, talk, atau pengalaman yang akan menjadi dasar artikel
+  - type: dropdown
+    id: menulis
+    attributes:
+      label: Apakah Anda ingin menulisnya?
+      options:
+        - Ya, saya akan menulis
+        - Saya bisa meninjau, tapi tidak menulis
+        - Hanya mengusulkan
+    validations:
+      required: true
+  - type: textarea
+    id: kepentingan
+    attributes:
+      label: Hubungan dengan pihak yang dibahas (jika ada)
+      description: Misalnya bekerja di perusahaan yang akan dibahas. Kosongkan jika tidak ada.

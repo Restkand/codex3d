@@ -1,0 +1,81 @@
+---
+title: "Delta Time"
+description: "Lama frame sebelumnya dalam detik. Mengalikan setiap kecepatan dengan delta time membuat gerakan sama cepatnya di layar 60 Hz maupun 144 Hz."
+kind: term
+level: 1
+aka: "deltaTime, DeltaSeconds, delta"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Time.deltaTime"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Time-deltaTime.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Time.maximumDeltaTime"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Time-maximumDeltaTime.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Engine"
+    url: "https://docs.godotengine.org/en/stable/classes/class_engine.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Idle and Physics Processing"
+    url: "https://docs.godotengine.org/en/stable/tutorials/scripting/idle_and_physics_processing.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 11
+---
+
+import Aside from '~/components/Aside.astro'
+import Demo from '~/components/Demo.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Lama frame sebelumnya, dalam detik. Mengalikan setiap kecepatan dengan delta time membuat gerakan sama cepatnya di layar 60 Hz maupun 144 Hz. Tanpa delta time, gerakan bertambah sedikit setiap frame, sehingga perangkat dengan FPS lebih tinggi bergerak lebih cepat.
+
+```text title="Pseudocode"
+posisi = posisi + kecepatan * delta   // kecepatan dalam unit per DETIK
+```
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+`Time.deltaTime`, dibaca di dalam `Update()`. Jika dibaca di dalam `FixedUpdate()`, nilainya sama dengan `Time.fixedDeltaTime`. Unity membatasi nilainya lewat `Time.maximumDeltaTime`, sehingga satu frame yang sangat lambat tidak membuat objek melompat jauh di frame berikutnya.
+
+</div>
+<div slot="unreal">
+
+Parameter `DeltaSeconds` pada fungsi `Tick(float DeltaSeconds)`. Di Blueprint, padanannya adalah keluaran **Delta Seconds** pada node **Event Tick**.
+
+</div>
+<div slot="godot">
+
+Parameter `delta` pada `_process(delta)`, yaitu waktu dalam detik sejak pemanggilan `_process()` sebelumnya. `_physics_process(delta)` berjalan dengan detak tetap, bawaannya 60 kali per detik (`Engine.physics_ticks_per_second`), sehingga `delta` di sana biasanya 1/60 detik.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Dua pola waktu yang perlu dibedakan. **Berbasis waktu total**: nilai = f(waktu sejak awal), misalnya `y = sin(waktu)`. Hasilnya selalu sama untuk waktu yang sama, cocok untuk gerakan berulang. **Berbasis delta**: nilai += kecepatan × delta. Nilainya menumpuk, cocok untuk kecepatan yang bisa berubah atau dikendalikan input.
+
+Gerakan "mengejar dengan halus" seperti `x += (target − x) × 0.1` per frame juga bergantung frame rate. Versi yang adil di semua frame rate: `x += (target − x) × (1 − exp(−k × delta))`, dengan k = seberapa cepat mengejar (misalnya 10).
+
+Untuk simulasi physics, delta time saja tidak cukup. Physics memakai langkah waktu tetap agar hasilnya stabil. Penjelasannya ada di [Pelajaran 1 Fondasi Engine](/belajar/fondasi-engine/01-frame/).
+
+## Demo
+
+<Demo name="delta" />
+
+<Aside type="note" title="Di Lab (Three.js)">
+Delta time dihitung oleh `THREE.Timer` di `src/experiment/main.js`. Coba ganti `delta * params.rotationSpeed` dengan `0.01`, lalu bandingkan di monitor dengan refresh rate berbeda.
+</Aside>
+
+## Terkait
+
+- [Frame & FPS](/kamus/dasar/frame/)
+- [Fixed Timestep & Interpolasi](/kamus/fisika/fixed-timestep/)
+- [Lerp](/kamus/ruang/lerp/)
+- [requestAnimationFrame](/kamus/web/raf/)

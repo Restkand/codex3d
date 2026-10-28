@@ -1,0 +1,120 @@
+---
+/**
+ * Kuis pilihan ganda. Soal ditulis di frontmatter halaman (field `quiz`),
+ * lalu cukup letakkan <Quiz /> di posisi yang diinginkan di MDX.
+ */
+import { inline } from '../lib/inline.js'
+
+// Sumber data: halaman pelajaran (src/pages/belajar/[track]/[lesson].astro) mengisi Astro.locals.lessonData
+const items = Astro.locals.lessonData?.quiz ?? []
+---
+
+{
+  items.length > 0 && (
+    <div class="quiz not-content" data-quiz>
+      {items.map((item, qi) => (
+        <div class="quiz__q" data-q={qi} data-answer={item.answer} data-explain={item.explain}>
+          <p class="quiz__text">
+            <span>{qi + 1}.</span> <Fragment set:html={inline(item.q)} />
+          </p>
+          <div class="quiz__opts">
+            {item.options.map((opt, oi) => (
+              <button type="button" class="quiz__opt" data-opt={oi} set:html={inline(opt)} />
+            ))}
+          </div>
+          <p class="quiz__explain" hidden />
+        </div>
+      ))}
+      <div class="quiz__foot">
+        <p class="quiz__score" data-quiz-score />
+        <button type="button" class="quiz__reset" data-quiz-reset hidden>
+          Ulangi kuis
+        </button>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  import { inline } from '../lib/inline.js'
+
+  document.querySelectorAll<HTMLElement>('[data-quiz]').forEach((quiz) => {
+    const questions = [...quiz.querySelectorAll<HTMLElement>('[data-q]')]
+
+    // Acak urutan opsi agar posisi jawaban benar tidak bisa ditebak.
+    // data-opt tetap menyimpan indeks ASLI, jadi pengecekan jawaban tidak terpengaruh.
+    function shuffle() {
+      questions.forEach((q) => {
+        const box = q.querySelector('.quiz__opts')!
+        const opts = [...box.children]
+        for (let i = opts.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1))
+          ;[opts[i], opts[j]] = [opts[j], opts[i]]
+        }
+        box.append(...opts)
+      })
+    }
+
+    function updateScore() {
+      const answered = questions.filter((q) => q.dataset.answered)
+      const correct = answered.filter((q) => q.dataset.answered === 'correct').length
+      const finished = answered.length === questions.length
+      const score = quiz.querySelector('[data-quiz-score]')!
+      score.textContent = answered.length
+        ? `Skor: ${correct} / ${questions.length}${finished ? (correct === questions.length ? ' · Sempurna!' : ' · Baca ulang penjelasannya, lalu coba lagi.') : ''}`
+        : ''
+      quiz.querySelector<HTMLElement>('[data-quiz-reset]')!.hidden = !finished
+    }
+
+    quiz.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement
+      const option = target.closest<HTMLElement>('[data-opt]')
+      if (option) {
+        const q = option.closest<HTMLElement>('[data-q]')!
+        if (q.dataset.answered) return
+        const answer = Number(q.dataset.answer)
+        const chosen = Number(option.dataset.opt)
+        const correct = chosen === answer
+        q.dataset.answered = correct ? 'correct' : 'wrong'
+        q.querySelectorAll<HTMLButtonElement>('[data-opt]').forEach((btn) => {
+          const i = Number(btn.dataset.opt)
+          btn.disabled = true
+          btn.classList.toggle('is-correct', i === answer)
+          btn.classList.toggle('is-wrong', i === chosen && !correct)
+        })
+        const explain = q.querySelector<HTMLElement>('.quiz__explain')!
+        explain.innerHTML = `<strong>${correct ? 'Benar.' : 'Belum tepat.'}</strong> ${inline(q.dataset.explain ?? '')}`
+        explain.hidden = false
+        updateScore()
+        // Sinyal untuk pendamping (Krekit) atau komponen lain yang ingin bereaksi
+        const answered = questions.filter((item) => item.dataset.answered)
+        document.dispatchEvent(
+          new CustomEvent('krekit:quiz', {
+            detail: {
+              correct,
+              answered: answered.length,
+              total: questions.length,
+              score: answered.filter((item) => item.dataset.answered === 'correct').length,
+            },
+          }),
+        )
+        return
+      }
+
+      if (target.closest('[data-quiz-reset]')) {
+        questions.forEach((q) => {
+          delete q.dataset.answered
+          q.querySelectorAll<HTMLButtonElement>('[data-opt]').forEach((btn) => {
+            btn.disabled = false
+            btn.classList.remove('is-correct', 'is-wrong')
+          })
+          q.querySelector<HTMLElement>('.quiz__explain')!.hidden = true
+        })
+        shuffle()
+        updateScore()
+      }
+    })
+
+    shuffle()
+  })
+</script>

@@ -1,0 +1,82 @@
+---
+title: "Texture Filtering & Mipmap"
+description: "Cara GPU mengambil warna saat piksel layar tidak pas dengan piksel tekstur. Point membuat tampilan kotak-kotak, bilinear menghaluskan, mipmap dan anisotropic menjaga tekstur jauh tetap tenang dan tajam."
+kind: term
+level: 2
+aka: "point, bilinear, trilinear, anisotropic, mipmap, nearest, linear"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "FilterMode"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/FilterMode.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Texture.anisoLevel"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Texture-anisoLevel.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Introduction to mipmaps"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/texture-mipmaps-introduction.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "BaseMaterial3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_basematerial3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "ResourceImporterTexture"
+    url: "https://docs.godotengine.org/en/stable/classes/class_resourceimportertexture.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Shading language"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shading_language.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 20
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Satu piksel [tekstur](/kamus/geometri/texture/) (*texel*) jarang pas dengan satu piksel layar. Dari dekat, satu texel menutupi banyak piksel layar. Dari jauh, satu piksel layar menutupi banyak texel. **Filtering** adalah aturan GPU memilih warna di situasi itu.
+
+- **Point / nearest:** ambil texel terdekat saja. Dari dekat tampak kotak-kotak tegas. Cocok untuk gaya *pixel art*.
+- **Bilinear / linear:** rata-rata empat texel terdekat. Dari dekat tampak halus (agak buram).
+- **Trilinear:** bilinear, ditambah campuran antar-level mipmap agar perpindahannya tidak terlihat.
+- **Anisotropic:** menjaga tekstur tetap tajam saat dilihat dari sudut miring, misalnya lantai, jalan, atau tanah yang memanjang ke kejauhan. Sedikit lebih mahal di GPU.
+
+## Mipmap
+
+Dari jauh, satu piksel layar mewakili puluhan texel. Jika GPU hanya mengambil beberapa di antaranya, hasilnya berkedip dan berpola aneh (*moiré*) saat kamera bergerak. Solusinya **mipmap**: salinan tekstur yang makin kecil (1/2, 1/4, 1/8, ... sampai 1×1) yang dibuat sebelumnya. Objek jauh membaca versi kecil yang warnanya sudah dirata-ratakan, sehingga tenang dan lebih hemat bandwidth.
+
+Ongkosnya: mipmap menambah sekitar **33%** ukuran tekstur. Untuk tekstur yang selalu tampil di ukuran aslinya, seperti UI yang tidak diskalakan, mipmap tidak berguna dan sebaiknya dimatikan.
+
+```text title="Pseudocode"
+level_mip = log2(jumlah_texel_per_piksel_layar)   // makin jauh, makin tinggi levelnya
+warna     = baca_tekstur(tekstur, uv, level_mip)
+```
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Di pengaturan impor tekstur: **Filter Mode** berisi **Point** (kotak-kotak dari dekat), **Bilinear** (texel dirata-rata), dan **Trilinear** (dirata-rata dan dicampur antar-level mipmap). **Aniso Level** bernilai 0 sampai 16, dan lewat kode tersedia sebagai `Texture.anisoLevel`. Pembuatan mipmap juga diatur di pengaturan impor tekstur.
+
+</div>
+<div slot="unreal">
+
+Pengaturan **Filter** pada aset tekstur dan **Mip Gen Settings** untuk mipmap. Tingkat anisotropic diatur secara global lewat pengaturan skalabilitas.
+
+</div>
+<div slot="godot">
+
+Opsi impor `mipmaps/generate` (bawaan mati) untuk membuat mipmap. Pada material, `texture_filter` memilih Nearest, Linear, versi with Mipmaps, atau with Mipmaps Anisotropic. Bawaannya Linear with Mipmaps. Di shader tulisan sendiri, pakai hint seperti `uniform sampler2D tex : filter_linear_mipmap_anisotropic;`.
+
+</div>
+</EngineTabs>
+
+## Terkait
+
+- [Texture](/kamus/geometri/texture/)
+- [UV](/kamus/geometri/uv/)
+- [Antialiasing](/kamus/post/antialias/)

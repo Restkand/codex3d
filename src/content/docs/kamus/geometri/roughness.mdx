@@ -1,0 +1,65 @@
+---
+title: "Roughness"
+description: "Seberapa kasar permukaan pada skala mikro. 0 = licin seperti cermin, pantulan tajam. 1 = kasar atau doff, cahaya tersebar rata. Unity memakai kebalikannya: Smoothness."
+kind: term
+level: 1
+aka: "smoothness, glossiness"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Lit shader material Inspector window reference for URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/lit-shader.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "BaseMaterial3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_basematerial3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Standard Material 3D and ORM Material 3D"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 11
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Seberapa kasar permukaan pada skala mikro, terlalu kecil untuk dimodelkan sebagai geometri. **0** = licin seperti cermin, pantulan cahaya tajam dan kecil. **1** = kasar atau doff, pantulan melebar sampai hilang.
+
+| Nilai | Contoh permukaan |
+| --- | --- |
+| 0,0–0,2 | kaca, cermin, krom, genangan air |
+| 0,3–0,5 | plastik mengilap, cat mobil, kayu dipernis |
+| 0,6–1,0 | beton, kain, kertas, tanah |
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Disebut **Smoothness** (0 sampai 1), nilainya terbalik: smoothness = 1 − roughness. Di URP/Lit, peta smoothness tidak punya slot sendiri. **Source** menentukan dari mana nilainya dibaca: kanal alpha Metallic Map (**Metallic Alpha**, bawaan) atau kanal alpha Base Map (**Albedo Alpha**). Jadi tekstur roughness dari aplikasi lain harus dibalik dulu lalu dimasukkan ke salah satu kanal alpha itu.
+
+</div>
+<div slot="unreal">
+
+Input **Roughness** pada Material.
+
+</div>
+<div slot="godot">
+
+Properti `roughness` pada `StandardMaterial3D` (bawaan 1, artinya doff penuh). Untuk tekstur, `roughness_texture_channel` memilih kanal mana yang dibaca, sehingga satu gambar bisa menyimpan beberapa peta sekaligus.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Geser roughness dari 0 ke 1 di panel debug Lab (folder Material).
+</Aside>
+
+## Terkait
+
+- [Metalness](/kamus/geometri/metalness/)
+- [PBR](/kamus/geometri/pbr/)
+- [Ambient Occlusion Map](/kamus/geometri/ao-map/)

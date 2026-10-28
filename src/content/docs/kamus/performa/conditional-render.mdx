@@ -1,0 +1,76 @@
+---
+title: "Culling & Kerja Bersyarat"
+description: "Pekerjaan tercepat adalah yang tidak dikerjakan. Culling membuang objek yang tidak terlihat sebelum digambar. Prinsip yang sama berlaku untuk efek, animasi, dan logika: jalankan hanya saat hasilnya dibutuhkan."
+kind: term
+level: 2
+aka: "frustum culling, occlusion culling, visibility range, render bersyarat"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Occlusion culling"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/OcclusionCulling.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Optimizing 3D performance"
+    url: "https://docs.godotengine.org/en/stable/tutorials/performance/optimizing_3d_performance.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Skinned Mesh Renderer component reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-SkinnedMeshRenderer.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 6
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Pekerjaan tercepat adalah yang **tidak dikerjakan**. Sebelum menggambar, engine membuang objek yang pasti tidak terlihat. Proses ini disebut **culling**:
+
+- **Frustum culling:** membuang objek di luar pandangan kamera ([Frustum & Clipping](/kamus/dasar/frustum/)). Selalu aktif otomatis di semua engine.
+- **Occlusion culling:** membuang objek yang ada di dalam pandangan tetapi **tertutup sepenuhnya** oleh objek lain, misalnya isi ruangan di balik dinding. Tidak otomatis, harus disiapkan.
+- **Distance culling / visibility range:** objek kecil tidak digambar lagi setelah cukup jauh. Batu kerikil tidak perlu digambar dari jarak 200 meter.
+
+```text title="Urutan umum"
+semua objek → frustum culling → occlusion culling → jarak/LOD → digambar
+```
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+**Occlusion Culling** dipanggang (*bake*) di Editor: scene dibagi menjadi sel, lalu visibilitas antar-sel disimpan. Cocok untuk level dengan area terpisah jelas, seperti ruangan yang dihubungkan koridor. Objek dinamis bisa di-culling, tetapi tidak bisa menutupi objek lain. Perhitungannya berjalan di CPU, jadi bisa tidak sepadan di scene terbuka.
+
+</div>
+<div slot="unreal">
+
+Occlusion culling dinamis berbasis GPU aktif secara bawaan. **Cull Distance Volume** untuk membuang objek berdasarkan ukuran dan jarak.
+
+</div>
+<div slot="godot">
+
+Frustum culling otomatis. Occlusion culling memakai **node occluder** yang ditempatkan di scene. Untuk jarak: **visibility range** pada node 3D, plus LOD otomatis saat impor. Dokumentasi Godot mencatat frustum culling saja kurang cukup untuk level besar.
+
+</div>
+</EngineTabs>
+
+## Lebih dari menggambar
+
+Prinsip yang sama berlaku untuk semua pekerjaan mahal: **jalankan hanya saat hasilnya dibutuhkan**.
+
+- **Animasi:** Unity secara bawaan menghentikan skinning karakter yang tidak terlihat ([Skeletal Animation](/kamus/animasi/skeletal/)).
+- **AI dan logika:** musuh yang jauh diperbarui lebih jarang, misalnya 5 kali per detik, bukan setiap frame.
+- **[Render target](/kamus/post/render-target/):** kamera CCTV hanya merender saat layarnya terlihat.
+- **Efek:** post-processing mahal hanya dinyalakan saat efeknya benar-benar tampak.
+
+<Aside type="note" title="Di Lab (Three.js)">
+Lab hanya memakai EffectComposer selama efek glitch aktif (±0,5 detik). Di luar itu scene dirender langsung ke layar, tanpa render target. Lihat `src/experiment/main.js`. Quest: naikkan "rgb shift (selalu aktif)" di panel debug agar composer terus aktif, lalu bandingkan render path dan FPS di panel Performance.
+</Aside>
+
+## Terkait
+
+- [Frustum & Clipping](/kamus/dasar/frustum/)
+- [Segments](/kamus/geometri/segments/)
+- [Fill Rate](/kamus/performa/fill-rate/)

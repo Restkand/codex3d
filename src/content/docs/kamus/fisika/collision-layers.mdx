@@ -1,0 +1,67 @@
+---
+title: "Collision Layer & Mask"
+description: "Setiap objek physics ditempatkan di lapisan tertentu, lalu aturan menentukan lapisan mana yang boleh saling bertabrakan atau saling mendeteksi. Peluru tidak mengenai penembaknya, musuh tidak saling menghalangi."
+kind: term
+level: 2
+aka: "physics layer, collision matrix, collision channel, layer mask"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Layer-based collision detection"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/LayerBasedCollision.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Physics introduction"
+    url: "https://docs.godotengine.org/en/stable/tutorials/physics/physics_introduction.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 5
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Tidak semua objek perlu saling bertabrakan. Peluru tidak boleh mengenai penembaknya sendiri. Sesama musuh tidak perlu saling menghalangi. Item yang bisa diambil cukup dideteksi pemain, tidak perlu memantul dari musuh. **Collision layer** mengatur ini:
+
+1. Setiap objek ditempatkan di **lapisan** tertentu: Pemain, Musuh, Peluru, Lingkungan, Item.
+2. Sebuah aturan menentukan lapisan mana yang **dilihat** atau boleh bertabrakan dengan lapisan mana.
+
+```text title="Contoh aturan"
+Peluru_Pemain  → kena: Musuh, Lingkungan        (tidak: Pemain, Item)
+Musuh          → kena: Pemain, Lingkungan       (tidak: Musuh lain)
+Item           → dideteksi: Pemain saja
+```
+
+Selain mencegah tabrakan yang tidak diinginkan, layer juga **menghemat**: physics engine langsung melewatkan pasangan lapisan yang tidak perlu dicek. Layer yang sama juga dipakai untuk menyaring [raycast](/kamus/interaksi/raycaster/) dan [trigger](/kamus/fisika/trigger/).
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Tetapkan **Layer** pada GameObject, lalu centang pasangan yang boleh bertabrakan di **Layer Collision Matrix** (Edit → Project Settings → Physics). Untuk raycast: parameter `layerMask`, dibuat dengan `LayerMask.GetMask("Musuh")`.
+
+</div>
+<div slot="unreal">
+
+**Object Channel** (jenis objek) dan **Trace Channel** (jenis sinar), diatur di Project Settings → Collision. Setiap komponen punya **Collision Preset** yang menentukan respons terhadap setiap channel: Ignore, Overlap, atau Block.
+
+</div>
+<div slot="godot">
+
+Dua properti terpisah, masing-masing 32 bit: **collision_layer** (objek ini **berada** di lapisan mana) dan **collision_mask** (objek ini **memindai** lapisan mana). Dari kode: `set_collision_mask_value(nomor, true)`.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Model Godot yang memisahkan *layer* dan *mask* memungkinkan hubungan satu arah: peluru memindai lapisan Musuh, tetapi musuh tidak perlu memindai peluru. Model Unity berupa matriks simetris: jika A bertabrakan dengan B, B juga bertabrakan dengan A. Model Unreal paling rinci: respons Ignore, Overlap, atau Block bisa diatur per channel untuk setiap objek.
+
+Beri nama lapisan sejak awal proyek (di pengaturan proyek, bukan hanya nomor), karena menata ulang lapisan setelah ratusan objek dibuat sangat merepotkan.
+
+## Terkait
+
+- [Trigger & Area](/kamus/fisika/trigger/)
+- [Raycast](/kamus/interaksi/raycaster/)
+- [Collider](/kamus/fisika/collider/)

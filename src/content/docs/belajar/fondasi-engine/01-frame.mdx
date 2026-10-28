@@ -1,0 +1,412 @@
+---
+title: "Bagaimana Sebuah Frame Lahir"
+description: "Game loop, CPU dan GPU, batas 16,7 milidetik, delta time, dan langkah waktu tetap untuk physics."
+kind: lesson
+minutes: 25
+status: draf
+lastReviewed: 2026-10-28
+terms:
+  - frame
+  - gpu-cpu
+  - draw-call
+  - delta-time
+  - cpu-gpu-bound
+  - camera
+  - aspect
+krekit:
+  gambaran-besar: "Semua engine punya loop ini. Yang berbeda cuma nama fungsinya. Coba ganti tab engine di contoh kode."
+  siapa-mengerjakan-apa-cpu-dan-gpu: "Kalau bingung, ingat saja: CPU yang menyuruh, GPU yang menggambar."
+  anggaran-167-milidetik: "Di layar 144 Hz, anggaranmu cuma sekitar 7 milidetik. Jauh lebih ketat."
+  delta-time-kecepatan-yang-adil-di-semua-layar: "Ini salah satu bug yang paling sering muncul di game pertama. Coba demonya."
+  langkah-waktu-tetap-untuk-physics: "Bagian ini sering membingungkan. Baca pseudocode-nya pelan-pelan, baris demi baris."
+  kamera-dan-aspect-ratio: "Pernah pindah engine lalu kameranya terasa aneh? Ini salah satu sebabnya."
+  kesalahan-umum: "Kesalahan nomor dua paling susah dilacak: game tetap jalan, hanya terasa beda di perangkat lain."
+sidebar:
+  order: 1
+  label: "1 · Bagaimana Sebuah Frame Lahir"
+quiz:
+  - q: "Sebuah objek digerakkan 0,1 unit setiap frame, tanpa dikali delta time. Berapa kali lebih cepat objek itu bergerak di layar 144 Hz dibanding layar 60 Hz?"
+    options:
+      - "Sama cepat"
+      - "2,4 kali lebih cepat"
+      - "1,44 kali lebih cepat"
+      - "Lebih lambat, karena frame-nya lebih pendek"
+    answer: 1
+    explain: "Layar 144 Hz menjalankan update 144 kali per detik, layar 60 Hz hanya 60 kali. Penambahan per frame yang sama menghasilkan 144 ÷ 60 = 2,4 kali jarak per detik."
+  - q: "Game berjalan di layar 60 Hz dan setiap frame butuh sekitar 18 ms. Berapa FPS yang kemungkinan besar terlihat jika vsync aktif?"
+    options:
+      - "Sekitar 55 FPS"
+      - "Sekitar 30 FPS"
+      - "Tetap 60 FPS"
+      - "Sekitar 18 FPS"
+    answer: 1
+    explain: "Frame yang melewati 16,7 ms tidak siap saat layar refresh, sehingga gambar baru baru tampil di refresh berikutnya. Jika terjadi terus, hanya setiap refresh kedua yang mendapat gambar baru: sekitar 30 FPS."
+  - q: "Profiler menunjukkan waktu CPU (logika game) 4 ms dan waktu GPU 15 ms per frame. Di mana sebaiknya optimasi dimulai?"
+    options:
+      - "Di logika game, karena ditulis sendiri"
+      - "Di sisi GPU: jumlah piksel, shader, atau efek layar penuh"
+      - "Menambah RAM"
+      - "Menurunkan jumlah input yang dibaca"
+    answer: 1
+    explain: "Bagian yang paling lama menentukan panjang frame. CPU selesai dalam 4 ms lalu menunggu GPU, jadi mempercepat logika game hampir tidak berpengaruh."
+  - q: "Kenapa simulasi physics biasanya dijalankan dengan langkah waktu tetap, bukan delta time frame?"
+    options:
+      - "Agar kode lebih pendek"
+      - "Agar hasil simulasi stabil dan sama di semua perangkat, apa pun frame rate-nya"
+      - "Karena GPU tidak bisa menghitung delta time"
+      - "Agar game berjalan di 60 FPS"
+    answer: 1
+    explain: "Langkah yang berubah-ubah membuat hasil tabrakan dan gaya berbeda di perangkat cepat dan lambat. Dengan langkah tetap, setiap langkah simulasi selalu sama panjangnya."
+  - q: "Kamu menyalin nilai FOV 60° dari kamera Unity ke kamera Unreal, dan hasilnya terlihat jauh lebih sempit. Kenapa?"
+    options:
+      - "Unreal memakai radian"
+      - "Secara bawaan, Unity mengukur FOV secara vertikal, sedangkan Unreal secara horizontal"
+      - "Unreal tidak mendukung FOV di bawah 90°"
+      - "Aspect ratio tidak berpengaruh pada FOV"
+    answer: 1
+    explain: "Angka FOV yang sama berarti sudut yang berbeda jika diukur pada sumbu berbeda. Di layar lebar, FOV horizontal 60° jauh lebih sempit daripada FOV vertikal 60°."
+sources:
+  - title: "MonoBehaviour.Update"
+    url: "https://docs.unity3d.com/ScriptReference/MonoBehaviour.Update.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Time.deltaTime"
+    url: "https://docs.unity3d.com/ScriptReference/Time-deltaTime.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "MonoBehaviour.FixedUpdate"
+    url: "https://docs.unity3d.com/ScriptReference/MonoBehaviour.FixedUpdate.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Camera.fieldOfView"
+    url: "https://docs.unity3d.com/ScriptReference/Camera-fieldOfView.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Actor Ticking in Unreal Engine"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-ticking-in-unreal-engine"
+    publisher: "Epic Games Developer Documentation"
+    accessed: 2026-10-28
+  - title: "Stat Commands in Unreal Engine"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/stat-commands-in-unreal-engine"
+    publisher: "Epic Games Developer Documentation"
+    accessed: 2026-10-28
+  - title: "Idle and Physics Processing"
+    url: "https://docs.godotengine.org/en/stable/tutorials/scripting/idle_and_physics_processing.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Camera3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_camera3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+---
+
+import Aside from '~/components/Aside.astro'
+import Demo from '~/components/Demo.astro'
+import Quiz from '~/components/Quiz.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+import GameLoopDiagram from '~/components/diagrams/GameLoopDiagram.astro'
+import BudgetDiagram from '~/components/diagrams/BudgetDiagram.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menjelaskan apa yang dikerjakan game loop di setiap frame.
+- Membedakan pekerjaan CPU dan GPU, dan tahu cara melihat mana yang lebih lambat.
+- Menjelaskan kenapa ada batas 16,7 ms dan apa yang terjadi jika terlewati.
+- Menulis gerakan yang kecepatannya sama di semua frame rate.
+- Menjelaskan kenapa physics dijalankan dengan langkah waktu tetap.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: studio foto yang memotret 60 kali per detik">
+Bayangkan sebuah studio foto. Panggungnya berisi properti dan lampu. Kamera menentukan dari mana panggung itu difoto. Seorang fotografer menekan tombol rana dan mencetak hasilnya ke layar. Gerakan muncul karena fotografer memotret **berulang kali**, dan sebelum setiap jepretan, properti di panggung digeser sedikit.
+</Aside>
+
+Setiap game, di engine apa pun, berjalan di dalam sebuah **game loop**: perulangan yang terus berjalan selama game terbuka. Satu putaran loop menghasilkan satu gambar, yang disebut [frame](/kamus/dasar/frame/).
+
+<GameLoopDiagram />
+
+Dalam pseudocode, isinya kira-kira seperti ini:
+
+```text title="Pseudocode: game loop"
+selama game berjalan:
+    sekarang   = waktu()
+    delta      = sekarang - sebelumnya   // lama frame sebelumnya, dalam detik
+    sebelumnya = sekarang
+
+    baca_input()
+    update(delta)    // logika game: gerak, AI, animasi
+    render()         // susun perintah gambar untuk GPU
+    tampilkan()      // tunggu refresh layar, lalu tukar gambar
+```
+
+Kamu hampir tidak pernah menulis loop ini sendiri, karena engine sudah menjalankannya. Yang kamu tulis adalah **isi langkah update**. Setiap engine menyediakan tempat untuk itu:
+
+<EngineTabs>
+<div slot="unity">
+
+Unity memanggil `Update()` pada setiap komponen `MonoBehaviour` yang aktif, sekali setiap frame.
+
+```csharp title="Putar.cs"
+using UnityEngine;
+
+public class Putar : MonoBehaviour
+{
+    public float kecepatan = 90f; // derajat per detik
+
+    void Update()
+    {
+        // Dipanggil sekali setiap frame
+        transform.Rotate(0f, kecepatan * Time.deltaTime, 0f);
+    }
+}
+```
+
+</div>
+<div slot="unreal">
+
+Unreal memanggil `Tick()` pada setiap Actor yang mengaktifkan tick. Di C++, tick diaktifkan dengan `PrimaryActorTick.bCanEverTick = true` di constructor (template class Actor bawaan Unreal sudah menuliskannya).
+
+```cpp title="Putar.h / Putar.cpp"
+// Putar.h
+UCLASS()
+class APutar : public AActor
+{
+    GENERATED_BODY()
+public:
+    APutar() { PrimaryActorTick.bCanEverTick = true; }
+    virtual void Tick(float DeltaSeconds) override;
+
+    UPROPERTY(EditAnywhere)
+    float Kecepatan = 90.f; // derajat per detik
+};
+
+// Putar.cpp
+void APutar::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+    // FRotator(Pitch, Yaw, Roll): putar pada Yaw
+    AddActorLocalRotation(FRotator(0.f, Kecepatan * DeltaSeconds, 0.f));
+}
+```
+
+</div>
+<div slot="godot">
+
+Godot memanggil `_process(delta)` pada setiap node yang memilikinya, sekali setiap frame.
+
+```gdscript title="putar.gd"
+extends Node3D
+
+@export var kecepatan := 90.0 # derajat per detik
+
+func _process(delta: float) -> void:
+    # Dipanggil sekali setiap frame
+    rotate_y(deg_to_rad(kecepatan) * delta)
+```
+
+</div>
+</EngineTabs>
+
+Ketiganya melakukan hal yang sama: memutar objek 90 derajat per **detik**, bukan per frame. Alasannya dibahas di bagian delta time.
+
+## Siapa mengerjakan apa: CPU dan GPU
+
+Komputer punya dua prosesor yang bekerja sama ([CPU vs GPU](/kamus/dasar/gpu-cpu/)). Kode game yang kamu tulis berjalan di **CPU**. CPU tidak menggambar piksel. Tugasnya menyiapkan data lalu mengirim perintah ke GPU seperti "gambar mesh ini dengan material ini". Setiap perintah itu disebut [draw call](/kamus/performa/draw-call/).
+
+**GPU** menerima perintah tersebut dan mengerjakan bagian yang berat secara paralel: menghitung posisi ribuan titik dan mewarnai jutaan piksel.
+
+1. **CPU · update:** logika game mengubah posisi, rotasi, animasi.
+2. **CPU · render:** engine mengumpulkan objek yang terlihat kamera, mengurutkannya, lalu mengirim draw call.
+3. **GPU · menggambar:** shader dijalankan untuk setiap titik dan setiap piksel.
+4. **Tampilkan:** gambar jadi ditukar ke layar saat refresh berikutnya.
+
+CPU dan GPU bisa bekerja bersamaan. Saat GPU menggambar frame ini, CPU sering sudah mulai menyiapkan frame berikutnya.
+
+## Anggaran 16,7 milidetik
+
+Layar 60 Hz menampilkan gambar baru 60 kali per detik, jadi satu frame punya waktu 1000 ÷ 60 ≈ **16,7 ms**. Di layar 144 Hz, batasnya hanya ±6,9 ms. Semua pekerjaan dalam satu frame harus selesai dalam waktu itu.
+
+<BudgetDiagram />
+
+Jika sebuah frame butuh 18 ms, gambarnya belum siap saat layar refresh, sehingga layar menampilkan gambar lama sekali lagi. Jika itu terjadi terus-menerus dengan vsync aktif, gambar baru hanya muncul setiap refresh kedua. Akibatnya FPS tidak turun ke 55, tetapi **langsung jatuh ke sekitar 30**.
+
+Untuk tahu bagian mana yang terlalu lama, buka alat pengukur waktu frame di engine-mu:
+
+<EngineTabs>
+<div slot="unity">
+
+Buka **Window → Analysis → Profiler**. Modul CPU Usage dan GPU Usage menunjukkan berapa milidetik yang dipakai setiap bagian. Untuk gambaran cepat, tombol **Stats** di Game view menampilkan FPS dan jumlah draw call (*batches*).
+
+</div>
+<div slot="unreal">
+
+Buka konsol dengan tombol tilde (`~`, di kiri angka 1), lalu ketik:
+
+- `stat fps` untuk FPS dan waktu frame.
+- `stat unit` untuk membandingkan **Game** (logika di CPU), **Draw** (menyusun perintah gambar), dan **GPU**. Angka terbesar adalah penyebab frame lambat.
+
+</div>
+<div slot="godot">
+
+Saat game berjalan dari editor, buka panel **Debugger → Monitors** untuk melihat FPS dan waktu proses per frame. Tab **Profiler** di panel yang sama menunjukkan fungsi mana yang paling banyak memakan waktu.
+
+</div>
+</EngineTabs>
+
+Jika waktu CPU kecil tetapi waktu GPU besar, game itu [GPU-bound](/kamus/performa/cpu-gpu-bound/): mengoptimasi logika game tidak akan banyak membantu. Yang perlu dikurangi adalah beban GPU, misalnya resolusi, kerumitan shader, atau efek layar penuh.
+
+## Delta time: kecepatan yang adil di semua layar
+
+Misalkan objek digerakkan 0,1 unit setiap frame. Di layar 60 Hz objek berpindah 6 unit per detik, tetapi di layar 144 Hz berpindah 14,4 unit per detik: **2,4 kali lebih cepat**. Kecepatan game jadi bergantung pada perangkat pemainnya.
+
+Solusinya adalah [delta time](/kamus/dasar/delta-time/): lama frame sebelumnya dalam detik. Kalikan setiap kecepatan dengan delta. Frame di layar 144 Hz lebih pendek, jadi tambahannya per frame lebih kecil, tetapi totalnya per detik sama.
+
+```text title="Pseudocode"
+// ✗ bergantung frame rate
+posisi = posisi + 0.1
+
+// ✓ sama di semua layar: 6 unit per DETIK
+posisi = posisi + 6 * delta
+```
+
+<Demo name="delta" caption="Geser refresh rate. Jarum magenta (per frame) berubah-ubah, jarum cyan (dikali delta) selalu sama." />
+
+Di contoh kode bagian Gambaran besar, `Time.deltaTime` (Unity), `DeltaSeconds` (Unreal), dan `delta` (Godot) adalah nilai yang sama: delta time.
+
+<Aside type="caution">
+Satu frame yang sangat lambat (misalnya saat aset dimuat) menghasilkan delta yang besar, sehingga objek bisa "melompat". Banyak engine membatasi nilai delta maksimum secara otomatis. Jika menulis loop sendiri, batasi juga, misalnya maksimal 0,1 detik.
+</Aside>
+
+## Langkah waktu tetap untuk physics
+
+Delta time cocok untuk gerakan biasa, tetapi tidak cocok untuk **simulasi physics**. Jika langkah simulasinya berubah-ubah mengikuti frame rate, hasil tabrakan dan gaya bisa berbeda antara perangkat cepat dan lambat. Bahkan objek yang bergerak cepat bisa menembus dinding di frame yang panjang.
+
+Karena itu physics dijalankan dengan **langkah waktu tetap** yang terpisah dari frame. Engine menabung waktu yang berlalu, lalu menjalankan simulasi dalam potongan yang selalu sama panjangnya:
+
+```text title="Pseudocode: langkah tetap dengan akumulator"
+langkah_tetap = 1 / 50          // 50 langkah physics per detik
+akumulator   += delta
+
+selama akumulator >= langkah_tetap:
+    update_physics(langkah_tetap)   // selalu langkah yang sama
+    akumulator -= langkah_tetap
+```
+
+Di frame yang panjang, simulasi bisa berjalan dua kali. Di frame yang pendek, bisa tidak berjalan sama sekali.
+
+<EngineTabs>
+<div slot="unity">
+
+Kode physics ditaruh di `FixedUpdate()`, bukan `Update()`. Bawaannya dipanggil setiap 0,02 detik (50 kali per detik), diatur oleh `Time.fixedDeltaTime`.
+
+</div>
+<div slot="unreal">
+
+Simulasi physics dijalankan engine sebagai bagian dari tick dunia. Untuk langkah yang lebih stabil di frame rate rendah, aktifkan **Substepping** di **Project Settings → Physics**, sehingga satu frame panjang dipecah menjadi beberapa langkah physics yang lebih kecil.
+
+</div>
+<div slot="godot">
+
+Kode physics ditaruh di `_physics_process(delta)`. Bawaannya dipanggil 60 kali per detik, diatur di **Project Settings → Physics → Common → Physics Ticks per Second**.
+
+</div>
+</EngineTabs>
+
+## Kamera dan aspect ratio
+
+Satu frame dilihat melalui [kamera](/kamus/dasar/camera/). Kamera perspektif ditentukan terutama oleh **field of view (FOV)**: seberapa lebar sudut pandangnya. Jendela permainan bisa berubah ukuran, jadi kamera juga perlu tahu [aspect ratio](/kamus/dasar/aspect/) layar, yaitu lebar dibagi tinggi. Engine mengurus ini otomatis.
+
+Hal yang sering membingungkan saat pindah engine: **FOV tidak selalu diukur pada sumbu yang sama.**
+
+<EngineTabs>
+<div slot="unity">
+
+Properti **Field of View** pada komponen Camera secara bawaan adalah sudut **vertikal**. Sumbunya bisa diubah menjadi horizontal lewat pengaturan **Field of View Axis** di Inspector.
+
+</div>
+<div slot="unreal">
+
+**Field of View** pada Camera Component adalah sudut **horizontal**, dalam derajat. Bawaannya 90°.
+
+</div>
+<div slot="godot">
+
+Properti `fov` pada `Camera3D` bawaannya 75°. Dengan pengaturan bawaan `keep_aspect = KEEP_HEIGHT`, nilai ini adalah sudut **vertikal**.
+
+</div>
+</EngineTabs>
+
+Di layar lebar 16:9, FOV horizontal 90° setara dengan FOV vertikal sekitar 59°. Angka yang sama di dua engine bisa menghasilkan tampilan yang sangat berbeda.
+
+## Kesalahan umum
+
+Banyak kesalahan berikut **tidak memunculkan error**. Game tetap berjalan, hanya hasilnya salah.
+
+### Gerakan lebih cepat di layar gaming
+
+```text title="✗ Keliru"
+posisi.x += 0.1
+```
+
+```text title="✓ Benar"
+posisi.x += kecepatan * delta   // kecepatan dalam unit per detik
+```
+
+Penambahan per frame bergantung pada berapa banyak frame per detik.
+
+### Physics ditaruh di update biasa
+
+```text title="✗ Keliru"
+update(delta):
+    beri_gaya(bola, dorongan)
+```
+
+```text title="✓ Benar"
+update_physics(langkah_tetap):   // FixedUpdate / _physics_process
+    beri_gaya(bola, dorongan)
+```
+
+Gaya yang diberikan setiap frame berarti lebih banyak dorongan per detik di perangkat cepat.
+
+### Pekerjaan berat di setiap frame
+
+```text title="✗ Keliru"
+update(delta):
+    pemain = cari_objek_bernama("Pemain")   // mencari di seluruh scene, setiap frame
+```
+
+```text title="✓ Benar"
+mulai():
+    pemain = cari_objek_bernama("Pemain")   // sekali saja, lalu disimpan
+
+update(delta):
+    gerak_ke(pemain)
+```
+
+Pekerjaan kecil yang diulang 60 kali per detik cepat menghabiskan anggaran 16,7 ms.
+
+### Menyalin nilai FOV antar engine
+
+```text title="✗ Keliru"
+// Unity: 60 (vertikal)  →  Unreal: 60 (horizontal)
+```
+
+```text title="✓ Benar"
+// Unity: 60 vertikal di 16:9  →  Unreal: ±91 horizontal
+```
+
+Ubah sumbunya dulu, atau ukur ulang di engine tujuan.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan di engine pilihanmu. Buat scene kosong dengan satu kubus.
+
+1. Pasang skrip pemutar dari bagian Gambaran besar pada kubus. Lalu ubah agar **tidak** dikali delta time, dan bandingkan kecepatannya saat frame rate dibatasi ke 30 dan ke 120 (Unity: `Application.targetFrameRate`, Unreal: `t.MaxFPS`, Godot: `Engine.max_fps`).
+2. Tampilkan FPS dan waktu frame dengan alat dari bagian Anggaran 16,7 milidetik. Tambahkan 500 kubus. Angka mana yang naik lebih dulu: waktu CPU atau GPU?
+3. Ubah FOV kamera dari 30° sampai 110°. Pada nilai berapa kubus mulai terlihat terdistorsi di tepi layar?

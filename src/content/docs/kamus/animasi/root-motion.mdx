@@ -1,0 +1,60 @@
+---
+title: "Root Motion"
+description: "Perpindahan karakter diambil dari animasinya, bukan dihitung oleh kode. Kaki tidak terseret dan gerakan terasa berbobot, tetapi kontrol terasa kurang responsif. Kebalikannya: animasi di tempat (in-place)."
+kind: term
+level: 3
+aka: "in-place animation, root bone"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Root Motion - how it works"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/RootMotion.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Root Motion"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/root-motion-in-unreal-engine"
+    publisher: "Epic Games Developer Documentation"
+    accessed: 2026-10-28
+  - title: "Using AnimationTree"
+    url: "https://docs.godotengine.org/en/stable/tutorials/animation/animation_tree.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 8
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Ada dua cara menggerakkan karakter yang beranimasi:
+
+- **In-place (kode yang menggerakkan):** klip animasi berjalan di tempat seperti di atas treadmill. Kode menggeser karakter dengan kecepatan tertentu. Kontrol terasa sangat responsif, tetapi jika kecepatan kode tidak cocok dengan langkah animasi, kaki tampak **terseret** atau meluncur.
+- **Root motion (animasi yang menggerakkan):** perpindahan diambil dari tulang akar (*root bone*) dalam klip animasi, lalu diterapkan ke objek karakter. Langkah kaki selalu pas dan gerakan terasa berbobot. Cocok untuk serangan, menghindar, memanjat, atau membuka pintu. Kekurangannya, pemain tidak bisa mengubah arah atau berhenti di tengah gerakan, sehingga terasa kurang responsif.
+
+Banyak game memakai keduanya: in-place untuk jalan dan lari biasa, root motion untuk aksi khusus.
+
+Tanpa root motion, animasi yang memang bergerak maju (misalnya serangan sambil melangkah) akan membuat mesh menjauh dari objeknya lalu meloncat kembali di akhir klip. Dokumentasi Unreal juga mencatat masalah lain: mesh terpisah dari kapsul collision.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Centang **Apply Root Motion** di komponen Animator. Untuk klip diam yang tidak boleh bergeser, aktifkan **Bake Into Pose** pada pengaturan posisi XZ klip itu.
+
+</div>
+<div slot="unreal">
+
+Aktifkan **Enable Root Motion** di setiap Animation Sequence atau Montage. Di Class Defaults Animation Blueprint, pilih **Root Motion Mode**: *Root Motion from Montages Only* atau *Root Motion from Everything*. Saat berjalan atau jatuh, sumbu Z dari root motion diabaikan agar gravitasi tetap bekerja.
+
+</div>
+<div slot="godot">
+
+Di AnimationTree, pilih tulang akar sebagai **root motion track**. Ambil perpindahannya dengan `get_root_motion_position()` dan `get_root_motion_rotation()`, lalu terapkan sendiri, misalnya lewat `CharacterBody3D.move_and_slide()`.
+
+</div>
+</EngineTabs>
+
+## Terkait
+
+- [Animation State Machine](/kamus/animasi/state-machine/)
+- [Skeletal Animation & Skinning](/kamus/animasi/skeletal/)

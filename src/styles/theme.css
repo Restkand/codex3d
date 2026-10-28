@@ -1,0 +1,834 @@
+/* =========================================================================
+   Tema Krekit: token warna komponen (diagram, kuis, progres, demo, catatan).
+   Warna aksen = kuning khas eksperimen 3D (#ffcc33). Situs selalu bertema gelap.
+   Token --sl-* adalah nama warisan; nilai dasarnya didefinisikan di src/site/lesson.css.
+   ========================================================================= */
+
+:root {
+  --sl-color-accent-low: #3d2f00;
+  --sl-color-accent: #e0a800;
+  --sl-color-accent-high: #ffe08a;
+
+  /* Token internal komponen (diagram, kuis, progres) */
+  --panel: var(--sl-color-gray-6);
+  --panel-2: var(--sl-color-gray-5);
+  --line: var(--sl-color-hairline-light);
+  --text: var(--sl-color-white);
+  --muted: var(--sl-color-gray-3);
+  --accent: #ffcc33;
+  --mono: var(--sl-font-mono);
+  --lvl-1: #7cff6b;
+  --lvl-2: #00b3ff;
+  --lvl-3: #ff5ce1;
+  --radius: 10px;
+}
+
+/* =========================================================================
+   Identitas visual eksperimen 3D untuk halaman dokumentasi
+   ========================================================================= */
+
+/* Palet gelap yang sama dengan eksperimen (#0b0b10) */
+:root[data-theme='dark'] {
+  --sl-color-black: #0b0b10;
+  --sl-color-gray-6: #14141c;
+  --sl-color-gray-5: #1f1f2b;
+  --sl-color-hairline-light: rgba(255, 255, 255, 0.09);
+  --sl-color-hairline: rgba(255, 255, 255, 0.06);
+  --sl-color-hairline-shade: rgba(0, 0, 0, 0.5);
+}
+
+/* Cahaya hologram samar di latar (CSS murni, tanpa beban WebGL) */
+:root[data-theme='dark'] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(600px circle at 85% -5%, rgba(0, 229, 255, 0.1), transparent 60%),
+    radial-gradient(500px circle at 100% 40%, rgba(255, 43, 214, 0.06), transparent 60%),
+    radial-gradient(700px circle at 30% 110%, rgba(255, 204, 51, 0.06), transparent 60%);
+}
+
+/* Kotak catatan (src/components/Aside.astro) mengikuti palet hologram */
+.aside.aside--note {
+  --aside-accent: #ffe08a;
+  --aside-border: #ffcc33;
+  background: linear-gradient(90deg, rgba(255, 204, 51, 0.09), rgba(20, 20, 28, 0.6) 70%);
+}
+
+.aside.aside--tip {
+  --aside-accent: #7ff0ff;
+  --aside-border: #00e5ff;
+  background: linear-gradient(90deg, rgba(0, 229, 255, 0.08), rgba(20, 20, 28, 0.6) 70%);
+}
+
+.aside.aside--caution {
+  --aside-accent: #ff9cec;
+  --aside-border: #ff2bd6;
+  background: linear-gradient(90deg, rgba(255, 43, 214, 0.08), rgba(20, 20, 28, 0.6) 70%);
+}
+
+/* ---------- Tipografi isi ---------- */
+
+.lcontent :is(h2, h3) {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.lcontent h2 {
+  font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+  line-height: 1.15;
+}
+
+/* Konten muncul bertahap saat halaman dibuka */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+.lcontent > * {
+  animation: rise-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.lcontent > :nth-child(1) { animation-delay: 0.16s; }
+.lcontent > :nth-child(2) { animation-delay: 0.2s; }
+.lcontent > :nth-child(3) { animation-delay: 0.24s; }
+.lcontent > :nth-child(4) { animation-delay: 0.28s; }
+.lcontent > :nth-child(n + 5) { animation-delay: 0.32s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lcontent > * {
+    animation: none;
+  }
+}
+
+/* ---------- Label level istilah ---------- */
+
+.level-badge {
+  padding: 0.1rem 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+}
+
+.level-badge--1 { color: var(--lvl-1); }
+.level-badge--2 { color: var(--lvl-2); }
+.level-badge--3 { color: var(--lvl-3); }
+
+.sources ol {
+  font-size: var(--sl-text-sm);
+}
+
+/* ---------- Tombol progres & ringkasan ---------- */
+
+.progress-toggle {
+  margin-top: 1.5rem;
+}
+
+.progress-toggle button,
+.progress-summary button,
+.quiz__reset {
+  padding: 0.6rem 1.1rem;
+  font: inherit;
+  font-size: var(--sl-text-sm);
+  font-weight: 600;
+  color: var(--sl-color-black);
+  background: var(--sl-color-accent);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.progress-toggle button.is-done {
+  color: var(--lvl-1);
+  background: transparent;
+  border-color: var(--lvl-1);
+}
+
+.progress-summary {
+  padding: 1.25rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.progress-summary__rank span {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.progress-summary__rank strong {
+  font-size: 1.6rem;
+  color: var(--accent);
+}
+
+.progress-summary__bar {
+  height: 10px;
+  margin: 0.75rem 0 0.4rem;
+  background: var(--panel-2);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progress-summary__bar div {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--lvl-1), var(--lvl-2), var(--lvl-3));
+  transition: width 0.4s ease;
+}
+
+.progress-summary__xp {
+  font-family: var(--mono);
+  font-size: var(--sl-text-sm);
+  color: var(--muted);
+}
+
+.progress-summary__groups {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.progress-summary__groups li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.progress-summary__groups b {
+  font-family: var(--mono);
+}
+
+/* ---------- Peta pipa grafis ---------- */
+
+.pipeline {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.6rem;
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+}
+
+.pipeline a {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0.75rem 0.75rem 0.75rem 2.4rem;
+  color: var(--text);
+  text-decoration: none;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  transition: border-color 0.2s;
+}
+
+.pipeline a:hover {
+  border-color: var(--sl-color-accent);
+}
+
+.pipeline__index {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+}
+
+.pipeline strong {
+  font-size: var(--sl-text-sm);
+}
+
+.pipeline small {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* ---------- Kuis ---------- */
+
+.quiz__q {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.quiz__text {
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.quiz__text > span {
+  font-family: var(--mono);
+  color: var(--accent);
+}
+
+.quiz__opts {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.quiz__opt {
+  padding: 0.6rem 0.9rem;
+  font: inherit;
+  font-size: var(--sl-text-sm);
+  text-align: left;
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.quiz__opt:hover:not(:disabled) {
+  border-color: var(--sl-color-accent);
+}
+
+.quiz__opt:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.quiz__opt.is-correct {
+  opacity: 1;
+  border-color: var(--lvl-1);
+}
+
+.quiz__opt.is-wrong {
+  opacity: 1;
+  border-color: var(--lvl-3);
+}
+
+.quiz__explain {
+  margin: 0.75rem 0 0;
+  font-size: var(--sl-text-sm);
+  color: var(--text);
+}
+
+.quiz__q[data-answered='correct'] .quiz__explain strong { color: var(--lvl-1); }
+.quiz__q[data-answered='wrong'] .quiz__explain strong { color: var(--lvl-3); }
+
+.quiz__foot {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.quiz__score {
+  margin: 0;
+  font-family: var(--mono);
+  color: var(--accent);
+}
+
+.quiz code,
+.quiz__explain code {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  padding: 0.1em 0.3em;
+  background: var(--sl-color-gray-5);
+  border-radius: 4px;
+}
+
+.quiz [hidden] {
+  display: none;
+}
+
+/* ---------- Demo (kotak gelap di kedua tema, seperti "konsol") ---------- */
+
+.demo {
+  max-width: 460px;
+  margin: 1.5rem 0;
+  padding: 14px;
+  color: #f2f2f5;
+  background: #0e0e14;
+  border: 1px solid rgba(0, 179, 255, 0.35);
+  border-radius: 8px;
+}
+
+.demo__tag {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 1px 6px;
+  font: 10px var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #00b3ff;
+  border: 1px solid rgba(0, 179, 255, 0.4);
+  border-radius: 4px;
+}
+
+.demo__caption {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: rgba(242, 242, 245, 0.65);
+}
+
+.demo__canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.demo__canvas--square {
+  width: 160px;
+  margin: 0 auto;
+}
+
+.demo__control {
+  display: grid;
+  grid-template-columns: 110px 1fr 44px;
+  gap: 10px;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 13px;
+  color: rgba(242, 242, 245, 0.65);
+}
+
+.demo__control input {
+  width: 100%;
+  accent-color: #ffcc33;
+}
+
+.demo__value {
+  font-family: var(--mono);
+  text-align: right;
+  color: #f2f2f5;
+}
+
+.demo__readout {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: rgba(242, 242, 245, 0.65);
+}
+
+.demo__readout b {
+  font-family: var(--mono);
+  font-weight: 500;
+  color: #f2f2f5;
+}
+
+.demo__row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo__select {
+  flex: 1;
+  margin-top: 8px;
+  padding: 6px 8px;
+  font: 13px var(--mono);
+  color: #f2f2f5;
+  background: #1b1b26;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+}
+
+.demo__row .demo__select {
+  margin-top: 0;
+}
+
+.demo__button {
+  padding: 6px 16px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0b0b10;
+  background: #ffcc33;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.demo__track {
+  position: relative;
+  height: 24px;
+  margin-top: 10px;
+  background: #1b1b26;
+  border-radius: 4px;
+}
+
+.demo__block {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  background: #00b3ff;
+  border-radius: 4px;
+}
+
+.demo__bar {
+  height: 10px;
+  margin-top: 12px;
+  background: #1b1b26;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.demo__bar-fill {
+  height: 100%;
+  background: #7cff6b;
+  transition: width 0.2s, background 0.2s;
+}
+
+.demo__bar-fill.is-warn {
+  background: #ff2bd6;
+}
+
+.demo__pad {
+  position: relative;
+  height: 160px;
+  overflow: hidden;
+  cursor: crosshair;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)) center / 1px 100% no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)) center / 100% 1px no-repeat,
+    #1b1b26;
+  border-radius: 6px;
+  touch-action: none;
+}
+
+.demo__cross {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ffcc33;
+  pointer-events: none;
+}
+
+/* ---------- Diagram pelajaran ---------- */
+
+.diagram {
+  margin: 1.5rem 0;
+  font-size: var(--sl-text-sm);
+}
+
+.diagram p,
+.diagram ol,
+.diagram ul {
+  margin: 0;
+}
+
+.dg-two,
+.dg-equation {
+  display: flex;
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+.dg-box {
+  flex: 1;
+  padding: 0.9rem 1rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.dg-box ol {
+  padding-left: 1.1rem;
+}
+
+.dg-box--loop {
+  border-color: var(--sl-color-accent);
+}
+
+.dg-box__title {
+  margin-bottom: 0.4rem !important;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.dg-box__repeat {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+}
+
+.dg-arrow,
+.dg-op {
+  align-self: center;
+  font-size: 1.4rem;
+  color: var(--muted);
+}
+
+.dg-budget {
+  padding: 1rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.dg-budget__row {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr) 60px;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* Lebar penuh bar = 20 ms; garis putus-putus di 83,5% = batas 16,7 ms */
+.dg-budget__bar {
+  position: relative;
+  display: flex;
+  height: 26px;
+  background: var(--panel-2);
+}
+
+.dg-budget__bar::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  left: 83.5%;
+  border-left: 2px dashed var(--lvl-3);
+}
+
+.seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font: 11px var(--mono);
+  color: #0b0b10;
+  white-space: nowrap;
+}
+
+.seg--js { background: #ffcc33; }
+.seg--cmd { background: #ffa94d; }
+.seg--gpu { background: #00b3ff; }
+.seg--idle { background: transparent; color: var(--muted); border: 1px dashed var(--line); }
+
+.dg-budget__time {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  text-align: right;
+}
+
+.dg-budget__time.is-bad {
+  color: var(--lvl-3);
+}
+
+.dg-budget__scale {
+  position: relative;
+  height: 16px;
+  margin-left: 120px;
+  margin-right: 70px;
+  font: 11px var(--mono);
+  color: var(--muted);
+}
+
+.dg-budget__scale span {
+  position: absolute;
+  white-space: nowrap;
+}
+
+.dg-budget__scale span:last-child {
+  left: 83.5%;
+  transform: translateX(-50%);
+  color: var(--lvl-3);
+}
+
+.dg-budget__legend {
+  margin-top: 0.6rem !important;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.dg-axes {
+  margin: 0;
+  padding: 0.75rem;
+  text-align: center;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.dg-axes svg {
+  width: min(100%, 320px);
+  height: auto;
+}
+
+.dg-axes figcaption {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.dg-tree {
+  padding: 1rem;
+  overflow-x: auto;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.dg-tree ul {
+  list-style: none;
+  margin: 0 0 0 10px;
+  padding-left: 22px;
+  border-left: 1px solid var(--line);
+}
+
+.dg-tree li {
+  position: relative;
+  margin: 0;
+  padding-top: 6px;
+}
+
+.dg-tree li::before {
+  content: '';
+  position: absolute;
+  left: -22px;
+  top: 20px;
+  width: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.dg-node {
+  display: inline-block;
+  padding: 4px 10px;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.dg-node small {
+  margin-left: 6px;
+  font-family: var(--sl-font);
+  color: var(--muted);
+}
+
+.dg-node--root { border-color: var(--sl-color-accent); color: var(--accent); }
+.dg-node--mesh { border-color: var(--sl-color-accent); }
+.dg-node--dim { opacity: 0.6; }
+
+@media (max-width: 50rem) {
+  .dg-two,
+  .dg-equation {
+    flex-direction: column;
+  }
+
+  .dg-arrow {
+    transform: rotate(90deg);
+  }
+
+  .dg-budget__row {
+    grid-template-columns: minmax(0, 1fr) 50px;
+  }
+
+  .dg-budget__label {
+    grid-column: 1 / -1;
+  }
+
+  .dg-budget__scale {
+    margin-left: 0;
+    margin-right: 60px;
+  }
+
+  .demo__control {
+    grid-template-columns: 90px 1fr 40px;
+  }
+}
+
+/* ---------- Diagram game loop ---------- */
+
+.dg-loop {
+  padding: 1rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.dg-loop__steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.6rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dg-loop__steps li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.8rem 0.8rem 0.8rem 2.2rem;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.dg-loop__steps li:not(:last-child)::after {
+  content: '→';
+  position: absolute;
+  right: -0.55rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  z-index: 1;
+}
+
+.dg-loop__n {
+  position: absolute;
+  left: 0.8rem;
+  top: 0.8rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+}
+
+.dg-loop__steps small {
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.dg-loop__repeat {
+  margin: 0.8rem 0 0 !important;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  text-align: center;
+}
+
+@media (max-width: 50rem) {
+  .dg-loop__steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dg-loop__steps li:not(:last-child)::after {
+    content: '↓';
+    right: 50%;
+    top: auto;
+    bottom: -0.75rem;
+    transform: translateX(50%);
+  }
+}

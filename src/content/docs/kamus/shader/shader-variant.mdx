@@ -1,0 +1,90 @@
+---
+title: "Shader Variant & Stutter Kompilasi"
+description: "Satu shader sering dikompilasi menjadi banyak versi (variant) untuk kombinasi fitur yang berbeda. Versi yang baru dipakai pertama kali harus disiapkan driver GPU, dan proses itu bisa membuat game tersendat sesaat."
+kind: term
+level: 3
+aka: "shader variant, shader keyword, shader stutter, PSO, pipeline compilation, prewarm"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Introduction to shader variants"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/shader-variants.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "How Unity compiles branching shaders"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/shader-conditionals-choose-a-type.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Shader loading"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/shader-loading.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Warm up PSOs"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/shader-prewarm.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Reducing stutter from shader (pipeline) compilations"
+    url: "https://docs.godotengine.org/en/stable/tutorials/performance/pipeline_compilations.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 14
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Satu shader jarang hanya punya satu versi. Material yang sama bisa dipakai dengan atau tanpa normal map, dengan atau tanpa bayangan, dengan kabut menyala atau mati. Agar setiap kasus tidak perlu `if` di dalam shader, engine mengompilasi **satu versi terpisah untuk setiap kombinasi fitur**. Versi-versi ini disebut **shader variant**, dan fitur yang bisa dinyalakan atau dimatikan disebut **keyword**.
+
+Masalahnya, jumlah kombinasi berlipat ganda. Sepuluh keyword yang masing-masing punya dua pilihan sudah menghasilkan 2¹⁰ = 1.024 variant untuk satu shader. Akibatnya build makin lama, ukuran file membesar, memori bertambah, dan waktu muat memanjang.
+
+## Kenapa game tersendat
+
+Hasil kompilasi engine belum langsung bisa dipakai GPU. Saat sebuah variant dipakai **pertama kali**, driver GPU masih harus mengubahnya menjadi kode khusus untuk GPU itu (sering disebut *pipeline* atau PSO). Proses ini cukup mahal, dan satu shader bisa membutuhkan puluhan pipeline, sehingga frame tempat proses itu terjadi bisa terlambat dan terasa sebagai sentakan. Inilah *shader stutter*: game tersendat saat efek baru pertama kali muncul, misalnya ledakan pertama, lalu lancar setelahnya karena hasilnya disimpan di cache.
+
+```text title="Pseudocode: pola umum mencegah stutter"
+saat layar loading:
+    tampilkan sekali semua material dan efek penting (boleh di luar layar)
+    tunggu sampai driver selesai menyiapkan pipeline-nya
+saat gameplay:
+    hindari menyalakan fitur render baru secara tiba-tiba
+```
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Keyword dideklarasikan dengan `#pragma` di shader. Ada beberapa jenis:
+
+- `shader_feature`: hanya kombinasi yang dipakai material di build yang dikompilasi. Build cepat dan kecil, tetapi kombinasi yang tidak ada saat build tidak bisa dinyalakan dari script dengan hasil yang tepat.
+- `multi_compile`: semua kombinasi dikompilasi, jadi aman untuk dinyalakan dari C# saat game berjalan, tetapi jumlah variant bisa meledak.
+- `dynamic_branch`: tidak membuat variant baru. Keyword menjadi nilai yang dicek dengan percabangan di GPU. Cocok untuk GPU cepat dan cabang yang bebannya mirip.
+
+Unity menyimpan hasil kompilasi driver di cache, jadi stall hanya terjadi sekali. Untuk menyiapkannya lebih awal (*prewarm*), Unity 6 punya API eksperimental `GraphicsStateCollection` dengan `WarmUp` atau `WarmUpProgressively`, yang sebaiknya dijalankan saat loading.
+
+</div>
+<div slot="unreal">
+
+Material yang sama juga dikompilasi menjadi banyak permutasi shader, tergantung fitur dan tempat material itu dipakai. Untuk mengurangi stutter, Unreal menyediakan cache dan prakompilasi PSO.
+
+</div>
+<div slot="godot">
+
+Sejak Godot 4.4, renderer Forward+ dan Mobile mendeteksi pipeline yang dibutuhkan lalu **memprakompilasinya saat loading**, ditambah *ubershader* sebagai versi umum yang siap dipakai sementara versi yang lebih optimal dikompilasi di latar belakang. Sebelum 4.4, pipeline baru dibuat saat objek pertama kali terlihat kamera, dan itulah sumber stutter yang terkenal.
+
+Yang tetap perlu kamu lakukan: jangan mengubah fitur render (misalnya MSAA) di tengah gameplay, dan untuk efek yang muncul belakangan, pasang satu salinan tersembunyi di node yang selalu ada agar pipeline-nya disiapkan lebih awal. Pantau monitor *pipeline compilations* di debugger. Renderer Compatibility tidak punya fitur ini, jadi material dan partikel perlu ditampilkan minimal satu frame saat loading.
+
+</div>
+</EngineTabs>
+
+<Aside type="caution" title="Gejala yang mudah disalahpahami">
+Stutter kompilasi hanya muncul saat sesuatu tampil **pertama kali**, dan sering hilang di komputer developer karena cache driver sudah terisi. Uji di perangkat bersih, atau setelah driver GPU diperbarui (cache biasanya ikut terhapus).
+</Aside>
+
+## Terkait
+
+- [Shader](/kamus/shader/shader/)
+- [Fungsi Shader Penting](/kamus/shader/glsl-functions/)
+- [Draw Call & Batching](/kamus/performa/draw-call/)
+- [CPU-bound vs GPU-bound](/kamus/performa/cpu-gpu-bound/)

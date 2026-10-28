@@ -1,0 +1,89 @@
+---
+title: "Normal Map"
+description: "Tekstur yang menyimpan arah normal per piksel. Permukaan datar jadi tampak punya tonjolan, goresan, dan lekukan saat terkena cahaya, tanpa menambah segitiga."
+kind: term
+level: 2
+aka: "bump map, tangent-space normal map, baking"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Normal map (Bump mapping)"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/StandardShaderMaterialParameterNormalMap.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Texture type and shape settings reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-TextureImporter-type-and-shape.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Lit shader material Inspector window reference for URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/lit-shader.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Standard Material 3D and ORM Material 3D"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "BaseMaterial3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_basematerial3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "ResourceImporterTexture"
+    url: "https://docs.godotengine.org/en/stable/classes/class_resourceimportertexture.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 18
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+[Tekstur](/kamus/geometri/texture/) yang menyimpan arah [normal](/kamus/geometri/normal/) **per piksel**, bukan per vertex. Saat menghitung cahaya, shader memakai arah dari tekstur ini sebagai ganti normal mesh. Hasilnya, permukaan datar tampak punya tonjolan, goresan, dan lekukan, padahal jumlah segitiganya tidak berubah.
+
+Nilai R, G, B setiap piksel menyimpan komponen X, Y, Z sebuah arah. Karena warna bernilai 0..1 sedangkan arah bernilai −1..1, shader mengubahnya dengan rumus sederhana. Itulah kenapa normal map umumnya berwarna biru keunguan: warna (0,5; 0,5; 1) berarti "lurus ke luar permukaan", alias tidak ada perubahan.
+
+```text title="Pseudocode"
+arah = warna_tekstur * 2 - 1        // dari 0..1 menjadi -1..1
+normal_akhir = putar_ke_permukaan(arah, normal, tangent)
+```
+
+Arah di normal map biasanya relatif terhadap permukaan (*tangent space*), jadi mesh butuh data **tangent** selain normal. Tanpa tangent, normal map tampil salah.
+
+<Aside type="note" title="Analogi">
+Lukisan trompe-l'œil di dinding datar: dari depan tampak ada relief, tetapi dindingnya tetap rata. Bedanya, normal map ikut bereaksi saat arah cahaya berubah.
+</Aside>
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Di pengaturan impor tekstur, set **Texture Type: Normal map**, lalu pasang di slot **Normal Map** material URP/Lit (ada slider untuk kekuatannya). Unity memakai format **Y+** (gaya OpenGL). Unity juga bisa mengubah height map hitam-putih menjadi normal map saat impor.
+
+</div>
+<div slot="unreal">
+
+Tekstur dengan Compression Settings **Normalmap**, dihubungkan ke input **Normal** pada Material. Unreal memakai format gaya DirectX (Y−), jadi normal map dari sumber gaya OpenGL perlu dibalik kanal hijaunya.
+
+</div>
+<div slot="godot">
+
+`StandardMaterial3D`: aktifkan `normal_enabled`, isi `normal_texture`, dan atur kekuatannya dengan `normal_scale`. Godot memakai format **Y+** (gaya OpenGL). Untuk normal map gaya DirectX, set opsi impor `process/channel_remap/green` ke Green Inverted. Opsi impor `compress/normal_map` (bawaan Detect) membuat Godot mengenali normal map dan mengompresnya dengan format yang cocok. Normal map punya sedikit ongkos performa, terutama di GPU ponsel.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Normal map dipakai hampir di setiap game 3D lewat proses **baking**: seniman membuat model resolusi sangat tinggi (jutaan segitiga), lalu detail permukaannya "dipanggang" menjadi normal map untuk model ringan yang dipakai di game. Model ringan tetap tampak detail dari dekat.
+
+Batasnya: normal map hanya mengubah cahaya, bukan bentuk. Siluet objek tetap datar, dan dari sudut sangat miring ilusinya mulai terlihat.
+
+Perhatikan konvensi kanal hijau. Normal map gaya OpenGL (Y+) dan DirectX (Y−) hanya beda arah kanal hijau. Jika tonjolan tampak seperti cekungan, kemungkinan formatnya tertukar.
+
+## Terkait
+
+- [Normal](/kamus/geometri/normal/)
+- [Texture](/kamus/geometri/texture/)
+- [PBR](/kamus/geometri/pbr/)
+- [UV](/kamus/geometri/uv/)

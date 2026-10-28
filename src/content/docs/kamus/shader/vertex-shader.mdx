@@ -1,0 +1,93 @@
+---
+title: "Vertex Shader"
+description: "Dijalankan sekali untuk setiap vertex. Tugas wajibnya menghitung posisi titik di layar. Di sinilah bentuk bisa diubah langsung di GPU: gelombang, rumput bergoyang, bendera berkibar."
+kind: term
+level: 2
+aka: "vertex offset, world position offset"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Master Stack"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Master-Stack.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Built In Blocks"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Built-In-Blocks.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Write an unlit basic shader in URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/writing-shaders-urp-basic-unlit-structure.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Spatial shaders"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/spatial_shader.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 4
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Dijalankan sekali untuk setiap [vertex](/kamus/geometri/vertex/). Tugas wajibnya: menghitung posisi titik itu di layar dengan [matriks model, view, dan projection](/kamus/ruang/matrices/). Di engine, bagian wajib ini sudah dikerjakan otomatis.
+
+Yang menarik adalah apa yang bisa ditambahkan sebelumnya: **menggeser titik** langsung di GPU, tanpa mengubah data mesh dan tanpa beban CPU. Rumput dan daun bergoyang, bendera berkibar, ombak air, atau objek yang "bernapas" biasanya dibuat dengan cara ini.
+
+```text title="Pseudocode: rumput bergoyang"
+goyang = sin(waktu * 2.0 + posisi.x) * 0.1 * tinggi_titik   // pangkal diam, ujung bergoyang
+posisi.x = posisi.x + goyang
+```
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Shader Graph: konteks **Vertex** di Master Stack, dengan blok **Position**, **Normal**, dan **Tangent** (semuanya di object space). Node yang tersambung ke blok Vertex menjadi bagian dari fungsi vertex.
+
+Di HLSL URP, fungsi vertex mengubah posisi object space menjadi clip space dengan `TransformObjectToHClip`:
+
+```hlsl
+Varyings vert(Attributes IN)
+{
+    Varyings OUT;
+    OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
+    return OUT;
+}
+```
+
+</div>
+<div slot="unreal">
+
+Input **World Position Offset** pada Material: berapa jauh setiap titik digeser di ruang dunia.
+
+</div>
+<div slot="godot">
+
+Fungsi `vertex()` di `.gdshader`, dengan mengubah `VERTEX`. Secara bawaan `VERTEX` berada di ruang model (lokal objek), lalu Godot mengubahnya ke layar sesudahnya. Matriksnya tersedia sebagai `MODEL_MATRIX`, `VIEW_MATRIX`, dan `PROJECTION_MATRIX` jika kamu butuh menghitung sendiri.
+
+```glsl title="rumput.gdshader"
+shader_type spatial;
+
+void vertex() {
+    VERTEX.x += sin(TIME * 2.0 + VERTEX.y) * 0.1 * VERTEX.y;
+}
+```
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Pergeseran di vertex shader hanya mengubah **tampilan**. Physics dan collision tetap memakai bentuk asli, jadi jangan memakainya untuk hal yang harus ditabrak. Selain itu, objek yang digeser terlalu jauh bisa tiba-tiba hilang, karena engine memutuskan objek itu di luar kamera berdasarkan kotak batas (*bounds*) aslinya ([culling](/kamus/dasar/frustum/)).
+
+<Aside type="note" title="Di Lab (Three.js)">
+Hologram Lab memakai vertex shader untuk morph, twist, dan gelombang, di `src/experiment/shaders/hologram/vertex.glsl`. Quest: ganti `uTime * 2.0` menjadi `uTime * 8.0`.
+</Aside>
+
+## Terkait
+
+- [Matriks Model / View / Projection](/kamus/ruang/matrices/)
+- [Attribute](/kamus/shader/attribute/)
+- [Fragment Shader](/kamus/shader/fragment-shader/)

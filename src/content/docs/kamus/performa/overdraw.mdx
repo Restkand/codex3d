@@ -1,0 +1,71 @@
+---
+title: "Overdraw"
+description: "Piksel yang sama diwarnai berkali-kali dalam satu frame karena objek bertumpuk. Paling parah pada objek transparan seperti partikel dan asap, karena tidak bisa disaring depth buffer."
+kind: term
+level: 3
+aka: "overdraw view, depth prepass"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "GPU optimization"
+    url: "https://docs.godotengine.org/en/stable/tutorials/performance/gpu_optimization.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Optimizing 3D performance"
+    url: "https://docs.godotengine.org/en/stable/tutorials/performance/optimizing_3d_performance.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Viewport"
+    url: "https://docs.godotengine.org/en/stable/classes/class_viewport.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 5
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Piksel yang sama diwarnai **berkali-kali** dalam satu frame karena objek bertumpuk. Hanya warna terakhir yang terlihat, jadi semua pekerjaan sebelumnya terbuang. Overdraw adalah pemborosan [fill rate](/kamus/performa/fill-rate/).
+
+Untuk objek **padat**, kerugiannya bisa dicegah dengan [depth buffer](/kamus/geometri/depth-buffer/): piksel yang tertutup dibuang sebelum shader-nya dijalankan. Engine juga sering memakai **depth prepass** (menggambar kedalaman semua objek dulu, lalu warna hanya untuk piksel terdepan), yang aktif secara bawaan di renderer Forward+ dan Compatibility Godot.
+
+Untuk objek **transparan**, trik itu tidak berlaku. Objek transparan harus digambar dari belakang ke depan dan semuanya harus dicampur, jadi setiap lapisan benar-benar dihitung. Asap tebal dari 30 partikel yang bertumpuk di depan kamera berarti 30 kali kerja pada piksel yang sama. Inilah sebab efek asap atau ledakan yang memenuhi layar bisa membuat FPS anjlok.
+
+## Cara menghemat
+
+- **Kecilkan partikel transparan** dan kurangi jumlahnya saat dekat kamera.
+- **Potong bentuk quad partikel** mengikuti bentuk teksturnya, agar area transparan kosong di sudut-sudut tidak ikut dihitung.
+- **Pakai alpha clip** (piksel dibuang sepenuhnya) alih-alih alpha blend jika tepi tegas masih bisa diterima ([Transparansi & Blending](/kamus/geometri/blending/)).
+
+## Di engine
+
+Setiap engine punya mode tampilan khusus yang mewarnai layar sesuai jumlah tumpukan. Makin terang, makin banyak overdraw:
+
+<EngineTabs>
+<div slot="unity">
+
+URP: jendela **Rendering Debugger** menyediakan tampilan overdraw.
+
+</div>
+<div slot="unreal">
+
+View mode **Optimization Viewmodes → Shader Complexity** dan **Quad Overdraw** di viewport.
+
+</div>
+<div slot="godot">
+
+Mode tampilan **Overdraw** di menu viewport (`Viewport.DEBUG_DRAW_OVERDRAW`): objek digambar semi-transparan dengan blending additive, sehingga area yang bertumpuk tampak lebih terang. Shader kustom diabaikan dalam mode ini.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Hologram Lab adalah contoh overdraw: transparan, additive, dan dua sisi, sehingga bagian depan dan belakangnya sama-sama digambar di atas objek di dalamnya. Lihat `src/experiment/world/hologram.js`.
+</Aside>
+
+## Terkait
+
+- [Fill Rate](/kamus/performa/fill-rate/)
+- [Transparansi & Blending](/kamus/geometri/blending/)
+- [Depth Buffer](/kamus/geometri/depth-buffer/)

@@ -1,19 +1,32 @@
 {
-  "name": "eksperimen-3d",
+  "name": "krekit",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "vite": "^8.3.5"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/markdown-satteri": "^0.4.5",
+    "@astrojs/mdx": "^8.1.1",
+    "@expressive-code/plugin-line-numbers": "^0.44.3",
+    "astro": "^7.4.2",
+    "astro-expressive-code": "^0.44.3",
     "gsap": "^3.15.0",
     "lil-gui": "^0.21.0",
+    "sharp": "^0.35.5",
     "three": "^0.186.1"
+  },
+  "description": "Wadah belajar gratis tentang dunia developer game, dari teori engine sampai bisnis studio indie.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Restkand/krekit.git"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

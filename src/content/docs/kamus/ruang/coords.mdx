@@ -1,0 +1,76 @@
+---
+title: "Sistem Koordinat 3D"
+description: "Aturan arah sumbu X, Y, Z dan satuan jarak di dunia 3D. Setiap engine punya aturannya sendiri: sumbu mana yang ke atas, mana yang ke depan, dan apakah tangan kiri atau tangan kanan."
+kind: term
+level: 1
+aka: "coordinate system, handedness"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Introduction to 3D"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/introduction_to_3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Vector3"
+    url: "https://docs.godotengine.org/en/stable/classes/class_vector3.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Node3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_node3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Quaternion and Euler rotations in Unity"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/QuaternionAndEulerRotationsInUnity.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Transform component"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-Transform.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Vector3.forward"
+    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Vector3-forward.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Coordinate System and Spaces in Unreal Engine"
+    url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/coordinate-system-and-spaces-in-unreal-engine"
+    publisher: "Epic Games Developer Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 1
+---
+
+import Aside from '~/components/Aside.astro'
+
+Setiap titik di dunia 3D ditulis dengan tiga angka: X, Y, dan Z. Sistem koordinat menentukan **ke mana arah masing-masing sumbu** dan **berapa panjang satu unit**. Semua engine memakai tiga sumbu, tetapi aturannya tidak sama.
+
+| | Sumbu atas | Sumbu depan | Tangan | Satu unit |
+| --- | --- | --- | --- | --- |
+| Unity | +Y | +Z | kiri | 1 meter |
+| Unreal | +Z | +X | kiri | 1 sentimeter |
+| Godot | +Y | −Z | kanan | 1 meter |
+| Three.js | +Y | −Z (arah tatap kamera) | kanan | bebas |
+
+<Aside type="note" title="Cara mengingat tangan kiri dan kanan">
+Acungkan ibu jari, telunjuk, dan jari tengah hingga saling tegak lurus. Ibu jari = X, telunjuk = Y, jari tengah = Z. Arah yang ditunjukkan tangan kananmu adalah sistem tangan kanan, dan tangan kiri adalah sistem tangan kiri. Perbedaannya hanya pada arah Z.
+</Aside>
+
+Di editor Unity dan Godot, sumbu X, Y, Z sama-sama diberi warna merah, hijau, dan biru.
+
+## Di engine
+
+Unity memakai sistem tangan kiri: X ke kanan, Y ke atas, Z ke depan. `Vector3.forward` adalah (0, 0, 1). Soal satuan, Unity menyebut bahwa engine physics-nya secara bawaan menganggap 1 unit = 1 meter.
+
+Godot memakai sistem tangan kanan dengan Y ke atas, dan menyatakan 1 unit = 1 meter untuk semua hal 3D. Arah "depan" adalah −Z: `Vector3.FORWARD` bernilai (0, 0, −1), dan `look_at()` mengarahkan sumbu −Z node ke target. Model 3D yang diimpor justru dianggap menghadap ke +Z (`Vector3.MODEL_FRONT`), sehingga `look_at()` punya opsi `use_model_front` untuk memakai +Z sebagai depan.
+
+## Pelajari lebih dalam
+
+Perbedaan ini paling terasa saat **memindahkan aset dan data antar-engine**. Model 3D dari Blender (Z ke atas, tangan kanan) yang diimpor ke Unity perlu diputar atau dikonversi, dan biasanya importer engine melakukannya otomatis. Angka posisi yang disalin dari Unity ke Unreal perlu dikali 100 (meter ke sentimeter) dan sumbunya ditukar.
+
+Satuan sebenarnya hanya kesepakatan, tetapi tetap penting. Simulasi physics mengasumsikan gravitasi dalam satuan engine itu, dan nilai-nilai bawaan (jarak cahaya, kabut, near/far kamera) disesuaikan dengan skala tersebut. Karakter setinggi 2 unit di Unity berarti 2 meter, tetapi di Unreal hanya 2 sentimeter. Dokumentasi Unity juga mengingatkan bahwa objek yang dibuat terlalu besar akan tampak jatuh "dalam gerak lambat", karena gravitasinya tetap dihitung dalam meter.
+
+## Terkait
+
+- [Vektor](/kamus/ruang/vector/)
+- [Transform](/kamus/ruang/transform/)
+- [Cross Product](/kamus/ruang/cross/)
+- [Presisi Floating Point](/kamus/ruang/float-precision/)

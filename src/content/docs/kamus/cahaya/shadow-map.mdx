@@ -1,0 +1,91 @@
+---
+title: "Shadow Map"
+description: "Teknik bayangan real-time: scene dirender sekali lagi dari sudut pandang lampu untuk mencatat apa yang terkena cahaya. Biayanya render tambahan per lampu, jadi jumlah lampu berbayangan harus dibatasi."
+kind: term
+level: 2
+aka: "cast/receive shadows, cascaded shadow maps, PSSM"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Light component Inspector window reference for URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/light-component.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Universal Render Pipeline Asset reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/universalrp-asset.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Light component reference (Built-In Render Pipeline)"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-Light.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "3D lights and shadows"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/lights_and_shadows.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "DirectionalLight3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_directionallight3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "Light3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_light3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 3
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Teknik bayangan real-time yang dipakai hampir semua engine, dalam dua langkah:
+
+1. Scene dirender dari sudut pandang **lampu**, hanya untuk mencatat jarak permukaan terdekat ke lampu (sebuah [depth buffer](/kamus/geometri/depth-buffer/)).
+2. Saat render utama, setiap piksel dicek: apakah jaraknya ke lampu lebih jauh daripada yang tercatat? Jika ya, ada sesuatu yang menghalangi, berarti piksel itu dalam bayangan.
+
+Setiap objek punya dua sakelar: **memberi bayangan** (*cast*) dan **menerima bayangan** (*receive*). Mematikan cast pada objek kecil yang tidak penting adalah cara murah untuk menghemat.
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Light → **Shadow Type**: tanpa bayangan, **Hard Shadows**, atau **Soft Shadows**. Mesh Renderer → **Cast Shadows** dan **Receive Shadows**.
+
+Di URP, sebagian besar pengaturan ada di aset URP: **Main Light → Shadow Resolution** untuk ukuran shadow map lampu utama, lalu di bagian **Shadows** ada **Max Distance**, **Cascade Count** (sampai 4 cascade, hanya untuk lampu utama), dan **Soft Shadows** beserta kualitasnya. Dokumentasi Unity mengingatkan soft shadows cukup berat di GPU ponsel.
+
+</div>
+<div slot="unreal">
+
+**Cast Shadows** pada lampu dan komponen mesh. Unreal Engine 5 secara bawaan memakai **Virtual Shadow Maps**, shadow map beresolusi sangat tinggi yang hanya mengisi bagian yang terlihat.
+
+</div>
+<div slot="godot">
+
+Aktifkan `shadow_enabled` pada lampu. Bawaannya mati, dan dokumentasi Godot menyebut biayanya signifikan, jadi nyalakan hanya jika bayangannya memang terlihat penting.
+
+`DirectionalLight3D` punya `directional_shadow_mode`: **Orthogonal** (tanpa cascade), **PSSM 2 Splits**, atau **PSSM 4 Splits** (bawaan). Jangkauannya diatur lewat `directional_shadow_max_distance` (bawaan 100).
+
+Bayangan omni dan spot berbagi satu *shadow atlas*, yang diatur di Project Settings → **Rendering → Lights And Shadows → Positional Shadow**. Bayangan omni bisa memakai mode **Cube** (bawaan, lebih akurat) atau **Dual Paraboloid** (lebih cepat, tetapi bisa terdistorsi).
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Kualitas bayangan ditentukan oleh **kepadatan**: berapa piksel shadow map untuk setiap meter dunia. Shadow map 2048 piksel yang menutupi area 20 meter berarti sekitar 100 piksel per meter. Untuk matahari yang menyinari seluruh dunia, satu shadow map tidak cukup. Solusinya **cascade**: beberapa shadow map berlapis, yang tajam untuk area dekat kamera dan yang kasar untuk area jauh.
+
+Biaya tiap jenis lampu berbeda. Directional dan spot butuh satu render tambahan (atau satu per cascade). **Point light dengan shadow map kubus butuh enam**, satu untuk setiap sisi kubus, sehingga sangat mahal. Teknik alternatif seperti *dual paraboloid* cukup dua render, dengan harga bayangan sedikit terdistorsi.
+
+Untuk lampu dan objek yang tidak bergerak, bayangan bisa **dipanggang** (*baked*) ke tekstur lightmap sebelum game dijalankan. Hasilnya lebih halus dan biaya per frame-nya hampir nol, tetapi tidak bereaksi pada objek yang bergerak. Unity menyebutnya Light Mode Baked/Mixed, Unreal memakai lampu Static/Stationary, dan Godot memakai `LightmapGI` dengan lampu ber-Bake Mode **Static**. Penjelasan lengkapnya ada di [Global Illumination & Lightmap](/kamus/cahaya/global-illumination/).
+
+<Aside type="note" title="Di Lab (Three.js)">
+Lab memakai satu `DirectionalLight` berbayangan dengan shadow map 1024×1024 untuk area 8×8 unit (128 piksel per unit), di `src/experiment/world/lights.js`. Di Three.js, sakelarnya bernama `castShadow` dan `receiveShadow`.
+</Aside>
+
+## Terkait
+
+- [Shadow Acne & Bias](/kamus/cahaya/shadow-acne/)
+- [Global Illumination & Lightmap](/kamus/cahaya/global-illumination/)
+- [Depth Buffer](/kamus/geometri/depth-buffer/)
+- [Draw Call & Batching](/kamus/performa/draw-call/)

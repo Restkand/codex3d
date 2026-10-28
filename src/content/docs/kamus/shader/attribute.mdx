@@ -1,0 +1,82 @@
+---
+title: "Attribute"
+description: "Data yang berbeda untuk setiap vertex: posisi, normal, UV, warna vertex. Disimpan di mesh dan dibaca vertex shader."
+kind: term
+level: 2
+aka: "vertex attribute, vertex color"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Position Node"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Position-Node.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Normal Vector Node"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Normal-Vector-Node.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "UV Node"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/UV-Node.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Vertex Color Node"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Vertex-Color-Node.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Write an unlit basic shader in URP"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/writing-shaders-urp-basic-unlit-structure.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Spatial shaders"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/spatial_shader.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 7
+---
+
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Data yang **berbeda untuk setiap vertex**: posisi, [normal](/kamus/geometri/normal/), [UV](/kamus/geometri/uv/), warna vertex, dan untuk karakter beranimasi, bobot tulang. Disimpan di mesh dan dibaca vertex shader.
+
+Bandingkan dengan [uniform](/kamus/shader/uniform/), yang sama untuk semua titik. Attribute adalah data milik masing-masing titik.
+
+**Warna vertex** sering dipakai sebagai data tambahan, bukan sebagai warna. Misalnya, artist mengecat ujung rumput dengan merah dan pangkalnya hitam, lalu vertex shader memakai nilai merah itu sebagai "seberapa jauh titik ini boleh bergoyang".
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Shader Graph: node **Position** dan **Normal Vector** (pilih ruangnya lewat dropdown Space: Object, View, World, Tangent), **UV** (dropdown Channel UV0 sampai UV7), dan **Vertex Color**.
+
+Di HLSL URP, attribute ditulis sebagai struct input vertex yang lazim dinamai `Attributes`, dengan semantik untuk setiap data: `POSITION`, `NORMAL`, `TEXCOORD0`, `COLOR`.
+
+```hlsl
+struct Attributes
+{
+    float4 positionOS : POSITION;
+    float3 normalOS   : NORMAL;
+    float2 uv         : TEXCOORD0;
+    float4 color      : COLOR;
+};
+```
+
+</div>
+<div slot="unreal">
+
+Node **TexCoord**, **VertexNormalWS**, **Vertex Color**, dan **Absolute World Position**.
+
+</div>
+<div slot="godot">
+
+Variabel bawaan di fungsi `vertex()`: `VERTEX`, `NORMAL`, `UV`, `UV2`, `COLOR`. Secara bawaan `VERTEX` dan `NORMAL` berada di ruang model (lokal objek), kecuali kamu memakai `render_mode world_vertex_coords`.
+
+</div>
+</EngineTabs>
+
+## Terkait
+
+- [Uniform](/kamus/shader/uniform/)
+- [Varying](/kamus/shader/varying/)
+- [Vertex](/kamus/geometri/vertex/)

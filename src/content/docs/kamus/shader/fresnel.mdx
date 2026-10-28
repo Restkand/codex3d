@@ -1,0 +1,87 @@
+---
+title: "Efek Fresnel"
+description: "Permukaan tampak lebih memantul atau bercahaya di sudut miring (tepi siluet) daripada saat dilihat tegak lurus. Bahan utama efek hologram, perisai energi, dan rim light."
+kind: term
+level: 3
+aka: "rim light, rim lighting"
+status: draf
+lastReviewed: 2026-10-28
+sources:
+  - title: "Fresnel Effect Node"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Fresnel-Effect-Node.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-28
+  - title: "Spatial shaders"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/spatial_shader.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+  - title: "VisualShaderNodeFresnel"
+    url: "https://docs.godotengine.org/en/stable/classes/class_visualshadernodefresnel.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-28
+sidebar:
+  order: 11
+---
+
+import Aside from '~/components/Aside.astro'
+import Demo from '~/components/Demo.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Permukaan tampak lebih memantul atau bercahaya di sudut miring (tepi siluet) daripada saat dilihat tegak lurus. Ini terjadi di dunia nyata dan sudah dihitung otomatis oleh material [PBR](/kamus/geometri/pbr/). Dalam shader buatan sendiri, efek ini sengaja dibesar-besarkan untuk hologram, perisai energi, sorotan objek yang bisa diambil, dan *rim light* yang memisahkan karakter dari latar.
+
+```text title="Pseudocode"
+fresnel = pow(1.0 - clamp(dot(normal, arah_ke_kamera), 0.0, 1.0), ketajaman)
+// 0 di bagian yang menghadap kamera, mendekati 1 di tepi siluet
+```
+
+Rumusnya memakai [dot product](/kamus/ruang/dot/): hasilnya 1 saat permukaan menghadap kamera, 0 di tepi. Dibalik dengan `1 −` agar tepi yang bernilai besar, lalu `pow` menipiskan atau menebalkan pinggirannya. `clamp` menjaga nilainya tetap di 0..1, karena `dot` bisa negatif untuk permukaan yang membelakangi kamera, dan `pow` dari bilangan negatif tidak terdefinisi di GPU.
+
+<Aside type="note" title="Analogi">
+Permukaan danau: di bawah kaki tampak bening, di kejauhan memantulkan langit.
+</Aside>
+
+## Demo
+
+<Demo name="fresnel" />
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Shader Graph: node **Fresnel Effect** dengan input **Normal**, **View Dir**, dan **Power**. Isinya persis rumus di atas: `pow(1.0 - saturate(dot(normalize(Normal), normalize(ViewDir))), Power)`.
+
+</div>
+<div slot="unreal">
+
+Material Editor: node **Fresnel** (input Exponent, Base Reflect Fraction).
+
+</div>
+<div slot="godot">
+
+Tulis langsung di `fragment()`. `NORMAL` dan `VIEW` di sana sama-sama berada di ruang view, jadi bisa langsung di-`dot`:
+
+```glsl title="rim.gdshader"
+shader_type spatial;
+
+void fragment() {
+    float f = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 3.0);
+    ALBEDO = vec3(0.1);
+    EMISSION = vec3(0.2, 0.8, 1.0) * f;
+}
+```
+
+Visual Shader juga punya node **Fresnel** (`VisualShaderNodeFresnel`).
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Di Lab (Three.js)">
+Hologram Lab memakai `1.0 - abs(dot(normal, vViewDir))` lalu `pow(fresnel, 2.0)`. Materialnya dua sisi, jadi sisi belakang juga ikut digambar. Untuk sisi itu normal dibalik dulu lewat `gl_FrontFacing`, dan `abs` menjaga hasil `dot` tetap positif. Lihat `src/experiment/shaders/hologram/fragment.glsl`.
+</Aside>
+
+## Terkait
+
+- [Dot Product](/kamus/ruang/dot/)
+- [Normal](/kamus/geometri/normal/)
+- [Fungsi Shader Penting](/kamus/shader/glsl-functions/)
