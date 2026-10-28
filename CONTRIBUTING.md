@@ -18,4 +18,4 @@ Terima kasih sudah ingin membantu! Panduan lengkap ada di situs, di bagian **Kon
 - Konten baru masuk dengan `status: draf` sampai ditinjau.
 - Sebutkan jika Anda punya hubungan dengan pihak yang dibahas (karyawan, mitra, investor), dan jika memakai alat AI untuk menyusun draf.
 
-Kontribusi kode dirilis di bawah MIT. Ketentuan lisensi untuk kontribusi konten sedang disiapkan dan akan diumumkan sebelum pull request konten digabungkan. Semua kontributor mengikuti [Kode Etik](CODE_OF_CONDUCT.md).
+Sebelum pull request pertama Anda digabungkan, bot CLA Assistant akan meminta Anda menyetujui [Perjanjian Lisensi Kontributor](https://github.com/Restkand/krekit/blob/main/CLA.md). Hak cipta tetap milik Anda. Kontribusi konten terbit di bawah CC BY-NC-SA 4.0 dan kontribusi kode di bawah MIT. Semua kontributor mengikuti [Kode Etik](CODE_OF_CONDUCT.md).

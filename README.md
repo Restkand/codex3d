@@ -46,5 +46,9 @@ Kontribusi dari programmer maupun non-programmer sangat diterima: koreksi, artik
 
 ## Lisensi
 
-- **Kode**: [MIT](LICENSE)
-- **Konten** (`src/content/`): lisensi sedang disiapkan, semua hak dilindungi. Lihat [LICENSE-CONTENT.md](LICENSE-CONTENT.md).
+- **Konten** (`src/content/`): [CC BY-NC-SA 4.0](LICENSE-CONTENT.md). Terbuka untuk komunitas; pemakaian komersial lewat [kemitraan resmi](https://restkand.github.io/krekit/kemitraan/).
+- **Kode**, termasuk potongan kode di dalam pelajaran: [MIT](LICENSE)
+- **Nama, logo, dan maskot Krekit**: [kebijakan merek](TRADEMARK.md)
+- **Kontributor**: [Perjanjian Lisensi Kontributor](CLA.md)
+
+Penjelasan dan tanya-jawab lisensi ada di halaman [Lisensi](https://restkand.github.io/krekit/lisensi/).

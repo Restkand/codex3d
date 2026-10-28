@@ -1,0 +1,40 @@
+name: Kemitraan & izin
+description: Ajukan kerja sama, atau izin memakai konten, nama, atau maskot Krekit secara komersial
+title: "[Kemitraan] "
+labels: ["kemitraan"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Formulir ini publik. Jangan menulis harga, kontrak, atau informasi rahasia. Pengelola akan melanjutkan pembicaraan lewat jalur pribadi.
+  - type: input
+    id: pengaju
+    attributes:
+      label: Nama dan organisasi
+      placeholder: Nama Anda, studio / kampus / komunitas / brand
+    validations:
+      required: true
+  - type: dropdown
+    id: jenis
+    attributes:
+      label: Jenis pengajuan
+      options:
+        - Dukungan jalur belajar atau acara
+        - Studi kasus dari studio
+        - Materi untuk kelas atau program berbayar
+        - Izin komersial (konten, nama, atau maskot)
+        - Lainnya
+    validations:
+      required: true
+  - type: textarea
+    id: rencana
+    attributes:
+      label: Apa yang ingin dilakukan
+      description: Jelaskan rencananya dan materi Krekit mana yang terlibat
+    validations:
+      required: true
+  - type: input
+    id: kontak
+    attributes:
+      label: Cara menghubungi Anda
+      description: Akun GitHub atau situs organisasi. Tidak perlu menulis nomor telepon.
