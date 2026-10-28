@@ -142,10 +142,18 @@ function initCompanion() {
   const krekit = createKrekit(scene, { reduceMotion })
   let running = false
 
+  /**
+   * Kanvas lebih tinggi dari bingkai Krekit: bagian atasnya (--headroom di CSS) adalah ruang kosong
+   * untuk lompatan, agar cangkangnya tidak terpotong. setViewOffset memperluas pandangan kamera ke atas
+   * tanpa mengubah ukuran dan posisi Krekit.
+   */
   function resize() {
     const { width, height } = canvas.getBoundingClientRect()
+    const headroom = parseFloat(getComputedStyle(companion).getPropertyValue('--headroom')) || 0
+    const frame = height - headroom
     renderer.setSize(width, height, false)
-    camera.aspect = width / height
+    camera.aspect = width / frame
+    camera.setViewOffset(width, frame, 0, -headroom, width, height)
     camera.updateProjectionMatrix()
   }
 
@@ -161,6 +169,7 @@ function initCompanion() {
     const typeTime = reduceMotion ? 0 : text.length * 0.022
     visibleUntil = performance.now() + (typeTime + hold) * 1000
     bubbleEl.setAttribute('aria-label', text)
+    krekit.talk(typeTime)
     const state = { chars: reduceMotion ? text.length : 0 }
     const render = () => (bubbleEl.textContent = text.slice(0, Math.round(state.chars)))
     gsap.to(bubbleEl, { autoAlpha: 1, y: 0, duration: 0.2, overwrite: true })
@@ -268,10 +277,10 @@ function initCompanion() {
     const { correct, answered, total, score } = event.detail
     streak = correct ? streak + 1 : 0
     if (correct) {
-      krekit.setHappy(true)
-      gsap.delayedCall(1.2, () => krekit.setHappy(false))
+      krekit.smile()
     } else {
       shake()
+      krekit.confused()
     }
     if (answered === total) {
       krekit.jump()
@@ -331,7 +340,9 @@ function initCompanion() {
   const raycaster = new THREE.Raycaster()
   const ndc = new THREE.Vector2()
   let clicks = 0
-  canvas.addEventListener('click', (event) => {
+  // Didengarkan di pembungkus: ruang lompat di atas kanvas tidak menangkap klik (lihat lesson.css)
+  companion.addEventListener('click', (event) => {
+    if (event.target.closest('button')) return
     const rect = canvas.getBoundingClientRect()
     ndc.set(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1)
     raycaster.setFromCamera(ndc, camera)

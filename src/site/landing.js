@@ -152,7 +152,8 @@ function initScene() {
   camera.lookAt(0, 0, 0)
 
   const post = createPost({ renderer, scene, camera })
-  const bubble = createBubble()
+  // Mata Krekit berdenyut selama teks gelembung diketik
+  const bubble = createBubble({ onSay: (seconds) => krekit.talk(seconds) })
 
   let activeIndex = 0
   let travelDirection = 1
@@ -222,7 +223,7 @@ function initScene() {
     // Kanvas tidak menangkap sentuhan (pointer-events: none), tautan di bawahnya tetap bisa diketuk.
     canvas.classList.toggle('is-front', value)
     scene.background = value ? null : sceneBackground
-    dockSettle = value
+    bubble.setDocked(value)
   }
 
   /**
@@ -258,30 +259,16 @@ function initScene() {
     return (rect.height * unitsPerPixel(target)) / (krekit.height + 0.6)
   }
 
-  // ---------- Layar sempit, setelah Pos 0: Krekit kecil di bawah layar ----------
+  // ---------- Layar sempit, setelah Pos 0: Krekit kecil di pojok kanan bawah ----------
   // Panggung di atas judul section tidak dipakai di layar sempit (memakan tempat, Krekit menutupi teks).
-  // Krekit berdiri di atas bilah navigasi bawah dan menggelinding sesukanya antara pojok kiri dan kanan.
+  // Sama seperti pendamping di halaman pelajaran: Krekit duduk di atas bilah navigasi bawah,
+  // gelembungnya jadi strip di sebelah kirinya (lihat createBubble), jadi tidak menutupi tengah bacaan.
 
-  const DOCK_HEIGHT = 92 // tinggi Krekit di layar, piksel
-  const DOCK_MARGIN = 64 // jarak tengah Krekit dari tepi layar di pojok
-  let dockX = 1 // 0 = pojok kiri, 1 = pojok kanan
-  let dockNext = 0
-  let dockFlip = false
-  let dockSettle = false // baru muncul: diam dulu sebentar sebelum jalan-jalan
-  function dockTarget(elapsed) {
-    if (dockSettle) {
-      dockSettle = false
-      dockNext = elapsed + 5
-    }
-    if (!reduceMotion && (dockFlip || (elapsed > dockNext && !bubble.isBusy()))) {
-      // Pindah section: ke pojok seberang. Selebihnya kebanyakan ke pojok seberang, sesekali berhenti di tengah
-      dockX = dockFlip || Math.random() < 0.7 ? (dockX > 0.5 ? 0 : 1) : 0.3 + Math.random() * 0.4
-      dockFlip = false
-      dockNext = elapsed + 7 + Math.random() * 8
-    }
-    const x = DOCK_MARGIN + dockX * (window.innerWidth - DOCK_MARGIN * 2)
+  const DOCK_HEIGHT = 88 // tinggi Krekit di layar, piksel
+  const DOCK_RIGHT = 48 // jarak tengah Krekit dari tepi kanan layar
+  function dockTarget() {
     // Kamera menunduk: sisi depan telur terlihat lebih rendah dari titik pijaknya, jadi pijakan dinaikkan sedikit
-    screenToWorld(x, window.innerHeight - getBottomNavHeight() - 30, target)
+    screenToWorld(window.innerWidth - DOCK_RIGHT, window.innerHeight - getBottomNavHeight() - 28, target)
     return (DOCK_HEIGHT * unitsPerPixel(target)) / (krekit.height + 0.6)
   }
 
@@ -428,7 +415,6 @@ function initScene() {
     const next = spots[index].getBoundingClientRect()
     travelDirection = Math.sign(next.left - previous.left) || 1
     activeIndex = index
-    if (index > 0) dockFlip = true
     const mood = MOODS[index]
     krekit.setColors(mood.glow, mood.aura)
     const bg = new THREE.Color(mood.bg)
@@ -525,7 +511,7 @@ function initScene() {
     // Smoothing tidak bergantung frame rate (lihat Kamus: Delta Time)
     if (!swapping && wantDocked() !== docked) glitchSwap(!docked)
     const onPath = activeIndex === 0 && !docked
-    const scale = onPath ? heroTarget(target) : docked ? dockTarget(elapsed) : spotTarget()
+    const scale = onPath ? heroTarget(target) : docked ? dockTarget() : spotTarget()
     if (!onPath) target.z = 0
     if (!placed || reduceMotion) {
       current.copy(target)
@@ -554,6 +540,15 @@ function initScene() {
     updateWaypoints(fade)
     krekit.root.position.copy(current)
     krekit.root.scale.set(currentScale * fx.sx, currentScale * fx.sy, currentScale * fx.sx)
+    // Layar sempit: kamera tetap di tengah dan menunduk, jadi Krekit di pojok bawah terlihat dari samping atas.
+    // Putar badannya menghadap kamera, seperti pendamping di halaman pelajaran, agar terasa bicara dengan kita.
+    // Di diorama hanya menoleh (tanpa condong), agar tetap berdiri tegak di spawn pad.
+    if (compact) {
+      const dx = camera.position.x - current.x
+      const dz = camera.position.z - current.z
+      krekit.root.rotation.y = Math.atan2(dx, dz)
+      krekit.root.rotation.x = docked ? -Math.atan2(camera.position.y - current.y, Math.hypot(dx, dz)) : 0
+    } else krekit.root.rotation.set(0, 0, 0)
     if (swapping) {
       // Glitch: menyusut ke garis di tengah badan (bukan ke kaki), bergeser acak, berkedip
       krekit.root.position.y += (1 - fx.sy) * krekit.height * 0.5 * currentScale
@@ -603,7 +598,7 @@ function initScene() {
  * Dua lapis: pembungkus [data-bubble] diposisikan setiap frame,
  * kotak di dalamnya dianimasikan GSAP. Satu properti transform, satu pengendali.
  */
-function createBubble() {
+function createBubble({ onSay } = {}) {
   const wrap = document.querySelector('[data-bubble]')
   const box = wrap.querySelector('[data-bubble-box]')
   const CHAR_DELAY = 0.022 // detik per huruf
@@ -611,6 +606,7 @@ function createBubble() {
   let typing
   let visibleUntil = 0
   let headVisible = true
+  let docked = false
   gsap.set(box, { autoAlpha: 0, transformOrigin: '50% 100%' })
   return {
     /** true selama gelembung masih diketik atau masih ditampilkan */
@@ -621,6 +617,7 @@ function createBubble() {
       visibleUntil = performance.now() + ((reduceMotion ? 0 : text.length * CHAR_DELAY) + hold) * 1000
       // Teks lengkap untuk pembaca layar; tampilan diketik bertahap
       box.setAttribute('aria-label', text)
+      onSay?.(reduceMotion ? 0 : text.length * CHAR_DELAY)
       gsap.to(box, { autoAlpha: 1, duration: 0.2, overwrite: true })
       const progress = { chars: reduceMotion ? text.length : 0 }
       const render = () => (box.textContent = text.slice(0, Math.round(progress.chars)))
@@ -630,8 +627,19 @@ function createBubble() {
     },
     /** true jika kepala Krekit sedang terlihat, sehingga gelembungnya boleh tampil */
     isVisible: () => headVisible,
+    /** Layar sempit setelah Pos 0: gelembung jadi strip di kiri Krekit, di atas bilah navigasi bawah */
+    setDocked(value) {
+      docked = value
+      wrap.classList.toggle('is-docked', value)
+    },
     /** ndc = titik di atas kepala Krekit dalam NDC (-1..1) */
     follow(ndc) {
+      if (docked) {
+        headVisible = true
+        wrap.style.visibility = 'visible'
+        wrap.style.transform = `translate(12px, ${window.innerHeight - getBottomNavHeight() - 10}px) translateY(-100%)`
+        return
+      }
       const headY = ((1 - ndc.y) / 2) * window.innerHeight
       // Kepala Krekit di balik navigasi atas atau di bawah layar (mis. tertutup bilah bawah di HP):
       // sembunyikan gelembung, jangan dipaksa menempel di atas isi section

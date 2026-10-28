@@ -577,18 +577,24 @@ a.track-tile:hover {
 /* ---------- Krekit pendamping ---------- */
 
 .companion {
+  /* Ruang kosong di atas kepala Krekit untuk lompatan (dibaca lesson.js) */
+  --headroom: 80px;
   position: fixed;
   right: 18px;
   bottom: 12px;
   z-index: 30;
   width: 150px;
+  cursor: pointer;
 }
 
+/* Kanvas menjorok ke atas sebesar --headroom; pembungkusnya tetap seukuran Krekit,
+   jadi ruang lompat tidak menutupi klik pada teks di belakangnya */
 .companion__canvas {
   display: block;
   width: 150px;
-  height: 170px;
-  cursor: pointer;
+  height: calc(170px + var(--headroom));
+  margin-top: calc(-1 * var(--headroom));
+  pointer-events: none;
 }
 
 /* Gelembung terminal di atas Krekit, rata kanan agar tidak keluar layar */
@@ -691,12 +697,13 @@ a.track-tile:hover {
   }
 
   .companion {
+    --headroom: 56px;
     width: 104px;
   }
 
   .companion__canvas {
     width: 104px;
-    height: 118px;
+    height: calc(118px + var(--headroom));
   }
 
   .companion__bubble {
@@ -725,9 +732,13 @@ a.track-tile:hover {
     width: 84px;
   }
 
+  .companion {
+    --headroom: 46px;
+  }
+
   .companion__canvas {
     width: 84px;
-    height: 96px;
+    height: calc(96px + var(--headroom));
   }
 
   .companion__bubble {

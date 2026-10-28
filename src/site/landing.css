@@ -684,6 +684,14 @@ main [data-krekit-say] {
   visibility: hidden;
 }
 
+/* Layar sempit setelah Pos 0: strip di kiri Krekit, di atas bilah navigasi bawah (seperti di halaman pelajaran) */
+.bubble.is-docked .bubble__box {
+  width: calc(100vw - 84px - 26px);
+  max-width: none;
+  margin-bottom: 0;
+  font-size: 12.5px;
+}
+
 .bubble__box::after {
   content: '';
   display: inline-block;

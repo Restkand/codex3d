@@ -15,7 +15,9 @@ import { createHologram } from '../experiment/world/hologram.js'
  *     shards    -> pecahan cangkang yang mengorbit (tidak ikut menggelinding)
  *     rollPivot -> rotasi menggelinding (pivot di pusat telur)
  *       turn    -> menoleh ke kursor
- *         cangkang bawah, tutup (cangkang atas), inti gelap, mata, aura
+ *         jaw   -> tutup membuka-menutup saat bicara (seperti rahang)
+ *           lid -> tutup (cangkang atas): terangkat saat senang, menyapa, melompat
+ *         cangkang bawah, inti gelap, mata, aura
  */
 
 const R = 0.72 // jari-jari telur
@@ -258,8 +260,11 @@ export function createKrekit(scene, { reduceMotion = false, onSettle } = {}) {
   turn.add(lower, lowerHull)
 
   // ---------- Tutup (cangkang atas), bisa terangkat saat senang ----------
+  // jaw dan lid dipisah: gerakan bicara tidak bentrok dengan animasi senang/sapa/lompat pada lid
+  const jaw = new THREE.Group()
+  turn.add(jaw)
   const lid = new THREE.Group()
-  turn.add(lid)
+  jaw.add(lid)
   // Tepi bawah tutup = garis retak yang sama + celah tetap, jadi pas dengan cangkang bawah
   const upperGeo = shellGeometry((phi) => tAtY(edge.y(phi) + CRACK_GAP), () => Math.PI, edge.angles)
   const upper = new THREE.Mesh(upperGeo, mat.shellUpper)
@@ -281,10 +286,16 @@ export function createKrekit(scene, { reduceMotion = false, onSettle } = {}) {
   eyes.position.y = EYE_Y
   eyeOrbit.add(eyes)
   const eyeGeo = new THREE.CapsuleGeometry(0.065, 0.08, 4, 12)
+  // Kilau putih kecil di kiri atas mata: membuat tatapan terasa hidup. Ikut menyipit bersama matanya.
+  const glintGeo = new THREE.CircleGeometry(0.02, 12)
+  const glintMat = new THREE.MeshBasicMaterial({ color: '#ffffff', toneMapped: false })
   const eyeZ = R * 0.93 * Math.sqrt(1 - (EYE_Y / (H * 0.93)) ** 2)
   const eyeList = [-0.19, 0.19].map((x) => {
     const eye = new THREE.Group()
     eye.add(new THREE.Mesh(eyeGeo, mat.eye))
+    const glint = new THREE.Mesh(glintGeo, glintMat)
+    glint.position.set(-0.024, 0.05, 0.064)
+    eye.add(glint)
     eye.position.set(x, 0, Math.sqrt(eyeZ ** 2 - x ** 2) + 0.01)
     eye.rotation.y = Math.asin(x / eyeZ)
     eyes.add(eye)
@@ -363,6 +374,64 @@ export function createKrekit(scene, { reduceMotion = false, onSettle } = {}) {
   }
   placeShards(0)
 
+  // ---------- Tanda ekspresi di atas kepala ----------
+  // Sprite dari kanvas 2D: selalu menghadap kamera, murah (tanpa geometri teks)
+  function glyphTexture(draw) {
+    const canvas = document.createElement('canvas')
+    canvas.width = canvas.height = 64
+    draw(canvas.getContext('2d'))
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.colorSpace = THREE.SRGBColorSpace
+    return texture
+  }
+  const glyphMaterial = (map) => new THREE.SpriteMaterial({ map, transparent: true, depthTest: false, toneMapped: false })
+  const question = new THREE.Sprite(
+    glyphMaterial(
+      glyphTexture((g) => {
+        g.font = 'bold 54px ui-monospace, Consolas, monospace'
+        g.textAlign = 'center'
+        g.textBaseline = 'middle'
+        g.lineWidth = 8
+        g.strokeStyle = '#07070b'
+        g.strokeText('?', 32, 34)
+        g.fillStyle = '#d9fbff'
+        g.fillText('?', 32, 34)
+      }),
+    ),
+  )
+  question.position.set(0.62, H * 2 + 0.2, 0)
+  question.scale.setScalar(0)
+  question.renderOrder = 10
+  hop.add(question)
+
+  const starTexture = glyphTexture((g) => {
+    g.beginPath()
+    for (let i = 0; i < 8; i++) {
+      const r = i % 2 ? 9 : 28
+      const a = (i / 8) * TAU - Math.PI / 2
+      g.lineTo(32 + Math.cos(a) * r, 32 + Math.sin(a) * r)
+    }
+    g.closePath()
+    // Tepi gelap agar tetap terlihat di atas aura yang terang
+    g.lineWidth = 6
+    g.strokeStyle = '#07070b'
+    g.stroke()
+    g.fillStyle = '#fff3b0'
+    g.fill()
+  })
+  const stars = new THREE.Group()
+  stars.position.y = H * 2 + 0.05
+  stars.visible = false
+  for (let i = 0; i < 3; i++) {
+    const star = new THREE.Sprite(glyphMaterial(starTexture))
+    const a = (i / 3) * TAU
+    star.position.set(Math.cos(a) * 0.55, 0, Math.sin(a) * 0.55)
+    star.scale.setScalar(0.34)
+    star.renderOrder = 10
+    stars.add(star)
+  }
+  hop.add(stars)
+
   // ---------- Melirik ----------
   const look = { duration: 0.6, ease: 'power3.out' }
   const turnY = gsap.quickTo(turn.rotation, 'y', look)
@@ -374,15 +443,41 @@ export function createKrekit(scene, { reduceMotion = false, onSettle } = {}) {
     eyesY(EYE_Y + y * 0.025)
   }
 
-  // ---------- Mata: kedip, menyipit senang, melirik ke samping ----------
+  // ---------- Mata: kedip, menyipit senang, melirik, penasaran, kaget, bicara ----------
   let eyesClosed = false
   let happy = false
+  // Ekspresi sekali jalan (lompat, penasaran) sedang berlangsung: kedip & ekspresi lain menunggu
+  let expressing = false
   const setEyeOpen = (amount, duration = 0.12) => gsap.to(eyeScales, { y: amount, duration, overwrite: 'auto' })
+  const canExpress = () => !eyesClosed && !happy && !expressing
 
   function scheduleBlink() {
     gsap.delayedCall(2 + Math.random() * 3, () => {
-      if (!eyesClosed && !happy) gsap.to(eyeScales, { y: 0.1, duration: 0.07, yoyo: true, repeat: 1 })
+      if (canExpress()) {
+        // Sesekali kedip dua kali, seperti orang yang baru sadar sesuatu
+        const twice = Math.random() < 0.25
+        gsap.to(eyeScales, { y: 0.1, duration: 0.07, yoyo: true, repeat: twice ? 3 : 1, repeatDelay: twice ? 0.06 : 0 })
+      }
       scheduleBlink()
+    })
+  }
+
+  /** Penasaran: satu mata membesar, yang lain menyipit, kepala sedikit miring */
+  function scheduleCurious() {
+    gsap.delayedCall(11 + Math.random() * 9, () => {
+      if (canExpress()) {
+        expressing = true
+        const side = Math.random() < 0.5 ? 0 : 1
+        const [big, small] = side ? [eyeScales[1], eyeScales[0]] : [eyeScales[0], eyeScales[1]]
+        gsap
+          .timeline({ onComplete: () => (expressing = false) })
+          .to(big, { x: 1.2, y: 1.25, duration: 0.25, ease: 'back.out(3)' })
+          .to(small, { y: 0.55, duration: 0.25 }, '<')
+          .to(turn.rotation, { z: side ? -0.1 : 0.1, duration: 0.35, ease: 'power2.out' }, '<')
+          .to([big, small], { x: 1, y: 1, duration: 0.35, ease: 'power2.inOut' }, '+=0.9')
+          .to(turn.rotation, { z: 0, duration: 0.45, ease: 'back.out(2)' }, '<')
+      }
+      scheduleCurious()
     })
   }
 
@@ -403,7 +498,108 @@ export function createKrekit(scene, { reduceMotion = false, onSettle } = {}) {
   if (!reduceMotion) {
     scheduleBlink()
     scheduleGlance()
+    scheduleCurious()
   }
+
+  /**
+   * Bicara selama teks gelembung diketik, tanpa mulut: tutup (cangkang atas) membuka-menutup
+   * seperti rahang dengan ritme tidak seragam (seperti suku kata), cangkang bawah ikut memampat
+   * sedikit setiap kali tutup terbuka, dan mata berdenyut pelan.
+   */
+  let talkTimeline
+  function talk(seconds) {
+    if (reduceMotion || seconds <= 0) return
+    talkTimeline?.kill()
+    talkTimeline = gsap.timeline({
+      onComplete: () => {
+        gsap.to(jaw.position, { y: 0, duration: 0.15 })
+        gsap.to(turn.scale, { x: 1, y: 1, z: 1, duration: 0.15 })
+      },
+    })
+    let t = 0
+    while (t < seconds) {
+      const open = 0.35 + Math.random() * 0.65
+      const beat = 0.09 + Math.random() * 0.08
+      talkTimeline
+        .to(jaw.position, { y: 0.075 * open, duration: beat, ease: 'power1.out' }, t)
+        .to(jaw.rotation, { x: -0.1 * open, duration: beat, ease: 'power1.out' }, t)
+        .to(turn.scale, { x: 1 + 0.025 * open, y: 1 - 0.035 * open, z: 1 + 0.025 * open, duration: beat, ease: 'power1.out' }, t)
+        .to(jaw.position, { y: 0, duration: beat, ease: 'power1.in' }, t + beat)
+        .to(turn.scale, { x: 1, y: 1, z: 1, duration: beat, ease: 'power1.in' }, t + beat)
+        .to(jaw.rotation, { x: 0, duration: beat, ease: 'power1.in' }, t + beat)
+      // Sesekali jeda singkat, seperti antar kata
+      t += beat * 2 + (Math.random() < 0.2 ? 0.12 : 0.02)
+    }
+    talkTimeline.fromTo(eyes.scale, { x: 1, y: 1 }, { x: 1.05, y: 1.08, duration: 0.2, ease: 'sine.inOut', yoyo: true, repeat: Math.max(1, Math.round(seconds / 0.4)) * 2 - 1 }, 0)
+  }
+
+  // ---------- Ekspresi: tersenyum, bingung, pusing ----------
+  const canMood = () => !reduceMotion && !eyesClosed && !expressing
+
+  /** Tersenyum: mata menyipit senang, pipi merona, lompatan kecil */
+  function smile() {
+    if (!canMood() || happy) return
+    expressing = true
+    setHappy(true)
+    gsap
+      .timeline({ onComplete: () => (expressing = false) })
+      .to(hop.position, { y: 0.12, duration: 0.18, ease: 'power2.out', yoyo: true, repeat: 1 })
+      .call(() => setHappy(false), null, 1.8)
+  }
+
+  /** Bingung: kepala miring kiri-kanan, mata tidak simetris, tanda tanya muncul */
+  function confused() {
+    if (!canMood()) return
+    expressing = true
+    gsap
+      .timeline({ onComplete: () => (expressing = false) })
+      .to(question.scale, { x: 0.55, y: 0.55, duration: 0.35, ease: 'back.out(3)' })
+      .to(eyeScales[0], { x: 1.15, y: 1.2, duration: 0.25 }, '<')
+      .to(eyeScales[1], { y: 0.55, duration: 0.25 }, '<')
+      .to(turn.rotation, { z: 0.14, duration: 0.4, ease: 'sine.inOut' }, '<')
+      .to(turn.rotation, { z: -0.12, duration: 0.6, ease: 'sine.inOut' })
+      .to(eyeScales[0], { y: 0.55, x: 1, duration: 0.3 }, '<')
+      .to(eyeScales[1], { x: 1.15, y: 1.2, duration: 0.3 }, '<')
+      .to(turn.rotation, { z: 0.08, duration: 0.6, ease: 'sine.inOut' })
+      .to(question.scale, { x: 0, y: 0, duration: 0.25, ease: 'back.in(2)' }, '+=0.3')
+      .to(eyeScales, { x: 1, y: 1, duration: 0.3 }, '<')
+      .to(turn.rotation, { z: 0, duration: 0.4, ease: 'back.out(2)' }, '<')
+  }
+
+  /** Pusing: mata berputar, badan oleng, bintang kecil mengorbit kepala */
+  function dizzy() {
+    if (!canMood()) return
+    expressing = true
+    stars.visible = true
+    gsap
+      .timeline({
+        onComplete: () => {
+          expressing = false
+          stars.visible = false
+          eyes.rotation.z = 0
+        },
+      })
+      .fromTo(stars.scale, { x: 0, y: 0, z: 0 }, { x: 1, y: 1, z: 1, duration: 0.3, ease: 'back.out(2)' })
+      .to(stars.rotation, { y: TAU * 3, duration: 2.4, ease: 'none' }, 0)
+      .to(eyes.rotation, { z: -TAU * 2, duration: 1.8, ease: 'power1.inOut' }, 0)
+      .to(eyeScales, { y: 0.7, duration: 0.2 }, 0)
+      .to(wobble.rotation, { z: 0.12, duration: 0.3, ease: 'sine.inOut', yoyo: true, repeat: 5 }, 0)
+      .to(stars.scale, { x: 0, y: 0, z: 0, duration: 0.25 }, 2.2)
+      .to(eyeScales, { y: 1, duration: 0.3, ease: 'back.out(2)' }, 2.1)
+      .set(wobble.rotation, { z: 0 })
+  }
+
+  /** Sesekali, tanpa pemicu: kebanyakan tersenyum, kadang bingung, jarang pusing */
+  function scheduleMood() {
+    gsap.delayedCall(16 + Math.random() * 12, () => {
+      const r = Math.random()
+      if (r < 0.5) smile()
+      else if (r < 0.82) confused()
+      else dizzy()
+      scheduleMood()
+    })
+  }
+  if (!reduceMotion) scheduleMood()
 
   function setHappy(value) {
     if (happy === value || eyesClosed) return
@@ -463,8 +659,29 @@ export function createKrekit(scene, { reduceMotion = false, onSettle } = {}) {
   }
 
   // ---------- Lompat (klik) & sapaan ----------
+  // Diketuk berkali-kali dalam waktu singkat: setelah mendarat, Krekit pusing
+  let recentJumps = []
   function jump() {
-    if (reduceMotion || gsap.isTweening(hop.position)) return
+    if (reduceMotion) return
+    // Ketukan dihitung walau Krekit masih di udara
+    const now = performance.now()
+    recentJumps = recentJumps.filter((time) => now - time < 4000).concat(now)
+    if (recentJumps.length >= 3) {
+      recentJumps = []
+      // Tunggu sampai mendarat dan ekspresi lompat selesai
+      const tryDizzy = () => (canMood() ? dizzy() : gsap.delayedCall(0.3, tryDizzy))
+      gsap.delayedCall(1.6, tryDizzy)
+    }
+    if (gsap.isTweening(hop.position)) return
+    // Mata: melebar kaget saat melompat, terpejam erat saat mendarat, lalu memantul terbuka
+    if (!eyesClosed) {
+      expressing = true
+      gsap
+        .timeline({ onComplete: () => (expressing = false) })
+        .to(eyeScales, { x: 1.15, y: 1.35, duration: 0.14, ease: 'power2.out', overwrite: 'auto' })
+        .to(eyeScales, { x: 1.2, y: 0.08, duration: 0.1, ease: 'power2.in' }, 0.62)
+        .to(eyeScales, { x: 1, y: happy ? 0.4 : 1, duration: 0.6, ease: 'elastic.out(1, 0.45)' }, '+=0.12')
+    }
     gsap
       .timeline()
       .to(hop.scale, { x: 1.18, y: 0.8, z: 1.18, duration: 0.12, ease: 'power2.out' })
@@ -528,6 +745,10 @@ export function createKrekit(scene, { reduceMotion = false, onSettle } = {}) {
     lookAt,
     setHappy,
     jump,
+    talk,
+    smile,
+    confused,
+    dizzy,
     greet,
     appear,
     setColors,
