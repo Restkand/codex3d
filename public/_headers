@@ -1,0 +1,10 @@
+# Header HTTP untuk Cloudflare Pages (disalin ke dist/ saat build).
+# Alamat sementara *.pages.dev (produksi dan preview per branch/PR) tidak diindeks mesin pencari.
+# Domain sendiri tidak terkena aturan ini, jadi tetap bisa ditemukan di Google.
+# Format: https://developers.cloudflare.com/pages/configuration/headers/
+
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex

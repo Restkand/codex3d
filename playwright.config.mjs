@@ -3,8 +3,11 @@
 // Lokal memakai Chrome yang sudah terpasang (unduhan browser Playwright bisa terblokir proxy);
 // di CI memakai Chromium bawaan Playwright (npx playwright install chromium).
 import { defineConfig, devices } from '@playwright/test'
+import { SITE } from './src/site.config.mjs'
 
 const PORT = 4399
+// Alamat beranda mengikuti base path situs (bawaannya root "/"; GitHub Pages memakai /krekit/)
+const HOME = `http://localhost:${PORT}${SITE.base.replace(/\/$/, '')}/`
 const chrome = process.env.CI ? {} : { channel: 'chrome' }
 // WebGL di mesin tanpa GPU (CI, headless) berjalan lewat SwiftShader
 const launchOptions = { args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] }
@@ -15,7 +18,7 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? 'github' : 'list',
   use: {
-    baseURL: `http://localhost:${PORT}/krekit/`,
+    baseURL: HOME,
     launchOptions,
     ...chrome,
   },
@@ -25,7 +28,7 @@ export default defineConfig({
   ],
   webServer: {
     command: `npx astro preview --port ${PORT}`,
-    url: `http://localhost:${PORT}/krekit/`,
+    url: HOME,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
   },
