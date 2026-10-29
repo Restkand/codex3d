@@ -307,6 +307,16 @@ if (skillTree) {
   })
 }
 
+// Pos 5 · Layar akhir: kredit hanya bergulir saat terlihat (animasi CSS, landing.css). "Main lagi" kembali ke awal.
+const credits = document.querySelector('[data-credits]')
+if (credits && !reduceMotion) {
+  ScrollTrigger.create({ trigger: credits, start: 'top bottom', end: 'bottom top', toggleClass: 'is-rolling' })
+}
+document.querySelector('[data-replay]')?.addEventListener('click', () => {
+  sceneHooks.replay?.()
+  window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' })
+})
+
 // Pos 3 · Tarik kartu istilah: semua istilah Kamus dikocok sekali, lalu ditarik berurutan (tidak ada yang
 // keluar dua kali sebelum tumpukan habis). Kartu terbang dari tumpukan ke tempatnya sambil terbalik
 // (transform 3D CSS, digerakkan GSAP). Tanpa JavaScript, kartu pertama tampil terbuka.
@@ -474,7 +484,7 @@ const MOODS = [
   { glow: '#9dff8a', aura: '#7cff6b', bg: '#08100d', line: 'Baru Fondasi Engine yang sudah ada pelajarannya. Lima jalur lain masih kerangka.' },
   { glow: '#8ad2ff', aura: '#00b3ff', bg: '#080b14', line: touchOnly ? 'Ketuk Tarik kartu. Aku juga penasaran istilah apa yang keluar.' : 'Tarik satu kartu dari tumpukanku. Aku juga penasaran istilah apa yang keluar.' },
   { glow: '#ffe08a', aura: '#ffcc33', bg: '#0d0b08', line: 'Pilih pertanyaan di obrolan itu. Aku jawab satu per satu.' },
-  { glow: '#ffa6f0', aura: '#ff5ce1', bg: '#0b0b10', line: 'Sampai bawah juga. Kalau ada yang salah di situs ini, kamu bisa ikut memperbaikinya.' },
+  { glow: '#ffa6f0', aura: '#ff5ce1', bg: '#0b0b10', line: 'Terima kasih sudah ikut sampai akhir. Slot kontributor di kredit itu masih kosong.' },
 ]
 const STAGE_LINES = [
   null,
@@ -736,6 +746,11 @@ function initScene() {
     spoken.add(3)
     bubble.say(lines[Math.floor(Math.random() * lines.length)], 2.8)
     gsap.delayedCall(0.9, term.level === 3 ? krekit.confused : krekit.smile)
+  }
+  // Layar akhir Pos 5: "Main lagi" membawa pengunjung kembali ke Pos 0
+  sceneHooks.replay = () => {
+    krekit.jump()
+    bubble.say('Sampai jumpa di awal lagi.', 2)
   }
   // Chat Pos 4: Krekit berbicara selama "mengetik" balasan (gelembung tidak dipakai, chat itu sendiri
   // ucapannya), lalu tersenyum setelah ketiga aturan dijawab

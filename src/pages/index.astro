@@ -24,6 +24,18 @@ const lessonsIn = (trackId) => docs.filter((d) => d.data.kind === 'lesson' && d.
 const trackStatus = (id) => docs.find((d) => d.id === `belajar/${id}`)?.data.status
 const pad2 = (n) => String(n).padStart(2, '0')
 
+// Pos 5 · Layar akhir: daftar kredit. Angka dihitung dari isi situs saat build
+const lessonCount = docs.filter((d) => d.data.kind === 'lesson').length
+const CREDITS = [
+  { role: 'Dibuat oleh', name: 'Restkand' },
+  { role: 'Maskot', name: 'Krekit', note: 'dibangun dari geometri Three.js' },
+  { role: 'Isi', name: `${lessonCount} pelajaran · ${termCount} istilah Kamus` },
+  { role: 'Dibangun dengan', name: 'Astro · Three.js · GSAP' },
+  { role: 'Huruf judul', name: 'Bricolage Grotesque' },
+  { role: 'Kontributor', slot: true },
+  { role: 'Lisensi', name: 'Konten CC BY-NC-SA 4.0 · Kode MIT' },
+]
+
 // Pos 4 · Chat tanya-jawab: keraguan pembaca dan aturan konten yang menjawabnya (lihat Standar konten)
 const RULES_QA = [
   {
@@ -357,20 +369,54 @@ const progressItems = docs
         </div>
       </section>
 
-      <!-- 05 · Bergabung -->
-      <section id="bergabung" class="section section--center reveal" data-section>
-        <div class="krekit-spot krekit-spot--center" data-krekit-spot aria-hidden="true"></div>
-        <div class="section__inner">
+      <!--
+        05 · Bergabung sebagai layar akhir game: daftar kredit bergulir pelan (CSS, landing.js hanya menyalakannya
+        saat terlihat), dengan slot kontributor yang masih kosong. Desktop: tulisan di kiri, kredit di kanan dengan
+        Krekit berdiri di atasnya. HP: judul, kredit, lalu ajakan dan tombol.
+      -->
+      <section id="bergabung" class="section section--end reveal" data-section>
+        <div class="end-head">
           <p class="eyebrow" data-reveal>05 · Bergabung</p>
-          <h2 class="display display--md" data-reveal>Dibangun <span class="accent">bersama komunitas.</span></h2>
-          <p class="lead" data-reveal>Programmer, artist, desainer, produser, dan pelaku bisnis bisa ikut mengisi situs ini. Tulis artikel, koreksi fakta, bagikan studi kasus, atau tinjau konten di bidang Anda.</p>
-          <div class="actions" data-reveal>
-            <a class="btn btn--primary" href={withBase('/kontribusi/')} data-krekit-say="Koreksi satu kalimat pun sudah membantu.">Cara berkontribusi →</a>
-            <a class="btn btn--ghost" href={SITE.repo} data-krekit-say="Semua kodenya terbuka, termasuk kodeku.">Repositori GitHub</a>
+          <h2 class="display display--md" data-reveal>Terima kasih sudah <span class="accent">main sampai akhir.</span></h2>
+        </div>
+        <div class="credits-stage" data-reveal>
+          <div class="krekit-spot krekit-spot--credits" data-krekit-spot aria-hidden="true"></div>
+          <div class="credits" data-credits>
+            <div class="credits__roll">
+              {[false, true].map((copy) => (
+                <div class="credits__list" aria-hidden={copy ? 'true' : undefined}>
+                  <p class="credits__logo">KREKIT</p>
+                  {CREDITS.map((group) => (
+                    <div class="credits__group">
+                      <small>{group.role}</small>
+                      {group.slot ? (
+                        <a class="credits__slot" href={withBase('/kontribusi/')} tabindex={copy ? -1 : undefined}>Namamu bisa di sini</a>
+                      ) : (
+                        <>
+                          <b>{group.name}</b>
+                          {group.note && <span>{group.note}</span>}
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+          <!-- Menu penutup di bawah kredit, seperti menu layar akhir game -->
+          <div class="credits__menu">
             <ShareButton
               title={`${SITE.name} · Belajar cara game dibuat`}
               text="Intip cara game dibuat: engine dan shader, desain, produksi, sampai bisnis studio indie."
             />
+            <button type="button" class="btn btn--ghost credits__replay" data-replay>Main lagi ↺</button>
+          </div>
+        </div>
+        <div class="end-body">
+          <p class="lead" data-reveal>Daftar kreditnya masih pendek. Programmer, artist, desainer, produser, dan pelaku bisnis bisa ikut mengisinya: koreksi fakta, tulis artikel, bagikan studi kasus, atau tinjau konten di bidang Anda.</p>
+          <div class="actions" data-reveal>
+            <a class="btn btn--primary" href={withBase('/kontribusi/')} data-krekit-say="Koreksi satu kalimat pun sudah membantu.">Cara berkontribusi →</a>
+            <a class="btn btn--ghost" href={SITE.repo} data-krekit-say="Semua kodenya terbuka, termasuk kodeku.">Repositori GitHub</a>
           </div>
           <footer class="site-foot" data-reveal>
             Konten <a href={withBase('/lisensi/')}>CC BY-NC-SA 4.0</a> · Kode MIT · <a href={withBase('/kemitraan/')}>Kemitraan</a> · <a href={withBase('/tentang/')}>Tentang proyek</a>

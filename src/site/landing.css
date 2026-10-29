@@ -162,12 +162,6 @@ main [data-krekit-say] {
   margin-bottom: -40px;
 }
 
-.krekit-spot--center {
-  width: 100%;
-  height: clamp(170px, 26vh, 240px);
-  margin-bottom: 8px;
-}
-
 .section__head {
   display: flex;
   align-items: flex-end;
@@ -179,15 +173,6 @@ main [data-krekit-say] {
   max-width: 1100px;
   margin: 0 auto;
   width: 100%;
-}
-
-.section--center {
-  align-items: center;
-  text-align: center;
-}
-
-.section--center .actions {
-  justify-content: center;
 }
 
 /* Hero di-pin (Pos 0), jadi SELURUH isinya harus muat dalam satu layar: ukuran dan jarak
@@ -425,10 +410,6 @@ main [data-krekit-say] {
   font-size: clamp(36px, 5.2vw, 72px);
 }
 
-.section--center .display {
-  margin-inline: auto;
-}
-
 .accent {
   color: var(--accent);
 }
@@ -439,10 +420,6 @@ main [data-krekit-say] {
   font-size: clamp(16px, 1.4vw, 19px);
   line-height: 1.6;
   color: var(--muted);
-}
-
-.section--center .lead {
-  margin-inline: auto;
 }
 
 .lead strong {
@@ -1500,6 +1477,7 @@ main [data-krekit-say] {
     transition: none;
   }
 
+  .credits__roll,
   .msg,
   .msg--typing i,
   .skill-tree__edges path.is-lit,
@@ -1557,6 +1535,31 @@ main [data-krekit-say] {
     --sw: 46cqw;
   }
 
+  /* Pos 5: judul dan ajakan di kiri, jendela kredit (dengan Krekit di atasnya) di kanan */
+  .section--end {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+    grid-template-areas: 'head stage' 'body stage';
+    align-content: center;
+    column-gap: clamp(24px, 5vw, 80px);
+    row-gap: clamp(12px, 2vh, 22px);
+  }
+
+  .end-head {
+    grid-area: head;
+    align-self: end;
+  }
+
+  .end-body {
+    grid-area: body;
+    align-self: start;
+  }
+
+  .credits-stage {
+    grid-area: stage;
+    align-self: center;
+  }
+
   /* Pos 4: tulisan di kiri, jendela chat (dengan Krekit di sisi kirinya) di kanan. Di HP chat tetap di atas */
   .section--chat.section--flip {
     grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
@@ -1600,6 +1603,132 @@ main [data-krekit-say] {
   .skill-panel {
     align-self: start;
   }
+}
+
+/* ---------- Pos 5 · Layar akhir (credits) ----------
+   Daftar kredit ditulis dua kali dan digeser naik setengah tingginya: putaran berulang tanpa sambungan.
+   Bergulir hanya saat terlihat (.is-rolling, landing.js) dan berhenti saat disorot. */
+
+.credits-stage {
+  --perch: clamp(120px, 20vh, 160px);
+  position: relative;
+  padding-top: var(--perch);
+}
+
+/* Krekit berdiri di atas jendela kredit */
+.krekit-spot--credits {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 140px;
+  height: var(--perch);
+  transform: translateX(-50%);
+}
+
+.credits {
+  position: relative;
+  height: clamp(260px, 44vh, 360px);
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(127, 240, 255, 0.04) 1px, transparent 1px) 0 0 / 100% 4px,
+    #07070b;
+  border: 1px solid rgba(127, 240, 255, 0.3);
+  border-radius: 14px;
+  box-shadow: 0 0 40px rgba(0, 229, 255, 0.08);
+}
+
+/* Teks muncul dan menghilang di tepi atas dan bawah jendela */
+.credits__roll {
+  mask-image: linear-gradient(transparent, #000 18%, #000 82%, transparent);
+  animation: credits-roll 32s linear infinite paused;
+}
+
+.credits.is-rolling .credits__roll {
+  animation-play-state: running;
+}
+
+.credits:hover .credits__roll,
+.credits:focus-within .credits__roll {
+  animation-play-state: paused;
+}
+
+@keyframes credits-roll {
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+.credits__list {
+  display: grid;
+  gap: 26px;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.credits__logo {
+  margin: 0;
+  font: 800 30px/1 'Bricolage Grotesque Variable', system-ui, sans-serif;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+}
+
+.credits__group {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+
+.credits__group small {
+  font: 600 11px/1.2 var(--mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.credits__group b {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.credits__group span {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Menu penutup di bawah kredit: aksi kecil (bagikan, main lagi), terpisah dari ajakan utama */
+.credits__menu {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.credits__menu .btn {
+  padding: 9px 16px;
+  font-size: 14px;
+}
+
+/* Ajakan utama Pos 5: tepat dua tombol dalam satu baris */
+.end-body .actions {
+  flex-wrap: nowrap;
+}
+
+/* Slot kontributor yang masih kosong: mengajak mengisinya */
+.credits__slot {
+  margin-top: 4px;
+  padding: 8px 16px;
+  font: 600 14px/1.2 var(--mono);
+  color: var(--accent);
+  text-decoration: none;
+  border: 1.5px dashed var(--accent);
+  border-radius: 8px;
+}
+
+.credits__slot:hover,
+.credits__slot:focus-visible {
+  background: rgba(255, 204, 51, 0.12);
+  outline: none;
 }
 
 /* ---------- Footer ---------- */
@@ -1658,6 +1787,36 @@ main [data-krekit-say] {
 
   .belt__egg {
     display: block;
+  }
+
+  /* Kredit Pos 5: tanpa ruang Krekit di atasnya (Krekit berjaga di pojok) */
+  .credits-stage {
+    margin: 20px 0 8px;
+    padding-top: 0;
+  }
+
+  .credits {
+    height: 300px;
+  }
+
+  /* Dua tombol ajakan selebar layar, bertumpuk rapi */
+  .end-body .actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .end-body .actions .btn {
+    justify-content: center;
+  }
+
+  /* Bagikan dan Main lagi berdampingan sama lebar (Bagikan dibungkus .share, jadi pembungkusnya yang meregang) */
+  .credits__menu > * {
+    flex: 1;
+  }
+
+  .credits__menu .btn {
+    width: 100%;
+    justify-content: center;
   }
 
   /* Chat Pos 4: tanpa ruang Krekit di samping (Krekit berjaga di pojok). Tinggi mengikuti isi,
