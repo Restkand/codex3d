@@ -253,7 +253,7 @@ function growthStage() {
  */
 const MOODS = [
   // Pos 0 "Dunia belum di-render": ruang hitam, aura cyan
-  { glow: '#7ff0ff', aura: '#00e5ff', bg: '#07070b', line: 'Ini celahku. Pinjam sebentar, boleh.' },
+  { glow: '#7ff0ff', aura: '#00e5ff', bg: '#07070b', line: 'Ikuti aku, maka kamu akan memahami bagaimana dunia di belakangku ini terbentuk.' },
   { glow: '#ffe08a', aura: '#ffcc33', bg: '#100c08', line: 'Dulu aku juga heran kenapa game bisa patah-patah di laptop tertentu. Jawabannya ada di Pelajaran 1.' },
   { glow: '#9dff8a', aura: '#7cff6b', bg: '#08100d', line: 'Baru Fondasi Engine yang sudah ada pelajarannya. Lima jalur lain masih kerangka.' },
   { glow: '#8ad2ff', aura: '#00b3ff', bg: '#080b14', line: touchOnly ? 'Ketuk salah satu tahap. Aku jelaskan isinya.' : 'Arahkan kursor ke salah satu tahap. Aku jelaskan isinya.' },
@@ -269,6 +269,8 @@ const STAGE_LINES = [
   'Cangkangku jadi emas. Hampir semua materi sudah kamu selesaikan.',
 ]
 const CLICK_LINES = ['Hup!', 'Pelan-pelan, cangkangku sudah retak.', 'Aku ringan, tapi jangan dilempar.', 'Iya, aku masih di sini.']
+// Pos 0 di layar sempit: sapaan pertama, mengajak mencoba tab Wireframe · Blockout · Render di bawah Krekit
+const HERO_TOUCH_LINE = 'Coba ketuk tab di bawahku ini, maka kamu akan mengetahui perbedaannya.'
 // Pos 0 di layar sempit: dunia di-render per tingkat setiap Krekit diketuk
 const LEVEL_LINES = [
   'Dunia ini masih wireframe. Ketuk aku untuk membangunnya.',
@@ -426,6 +428,8 @@ function initScene() {
       () => {
         shownIndex = activeIndex
         placed = false
+        // Sorotan kartu Pos 2 yang lama (pointerleave tidak selalu terpicu saat scroll) tidak dibawa
+        nodePerch = null
       },
       0.55,
       { skipOut: !spotVisible(shownIndex) },
@@ -508,11 +512,19 @@ function initScene() {
   let pathT = 0
   let furthestT = 0
   let renderLevel = 0
+  // Dunia dan Krekit di Pos 0 dihitung dalam koordinat dunia tetap saat layout. Setelah pin hero selesai
+  // (desktop) atau saat hero bergulir (layar sempit), keduanya digeser sejauh hero bergeser di layar,
+  // agar ikut bergulir bersama halaman dan tidak tertinggal melayang di atas pos berikutnya.
+  let layoutTop = 0
+  let layoutUpp = 1
+  let heroShift = 0
+  const updateHeroShift = () => (heroShift = -(hero.getBoundingClientRect().top - layoutTop) * layoutUpp)
 
   /** Desktop: spawn di dasar panggung hero, ujung jalan di kiri bawah. Layar sempit: diorama di tengah panggung. */
   function layoutDunia() {
     poseCamera()
     const rect = spots[0].getBoundingClientRect()
+    layoutTop = hero.getBoundingClientRect().top
     if (compact) {
       // Krekit ±58% tinggi panggung; sisanya untuk bangunan di belakangnya dan tombol tahap di bawah
       screenToWorld(rect.left + rect.width / 2, rect.bottom - rect.height * 0.14, heroStart)
@@ -520,6 +532,7 @@ function initScene() {
       screenToWorld(0, rect.bottom - rect.height * 0.14, heroEnd)
       dunia.layoutDiorama(heroStart, heroScale, heroStart.x - heroEnd.x, camera.position.y)
       dunia.setLevel(renderLevel)
+      layoutUpp = unitsPerPixel(heroStart)
       return
     }
     screenToWorld(rect.left + rect.width / 2, rect.bottom, heroStart)
@@ -530,6 +543,7 @@ function initScene() {
     heroEnd.x *= (camera.position.z - endZ) / camera.position.z
     heroEnd.z = endZ
     dunia.layout(heroStart, heroEnd, heroScale, camera.position.y)
+    layoutUpp = unitsPerPixel(heroStart)
   }
   layoutDunia()
   ScrollTrigger.addEventListener('refresh', layoutDunia)
@@ -593,6 +607,7 @@ function initScene() {
       pathT = 0.05 + 0.95 * smooth01((p - 0.24) / 0.7)
       dunia.pathPoint(pathT, out)
     }
+    out.y += heroShift
     return heroScale
   }
 
@@ -605,7 +620,9 @@ function initScene() {
       const on = !compact && shownIndex === 0 && fade > 0.5 && pathT >= w.t - 0.08 && pathT < next - 0.08
       w.el.classList.toggle('is-on', on)
       if (!on) continue
-      dunia.labelPoint(w.t, waypointPoint).project(camera)
+      dunia.labelPoint(w.t, waypointPoint)
+      waypointPoint.y += heroShift
+      waypointPoint.project(camera)
       w.el.style.transform = `translate(${((waypointPoint.x + 1) / 2) * window.innerWidth}px, ${((1 - waypointPoint.y) / 2) * window.innerHeight}px) translate(-50%, -100%)`
     }
   }
@@ -655,8 +672,8 @@ function initScene() {
         return
       }
       spoken.add(index)
-      // Pos 0 di layar sempit: ajakan mengetuk lebih penting daripada kabar retakan
-      if (index === 0 && compact) bubble.say(LEVEL_LINES[renderLevel], 4)
+      // Pos 0 di layar sempit: ajakan mencoba tab tahap render lebih penting daripada kabar retakan
+      if (index === 0 && compact) bubble.say(renderLevel === 0 ? HERO_TOUCH_LINE : LEVEL_LINES[renderLevel], 4)
       else bubble.say(index === 0 && STAGE_LINES[stage] ? STAGE_LINES[stage] : mood.line)
       if (index === sections.length - 1) krekit.greet()
     })
@@ -736,6 +753,8 @@ function initScene() {
       else if (compact) shownIndex = activeIndex
       else if (shownIndex !== activeIndex) teleport()
     }
+    updateHeroShift()
+    dunia.setOffset(heroShift)
     const onPath = shownIndex === 0 && !docked
     const scale = onPath ? heroTarget(target) : docked ? dockTarget() : spotTarget()
     if (!onPath) target.z = 0

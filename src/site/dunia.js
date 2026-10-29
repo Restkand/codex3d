@@ -416,6 +416,11 @@ export function createDunia(scene) {
   }
 
   /** 0 = dunia tersembunyi, 1 = tampil penuh */
+  /** Geser seluruh dunia secara vertikal (unit dunia), mis. agar ikut bergulir bersama hero */
+  function setOffset(y) {
+    group.position.y = y
+  }
+
   function setFade(value) {
     group.visible = value > 0.001
     uniforms.uFade.value = value
@@ -456,5 +461,5 @@ export function createDunia(scene) {
     for (const kind of Object.values(kinds)) for (const item of kind.items) item.reveal = 0
   }
 
-  return { layout, layoutDiorama, setLevel, pathPoint, labelPoint, setFade, update, reset, spawnHeight: 0.08 }
+  return { layout, layoutDiorama, setLevel, setOffset, pathPoint, labelPoint, setFade, update, reset, spawnHeight: 0.08 }
 }
