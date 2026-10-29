@@ -25,6 +25,15 @@ const lessonsIn = (trackId) => docs.filter((d) => d.data.kind === 'lesson' && d.
 const trackStatus = (id) => docs.find((d) => d.id === `belajar/${id}`)?.data.status
 const pad2 = (n) => String(n).padStart(2, '0')
 
+// Pos 1 · Jalur produksi: stasiun yang dilewati sebuah game, dari engine sampai ke pemain
+const STATIONS = [
+  { id: 'engine', label: 'Engine', tone: '#5cc1a8', caption: 'Engine menggambar dunia game, frame demi frame.' },
+  { id: 'desain', label: 'Desain', tone: '#6fb3e8', caption: 'Desain menentukan bentuk, warna, dan aturan main.' },
+  { id: 'produksi', label: 'Produksi', tone: '#8b7ae6', caption: 'Tim produksi membangun, menguji, lalu mengemas game.' },
+  { id: 'bisnis', label: 'Bisnis', tone: '#f2b84b', caption: 'Game didanai, dipasarkan, lalu dijual.' },
+  { id: 'pemain', label: 'Pemain', tone: '#ff8fc8', caption: 'Akhirnya game sampai di tangan pemain.' },
+]
+
 // Daftar halaman ber-XP, agar Krekit bisa membaca tahap pertumbuhan dari progres di browser
 const progressItems = docs
   .filter((d) => d.data.kind === 'lesson' || d.data.kind === 'term')
@@ -99,16 +108,43 @@ const progressItems = docs
       </section>
 
       <!-- 01 · Kenapa -->
-      <section id="kenapa" class="section section--split section--flip reveal" data-section>
-        <!-- Pos 1 · Tangga level: anak tangga terbangun mengikuti scroll, Krekit menaikinya (landing.js) -->
-        <div class="krekit-spot krekit-spot--scene" data-krekit-spot aria-hidden="true">
-          <div class="stairs" data-stairs>
-            {['Engine', 'Desain', 'Produksi', 'Bisnis'].map((label, i) => (
-              <div class="stairs__step" data-step style={`--i: ${i}`}>
-                <span>{label}</span>
-              </div>
-            ))}
+      <section id="kenapa" class="section section--split section--flip section--belt reveal" data-section>
+        <!--
+          Pos 1 · Jalur produksi: ban berjalan membawa "game" melewati setiap stasiun (landing.js).
+          Desktop: section di-pin, scroll menggerakkan ban, Krekit 3D menumpang di tengahnya.
+          HP: ban digeser dengan jari, telur Krekit 2D di tengah ban yang berubah di tiap stasiun.
+        -->
+        <div class="krekit-spot krekit-spot--scene" data-krekit-spot>
+          <div class="belt" data-belt data-stage={STATIONS[0].id}>
+            <div class="belt__track" data-belt-track>
+              <ol class="belt__row">
+                {STATIONS.map((station, i) => (
+                  <li class="belt__station" data-station={station.id} data-caption={station.caption} style={`--tone: ${station.tone}`}>
+                    <button type="button" class="belt__gate" data-station-go={i} aria-label={`${pad2(i + 1)} ${station.label}: ${station.caption}`}>
+                      <span class="belt__label">{pad2(i + 1)} {station.label}</span>
+                    </button>
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <!-- Barang di atas ban. Desktop: Krekit 3D berdiri di sini, jadi hanya kotak & label yang tampil -->
+            <div class="belt__item" aria-hidden="true">
+              <svg class="belt__egg" viewBox="0 0 80 100">
+                <defs>
+                  <clipPath id="belt-egg-shape"><path d="M40 2C63 2 78 38 78 62C78 84 61 98 40 98C19 98 2 84 2 62C2 38 17 2 40 2Z" /></clipPath>
+                </defs>
+                <path class="belt__egg-shell" d="M40 2C63 2 78 38 78 62C78 84 61 98 40 98C19 98 2 84 2 62C2 38 17 2 40 2Z" />
+                <path class="belt__egg-crack" clip-path="url(#belt-egg-shape)" d="M0 44L9 37L17 45L26 36L34 44L43 35L51 44L60 36L68 45L80 38V64L71 58L62 66L53 57L44 65L35 57L26 66L17 58L8 65L0 59Z" />
+                <rect class="belt__egg-eye" x="26" y="45" width="9" height="12" rx="4.5" />
+                <rect class="belt__egg-eye" x="45" y="45" width="9" height="12" rx="4.5" />
+              </svg>
+              <span class="belt__box"><span>KREKIT</span></span>
+              <span class="belt__tag">RILIS</span>
+            </div>
           </div>
+          <p class="belt__caption" data-belt-caption aria-live="polite">
+            <b data-belt-step>01 / 05</b> <span data-belt-text>{STATIONS[0].caption}</span>
+          </p>
         </div>
         <div class="section__inner">
           <p class="eyebrow" data-reveal>01 · Kenapa situs ini ada</p>

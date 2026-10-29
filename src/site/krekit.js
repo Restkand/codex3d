@@ -215,6 +215,18 @@ function blobShadowTexture() {
 
 const OUTLINE = new THREE.MeshBasicMaterial({ color: '#0b0b10', side: THREE.BackSide })
 
+/** Semua mesh Krekit beserta material aslinya. solid = bagian badan yang digambar sebagai wireframe */
+function collectMeshes(root) {
+  const list = []
+  root.traverse((mesh) => {
+    if (!mesh.isMesh) return
+    const m = mesh.material
+    const solid = m.type !== 'ShaderMaterial' && m.side !== THREE.BackSide && !m.transparent && m.toneMapped !== false
+    list.push({ mesh, material: m, solid })
+  })
+  return list
+}
+
 export function createKrekit(scene, { reduceMotion = false, onSettle } = {}) {
   const gradientMap = toonGradient()
   const mat = {
@@ -737,6 +749,30 @@ export function createKrekit(scene, { reduceMotion = false, onSettle } = {}) {
     }
   }
 
+  /**
+   * Wireframe: Krekit tampil sebagai garis-garis mesh saja, seperti model yang belum di-render (Pos 1, stasiun Engine).
+   * Material asli disimpan lalu dikembalikan. Garis tepi, aura, bayangan, dan pipi disembunyikan selama wireframe.
+   */
+  const WIRE = new THREE.MeshBasicMaterial({ color: '#7ff0ff', wireframe: true, transparent: true, opacity: 0.75 })
+  let wireframe = false
+  let meshes
+  function setWireframe(value) {
+    if (value === wireframe) return
+    wireframe = value
+    meshes ??= collectMeshes(root)
+    for (const { mesh, material, solid } of meshes) {
+      if (value) {
+        // Diingat agar yang memang tersembunyi (mis. retakan di atas tahap saat ini) tetap tersembunyi
+        mesh.userData.shown = mesh.visible
+        mesh.material = solid ? WIRE : material
+        mesh.visible &&= solid
+      } else {
+        mesh.material = material
+        mesh.visible = mesh.userData.shown
+      }
+    }
+  }
+
   const topLocal = new THREE.Vector3(0, H * 2 + 0.25, 0)
   return {
     root,
@@ -754,6 +790,7 @@ export function createKrekit(scene, { reduceMotion = false, onSettle } = {}) {
     appear,
     setColors,
     setStage,
+    setWireframe,
     update,
     topWorld: (target) => hop.localToWorld(target.copy(topLocal)),
   }
