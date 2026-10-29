@@ -155,28 +155,61 @@ updateNav()
 // Berjalan tanpa WebGL. Scene 3D (jika ada) ikut bereaksi lewat sceneHooks yang diisi initScene().
 const sceneHooks = {}
 
-// Pos 1 · Tangga level: anak tangga terbangun satu per satu mengikuti scroll
-const steps = [...document.querySelectorAll('[data-step]')]
-let stairLevel = -1
-function setStairLevel(level) {
-  if (level === stairLevel) return
-  stairLevel = level
-  steps.forEach((step, i) => {
-    step.classList.toggle('is-built', i <= level)
-    step.classList.toggle('is-current', i === level)
+// Pos 1 · Jalur produksi: ban berjalan membawa barang melewati stasiun Engine -> Desain -> Produksi -> Bisnis -> Pemain.
+// Barangnya diam di tengah, stasiunnya yang lewat. Stasiun aktif = stasiun yang paling dekat ke tengah ban.
+// Desktop: section di-pin dan scroll halaman menggeser ban. HP: ban digeser dengan jari (scroll-snap).
+const belt = document.querySelector('[data-belt]')
+const beltTrack = belt?.querySelector('[data-belt-track]')
+const beltStations = belt ? [...belt.querySelectorAll('[data-station]')] : []
+let beltStation = -1
+let beltPin = null
+// Tebal ban dalam piksel, sama dengan --band di landing.css: Krekit berdiri tepat di atasnya
+const BELT_BAND = 22
+function updateBelt() {
+  const max = beltTrack.scrollWidth - beltTrack.clientWidth
+  const index = max > 0 ? Math.round((beltTrack.scrollLeft / max) * (beltStations.length - 1)) : 0
+  if (index === beltStation) return
+  beltStation = index
+  const station = beltStations[index]
+  belt.dataset.stage = station.dataset.station
+  beltStations.forEach((s, i) => {
+    s.classList.toggle('is-here', i === index)
+    s.classList.toggle('is-passed', i < index)
   })
-  sceneHooks.stair?.(steps[level] ?? null)
+  document.querySelector('[data-belt-step]').textContent = `${String(index + 1).padStart(2, '0')} / ${String(beltStations.length).padStart(2, '0')}`
+  document.querySelector('[data-belt-text]').textContent = station.dataset.caption
+  sceneHooks.station?.(index, beltStations.length)
 }
-if (steps.length) {
-  if (reduceMotion) setStairLevel(steps.length - 1)
-  else
-    ScrollTrigger.create({
-      trigger: '#kenapa',
-      start: 'top 70%',
-      end: 'bottom 70%',
-      onUpdate: (self) => setStairLevel(Math.min(steps.length - 1, Math.floor(self.progress * (steps.length + 0.2)))),
-      onLeaveBack: () => setStairLevel(-1),
+if (belt) {
+  beltTrack.addEventListener('scroll', updateBelt, { passive: true })
+  updateBelt()
+  if (!reduceMotion) {
+    gsap.matchMedia().add(WIDE, () => {
+      belt.classList.add('is-driven')
+      // Menyusul halus, agar ban tidak tersentak mengikuti setiap langkah roda mouse
+      const slide = gsap.quickTo(beltTrack, 'scrollLeft', { duration: 0.5, ease: 'power2.out' })
+      beltPin = ScrollTrigger.create({
+        trigger: '#kenapa',
+        start: 'top top',
+        end: '+=160%',
+        pin: true,
+        onUpdate: (self) => slide(self.progress * (beltTrack.scrollWidth - beltTrack.clientWidth)),
+      })
+      return () => {
+        belt.classList.remove('is-driven')
+        beltPin = null
+      }
     })
+  }
+  // Mengetuk gerbang stasiun: ban bergeser ke stasiun itu
+  belt.querySelectorAll('[data-station-go]').forEach((gate) => {
+    gate.addEventListener('click', () => {
+      const i = Number(gate.dataset.stationGo)
+      const share = i / (beltStations.length - 1)
+      if (beltPin) window.scrollTo({ top: beltPin.start + share * (beltPin.end - beltPin.start), behavior: 'smooth' })
+      else beltTrack.scrollTo({ left: share * (beltTrack.scrollWidth - beltTrack.clientWidth), behavior: reduceMotion ? 'auto' : 'smooth' })
+    })
+  })
 }
 
 // Pos 2 · Layar pilih level: garis putus-putus menghubungkan node (kartu jalur) secara berurutan.
@@ -314,7 +347,15 @@ function growthStage() {
 const MOODS = [
   // Pos 0 "Dunia belum di-render": ruang hitam, aura cyan
   { glow: '#7ff0ff', aura: '#00e5ff', bg: '#07070b', line: 'Ikuti aku, maka kamu akan memahami bagaimana dunia di belakangku ini terbentuk.' },
-  { glow: '#ffe08a', aura: '#ffcc33', bg: '#100c08', line: 'Dulu aku juga heran kenapa game bisa patah-patah di laptop tertentu. Jawabannya ada di Pelajaran 1.' },
+  {
+    glow: '#ffe08a',
+    aura: '#ffcc33',
+    bg: '#100c08',
+    // Sekaligus komentar stasiun pertama (Engine), karena ban dimulai dari sana
+    line: window.matchMedia(STACKED).matches
+      ? 'Telur di ban itu aku, waktu masih garis-garis. Geser bannya, aku dibentuk di setiap stasiun.'
+      : 'Badanku masih garis-garis, begini rupaku di mata engine. Scroll pelan-pelan, aku dibentuk sepanjang ban ini.',
+  },
   { glow: '#9dff8a', aura: '#7cff6b', bg: '#08100d', line: 'Baru Fondasi Engine yang sudah ada pelajarannya. Lima jalur lain masih kerangka.' },
   { glow: '#8ad2ff', aura: '#00b3ff', bg: '#080b14', line: touchOnly ? 'Ketuk salah satu tahap. Aku jelaskan isinya.' : 'Arahkan kursor ke salah satu tahap. Aku jelaskan isinya.' },
   { glow: '#ffe08a', aura: '#ffcc33', bg: '#0d0b08', line: 'Ketemu angka tanpa sumber? Bilang saja lewat GitHub.' },
@@ -327,6 +368,15 @@ const STAGE_LINES = [
   'Lebih dari separuh materi sudah kamu tandai selesai.',
   'Cangkangku hampir penuh retakan. Sedikit lagi.',
   'Cangkangku jadi emas. Hampir semua materi sudah kamu selesaikan.',
+]
+// Pos 1: komentar Krekit saat ban berhenti di sebuah stasiun. Dari sudut pandangnya sendiri,
+// bukan mengulang keterangan stasiun di bawah ban. Indeks 0 dipakai saat kembali ke Engine.
+const STATION_LINES = [
+  'Kembali jadi garis-garis lagi. Rasanya ringan sekali.',
+  'Sekarang aku punya warna dan wajah. Ini bagian favoritku.',
+  'Agak sempit di dalam kotak. Tenang, aku sudah diuji dulu sebelum dikemas.',
+  'Ada label rilis di kotakku. Tinggal menunggu ada yang memilihku.',
+  'Akhirnya keluar juga. Semoga pemain pertamaku itu kamu.',
 ]
 const CLICK_LINES = ['Hup!', 'Pelan-pelan, cangkangku sudah retak.', 'Aku ringan, tapi jangan dilempar.', 'Iya, aku masih di sini.']
 // Pos 0 di layar sempit: sapaan pertama, mengajak mencoba tab Wireframe · Blockout · Render di bawah Krekit
@@ -507,18 +557,18 @@ function initScene() {
     teleport()
   }
 
-  // Pijakan khusus di dalam panggung: anak tangga Pos 1, atau kolom kartu yang disorot di Pos 2
-  let stairPerch = null
+  // Pijakan khusus di dalam panggung: ban berjalan Pos 1, atau kolom kartu yang disorot di Pos 2
   let nodePerch = null
   const sectionId = () => sections[shownIndex]?.id
+  const onBelt = () => belt && !compact && sectionId() === 'kenapa'
 
   function spotTarget() {
     const rect = spots[shownIndex].getBoundingClientRect()
-    if (sectionId() === 'kenapa' && stairPerch) {
-      // Berdiri di atas anak tangga, lebih kecil agar tangganya tetap terlihat
-      const step = stairPerch.getBoundingClientRect()
-      screenToWorld(step.left + step.width / 2, step.top, target)
-      return (rect.height * 0.36 * unitsPerPixel(target)) / (krekit.height + 0.6)
+    if (onBelt()) {
+      // Berdiri di tengah ban; tinggi telur 46% tinggi ban, sama dengan kotak .belt__item di landing.css
+      const b = belt.getBoundingClientRect()
+      screenToWorld(b.left + b.width / 2, b.bottom - BELT_BAND, target)
+      return (b.height * 0.46 * unitsPerPixel(target)) / krekit.height
     }
     // Pos 2: tetap di atas deretan kartu, bergeser ke kolom kartu yang disorot
     const node = sectionId() === 'jalur' && nodePerch ? nodePerch.getBoundingClientRect() : null
@@ -527,12 +577,27 @@ function initScene() {
     return (rect.height * unitsPerPixel(target)) / (krekit.height + 0.6)
   }
 
-  // Tangga mungkin sudah terbangun sebelum scene siap
-  stairPerch = document.querySelector('[data-step].is-current')
-  sceneHooks.stair = (step) => {
-    const climbed = step && step !== stairPerch
-    stairPerch = step
-    if (climbed && !compact && sectionId() === 'kenapa') krekit.jump()
+  // Ban berjalan Pos 1: Krekit ikut "diproses" di tiap stasiun dan mengomentarinya (STATION_LINES).
+  // Engine = wireframe (diatur di render loop), Desain = mendapat warna (melompat kecil),
+  // Pemain = keluar dari kotak dan tersenyum. Di HP Krekit berjaga di pojok dan berkomentar dari sana.
+  let stationLine
+  let stationSaid = 0
+  sceneHooks.station = (index, total) => {
+    if (sectionId() !== 'kenapa' && !(compact && activeIndex === 1)) return
+    stationLine?.kill()
+    if (index === 1 && !compact) krekit.jump()
+    // Tunggu ban berhenti dulu: jangan bicara selagi stasiun ini hanya dilewati
+    stationLine = gsap.delayedCall(0.6, () => {
+      if (beltStation !== index || stationSaid === index) return
+      stationSaid = index
+      if (index === total - 1) {
+        if (!compact) krekit.jump()
+        gsap.delayedCall(0.6, krekit.smile)
+      }
+      // Ban sudah digeser: sapaan pembuka Pos 1 tidak perlu diucapkan lagi
+      spoken.add(1)
+      bubble.say(STATION_LINES[index], 2.6)
+    })
   }
   sceneHooks.levelNode = (node) => {
     if (node && node !== nodePerch && !compact && sectionId() === 'jalur') krekit.jump()
@@ -744,11 +809,18 @@ function initScene() {
       if (index === sections.length - 1) krekit.greet()
     })
   }
+  // Section yang di-pin (Pos 0 dan Pos 1 di desktop) tetap aktif selama pin-nya berjalan.
+  // Tanpa ini, akhir pemicu jatuh di tepi bawah aslinya (di tengah pin): saat scroll naik dari bawah,
+  // pos berikutnya sudah tidak aktif tapi pos ini belum aktif lagi, jadi Krekit tertinggal di pos bawah.
+  const pinLength = (section) => {
+    const pin = ScrollTrigger.getAll().find((t) => t.pin === section)
+    return pin ? pin.end - pin.start : 0
+  }
   sections.forEach((section, index) => {
     ScrollTrigger.create({
       trigger: section,
       start: 'top center',
-      end: 'bottom center',
+      end: () => `bottom+=${pinLength(section)} center`,
       onToggle: (self) => self.isActive && setActive(index),
     })
   })
@@ -809,6 +881,7 @@ function initScene() {
   timer.connect(document)
   const krekitScreen = new THREE.Vector3()
   const lookPoint = new THREE.Vector2()
+  let beltLeft = beltTrack?.scrollLeft ?? 0
   const top = new THREE.Vector3()
 
   function tick(timestamp) {
@@ -881,7 +954,12 @@ function initScene() {
     } else krekit.root.visible = true
     post.glitch.uTime.value = elapsed
     // Kecepatan horizontal relatif ukuran Krekit -> berapa cepat ia menggelinding
-    const velocityX = (current.x - previousX) / Math.max(delta, 1e-3) / Math.max(currentScale, 1e-3)
+    let velocityX = (current.x - previousX) / Math.max(delta, 1e-3) / Math.max(currentScale, 1e-3)
+    // Di atas ban berjalan Krekit diam di tengah, tapi bannya bergerak: ia menggelinding seperti di atas treadmill.
+    // Stasiun Engine: Krekit masih wireframe.
+    if (onBelt() && !swapping) velocityX += ((beltTrack.scrollLeft - beltLeft) / Math.max(delta, 1e-3)) * (unitsPerPixel(current) / Math.max(currentScale, 1e-3))
+    beltLeft = beltTrack?.scrollLeft ?? 0
+    krekit.setWireframe(onBelt() && beltStation === 0)
     krekit.update(delta, elapsed, velocityX)
 
     // Arah lirikan: ke elemen yang disorot, atau ke kursor; relatif terhadap posisi Krekit di layar
@@ -997,6 +1075,8 @@ try {
 } catch (error) {
   console.warn('Krekit tidak bisa ditampilkan (WebGL tidak tersedia). Halaman tetap berfungsi.', error)
   document.querySelector('canvas.webgl')?.remove()
+  // Ban berjalan Pos 1 memakai telur 2D sebagai pengganti Krekit (landing.css: .no-3d)
+  document.documentElement.classList.add('no-3d')
   document.querySelector('[data-bubble]')?.remove()
   document.querySelector('.render-steps')?.remove()
 }
