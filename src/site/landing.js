@@ -753,6 +753,13 @@ function initScene() {
       else if (compact) shownIndex = activeIndex
       else if (shownIndex !== activeIndex) teleport()
     }
+    // Penanda untuk uji otomatis (tests/smoke.spec.js): pos tempat Krekit sudah tiba, dan mode pojok di HP.
+    // Hanya ditulis saat berubah, jadi tidak membebani render loop.
+    const marks = document.documentElement.dataset
+    const arrived = swapping ? 'transit' : String(shownIndex)
+    if (marks.krekitPos !== arrived) marks.krekitPos = arrived
+    if (marks.krekitDocked !== String(docked)) marks.krekitDocked = String(docked)
+
     updateHeroShift()
     dunia.setOffset(heroShift)
     const onPath = shownIndex === 0 && !docked

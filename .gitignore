@@ -9,3 +9,7 @@ skills-lock.json
 
 # Catatan pribadi: klaim yang belum terverifikasi
 docs/verifikasi-tertunda.md
+
+# Hasil uji Playwright
+test-results/
+playwright-report/

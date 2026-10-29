@@ -7,7 +7,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check:links": "node scripts/check-links.mjs dist",
+    "test:smoke": "playwright test"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "^0.4.5",
@@ -28,5 +30,8 @@
   },
   "engines": {
     "node": ">=22"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
   }
 }
