@@ -18,9 +18,9 @@ Anda boleh menyalin, menyebarluaskan, mengubah, dan membuat turunan dari konten 
 2. **NonKomersial**: tidak untuk kepentingan komersial, misalnya kursus atau bootcamp berbayar, buku yang dijual, atau konten yang dimonetisasi.
 3. **BerbagiSerupa**: karya turunan dibagikan dengan lisensi yang sama (CC BY-NC-SA 4.0).
 
-Pemakaian komersial butuh izin tertulis dari pemilik. Caranya ada di halaman [Kemitraan](https://restkand.github.io/krekit/kemitraan/).
+Pemakaian komersial butuh izin tertulis dari pemilik. Caranya ada di halaman [Kemitraan](src/content/docs/kemitraan.mdx).
 
-Ringkasan ini bukan pengganti teks hukum lengkap. Jawaban untuk pertanyaan yang sering muncul ada di halaman [Lisensi](https://restkand.github.io/krekit/lisensi/).
+Ringkasan ini bukan pengganti teks hukum lengkap. Jawaban untuk pertanyaan yang sering muncul ada di halaman [Lisensi](src/content/docs/lisensi.mdx).
 
 ## Pengecualian
 

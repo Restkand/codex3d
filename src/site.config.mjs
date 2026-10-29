@@ -1,12 +1,18 @@
 /**
- * Identitas situs di SATU tempat. Saat nama brand final sudah dipilih,
- * cukup ubah file ini (plus `base` jika nama repo/domain ikut berganti).
+ * Identitas situs di SATU tempat. Saat nama brand final sudah dipilih, cukup ubah file ini.
+ *
+ * Situs disajikan dari akar domain (base = '/'), baik lokal maupun di Cloudflare Pages.
+ * Nilai berikut hanya dibaca saat build (tidak di browser) dan bisa ditimpa lewat variabel lingkungan:
+ *   - SITE_URL   alamat lengkap situs, mis. https://krekit.id saat domain sendiri sudah aktif.
+ *                Di Cloudflare Pages, bawaannya alamat deployment (CF_PAGES_URL, diisi otomatis).
+ *   - BASE_PATH  sub-path situs. Hanya perlu untuk GitHub Pages ('/krekit', diisi deploy.yml).
  */
+const env = typeof process === 'undefined' ? {} : process.env
+
 export const SITE = {
   name: 'Krekit',
   tagline: 'Wadah belajar terbuka tentang dunia developer game: dari teori engine sampai bisnis studio indie.',
   repo: 'https://github.com/Restkand/krekit',
-  // GitHub Pages: https://<user>.github.io/<repo>/ -> base = '/<repo>'. Untuk domain sendiri, isi '/'.
-  site: 'https://restkand.github.io',
-  base: '/krekit',
+  site: env.SITE_URL ?? env.CF_PAGES_URL,
+  base: env.BASE_PATH ?? '/',
 }

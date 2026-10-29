@@ -17,7 +17,7 @@ Lisensi kode (MIT) dan lisensi konten (CC BY-NC-SA 4.0) tidak memberi hak apa pu
 - Memakai nama atau maskot Krekit dengan cara yang memberi kesan didukung, disponsori, atau bekerja sama dengan Krekit.
 - Mengubah logo atau maskot lalu memakainya di depan publik.
 
-Pengajuan izin dilakukan lewat halaman [Kemitraan](https://restkand.github.io/krekit/kemitraan/).
+Pengajuan izin dilakukan lewat halaman [Kemitraan](src/content/docs/kemitraan.mdx).
 
 ## Fork dan turunan
 
