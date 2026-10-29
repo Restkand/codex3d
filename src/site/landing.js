@@ -6,7 +6,6 @@ import { createLights } from '../experiment/world/lights.js'
 import { createPost } from '../experiment/post.js'
 import { createKrekit } from './krekit.js'
 import { createDunia } from './dunia.js'
-import { createFrameSim } from './frame-sim.js'
 import { loadProgress, RANKS } from '../lib/progress.js'
 
 /**
@@ -308,34 +307,73 @@ if (skillTree) {
   })
 }
 
-// Pos 3 · Satu frame lewat pipa: tahap mengikuti scroll, atau dipilih dengan menyorot chip
-const simRoot = document.querySelector('[data-frame-sim]')
-if (simRoot) {
-  const chips = [...document.querySelectorAll('[data-frame-step]')]
-  const sim = createFrameSim(
-    simRoot,
-    chips.map((chip) => ({ label: chip.textContent.replace(/^\d+/, '').trim(), sub: chip.dataset.sub })),
-  )
-  const markChip = () => chips.forEach((chip, i) => chip.classList.toggle('is-active', i === sim.stage))
-  markChip()
-  ScrollTrigger.create({
-    trigger: '#kamus',
-    start: 'top 60%',
-    end: 'bottom 50%',
-    onUpdate: (self) => {
-      sim.setStage(Math.floor(self.progress * chips.length * 0.999))
-      if (!reduceMotion) sim.setAngle(0.5 + self.progress * 2.6)
-      markChip()
-    },
-  })
-  chips.forEach((chip, i) => {
-    const pick = () => {
-      sim.setStage(i)
-      markChip()
+// Pos 3 · Tarik kartu istilah: semua istilah Kamus dikocok sekali, lalu ditarik berurutan (tidak ada yang
+// keluar dua kali sebelum tumpukan habis). Kartu terbang dari tumpukan ke tempatnya sambil terbalik
+// (transform 3D CSS, digerakkan GSAP). Tanpa JavaScript, kartu pertama tampil terbuka.
+const draw = document.querySelector('[data-draw]')
+if (draw) {
+  const deck = JSON.parse(document.getElementById('kamus-deck').textContent)
+  const shuffle = () => {
+    for (let i = deck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[deck[i], deck[j]] = [deck[j], deck[i]]
     }
-    chip.addEventListener('pointerenter', pick)
-    chip.addEventListener('focus', pick)
-  })
+  }
+  shuffle()
+  const card = draw.querySelector('[data-card]')
+  const inner = draw.querySelector('[data-card-inner]')
+  const stack = draw.querySelector('[data-draw-stack]')
+  const count = draw.querySelector('[data-draw-count]')
+  const field = (name) => draw.querySelector(`[data-card-${name}]`)
+  // Sebelum kartu pertama ditarik, yang terlihat punggungnya
+  gsap.set(inner, { rotationY: 180 })
+
+  function fill(term) {
+    field('chapter').textContent = term.chapter
+    field('level').dataset.cardLevel = term.level
+    field('level-name').textContent = term.levelName
+    field('title').textContent = term.title
+    field('aka').textContent = term.aka ? `Disebut juga: ${term.aka}` : ''
+    field('desc').textContent = term.description
+    field('link').href = term.href
+  }
+
+  let drawn = 0
+  let flight
+  function drawCard() {
+    if (drawn === deck.length) {
+      shuffle()
+      drawn = 0
+    }
+    const term = deck[drawn++]
+    count.textContent = drawn === deck.length ? 'Tumpukan habis. Tarik lagi untuk mengocok ulang.' : `${deck.length - drawn} kartu di tumpukan`
+    sceneHooks.draw?.(term)
+    flight?.progress(1)
+    if (reduceMotion) {
+      fill(term)
+      gsap.set(inner, { rotationY: 0 })
+      return
+    }
+    // Kartu lama disingkirkan, lalu kartu baru terbang dari tumpukan dalam keadaan tertutup dan terbalik
+    const from = stack.getBoundingClientRect()
+    const to = card.getBoundingClientRect()
+    flight = gsap
+      .timeline()
+      .to(card, { y: -24, autoAlpha: 0, duration: 0.16, ease: 'power1.in' })
+      .call(() => fill(term))
+      .set(card, {
+        x: from.left + from.width / 2 - (to.left + to.width / 2),
+        y: from.top + from.height / 2 - (to.top + to.height / 2),
+        scale: from.width / to.width,
+        rotation: -12,
+        autoAlpha: 1,
+      })
+      .set(inner, { rotationY: 180 })
+      .to(card, { x: 0, y: 0, scale: 1, rotation: 0, duration: 0.55, ease: 'power3.out' })
+      .to(inner, { rotationY: 0, duration: 0.6, ease: 'back.out(1.4)' }, '<0.15')
+  }
+  draw.querySelector('[data-draw-btn]').addEventListener('click', drawCard)
+  stack.addEventListener('click', drawCard)
 }
 
 // Pos 4 · Stempel verifikasi: setiap aturan dicap bergantian saat bagian ini masuk layar
@@ -419,7 +457,7 @@ const MOODS = [
       : 'Badanku masih garis-garis, begini rupaku di mata engine. Scroll pelan-pelan, aku dibentuk sepanjang ban ini.',
   },
   { glow: '#9dff8a', aura: '#7cff6b', bg: '#08100d', line: 'Baru Fondasi Engine yang sudah ada pelajarannya. Lima jalur lain masih kerangka.' },
-  { glow: '#8ad2ff', aura: '#00b3ff', bg: '#080b14', line: touchOnly ? 'Ketuk salah satu tahap. Aku jelaskan isinya.' : 'Arahkan kursor ke salah satu tahap. Aku jelaskan isinya.' },
+  { glow: '#8ad2ff', aura: '#00b3ff', bg: '#080b14', line: touchOnly ? 'Ketuk Tarik kartu. Aku juga penasaran istilah apa yang keluar.' : 'Tarik satu kartu dari tumpukanku. Aku juga penasaran istilah apa yang keluar.' },
   { glow: '#ffe08a', aura: '#ffcc33', bg: '#0d0b08', line: 'Ketemu angka tanpa sumber? Bilang saja lewat GitHub.' },
   { glow: '#ffa6f0', aura: '#ff5ce1', bg: '#0b0b10', line: 'Sampai bawah juga. Kalau ada yang salah di situs ini, kamu bisa ikut memperbaikinya.' },
 ]
@@ -440,6 +478,12 @@ const STATION_LINES = [
   'Ada label rilis di kotakku. Tinggal menunggu ada yang memilihku.',
   'Akhirnya keluar juga. Semoga pemain pertamaku itu kamu.',
 ]
+// Pos 3: reaksi Krekit atas kartu yang ditarik, menurut level istilahnya (1 Dasar, 2 Menengah, 3 Lanjut)
+const DRAW_LINES = {
+  1: ['Istilah dasar. Bagus untuk mulai.', 'Dasar, tapi muncul hampir di setiap game.'],
+  2: ['Level menengah. Lebih mudah kalau dasarnya sudah paham.', 'Aku butuh waktu untuk paham yang ini. Analoginya membantu.'],
+  3: ['Level lanjut. Tidak apa-apa kalau belum paham sekarang.', 'Yang ini juga masih membuatku berpikir keras.'],
+}
 const CLICK_LINES = ['Hup!', 'Pelan-pelan, cangkangku sudah retak.', 'Aku ringan, tapi jangan dilempar.', 'Iya, aku masih di sini.']
 // Pos 0 di layar sempit: sapaan pertama, mengajak mencoba tab Wireframe · Blockout · Render di bawah Krekit
 const HERO_TOUCH_LINE = 'Coba ketuk tab di bawahku ini, maka kamu akan mengetahui perbedaannya.'
@@ -668,6 +712,15 @@ function initScene() {
       spoken.add(2)
       bubble.say(line, 3)
     }
+  }
+  // Tarik kartu Pos 3: Krekit melompat di atas tumpukan, lalu bereaksi sesuai level istilahnya
+  sceneHooks.draw = (term) => {
+    if (sectionId() !== 'kamus' && !(compact && activeIndex === 3)) return
+    if (!compact) krekit.jump()
+    const lines = DRAW_LINES[term.level] ?? DRAW_LINES[1]
+    spoken.add(3)
+    bubble.say(lines[Math.floor(Math.random() * lines.length)], 2.8)
+    gsap.delayedCall(0.9, term.level === 3 ? krekit.confused : krekit.smile)
   }
   // Stempel pertama: Krekit melompat; stempel terakhir: tersenyum puas
   sceneHooks.stamp = (i, total) => {
