@@ -777,6 +777,12 @@ function initScene() {
     })
   })
 
+  // Tombol Bagikan (Pos 5): Krekit berterima kasih setelah situs dibagikan atau tautannya disalin
+  document.addEventListener('krekit:share', (event) => {
+    krekit.smile()
+    bubble.say(event.detail.how === 'discord' ? 'Tautannya sudah kusalin. Tempel di Discord, ya.' : 'Terima kasih sudah membagikan Krekit.', 2.6)
+  })
+
   const raycaster = new THREE.Raycaster()
   const tapPoint = new THREE.Vector2()
   let hovered = false

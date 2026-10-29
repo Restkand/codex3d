@@ -1,0 +1,180 @@
+---
+/**
+ * Tombol Bagikan. Di HP (dan browser yang mendukung Web Share API) membuka lembar bagikan bawaan
+ * perangkat: WhatsApp, Instagram, Threads, Discord, dan aplikasi lain yang terpasang. Di desktop membuka
+ * menu kecil: salin tautan, WhatsApp, Threads, Discord. Tanpa skrip pihak ketiga, jadi tidak ada pelacak.
+ * Discord tidak punya alamat khusus untuk berbagi, jadi tautannya disalin dulu lalu Discord dibuka.
+ *
+ * Setelah berhasil, mengirim event `krekit:share` agar Krekit bisa bereaksi (landing.js).
+ */
+import { withBase } from '../lib/inline.js'
+
+interface Props {
+  title: string
+  text: string
+  /** Path halaman yang dibagikan (tanpa base), bawaannya beranda */
+  path?: string
+  label?: string
+}
+
+const { title, text, path = '/', label = 'Bagikan' } = Astro.props
+---
+
+<div class="share" data-share data-title={title} data-text={text} data-path={withBase(path)}>
+  <button type="button" class="btn btn--ghost btn--wire share__toggle" aria-expanded="false" aria-controls="share-menu">
+    <span class="btn__label">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M7 17 17 7M9 7h8v8" />
+      </svg>
+      {label}
+    </span>
+  </button>
+  <div class="share__menu" id="share-menu" hidden>
+    <button type="button" class="share__item" data-share-copy>Salin tautan</button>
+    <a class="share__item" data-share-to="whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+    <a class="share__item" data-share-to="threads" target="_blank" rel="noopener noreferrer">Threads</a>
+    <a class="share__item" data-share-to="discord" data-share-copy-first target="_blank" rel="noopener noreferrer">Discord</a>
+    <p class="share__status" data-share-status role="status" aria-live="polite"></p>
+  </div>
+</div>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-share]')) {
+    const toggle = root.querySelector<HTMLButtonElement>('.share__toggle')!
+    const menu = root.querySelector<HTMLElement>('.share__menu')!
+    const status = root.querySelector<HTMLElement>('[data-share-status]')!
+    const { title = '', text = '', path = '/' } = root.dataset
+    const url = new URL(path, window.location.origin).href
+    const message = `${text} ${url}`
+    const done = (how: string) => document.dispatchEvent(new CustomEvent('krekit:share', { detail: { how } }))
+
+    // Tautan per aplikasi untuk menu desktop
+    const targets: Record<string, string> = {
+      whatsapp: `https://wa.me/?text=${encodeURIComponent(message)}`,
+      // Web intent resmi Threads: https://developers.facebook.com/docs/threads/threads-web-intents/
+      threads: `https://www.threads.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+      // Discord tidak punya alamat untuk berbagi: salin tautan, lalu buka Discord untuk ditempel
+      discord: 'https://discord.com/channels/@me',
+    }
+    for (const link of root.querySelectorAll<HTMLAnchorElement>('[data-share-to]')) {
+      link.href = targets[link.dataset.shareTo!]
+      link.addEventListener('click', () => {
+        if (link.hasAttribute('data-share-copy-first')) {
+          navigator.clipboard?.writeText(url).catch(() => {})
+          status.textContent = 'Tautan disalin. Tempel di Discord.'
+          done(link.dataset.shareTo!)
+          return
+        }
+        done(link.dataset.shareTo!)
+        setOpen(false)
+      })
+    }
+
+    function setOpen(open: boolean) {
+      menu.hidden = !open
+      toggle.setAttribute('aria-expanded', String(open))
+      if (open) status.textContent = ''
+    }
+
+    // Lembar bagikan bawaan hanya untuk layar sentuh (HP/tablet). Windows juga punya navigator.share,
+    // tapi dialognya tidak memuat WhatsApp/Threads web, jadi desktop memakai menu sendiri.
+    const useNative = Boolean(navigator.share) && window.matchMedia('(hover: none)').matches
+
+    toggle.addEventListener('click', async () => {
+      // HP: lembar bagikan bawaan perangkat
+      if (useNative) {
+        try {
+          await navigator.share({ title, text, url })
+          done('native')
+        } catch {
+          // Dibatalkan pengunjung: tidak perlu apa-apa
+        }
+        return
+      }
+      setOpen(menu.hidden)
+    })
+
+    root.querySelector('[data-share-copy]')!.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(url)
+        status.textContent = 'Tautan disalin.'
+        done('copy')
+      } catch {
+        status.textContent = url
+      }
+    })
+
+    // Tutup saat klik di luar atau menekan Escape
+    document.addEventListener('click', (event) => {
+      if (!menu.hidden && !root.contains(event.target as Node)) setOpen(false)
+    })
+    root.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !menu.hidden) {
+        setOpen(false)
+        toggle.focus()
+      }
+    })
+  }
+</script>
+
+<style>
+  .share {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .share__toggle {
+    gap: 8px;
+  }
+
+  .share__menu {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    z-index: 20;
+    display: grid;
+    min-width: 200px;
+    padding: 6px;
+    transform: translateX(-50%);
+    text-align: left;
+    background: rgba(12, 12, 18, 0.97);
+    border: 1px solid rgba(127, 240, 255, 0.35);
+    border-radius: 8px;
+    box-shadow: 0 0 28px rgba(0, 229, 255, 0.12);
+  }
+
+  .share__menu[hidden] {
+    display: none;
+  }
+
+  .share__item {
+    display: block;
+    padding: 10px 12px;
+    font: 600 14px/1.2 var(--mono);
+    color: var(--text);
+    text-decoration: none;
+    background: none;
+    border: 0;
+    border-radius: 4px;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .share__item:hover,
+  .share__item:focus-visible {
+    color: #07070b;
+    background: #7ff0ff;
+    outline: none;
+  }
+
+  .share__status {
+    margin: 4px 12px 6px;
+    font: 12px/1.4 var(--mono);
+    color: #7cff6b;
+    word-break: break-all;
+  }
+
+  .share__status:empty {
+    display: none;
+  }
+</style>

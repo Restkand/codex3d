@@ -15,6 +15,9 @@ const launchOptions = { args: ['--use-angle=swiftshader', '--enable-unsafe-swift
 export default defineConfig({
   testDir: 'tests',
   timeout: 60_000,
+  // Satu tes dalam satu waktu: WebGL dirender CPU (SwiftShader), dan dua Chrome sekaligus di mesin
+  // yang sedang sibuk membuat animasi melambat sampai tes teleport Krekit gagal. Hanya 7 tes, jadi tetap cepat.
+  workers: 1,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? 'github' : 'list',
   use: {
