@@ -1,0 +1,20 @@
+# Dependabot membuka pull request saat ada versi baru dependensi npm atau GitHub Actions.
+# Pembaruan minor dan patch dikelompokkan menjadi satu PR per minggu agar tidak menumpuk.
+# Setiap PR tetap melewati CI (build + cek tautan) sebelum digabungkan.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      npm-minor-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']

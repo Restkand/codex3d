@@ -1,0 +1,31 @@
+# Pengecekan setiap pull request: build harus berhasil, tidak boleh ada tautan internal rusak,
+# dan uji asap Playwright harus lolos.
+# Deploy ke GitHub Pages ada di deploy.yml. Action dikunci ke commit SHA (lihat catatan di deploy.yml).
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run check:links
+      # Uji asap beranda, pelajaran, dan Kamus di desktop & HP (tests/smoke.spec.js)
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:smoke

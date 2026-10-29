@@ -1,16 +1,24 @@
-# Build dan deploy situs ke GitHub Pages setiap ada push ke main.
+# Build dan deploy situs ke GitHub Pages.
 # Sekali saja di GitHub: Settings → Pages → Build and deployment → Source: "GitHub Actions".
+#
+# Saat ini situs SENGAJA belum diterbitkan, jadi deploy hanya berjalan manual
+# (tab Actions → "Deploy ke GitHub Pages" → Run workflow). Saat siap terbit otomatis,
+# tambahkan kembali di bawah `on:`
+#   push:
+#     branches: [main]
+#
+# Action dikunci ke commit SHA (bukan tag) agar kode yang dijalankan tidak bisa berubah diam-diam.
+# Dependabot (.github/dependabot.yml) membuka PR saat ada versi baru.
 name: Deploy ke GitHub Pages
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
 concurrency:
   group: pages
@@ -20,17 +28,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          # Riwayat penuh dibutuhkan untuk tanggal "Terakhir diperbarui" dari git
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
           cache: npm
       - run: npm ci
       - run: npm run build
-      - uses: actions/upload-pages-artifact@v3
+      - run: npm run check:links
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: dist
 
@@ -42,4 +48,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

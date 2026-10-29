@@ -202,6 +202,169 @@ main [data-krekit-say] {
   font-size: clamp(36px, min(6.6vw, 10vh), 104px);
 }
 
+/* ---------- Judul Pos 0: baris putih "jadi", baris kuning masih wireframe ("belum di-render") ---------- */
+
+.display--hero {
+  font-family: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+  font-variation-settings: 'opsz' 96;
+  letter-spacing: -0.035em;
+}
+
+/* Font yang sama, hanya garis tepi + garis pindai tipis di dalam huruf: seperti wireframe dunia Krekit */
+.display--hero .accent {
+  display: block;
+  color: transparent;
+  -webkit-text-stroke: clamp(1px, 0.022em, 2px) var(--accent);
+  background: repeating-linear-gradient(0deg, rgba(255, 204, 51, 0.24) 0 1px, transparent 1px 5px);
+  -webkit-background-clip: text;
+  background-clip: text;
+  transition: color 0.25s;
+}
+
+/* Ter-render: huruf terisi penuh. Desktop: saat mulai mengikuti Krekit; HP: tab "Render" (landing.js) */
+.display--hero.is-rendered .accent {
+  color: var(--accent);
+  -webkit-text-stroke: 0;
+  background: none;
+}
+
+/* ---------- Tombol Pos 0: wireframe yang ter-render ----------
+   Awalnya garis tepi putus-putus + garis pindai + siku di pojok (seperti kotak seleksi objek
+   di editor 3D). Disorot, difokus, atau ditekan: glitch singkat lalu terisi warna.
+   Ikut ter-render bersama judul (.hero__text.is-rendered, diatur landing.js). */
+.hero .btn {
+  --tone: var(--accent);
+  --ink: #07070b;
+  position: relative;
+  color: var(--tone);
+  background: repeating-linear-gradient(0deg, color-mix(in srgb, var(--tone) 14%, transparent) 0 1px, transparent 1px 5px);
+  border: 1.5px dashed color-mix(in srgb, var(--tone) 75%, transparent);
+  border-radius: 4px;
+}
+
+.hero .btn--ghost {
+  --tone: var(--text);
+}
+
+/* Siku di keempat pojok, sedikit di luar tepi tombol */
+.hero .btn::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  pointer-events: none;
+  --c: var(--tone);
+  background:
+    linear-gradient(var(--c), var(--c)) left top / 9px 2px,
+    linear-gradient(var(--c), var(--c)) left top / 2px 9px,
+    linear-gradient(var(--c), var(--c)) right top / 9px 2px,
+    linear-gradient(var(--c), var(--c)) right top / 2px 9px,
+    linear-gradient(var(--c), var(--c)) left bottom / 9px 2px,
+    linear-gradient(var(--c), var(--c)) left bottom / 2px 9px,
+    linear-gradient(var(--c), var(--c)) right bottom / 9px 2px,
+    linear-gradient(var(--c), var(--c)) right bottom / 2px 9px;
+  background-repeat: no-repeat;
+  transition: inset 0.2s;
+}
+
+/* Ter-render */
+.hero .btn:hover,
+.hero .btn:focus-visible,
+.hero .btn:active,
+.hero__text.is-rendered .btn {
+  color: var(--ink);
+  background: var(--tone);
+  border-style: solid;
+  border-color: var(--tone);
+}
+
+/* Tombol kedua ter-render lebih tenang (isi tipis), agar "Mulai belajar" tetap yang utama */
+.hero .btn--ghost:hover,
+.hero .btn--ghost:focus-visible,
+.hero .btn--ghost:active,
+.hero__text.is-rendered .btn--ghost {
+  color: var(--text);
+  background: color-mix(in srgb, var(--tone) 14%, transparent);
+}
+
+/* Siku merapat saat tombol disorot: seperti objek yang dipilih */
+.hero .btn:hover::before,
+.hero .btn:focus-visible::before {
+  inset: -3px;
+}
+
+.hero .btn:hover {
+  animation: btn-glitch 0.3s steps(1);
+}
+
+.hero .btn.is-glitching {
+  animation: btn-glitch 0.3s steps(1);
+}
+
+@keyframes btn-glitch {
+  0% {
+    transform: translate(-3px, 0);
+    clip-path: inset(0 0 55% 0);
+  }
+  25% {
+    transform: translate(3px, 0);
+    clip-path: inset(45% 0 0 0);
+  }
+  50% {
+    transform: translate(-1px, 0);
+    clip-path: inset(20% 0 30% 0);
+  }
+  75% {
+    transform: translate(2px, 0);
+    clip-path: none;
+  }
+  100% {
+    transform: none;
+    clip-path: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero .btn:hover,
+  .hero .btn.is-glitching {
+    animation: none;
+  }
+}
+
+/* Getar glitch singkat: potongan huruf bergeser dengan pemisahan warna merah-biru */
+.display--hero .accent.is-glitching {
+  animation: title-glitch 0.42s steps(1) both;
+}
+
+@keyframes title-glitch {
+  0% {
+    transform: translate(-4px, 0);
+    clip-path: inset(8% 0 52% 0);
+    text-shadow: 3px 0 #ff2bd6, -3px 0 #00e5ff;
+  }
+  20% {
+    transform: translate(4px, 0);
+    clip-path: inset(48% 0 6% 0);
+  }
+  40% {
+    transform: translate(-2px, 1px);
+    clip-path: inset(0 0 64% 0);
+  }
+  60% {
+    transform: translate(3px, 0);
+    clip-path: inset(30% 0 22% 0);
+    text-shadow: -2px 0 #ff2bd6, 2px 0 #00e5ff;
+  }
+  80% {
+    transform: translate(-1px, 0);
+    clip-path: none;
+  }
+  100% {
+    transform: none;
+    clip-path: none;
+    text-shadow: none;
+  }
+}
+
 .hero .lead {
   margin-top: clamp(12px, 2.4vh, 22px);
 }
@@ -814,7 +977,7 @@ main [data-krekit-say] {
     min-height: auto;
     padding-top: 64px;
     padding-bottom: 48px;
-    row-gap: 22px;
+    row-gap: 14px;
   }
 
   .hero > .krekit-spot {
@@ -822,8 +985,32 @@ main [data-krekit-say] {
     height: clamp(260px, 44svh, 520px);
   }
 
+  /* Panggung terpusat: diorama simetris, jadi teks di bawahnya ikut rata tengah,
+     seolah muncul dari lantai dunia Krekit */
+  .hero .hero__text {
+    text-align: center;
+  }
+
   .hero .display {
-    font-size: clamp(32px, 8.6vw, 60px);
+    max-width: 13ch;
+    margin-inline: auto;
+    font-size: clamp(36px, 10.4vw, 64px);
+  }
+
+  .hero .lead {
+    max-width: 34ch;
+    margin-inline: auto;
+  }
+
+  /* Tombol bertumpuk penuh lebar: mudah dijangkau jempol */
+  .hero .actions {
+    flex-direction: column;
+    max-width: 420px;
+    margin-inline: auto;
+  }
+
+  .hero .btn {
+    justify-content: center;
   }
 
   /* Ajakan diganti tombol tahap render di panggung */

@@ -19,6 +19,8 @@ npm install
 npm run dev      # server pengembangan
 npm run build    # build produksi ke folder dist/
 npm run preview  # pratinjau hasil build
+npm run check:links  # cek tautan internal di dist/ (jalankan setelah build)
+npm run test:smoke   # uji asap Playwright: beranda, pelajaran, Kamus di desktop & HP
 ```
 
 ## Struktur proyek
