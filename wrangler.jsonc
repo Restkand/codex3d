@@ -1,0 +1,12 @@
+// Konfigurasi Cloudflare Workers (static assets). Hasil build Astro ada di dist/.
+// Blok `previews` wajib ada (boleh kosong) agar build branch selain main bisa membuat Preview.
+// https://developers.cloudflare.com/workers/previews/configuration/
+{
+  "name": "krekit",
+  "compatibility_date": "2026-10-29",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  },
+  "previews": {}
+}

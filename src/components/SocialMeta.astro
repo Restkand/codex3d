@@ -1,0 +1,47 @@
+---
+/**
+ * Tag pratinjau tautan saat halaman dibagikan (WhatsApp, Telegram, Facebook, X, LinkedIn, Discord, Slack),
+ * plus ikon situs. Dipasang di <head> setiap halaman.
+ *
+ * Aplikasi chat hanya mau memuat gambar dari alamat lengkap (https://...), jadi alamat situs harus
+ * diketahui saat build: isi SITE_URL di pengaturan build hosting (lihat src/site.config.mjs).
+ * Tanpa SITE_URL, tag tetap ditulis dengan alamat relatif (berfungsi di sebagian aplikasi saja).
+ *
+ * Gambar pratinjau: public/og/krekit.jpg (1200×630, dibuat dari render Krekit di beranda).
+ */
+import { SITE } from '../site.config.mjs'
+import { withBase } from '../lib/inline.js'
+
+interface Props {
+  title: string
+  description: string
+  type?: 'website' | 'article'
+}
+
+const { title, description, type = 'website' } = Astro.props
+const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href : path)
+const url = absolute(Astro.url.pathname)
+const image = absolute(withBase('/og/krekit.jpg'))
+---
+
+<meta name="theme-color" content="#07070b" />
+<link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+<link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
+{Astro.site && <link rel="canonical" href={url} />}
+
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:locale" content="id_ID" />
+<meta property="og:type" content={type} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={url} />
+<meta property="og:image" content={image} />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Krekit, telur retak bermata menyala, di depan dunia game yang masih wireframe." />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={image} />

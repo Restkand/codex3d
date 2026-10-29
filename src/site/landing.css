@@ -82,6 +82,8 @@ a {
 
 .topnav__links {
   display: flex;
+  /* Tombol GitHub berbingkai lebih tinggi dari tautan lain: sejajarkan di tengah, bukan di atas */
+  align-items: center;
   gap: clamp(12px, 3vw, 28px);
   font-size: 14px;
 }
@@ -231,8 +233,9 @@ main [data-krekit-say] {
 /* ---------- Tombol Pos 0: wireframe yang ter-render ----------
    Awalnya garis tepi putus-putus + garis pindai + siku di pojok (seperti kotak seleksi objek
    di editor 3D). Disorot, difokus, atau ditekan: glitch singkat lalu terisi warna.
-   Ikut ter-render bersama judul (.hero__text.is-rendered, diatur landing.js). */
-.hero .btn {
+   Ikut ter-render bersama judul (.hero__text.is-rendered, diatur landing.js).
+   Tombol lain bisa memakai gaya yang sama dengan kelas .btn--wire (mis. tombol Bagikan di Pos 5). */
+:is(.hero .btn, .btn--wire) {
   --tone: var(--accent);
   --ink: #07070b;
   position: relative;
@@ -242,12 +245,12 @@ main [data-krekit-say] {
   border-radius: 4px;
 }
 
-.hero .btn--ghost {
+:is(.hero .btn--ghost, .btn--wire.btn--ghost) {
   --tone: var(--text);
 }
 
 /* Siku di keempat pojok, sedikit di luar tepi tombol */
-.hero .btn::before {
+:is(.hero .btn, .btn--wire)::before {
   content: '';
   position: absolute;
   inset: -5px;
@@ -267,9 +270,9 @@ main [data-krekit-say] {
 }
 
 /* Ter-render */
-.hero .btn:hover,
-.hero .btn:focus-visible,
-.hero .btn:active,
+:is(.hero .btn, .btn--wire):hover,
+:is(.hero .btn, .btn--wire):focus-visible,
+:is(.hero .btn, .btn--wire):active,
 .hero__text.is-rendered .btn {
   color: var(--ink);
   background: var(--tone);
@@ -278,25 +281,35 @@ main [data-krekit-say] {
 }
 
 /* Tombol kedua ter-render lebih tenang (isi tipis), agar "Mulai belajar" tetap yang utama */
-.hero .btn--ghost:hover,
-.hero .btn--ghost:focus-visible,
-.hero .btn--ghost:active,
+:is(.hero .btn--ghost, .btn--wire.btn--ghost):hover,
+:is(.hero .btn--ghost, .btn--wire.btn--ghost):focus-visible,
+:is(.hero .btn--ghost, .btn--wire.btn--ghost):active,
 .hero__text.is-rendered .btn--ghost {
   color: var(--text);
   background: color-mix(in srgb, var(--tone) 14%, transparent);
 }
 
 /* Siku merapat saat tombol disorot: seperti objek yang dipilih */
-.hero .btn:hover::before,
-.hero .btn:focus-visible::before {
+:is(.hero .btn, .btn--wire):hover::before,
+:is(.hero .btn, .btn--wire):focus-visible::before {
   inset: -3px;
 }
 
-.hero .btn:hover {
-  animation: btn-glitch 0.3s steps(1);
+/* Glitch hanya pada LABEL di dalam tombol, bukan tombolnya. clip-path dan geseran pada tombol itu
+   sendiri ikut memotong area kursor: kursor dianggap keluar, hover hilang, lalu masuk lagi, sehingga
+   glitch berulang tanpa henti. Bingkai tombol tetap diam; efek "naik" .btn:hover juga dimatikan. */
+:is(.hero .btn, .btn--wire):hover {
+  transform: none;
 }
 
-.hero .btn.is-glitching {
+.btn__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+:is(.hero .btn, .btn--wire):hover > .btn__label,
+:is(.hero .btn, .btn--wire).is-glitching > .btn__label {
   animation: btn-glitch 0.3s steps(1);
 }
 
@@ -324,8 +337,8 @@ main [data-krekit-say] {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero .btn:hover,
-  .hero .btn.is-glitching {
+  :is(.hero .btn, .btn--wire):hover > .btn__label,
+  :is(.hero .btn, .btn--wire).is-glitching > .btn__label {
     animation: none;
   }
 }

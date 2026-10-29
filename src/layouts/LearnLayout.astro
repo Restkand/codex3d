@@ -14,6 +14,7 @@
 import '../styles/theme.css'
 import '../site/lesson.css'
 import { SITE } from '../site.config.mjs'
+import SocialMeta from '../components/SocialMeta.astro'
 import { withBase } from '../lib/inline.js'
 import BottomNav from '../components/BottomNav.astro'
 
@@ -42,9 +43,7 @@ const { title, description = SITE.tagline, crumbs = [], greeting, readingProgres
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>{title} · {SITE.name}</title>
     <meta name="description" content={description} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <SocialMeta title={`${title} · ${SITE.name}`} description={description} type={lessonId ? 'article' : 'website'} />
   </head>
   <body class="lesson-page">
     <header class="lbar">

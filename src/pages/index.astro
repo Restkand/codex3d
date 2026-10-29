@@ -14,6 +14,8 @@ import { SITE } from '../site.config.mjs'
 import { TRACKS } from '../lib/sections.js'
 import { withBase } from '../lib/inline.js'
 import BottomNav from '../components/BottomNav.astro'
+import SocialMeta from '../components/SocialMeta.astro'
+import ShareButton from '../components/ShareButton.astro'
 import { LEVELS, LESSON_XP } from '../lib/progress.js'
 import pipeline from '../data/pipeline.json'
 
@@ -37,10 +39,10 @@ const progressItems = docs
     <title>{SITE.name} · Belajar cara game dibuat</title>
     <!-- Judul hero ("Lewat celah ini...") butuh visual; pratinjau tautan memakai kalimat yang lugas -->
     <meta name="description" content="Selesai main? Intip cara game dibuat: engine dan shader, desain, produksi, sampai bisnis studio indie." />
-    <meta property="og:title" content={`${SITE.name} · Belajar cara game dibuat`} />
-    <meta property="og:description" content="Selesai main? Intip cara game dibuat: engine dan shader, desain, produksi, sampai bisnis studio indie." />
-    <meta property="og:type" content="website" />
-    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <SocialMeta
+      title={`${SITE.name} · Belajar cara game dibuat`}
+      description="Selesai main? Intip cara game dibuat: engine dan shader, desain, produksi, sampai bisnis studio indie."
+    />
     <!-- Kelas "js" menyembunyikan teks sampai animasi masuk siap (mencegah kedipan) -->
     <script is:inline>document.documentElement.classList.add('js')</script>
   </head>
@@ -81,8 +83,8 @@ const progressItems = docs
           <h1 class="display display--hero" aria-label="Lewat celah ini, kelihatan cara game dibuat." data-hero-title>Lewat celah ini, <span class="accent" data-hero-wire>kelihatan cara game dibuat.</span></h1>
           <p class="lead">Krekit sudah mengintip duluan. Ikuti dia: dari engine dan shader, desain dan produksi, sampai bisnis studio indie.</p>
           <div class="actions">
-            <a class="btn btn--primary" href={withBase('/belajar/')} data-krekit-say="Pelajaran 1 tidak butuh pengetahuan 3D sebelumnya.">Mulai belajar →</a>
-            <a class="btn btn--ghost" href={withBase('/lab/')} data-krekit-say="Scene ini dibedah di Bab Tambahan Web & Three.js. Tekan H di sana untuk membuka panel pengaturan.">Buka Lab 3D</a>
+            <a class="btn btn--primary" href={withBase('/belajar/')} data-krekit-say="Pelajaran 1 tidak butuh pengetahuan 3D sebelumnya."><span class="btn__label">Mulai belajar →</span></a>
+            <a class="btn btn--ghost" href={withBase('/lab/')} data-krekit-say="Scene ini dibedah di Bab Tambahan Web & Three.js. Tekan H di sana untuk membuka panel pengaturan."><span class="btn__label">Buka Lab 3D</span></a>
           </div>
           <p class="scroll-hint"><span class="only-pointer">Scroll untuk mengikuti Krekit · klik Krekit</span><span class="only-touch">Geser ke atas untuk mengikuti Krekit · ketuk Krekit</span></p>
         </div>
@@ -207,6 +209,10 @@ const progressItems = docs
           <div class="actions" data-reveal>
             <a class="btn btn--primary" href={withBase('/kontribusi/')} data-krekit-say="Koreksi satu kalimat pun sudah membantu.">Cara berkontribusi →</a>
             <a class="btn btn--ghost" href={SITE.repo} data-krekit-say="Semua kodenya terbuka, termasuk kodeku.">Repositori GitHub</a>
+            <ShareButton
+              title={`${SITE.name} · Belajar cara game dibuat`}
+              text="Intip cara game dibuat: engine dan shader, desain, produksi, sampai bisnis studio indie."
+            />
           </div>
           <footer class="site-foot" data-reveal>
             Konten <a href={withBase('/lisensi/')}>CC BY-NC-SA 4.0</a> · Kode MIT · <a href={withBase('/kemitraan/')}>Kemitraan</a> · <a href={withBase('/tentang/')}>Tentang proyek</a>
