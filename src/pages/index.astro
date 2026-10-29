@@ -17,7 +17,7 @@ import pipeline from '../data/pipeline.json'
 
 const docs = await getCollection('docs')
 const termCount = docs.filter((d) => d.data.kind === 'term').length
-const lessonCount = docs.filter((d) => d.data.kind === 'lesson').length
+const lessonsIn = (trackId) => docs.filter((d) => d.data.kind === 'lesson' && d.id.startsWith(`belajar/${trackId}/`)).length
 const trackStatus = (id) => docs.find((d) => d.id === `belajar/${id}`)?.data.status
 const pad2 = (n) => String(n).padStart(2, '0')
 
@@ -32,11 +32,11 @@ const progressItems = docs
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>{SITE.name} · Belajar cara game dibuat, dari gamer untuk gamer</title>
+    <title>{SITE.name} · Belajar cara game dibuat</title>
     <!-- Judul hero ("Lewat celah ini...") butuh visual; pratinjau tautan memakai kalimat yang lugas -->
-    <meta name="description" content="Selesai main? Intip cara game dibuat: engine dan shader, desain, produksi, sampai bisnis studio indie. Gratis dalam bahasa Indonesia, dari gamer untuk gamer." />
+    <meta name="description" content="Selesai main? Intip cara game dibuat: engine dan shader, desain, produksi, sampai bisnis studio indie." />
     <meta property="og:title" content={`${SITE.name} · Belajar cara game dibuat`} />
-    <meta property="og:description" content="Selesai main? Intip cara game dibuat: engine dan shader, desain, produksi, sampai bisnis studio indie. Gratis dalam bahasa Indonesia." />
+    <meta property="og:description" content="Selesai main? Intip cara game dibuat: engine dan shader, desain, produksi, sampai bisnis studio indie." />
     <meta property="og:type" content="website" />
     <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
     <!-- Kelas "js" menyembunyikan teks sampai animasi masuk siap (mencegah kedipan) -->
@@ -76,7 +76,6 @@ const progressItems = docs
       <!-- Pos 0 · Dunia belum di-render (landing.js + dunia.js). Desktop: hero di-pin, Krekit menggelinding. Layar sempit: diorama, ketuk untuk me-render -->
       <section id="mulai" class="section section--split hero" data-section>
         <div class="hero__text">
-          <p class="eyebrow">Gratis · Bahasa Indonesia · Dari gamer, untuk gamer</p>
           <h1 class="display">Lewat celah ini, <span class="accent">kelihatan cara game dibuat.</span></h1>
           <p class="lead">Krekit sudah mengintip duluan. Ikuti dia: dari engine dan shader, desain dan produksi, sampai bisnis studio indie.</p>
           <div class="actions">
@@ -97,7 +96,16 @@ const progressItems = docs
 
       <!-- 01 · Kenapa -->
       <section id="kenapa" class="section section--split section--flip reveal" data-section>
-        <div class="krekit-spot" data-krekit-spot aria-hidden="true"></div>
+        <!-- Pos 1 · Tangga level: anak tangga terbangun mengikuti scroll, Krekit menaikinya (landing.js) -->
+        <div class="krekit-spot krekit-spot--scene" data-krekit-spot aria-hidden="true">
+          <div class="stairs" data-stairs>
+            {['Engine', 'Desain', 'Produksi', 'Bisnis'].map((label, i) => (
+              <div class="stairs__step" data-step style={`--i: ${i}`}>
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
         <div class="section__inner">
           <p class="eyebrow" data-reveal>01 · Kenapa situs ini ada</p>
           <h2 class="display display--md" data-reveal>Belajar berurutan,<br /><span class="accent">dari engine sampai bisnis.</span></h2>
@@ -119,15 +127,25 @@ const progressItems = docs
             </div>
             <div class="krekit-spot krekit-spot--perch" data-krekit-spot aria-hidden="true"></div>
           </div>
-          <div class="tracks">
+          <!-- Pos 2 · Layar pilih level: kartu = node level. Jalur yang sudah ada pelajarannya "ter-render",
+               yang masih kerangka tampil wireframe. Garis penghubung digambar landing.js. -->
+          <div class="tracks" data-level-map>
+            <svg class="tracks__links" aria-hidden="true"><path data-level-path /></svg>
             {
               TRACKS.map((track, i) => (
-                <a class="track-card" href={withBase(`/belajar/${track.id}/`)} data-reveal data-tilt data-krekit-say={track.krekit}>
+                <a
+                  class:list={['track-card', trackStatus(track.id) === 'kerangka' ? 'is-skeleton' : 'is-live']}
+                  href={withBase(`/belajar/${track.id}/`)}
+                  data-reveal
+                  data-tilt
+                  data-level-node
+                  data-krekit-say={track.krekit}
+                >
                   <span class="track-card__num">{pad2(i + 1)}</span>
                   <strong class="track-card__title">{track.title}</strong>
                   <span class="track-card__blurb">{track.blurb}</span>
                   <span class={`track-card__status ${trackStatus(track.id) === 'kerangka' ? 'is-soon' : 'is-live'}`}>
-                    {trackStatus(track.id) === 'kerangka' ? 'Kerangka · terbuka untuk kontribusi' : `${lessonCount} pelajaran tersedia`}
+                    {trackStatus(track.id) === 'kerangka' ? 'Kerangka · terbuka untuk kontribusi' : `${lessonsIn(track.id)} pelajaran tersedia`}
                   </span>
                 </a>
               ))
@@ -142,9 +160,14 @@ const progressItems = docs
           <p class="eyebrow" data-reveal>03 · Kamus</p>
           <h2 class="display display--md" data-reveal><span data-count={termCount}>{termCount}</span> istilah,<br /><span class="accent">saling terhubung.</span></h2>
           <p class="lead" data-reveal>Kamus teknis dengan analogi, demo, dan tautan antar-konsep. Mulai dari perjalanan satu frame:</p>
+          <!-- Pos 3 · Satu frame lewat pipa: kubus berubah per tahap, chip tahap menyala mengikuti scroll (frame-sim.js) -->
+          <figure class="frame-sim" data-frame-sim data-reveal>
+            <canvas class="frame-sim__canvas" aria-hidden="true"></canvas>
+            <figcaption class="frame-sim__caption" data-frame-caption aria-live="polite"></figcaption>
+          </figure>
           <ol class="pipeline-chips" data-reveal>
             {pipeline.map((step, i) => (
-              <li><a href={withBase(step.href)} data-krekit-say={step.krekit}><span>{i + 1}</span>{step.label}</a></li>
+              <li><a href={withBase(step.href)} data-krekit-say={step.krekit} data-frame-step={i} data-sub={step.sub}><span>{i + 1}</span>{step.label}</a></li>
             ))}
           </ol>
           <div class="actions" data-reveal>
@@ -160,10 +183,11 @@ const progressItems = docs
         <div class="section__inner">
           <p class="eyebrow" data-reveal>04 · Prinsip konten</p>
           <h2 class="display display--md" data-reveal>Tiga aturan<br /><span class="accent">untuk setiap halaman.</span></h2>
-          <ul class="principles">
-            <li data-reveal data-krekit-say="Daftar sumber ada di bagian bawah setiap artikel."><b>Bersumber</b><span>Setiap angka, kebijakan platform, dan ketentuan lisensi wajib menautkan sumbernya, lengkap dengan tanggal akses.</span></li>
-            <li data-reveal data-krekit-say="Label draf muncul di bagian paling atas halaman."><b>Ditinjau</b><span>Status setiap halaman ditampilkan terbuka: kerangka, draf, atau ditinjau praktisi.</span></li>
-            <li data-reveal data-krekit-say="Aturannya tertulis lengkap di halaman Standar konten."><b>Netral</b><span>Kerja sama dengan mitra selalu diungkap dan tidak mengubah penilaian di konten edukasi.</span></li>
+          <!-- Pos 4 · Stempel verifikasi: Krekit melompat dan setiap aturan dicap bergantian (landing.js) -->
+          <ul class="principles" data-stamps>
+            <li data-reveal data-krekit-say="Daftar sumber ada di bagian bawah setiap artikel." data-stamp><b>Bersumber</b><span>Setiap angka, kebijakan platform, dan ketentuan lisensi wajib menautkan sumbernya, lengkap dengan tanggal akses.</span></li>
+            <li data-reveal data-krekit-say="Label draf muncul di bagian paling atas halaman." data-stamp><b>Ditinjau</b><span>Status setiap halaman ditampilkan terbuka: kerangka, draf, atau ditinjau praktisi.</span></li>
+            <li data-reveal data-krekit-say="Aturannya tertulis lengkap di halaman Standar konten." data-stamp><b>Netral</b><span>Kerja sama dengan mitra selalu diungkap dan tidak mengubah penilaian di konten edukasi.</span></li>
           </ul>
           <div class="actions" data-reveal>
             <a class="btn btn--ghost" href={withBase('/kontribusi/standar-konten/')}>Baca standar konten</a>
@@ -183,8 +207,7 @@ const progressItems = docs
             <a class="btn btn--ghost" href={SITE.repo} data-krekit-say="Semua kodenya terbuka, termasuk kodeku.">Repositori GitHub</a>
           </div>
           <footer class="site-foot" data-reveal>
-            Konten <a href={withBase('/lisensi/')}>CC BY-NC-SA 4.0</a> · Kode MIT · <a href={withBase('/kemitraan/')}>Kemitraan</a> ·
-            <a href={withBase('/tentang/')}>Tentang proyek</a>
+            Konten <a href={withBase('/lisensi/')}>CC BY-NC-SA 4.0</a> · Kode MIT · <a href={withBase('/kemitraan/')}>Kemitraan</a> · <a href={withBase('/tentang/')}>Tentang proyek</a>
           </footer>
         </div>
       </section>

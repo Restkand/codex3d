@@ -6,6 +6,7 @@ import { createLights } from '../experiment/world/lights.js'
 import { createPost } from '../experiment/post.js'
 import { createKrekit } from './krekit.js'
 import { createDunia } from './dunia.js'
+import { createFrameSim } from './frame-sim.js'
 import { loadProgress, RANKS } from '../lib/progress.js'
 
 /**
@@ -90,6 +91,143 @@ const updateNav = () => topnav.classList.toggle('is-scrolled', window.scrollY > 
 window.addEventListener('scroll', updateNav, { passive: true })
 updateNav()
 
+// ---------- Animasi Pos 1 sampai 4 ----------
+// Berjalan tanpa WebGL. Scene 3D (jika ada) ikut bereaksi lewat sceneHooks yang diisi initScene().
+const sceneHooks = {}
+
+// Pos 1 · Tangga level: anak tangga terbangun satu per satu mengikuti scroll
+const steps = [...document.querySelectorAll('[data-step]')]
+let stairLevel = -1
+function setStairLevel(level) {
+  if (level === stairLevel) return
+  stairLevel = level
+  steps.forEach((step, i) => {
+    step.classList.toggle('is-built', i <= level)
+    step.classList.toggle('is-current', i === level)
+  })
+  sceneHooks.stair?.(steps[level] ?? null)
+}
+if (steps.length) {
+  if (reduceMotion) setStairLevel(steps.length - 1)
+  else
+    ScrollTrigger.create({
+      trigger: '#kenapa',
+      start: 'top 70%',
+      end: 'bottom 70%',
+      onUpdate: (self) => setStairLevel(Math.min(steps.length - 1, Math.floor(self.progress * (steps.length + 0.2)))),
+      onLeaveBack: () => setStairLevel(-1),
+    })
+}
+
+// Pos 2 · Layar pilih level: garis putus-putus menghubungkan node (kartu jalur) secara berurutan.
+// Dihitung dari offsetLeft/Top (posisi layout), sehingga tidak terpengaruh animasi masuk dan tilt kartu.
+const levelMap = document.querySelector('[data-level-map]')
+const levelNodes = [...document.querySelectorAll('[data-level-node]')]
+function layoutLevelLinks() {
+  if (!levelMap) return
+  const svg = levelMap.querySelector('svg')
+  svg.setAttribute('viewBox', `0 0 ${levelMap.offsetWidth} ${levelMap.offsetHeight}`)
+  const box = (el) => ({ l: el.offsetLeft, t: el.offsetTop, r: el.offsetLeft + el.offsetWidth, b: el.offsetTop + el.offsetHeight })
+  let d = ''
+  for (let i = 0; i < levelNodes.length - 1; i++) {
+    const a = box(levelNodes[i])
+    const b = box(levelNodes[i + 1])
+    if (Math.abs(a.t - b.t) < 4) {
+      // Satu baris: garis pendek di celah antar-kartu
+      const y = (a.t + a.b) / 2
+      d += `M${a.r} ${y}H${b.l}`
+    } else {
+      // Pindah baris: dari tepi bawah kartu ini ke tepi atas kartu berikutnya
+      d += `M${(a.l + a.r) / 2} ${a.b}L${(b.l + b.r) / 2} ${b.t}`
+    }
+  }
+  svg.querySelector('[data-level-path]').setAttribute('d', d)
+}
+layoutLevelLinks()
+window.addEventListener('resize', layoutLevelLinks)
+ScrollTrigger.addEventListener('refresh', layoutLevelLinks)
+if (window.matchMedia('(hover: hover)').matches) {
+  levelNodes.forEach((node) => {
+    node.addEventListener('pointerenter', () => sceneHooks.levelNode?.(node))
+    node.addEventListener('pointerleave', () => sceneHooks.levelNode?.(null))
+  })
+}
+
+// Pos 3 · Satu frame lewat pipa: tahap mengikuti scroll, atau dipilih dengan menyorot chip
+const simRoot = document.querySelector('[data-frame-sim]')
+if (simRoot) {
+  const chips = [...document.querySelectorAll('[data-frame-step]')]
+  const sim = createFrameSim(
+    simRoot,
+    chips.map((chip) => ({ label: chip.textContent.replace(/^\d+/, '').trim(), sub: chip.dataset.sub })),
+  )
+  const markChip = () => chips.forEach((chip, i) => chip.classList.toggle('is-active', i === sim.stage))
+  markChip()
+  ScrollTrigger.create({
+    trigger: '#kamus',
+    start: 'top 60%',
+    end: 'bottom 50%',
+    onUpdate: (self) => {
+      sim.setStage(Math.floor(self.progress * chips.length * 0.999))
+      if (!reduceMotion) sim.setAngle(0.5 + self.progress * 2.6)
+      markChip()
+    },
+  })
+  chips.forEach((chip, i) => {
+    const pick = () => {
+      sim.setStage(i)
+      markChip()
+    }
+    chip.addEventListener('pointerenter', pick)
+    chip.addEventListener('focus', pick)
+  })
+}
+
+// Pos 4 · Stempel verifikasi: setiap aturan dicap bergantian saat bagian ini masuk layar
+const stampItems = [...document.querySelectorAll('[data-stamp]')]
+const stamps = stampItems.map((item) => {
+  const stamp = el('span', 'stamp', '✓ Lolos')
+  stamp.setAttribute('aria-hidden', 'true')
+  item.append(stamp)
+  return stamp
+})
+if (stamps.length) {
+  if (reduceMotion) stampItems.forEach((item) => item.classList.add('is-stamped'))
+  else {
+    gsap.set(stamps, { autoAlpha: 0, scale: 1.8, rotate: -16 })
+    const stamping = gsap.timeline({ paused: true, delay: 0.5 })
+    stamps.forEach((stamp, i) => {
+      stamping
+        .call(() => {
+          stampItems[i].classList.add('is-stamped')
+          sceneHooks.stamp?.(i, stamps.length)
+        })
+        .to(stamp, { autoAlpha: 1, scale: 1, rotate: -8, duration: 0.3, ease: 'back.out(3)' }, '<')
+        // Glitch kecil saat cap mendarat
+        .fromTo(stamp, { x: -4 }, { x: 0, duration: 0.18, ease: 'steps(4)' })
+        .to({}, { duration: 0.35 })
+    })
+    ScrollTrigger.create({
+      trigger: '[data-stamps]',
+      start: 'top 70%',
+      onEnter: () => stamping.play(0),
+      onLeaveBack: () => {
+        stamping.pause(0)
+        gsap.set(stamps, { autoAlpha: 0, scale: 1.8, rotate: -16 })
+        stampItems.forEach((item) => item.classList.remove('is-stamped'))
+      },
+    })
+  }
+}
+
+/** Elemen DOM kecil (untuk stempel) */
+function el(tag, className, text) {
+  const node = document.createElement(tag)
+  node.className = className
+  node.textContent = text
+  return node
+}
+
 // ---------- Tahap pertumbuhan Krekit dari progres belajar (localStorage, tanpa server) ----------
 
 function growthStage() {
@@ -161,7 +299,7 @@ function initScene() {
     reduceMotion,
     onSettle: () => {
       // Mendarat: menabrak judul section sampai bergoyang
-      const heading = sections[activeIndex]?.querySelector('.display')
+      const heading = sections[shownIndex]?.querySelector('.display')
       if (heading && !reduceMotion) gsap.fromTo(heading, { x: travelDirection * 7 }, { x: 0, duration: 0.6, ease: 'elastic.out(1, 0.35)' })
     },
   })
@@ -200,8 +338,13 @@ function initScene() {
   let currentScale = 0
   let placed = false
 
-  // ---------- Layar sempit: pindah antara diorama Pos 0 dan bawah layar dengan glitch ----------
+  // ---------- Perpindahan Krekit: selalu teleport dengan glitch, tidak pernah melintasi teks ----------
+  // activeIndex = pos yang sedang dibaca (warna suasana, kalimat). shownIndex = pos tempat Krekit
+  // sedang berdiri; hanya berubah di tengah animasi teleport. Render loop terus menyusulkan
+  // shownIndex ke activeIndex, jadi posisi Krekit konsisten walau scroll dimainkan naik-turun.
+  // Layar sempit: setelah Pos 0 Krekit berjaga di pojok bawah (docked), teleport hanya saat masuk/keluar.
 
+  let shownIndex = 0
   let docked = false
   let swapping = false
   // Pengali skala & intensitas glitch Krekit selama perpindahan (dianimasikan GSAP, dibaca di render loop)
@@ -218,6 +361,7 @@ function initScene() {
 
   function setDocked(value) {
     docked = value
+    shownIndex = activeIndex
     placed = false
     // Berjaga di bawah layar: kanvas transparan di ATAS konten agar Krekit tidak tertutup teks.
     // Kanvas tidak menangkap sentuhan (pointer-events: none), tautan di bawahnya tetap bisa diketuk.
@@ -229,34 +373,111 @@ function initScene() {
   /**
    * Krekit "putus sinyal" di tempat lama (menyusut jadi garis + glitch layar),
    * lalu "tersambung lagi" di tempat baru. Tidak terbang melintasi teks.
+   * skipOut: tempat lama sudah tidak terlihat, jadi langsung muncul di tempat baru
+   * (animasi menghilang di luar layar hanya menunda, dan posisi lamanya bisa sudah tidak valid).
    */
-  function glitchSwap(value) {
+  let swapTimeline = null
+  function glitchTransition(apply, strength = 0.85, { skipOut = false } = {}) {
     if (reduceMotion) {
-      setDocked(value)
+      apply()
       return
     }
     swapping = true
-    post.burst(0.85, 0.55)
-    gsap
-      .timeline({ onComplete: () => (swapping = false) })
-      .to(fx, { jitter: 1, duration: 0.08 })
-      .to(fx, { sy: 0.05, sx: 1.4, duration: 0.2, ease: 'power3.in' })
-      .to(fx, { sx: 0, duration: 0.1, ease: 'power2.in' })
-      .call(() => {
-        setDocked(value)
-        post.burst(0.7, 0.6)
-      })
-      .to({}, { duration: 0.12 })
+    // Kalimat dari pos lama tidak ikut terbawa ke pos baru
+    bubble.hide()
+    const tl = gsap.timeline({
+      onComplete: () => {
+        swapping = false
+        swapTimeline = null
+      },
+    })
+    swapTimeline = tl
+    if (skipOut) {
+      gsap.set(fx, { sx: 0, sy: 0.05, jitter: 1 })
+      apply()
+      post.burst(strength * 0.8, 0.6)
+    } else {
+      post.burst(strength, 0.55)
+      tl.to(fx, { jitter: 1, duration: 0.08 })
+        .to(fx, { sy: 0.05, sx: 1.4, duration: 0.2, ease: 'power3.in' })
+        .to(fx, { sx: 0, duration: 0.1, ease: 'power2.in' })
+        .call(() => {
+          apply()
+          post.burst(strength * 0.8, 0.6)
+        })
+    }
+    tl.to({}, { duration: 0.12 })
       .to(fx, { sx: 1.4, duration: 0.1, ease: 'power2.out' })
       .to(fx, { sx: 1, sy: 1, duration: 0.5, ease: 'elastic.out(1, 0.55)' })
       .to(fx, { jitter: 0, duration: 0.3 }, '-=0.35')
   }
 
+  // Ke pojok bawah saat diorama sudah keluar layar (mis. lompat ke bawah halaman): langsung muncul
+  const glitchSwap = (value) => glitchTransition(() => setDocked(value), 0.85, { skipOut: value && !spotVisible(0) })
+  /** Panggung pos masih (sebagian) terlihat di layar? */
+  function spotVisible(index) {
+    const rect = spots[index].getBoundingClientRect()
+    return rect.bottom > 0 && rect.top < window.innerHeight
+  }
+
+  /** Layar lebar: pindah ke panggung pos yang sedang dibaca */
+  function teleport() {
+    glitchTransition(
+      () => {
+        shownIndex = activeIndex
+        placed = false
+      },
+      0.55,
+      { skipOut: !spotVisible(shownIndex) },
+    )
+  }
+
+  /**
+   * Teleport yang sedang berjalan menuju pos yang sudah lewat (scroll cepat): batalkan,
+   * lalu langsung muncul di pos yang sedang dibaca.
+   */
+  function retargetIfStale() {
+    if (!swapping || compact || shownIndex === activeIndex || spotVisible(shownIndex)) return
+    swapTimeline?.kill()
+    swapping = false
+    teleport()
+  }
+
+  // Pijakan khusus di dalam panggung: anak tangga Pos 1, atau kolom kartu yang disorot di Pos 2
+  let stairPerch = null
+  let nodePerch = null
+  const sectionId = () => sections[shownIndex]?.id
+
   function spotTarget() {
-    const rect = spots[activeIndex].getBoundingClientRect()
-    screenToWorld(rect.left + rect.width / 2, rect.bottom, target)
+    const rect = spots[shownIndex].getBoundingClientRect()
+    if (sectionId() === 'kenapa' && stairPerch) {
+      // Berdiri di atas anak tangga, lebih kecil agar tangganya tetap terlihat
+      const step = stairPerch.getBoundingClientRect()
+      screenToWorld(step.left + step.width / 2, step.top, target)
+      return (rect.height * 0.36 * unitsPerPixel(target)) / (krekit.height + 0.6)
+    }
+    // Pos 2: tetap di atas deretan kartu, bergeser ke kolom kartu yang disorot
+    const node = sectionId() === 'jalur' && nodePerch ? nodePerch.getBoundingClientRect() : null
+    screenToWorld(node ? node.left + node.width / 2 : rect.left + rect.width / 2, rect.bottom, target)
     // Tinggi Krekit (plus ruang untuk pecahan & aura) mengikuti tinggi panggung
     return (rect.height * unitsPerPixel(target)) / (krekit.height + 0.6)
+  }
+
+  // Tangga mungkin sudah terbangun sebelum scene siap
+  stairPerch = document.querySelector('[data-step].is-current')
+  sceneHooks.stair = (step) => {
+    const climbed = step && step !== stairPerch
+    stairPerch = step
+    if (climbed && !compact && sectionId() === 'kenapa') krekit.jump()
+  }
+  sceneHooks.levelNode = (node) => {
+    if (node && node !== nodePerch && !compact && sectionId() === 'jalur') krekit.jump()
+    nodePerch = node
+  }
+  // Stempel pertama: Krekit melompat; stempel terakhir: tersenyum puas
+  sceneHooks.stamp = (i, total) => {
+    if (i === 0) krekit.jump()
+    if (i === total - 1) gsap.delayedCall(0.6, krekit.smile)
   }
 
   // ---------- Layar sempit, setelah Pos 0: Krekit kecil di pojok kanan bawah ----------
@@ -381,7 +602,7 @@ function initScene() {
   function updateWaypoints(fade) {
     for (const [i, w] of waypoints.entries()) {
       const next = waypoints[i + 1]?.t ?? Infinity
-      const on = !compact && activeIndex === 0 && fade > 0.5 && pathT >= w.t - 0.08 && pathT < next - 0.08
+      const on = !compact && shownIndex === 0 && fade > 0.5 && pathT >= w.t - 0.08 && pathT < next - 0.08
       w.el.classList.toggle('is-on', on)
       if (!on) continue
       dunia.labelPoint(w.t, waypointPoint).project(camera)
@@ -429,7 +650,7 @@ function initScene() {
       // Gelembung masih tampil (mis. komentar hover), atau Krekit sedang tidak terlihat:
       // tunggu sebentar, jangan memotong dan jangan "bicara" tanpa terlihat
       // Ajakan mengetuk diorama tidak relevan saat Krekit sedang berjaga di bawah layar
-      if (bubble.isBusy() || !bubble.isVisible() || (index === 0 && docked)) {
+      if (bubble.isBusy() || !bubble.isVisible() || swapping || (!compact && shownIndex !== index) || (index === 0 && docked)) {
         dwellCall = gsap.delayedCall(1, trySpeak)
         return
       }
@@ -488,7 +709,7 @@ function initScene() {
       setRenderLevel((renderLevel + 1) % LEVEL_LINES.length)
       return
     }
-    krekit.jump()
+    krekit.jump({ tap: true })
         if (!reduceMotion && !docked) post.burst(0.4, 0.35)
     bubble.say(CLICK_LINES[Math.floor(Math.random() * CLICK_LINES.length)], 1.8)
   })
@@ -509,8 +730,13 @@ function initScene() {
     // Pos 0: ikuti jalan dunia greybox (desktop) atau berdiri di diorama (layar sempit).
     // Section lain: kejar panggung aktif (desktop) atau berjaga di bawah layar (layar sempit).
     // Smoothing tidak bergantung frame rate (lihat Kamus: Delta Time)
-    if (!swapping && wantDocked() !== docked) glitchSwap(!docked)
-    const onPath = activeIndex === 0 && !docked
+    retargetIfStale()
+    if (!swapping) {
+      if (wantDocked() !== docked) glitchSwap(!docked)
+      else if (compact) shownIndex = activeIndex
+      else if (shownIndex !== activeIndex) teleport()
+    }
+    const onPath = shownIndex === 0 && !docked
     const scale = onPath ? heroTarget(target) : docked ? dockTarget() : spotTarget()
     if (!onPath) target.z = 0
     if (!placed || reduceMotion) {
@@ -624,6 +850,13 @@ function createBubble({ onSay } = {}) {
       render()
       typing = gsap.to(progress, { chars: text.length, duration: reduceMotion ? 0 : text.length * CHAR_DELAY, ease: 'none', onUpdate: render })
       hideCall = gsap.delayedCall((reduceMotion ? 0 : text.length * CHAR_DELAY) + hold, () => gsap.to(box, { autoAlpha: 0, duration: 0.4 }))
+    },
+    /** Sembunyikan segera (mis. saat Krekit teleport ke pos lain) */
+    hide() {
+      hideCall?.kill()
+      typing?.kill()
+      visibleUntil = 0
+      gsap.to(box, { autoAlpha: 0, duration: 0.15, overwrite: true })
     },
     /** true jika kepala Krekit sedang terlihat, sehingga gelembungnya boleh tampil */
     isVisible: () => headVisible,

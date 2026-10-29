@@ -661,11 +661,12 @@ export function createKrekit(scene, { reduceMotion = false, onSettle } = {}) {
   // ---------- Lompat (klik) & sapaan ----------
   // Diketuk berkali-kali dalam waktu singkat: setelah mendarat, Krekit pusing
   let recentJumps = []
-  function jump() {
+  /** tap = lompatan karena pengunjung mengetuk Krekit; hanya ini yang dihitung untuk efek pusing */
+  function jump({ tap = false } = {}) {
     if (reduceMotion) return
     // Ketukan dihitung walau Krekit masih di udara
     const now = performance.now()
-    recentJumps = recentJumps.filter((time) => now - time < 4000).concat(now)
+    if (tap) recentJumps = recentJumps.filter((time) => now - time < 4000).concat(now)
     if (recentJumps.length >= 3) {
       recentJumps = []
       // Tunggu sampai mendarat dan ekspresi lompat selesai

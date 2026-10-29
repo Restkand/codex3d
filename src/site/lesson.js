@@ -348,7 +348,7 @@ function initCompanion() {
     ndc.set(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1)
     raycaster.setFromCamera(ndc, camera)
     if (!raycaster.intersectObjects(krekit.hitMeshes, false).length) return
-    krekit.jump()
+    krekit.jump({ tap: true })
     clicks++
     const tip = lines[currentSection]
     if (tip && clicks % 2 === 1) react(tip, 3.5)
