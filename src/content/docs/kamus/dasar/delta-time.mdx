@@ -59,7 +59,7 @@ Parameter `delta` pada `_process(delta)`, yaitu waktu dalam detik sejak pemanggi
 
 ## Pelajari lebih dalam
 
-Dua pola waktu yang perlu dibedakan. **Berbasis waktu total**: nilai = f(waktu sejak awal), misalnya `y = sin(waktu)`. Hasilnya selalu sama untuk waktu yang sama, cocok untuk gerakan berulang. **Berbasis delta**: nilai += kecepatan × delta. Nilainya menumpuk, cocok untuk kecepatan yang bisa berubah atau dikendalikan input.
+Gerakan bisa dihitung dengan dua pola waktu. Pola **berbasis waktu total** menghitung nilai = f(waktu sejak awal), misalnya `y = sin(waktu)`. Hasilnya selalu sama untuk waktu yang sama, sehingga cocok untuk gerakan berulang. Pola **berbasis delta** menambahkan nilai += kecepatan × delta. Nilainya menumpuk, sehingga cocok untuk kecepatan yang bisa berubah atau dikendalikan input.
 
 Gerakan "mengejar dengan halus" seperti `x += (target − x) × 0.1` per frame juga bergantung frame rate. Versi yang adil di semua frame rate: `x += (target − x) × (1 − exp(−k × delta))`, dengan k = seberapa cepat mengejar (misalnya 10).
 

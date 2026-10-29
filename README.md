@@ -1,6 +1,6 @@
 # Krekit
 
-Wadah belajar gratis tentang dunia developer game, dari teori di dalam engine sampai bisnis studio indie. Materinya disusun sebagai jalur belajar, setiap klaim ada sumbernya, dan komunitas bisa ikut mengoreksi. Dari gamer, untuk gamer.
+Wadah belajar tentang dunia developer game, dari teori di dalam engine sampai bisnis studio indie. Materinya disusun sebagai jalur belajar, setiap klaim ada sumbernya, dan komunitas bisa ikut mengoreksi.
 
 > Krekit adalah nama situs sekaligus nama maskotnya: telur yang mengintip dari celah cangkang. Namanya dari bunyi "krek" saat cangkang retak, dan terbaca seperti *crack it*.
 
@@ -25,7 +25,7 @@ npm run preview  # pratinjau hasil build
 
 ```
 src/
-  content/docs/      # SEMUA konten (Markdown/MDX): belajar/, kamus/, kontribusi/, tentang, progres
+  content/docs/      # Seluruh konten (Markdown/MDX): belajar/, kamus/, kontribusi/, tentang, progres
   content.config.ts  # Skema frontmatter konten
   components/        # Komponen konten: Aside, EngineTabs, Demo, Quiz, LinkCard, diagram
   layouts/           # LearnLayout: bilah atas, navigasi samping, Krekit pendamping
@@ -35,16 +35,19 @@ src/
   lib/               # Daftar jalur & bab, progres belajar, demo kanvas, utilitas
   site.config.mjs    # Nama situs, URL repo, base path (ubah di sini saat rebrand)
 astro.config.mjs     # Konfigurasi Astro: MDX, blok kode (Expressive Code), plugin tautan
-docs/                # Catatan internal, mis. daftar verifikasi tertunda
 ```
 
 Dibangun dengan [Astro](https://astro.build/), [Expressive Code](https://expressive-code.com/), [Three.js](https://threejs.org/), dan [GSAP](https://gsap.com/).
 
 ## Berkontribusi
 
-Kontribusi dari programmer maupun non-programmer sangat diterima: koreksi, artikel, studi kasus, ulasan praktisi, terjemahan. Mulai dari [CONTRIBUTING.md](CONTRIBUTING.md).
+Programmer maupun bukan bisa ikut berkontribusi lewat koreksi, artikel, studi kasus, ulasan praktisi, atau terjemahan. Mulai dari [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Lisensi
 
-- **Kode**: [MIT](LICENSE)
-- **Konten** (`src/content/`): lisensi sedang disiapkan, semua hak dilindungi. Lihat [LICENSE-CONTENT.md](LICENSE-CONTENT.md).
+- **Konten** (`src/content/`): [CC BY-NC-SA 4.0](LICENSE-CONTENT.md). Terbuka untuk komunitas; pemakaian komersial lewat [kemitraan resmi](https://restkand.github.io/krekit/kemitraan/).
+- **Kode**, termasuk potongan kode di dalam pelajaran: [MIT](LICENSE)
+- **Nama, logo, dan maskot Krekit**: [kebijakan merek](TRADEMARK.md)
+- **Kontributor**: [Perjanjian Lisensi Kontributor](CLA.md)
+
+Penjelasan dan tanya-jawab lisensi ada di halaman [Lisensi](https://restkand.github.io/krekit/lisensi/).

@@ -36,10 +36,10 @@ import EngineTabs from '~/components/EngineTabs.astro'
 
 Monitor memperbarui gambarnya dengan ritme tetap, misalnya 60 kali per detik di layar 60 Hz. Jika game mengganti gambar tepat saat monitor sedang menampilkan, bagian atas layar memperlihatkan frame lama dan bagian bawah frame baru. Hasilnya garis patahan horizontal yang disebut **tearing**.
 
-**V-Sync** (*vertical sync*) mencegahnya: frame baru baru ditampilkan saat monitor selesai menampilkan gambar sebelumnya. Akibatnya FPS tidak bisa melebihi refresh rate monitor. Ada dua harga yang perlu kamu ketahui:
+**V-Sync** (*vertical sync*) mencegahnya: frame baru hanya ditampilkan setelah monitor selesai menampilkan gambar sebelumnya. Akibatnya FPS tidak bisa melebihi refresh rate monitor. V-Sync juga punya dua harga:
 
-- **Input lag sedikit bertambah**, karena frame yang sudah jadi harus menunggu giliran tampil.
-- **Frame yang terlambat sedikit saja harus menunggu satu refresh penuh.** Di layar 60 Hz, frame yang butuh 18 ms tidak tampil di 16,7 ms, tetapi di 33,3 ms. Jika itu terus terjadi, FPS jatuh ke sekitar 30, bukan 55.
+- Input lag sedikit bertambah, karena frame yang sudah jadi harus menunggu giliran tampil.
+- Frame yang terlambat sedikit saja harus menunggu satu refresh penuh. Di layar 60 Hz, frame yang butuh 18 ms tidak tampil di 16,7 ms, tetapi di 33,3 ms. Jika itu terus terjadi, FPS jatuh ke sekitar 30, bukan 55.
 
 **Batas frame rate** (*frame cap*) adalah hal terpisah: game sengaja menunggu agar tidak menggambar lebih dari N frame per detik. Gunanya menghemat baterai dan panas, misalnya di menu atau di perangkat mobile. Cara ini mengandalkan timer perangkat lunak, sehingga jarak antarframe bisa sedikit tidak rata dan tidak mencegah tearing.
 
@@ -56,7 +56,7 @@ Bus yang berangkat dari halte setiap 16,7 menit tepat. Penumpang (frame) yang te
 
 `QualitySettings.vSyncCount`, di editor **Project Settings → Quality → VSync Count**. Nilai 0 berarti V-Sync mati, 1 (bawaan) berarti sinkron dengan setiap refresh, 2 berarti setiap refresh kedua (30 FPS di layar 60 Hz), dan seterusnya sampai 4.
 
-Untuk batas frame rate, pakai `Application.targetFrameRate` (bawaan -1). Nilai ini **diabaikan** di desktop dan web selama `vSyncCount` lebih dari 0. Sebaliknya, Android dan iOS selalu mengabaikan `vSyncCount`, sehingga di sana `targetFrameRate` yang dipakai. Dengan nilai bawaan, game mobile berjalan di **30 FPS** untuk menghemat baterai, jadi atur `targetFrameRate` jika ingin 60. Dokumentasi Unity menyarankan `vSyncCount` bila memungkinkan, karena `targetFrameRate` bisa menimbulkan *microstutter*.
+Untuk batas frame rate, pakai `Application.targetFrameRate` (bawaan -1). Nilai ini diabaikan di desktop dan web selama `vSyncCount` lebih dari 0. Sebaliknya, Android dan iOS selalu mengabaikan `vSyncCount`, sehingga di sana `targetFrameRate` yang dipakai. Dengan nilai bawaan, game mobile berjalan di 30 FPS untuk menghemat baterai, jadi atur `targetFrameRate` jika ingin 60. Dokumentasi Unity menyarankan `vSyncCount` bila memungkinkan, karena `targetFrameRate` bisa menimbulkan *microstutter*.
 
 </div>
 <div slot="unreal">

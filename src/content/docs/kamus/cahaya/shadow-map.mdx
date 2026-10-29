@@ -75,7 +75,7 @@ Bayangan omni dan spot berbagi satu *shadow atlas*, yang diatur di Project Setti
 
 Kualitas bayangan ditentukan oleh **kepadatan**: berapa piksel shadow map untuk setiap meter dunia. Shadow map 2048 piksel yang menutupi area 20 meter berarti sekitar 100 piksel per meter. Untuk matahari yang menyinari seluruh dunia, satu shadow map tidak cukup. Solusinya **cascade**: beberapa shadow map berlapis, yang tajam untuk area dekat kamera dan yang kasar untuk area jauh.
 
-Biaya tiap jenis lampu berbeda. Directional dan spot butuh satu render tambahan (atau satu per cascade). **Point light dengan shadow map kubus butuh enam**, satu untuk setiap sisi kubus, sehingga sangat mahal. Teknik alternatif seperti *dual paraboloid* cukup dua render, dengan harga bayangan sedikit terdistorsi.
+Biaya tiap jenis lampu berbeda. Directional dan spot butuh satu render tambahan (atau satu per cascade). Point light dengan shadow map kubus butuh enam, satu untuk setiap sisi kubus, sehingga sangat mahal. Teknik alternatif seperti *dual paraboloid* cukup dua render, dengan harga bayangan sedikit terdistorsi.
 
 Untuk lampu dan objek yang tidak bergerak, bayangan bisa **dipanggang** (*baked*) ke tekstur lightmap sebelum game dijalankan. Hasilnya lebih halus dan biaya per frame-nya hampir nol, tetapi tidak bereaksi pada objek yang bergerak. Unity menyebutnya Light Mode Baked/Mixed, Unreal memakai lampu Static/Stationary, dan Godot memakai `LightmapGI` dengan lampu ber-Bake Mode **Static**. Penjelasan lengkapnya ada di [Global Illumination & Lightmap](/kamus/cahaya/global-illumination/).
 

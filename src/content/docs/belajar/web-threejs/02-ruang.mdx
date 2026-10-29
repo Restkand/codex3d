@@ -139,10 +139,10 @@ export function createObjects(scene) {
   scene.add(scrollGroup)
 ```
 
-- **L15–17** · `THREE.Group` adalah objek kosong yang tidak terlihat. Gunanya sebagai "engsel" untuk transform.
-- **L18–20** · Group disusun bertingkat: scroll → intro → tilt. Mesh nanti ditambahkan ke tiltGroup (baris 39).
+- **L15 sampai 17** · `THREE.Group` adalah objek kosong yang tidak terlihat. Gunanya sebagai "engsel" untuk transform.
+- **L18 sampai 20** · Group disusun bertingkat: scroll → intro → tilt. Mesh nanti ditambahkan ke tiltGroup (baris 39).
 
-**Kenapa repot-repot memakai 4 lapis?** Bayangkan ScrollTrigger dan panel GUI sama-sama menulis ke `introGroup.position.x`. Setiap frame, siapa pun yang menulis terakhir akan menimpa yang lain, sehingga objek melompat-lompat dan bug-nya sulit dilacak. Dengan lapisan terpisah, setiap sistem punya propertinya sendiri, dan hierarki **menjumlahkan** efeknya secara alami. Prinsip ini disebut [satu properti, satu pengendali](/kamus/interaksi/layered-control/).
+Untuk melihat alasan proyek ini memakai 4 lapis, bayangkan ScrollTrigger dan panel GUI sama-sama menulis ke `introGroup.position.x`. Setiap frame, siapa pun yang menulis terakhir akan menimpa yang lain, sehingga objek melompat-lompat dan bug-nya sulit dilacak. Dengan lapisan terpisah, setiap sistem punya propertinya sendiri, dan hierarki **menjumlahkan** efeknya secara alami. Prinsip ini disebut [satu properti, satu pengendali](/kamus/interaksi/layered-control/).
 
 ## Local space vs world space
 
@@ -199,14 +199,14 @@ Event mouse memberi posisi dalam piksel (`clientX`, `clientY`), dengan (0,0) di 
 
 - **L27** · Tiga langkah: `/ innerWidth` → 0..1, `× 2` → 0..2, `− 1` → −1..1.
 - **L28** · Sama seperti baris 27, lalu dibalik dengan tanda minus karena arah Y di DOM berlawanan dengan 3D.
-- **L32–33** · NDC (−1..1) dikali `maxTilt` (0,5 rad), jadi rotasi maksimal ±28,6°. Hasilnya dikirim ke quickTo, yang mengejar nilai itu dengan halus.
-- **L35–36** · Kamera digeser sedikit ke arah yang sama (parallax). Karena kamera selalu `lookAt(0,0,0)`, objek tampak dilihat dari sudut yang sedikit berbeda.
+- **L32 sampai 33** · NDC (−1..1) dikali `maxTilt` (0,5 rad), jadi rotasi maksimal ±28,6°. Hasilnya dikirim ke quickTo, yang mengejar nilai itu dengan halus.
+- **L35 sampai 36** · Kamera digeser sedikit ke arah yang sama (parallax). Karena kamera selalu `lookAt(0,0,0)`, objek tampak dilihat dari sudut yang sedikit berbeda.
 
 <Demo name="ndc" caption={"Gerakkan kursor di dalam kotak dan bandingkan angka piksel dengan NDC."} />
 
 ## Kesalahan umum
 
-Kesalahan-kesalahan berikut sering terjadi, dan banyak di antaranya **tidak memunculkan error**. Mengenalinya lebih awal akan menghemat banyak waktu debugging.
+Kesalahan berikut sering terjadi, dan banyak di antaranya **tidak memunculkan error**, sehingga lama ditemukan saat debugging.
 
 ### Objek berputar ke sudut yang aneh
 

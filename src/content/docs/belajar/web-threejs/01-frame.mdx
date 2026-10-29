@@ -125,13 +125,13 @@ export function createSetup(canvas) {
   renderer.toneMapping = THREE.ACESFilmicToneMapping
 ```
 
-- **L15–16** · Scene dibuat dan diberi warna latar. Warna ini yang terlihat di area yang tidak tertutup objek apa pun.
+- **L15 sampai 16** · Scene dibuat dan diberi warna latar. Warna ini yang terlihat di area yang tidak tertutup objek apa pun.
 - **L18** · [Fog](/kamus/cahaya/fog/) `(warna, near, far)`: objek mulai memudar pada jarak 8 unit dari kamera dan hilang total pada jarak 20. Warnanya sengaja sama dengan latar, sehingga ujung lantai "larut" ke latar.
-- **L24** · Kamera: fov 45°, aspect diambil dari ukuran jendela, near 0,1, far 100. Jangan membuat rentang near–far terlalu ekstrem (mis. 0.0001 sampai 100000), karena presisi depth buffer akan terbagi ke rentang yang sangat lebar dan permukaan yang berdekatan bisa berkedip (z-fighting).
+- **L24** · Kamera: fov 45°, aspect diambil dari ukuran jendela, near 0,1, far 100. Jangan membuat rentang antara near dan far terlalu ekstrem (mis. 0.0001 sampai 100000), karena presisi depth buffer akan terbagi ke rentang yang sangat lebar dan permukaan yang berdekatan bisa berkedip (z-fighting).
 - **L25** · Kamera mundur 6 unit ke arah +Z (ke arah Anda) dan naik 0,6. Objek ada di titik 0,0,0, jadi kamera berada di depannya. Koordinat dibahas di Pelajaran 2.
 - **L26** · Menambahkan kamera ke scene sebenarnya opsional. Ini baru diperlukan jika kamera punya anak (misalnya lampu yang menempel di kamera).
 - **L28** · Renderer memakai `<canvas>` yang sudah ada di halaman (`src/pages/eksperimen.astro`), bukan membuat kanvas baru. `antialias` menghaluskan tepi bergerigi.
-- **L30–34** · Pengaturan global: bayangan dan [Tone Mapping](/kamus/cahaya/tone-mapping/). Diatur sekali di sini dan berlaku untuk semua objek. Keduanya dibahas di Pelajaran 3.
+- **L30 sampai 34** · Pengaturan global: bayangan dan [Tone Mapping](/kamus/cahaya/tone-mapping/). Diatur sekali di sini dan berlaku untuk semua objek. Keduanya dibahas di Pelajaran 3.
 
 ## Anggaran 16,7 milidetik
 
@@ -139,7 +139,7 @@ Monitor 60 Hz menyegarkan gambarnya 60 kali per detik, berarti 1000 ÷ 60 ≈ **
 
 <BudgetDiagram />
 
-Jika satu frame butuh 18 ms, gambarnya belum siap saat layar refresh, sehingga layar menampilkan gambar lama sekali lagi. Jika itu terjadi terus-menerus, gambar baru hanya muncul setiap refresh **kedua**. Akibatnya FPS tidak turun ke 55, tetapi **langsung jatuh ke sekitar 30**. Angka "tepat 30" yang Anda lihat saat laptop memakai baterai berasal dari mekanisme yang sama: browser sengaja hanya mengambil separuh refresh layar untuk menghemat daya.
+Jika satu frame butuh 18 ms, gambarnya belum siap saat layar refresh, sehingga layar menampilkan gambar lama sekali lagi. Jika itu terjadi terus-menerus, gambar baru hanya muncul setiap refresh kedua. Akibatnya FPS tidak turun ke 55, tetapi **langsung jatuh ke sekitar 30**. Angka "tepat 30" yang Anda lihat saat laptop memakai baterai berasal dari mekanisme yang sama: browser sengaja hanya mengambil separuh refresh layar untuk menghemat daya.
 
 - **Waktu CPU habis** karena JavaScript yang berat, atau terlalu banyak objek terpisah (setiap objek minimal satu draw call).
 - **Waktu GPU habis** karena terlalu banyak piksel ([Pixel Ratio](/kamus/web/pixel-ratio/) tinggi), shader yang berat, atau efek layar penuh (post-processing).
@@ -165,8 +165,8 @@ function tick(timestamp) {
 
 - **L66** · Browser memanggil `tick` dengan `timestamp`, yaitu waktu (milidetik) saat frame ini dimulai.
 - **L67** · Mulai mengukur waktu CPU frame ini untuk panel Performance.
-- **L68–70** · `THREE.Timer` mengubah timestamp menjadi dua angka berguna: **delta** (detik sejak frame sebelumnya) dan **elapsed** (detik sejak awal).
-- **L73–74** · Rotasi bertambah sebesar *kecepatan × delta*. Kecepatannya dalam radian per **detik**, bukan per frame. Ini dibahas di bagian berikutnya.
+- **L68 sampai 70** · `THREE.Timer` mengubah timestamp menjadi dua angka berguna: **delta** (detik sejak frame sebelumnya) dan **elapsed** (detik sejak awal).
+- **L73 sampai 74** · Rotasi bertambah sebesar *kecepatan × delta*. Kecepatannya dalam radian per **detik**, bukan per frame. Ini dibahas di bagian berikutnya.
 - **L76** · Posisi Y ditentukan langsung dari waktu lewat fungsi sinus, sehingga objek naik-turun. Fungsi sinus dibahas di Pelajaran 2.
 
 ```js title="src/experiment/main.js" showLineNumbers startLineNumber=87
@@ -183,7 +183,7 @@ function tick(timestamp) {
 requestAnimationFrame(tick)
 ```
 
-- **L89–91** · Inilah "jepretan" frame ini. Biasanya `renderer.render()` langsung ke layar. Jalur composer hanya dipakai selama efek glitch (dibahas di pelajaran post-processing).
+- **L89 sampai 91** · Inilah "jepretan" frame ini. Biasanya `renderer.render()` langsung ke layar. Jalur composer hanya dipakai selama efek glitch (dibahas di pelajaran post-processing).
 - **L94** · **Kunci loop:** di akhir frame, `tick` menjadwalkan dirinya sendiri untuk frame berikutnya.
 - **L97** · Pemicu pertama. Tanpa baris ini, loop tidak pernah dimulai.
 
@@ -228,18 +228,18 @@ Saat tab disembunyikan, requestAnimationFrame berhenti. Ketika tab dibuka lagi, 
   window.addEventListener('resize', resize)
 ```
 
-- **L43–44** · Kamera menyimpan hasil hitungan proyeksinya (matriks proyeksi) dan **tidak** menghitung ulang otomatis karena jarang berubah. Setiap kali `aspect`, `fov`, `near`, atau `far` diubah, `updateProjectionMatrix()` wajib dipanggil.
+- **L43 sampai 44** · Kamera menyimpan hasil hitungan proyeksinya (matriks proyeksi) dan **tidak** menghitung ulang otomatis karena jarang berubah. Setiap kali `aspect`, `fov`, `near`, atau `far` diubah, `updateProjectionMatrix()` wajib dipanggil.
 - **L46** · Mengubah ukuran kanvas. Kanvas punya dua ukuran: **ukuran tampil** (CSS) dan **resolusi gambar** (jumlah piksel yang benar-benar dirender).
 - **L47** · Resolusi gambar = ukuran tampil × [Pixel Ratio](/kamus/web/pixel-ratio/). Dibatasi 1,5 agar GPU tidak kewalahan di layar HiDPI.
-- **L50–51** · Dipanggil sekali di awal, lalu setiap kali jendela berubah ukuran.
+- **L50 sampai 51** · Dipanggil sekali di awal, lalu setiap kali jendela berubah ukuran.
 
-Kenapa pixel ratio sangat berpengaruh? Karena jumlah piksel naik **kuadratik**. Pixel ratio 2 bukan 2× lebih berat, melainkan 4× (lebar 2× dan tinggi 2×). Setiap piksel tambahan berarti fragment shader dijalankan sekali lagi.
+Pixel ratio sangat berpengaruh karena jumlah piksel naik **kuadratik**: pixel ratio 2 membuat beban 4× lebih berat, bukan 2× (lebar 2× dan tinggi 2×). Setiap piksel tambahan berarti fragment shader dijalankan sekali lagi.
 
 <Demo name="pixelratio" caption={"Geser pixel ratio dan perhatikan berapa kali lipat jumlah piksel yang harus digambar."} />
 
 ## Kesalahan umum
 
-Kesalahan-kesalahan berikut sering terjadi, dan banyak di antaranya **tidak memunculkan error**. Mengenalinya lebih awal akan menghemat banyak waktu debugging.
+Kesalahan berikut sering terjadi, dan banyak di antaranya **tidak memunculkan error**, sehingga lama ditemukan saat debugging.
 
 ### Objek tidak bergerak, padahal nilainya berubah
 

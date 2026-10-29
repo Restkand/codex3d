@@ -95,7 +95,7 @@ import ShadowDiagram from '~/components/diagrams/ShadowDiagram.astro'
 
 ## Geometri: titik dan segitiga
 
-Geometri adalah daftar [titik](/kamus/geometri/vertex/) beserta aturan bagaimana titik-titik itu membentuk [segitiga](/kamus/geometri/triangle/). Kenapa segitiga? Karena tiga titik **selalu** membentuk bidang datar, tidak mungkin terlipat. Ini membuat GPU bisa menggambarnya dengan sangat cepat dan pasti. Bola yang tampak mulus pun sebenarnya kumpulan segitiga datar yang sangat banyak.
+Geometri adalah daftar [titik](/kamus/geometri/vertex/) beserta aturan bagaimana titik-titik itu membentuk [segitiga](/kamus/geometri/triangle/). Segitiga dipakai karena tiga titik selalu membentuk bidang datar dan tidak mungkin terlipat, sehingga GPU bisa menggambarnya dengan sangat cepat dan pasti. Bola yang tampak mulus pun sebenarnya kumpulan segitiga datar yang sangat banyak.
 
 Objek utama proyek memakai `IcosahedronGeometry(1, 1)`: jari-jari 1 dan detail 1. Icosahedron dasar punya 20 segitiga; detail 1 memecah setiap segitiga menjadi 4, jadi totalnya **80 segitiga**.
 
@@ -154,8 +154,8 @@ Pada [flat shading](/kamus/geometri/flat-shading/), setiap segitiga memakai satu
 ```
 
 - **L23** · Geometri dibuat sekali. Satu geometri boleh dipakai oleh banyak mesh sekaligus.
-- **L28–31** · Warna kuning, cukup mengilap (0,35), sedikit logam (0,2), dan flat shading untuk gaya bersegi.
-- **L34–35** · [Emissive](/kamus/geometri/emissive/) adalah warna yang dipancarkan sendiri. Nilainya 0 dulu, lalu dinaikkan GSAP saat hover sehingga objek tampak "menyala".
+- **L28 sampai 31** · Warna kuning, cukup mengilap (0,35), sedikit logam (0,2), dan flat shading untuk gaya bersegi.
+- **L34 sampai 35** · [Emissive](/kamus/geometri/emissive/) adalah warna yang dipancarkan sendiri. Nilainya 0 dulu, lalu dinaikkan GSAP saat hover sehingga objek tampak "menyala".
 - **L37** · Mesh = geometri + material. Satu baris ini yang membuat objek benar-benar ada.
 - **L38** · Objek ini **memberi** bayangan. Lantai di baris 48 **menerima** bayangan.
 
@@ -204,7 +204,7 @@ Ada **empat syarat** dan semuanya wajib. Jika salah satu terlupa, bayangan tidak
 ```
 
 - **L20** · Resolusi shadow map 1024 × 1024. Makin besar, tepi bayangan makin tajam, tetapi memori dan waktu render naik.
-- **L22–26** · Tahap 1 memakai "kamera" milik cahaya berbentuk kotak (ortografis) selebar 8 × 8 unit. Objek di luar kotak ini tidak menghasilkan bayangan. Jika kotaknya terlalu besar, 1024 piksel tersebar ke area luas dan bayangan jadi buram.
+- **L22 sampai 26** · Tahap 1 memakai "kamera" milik cahaya berbentuk kotak (ortografis) selebar 8 × 8 unit. Objek di luar kotak ini tidak menghasilkan bayangan. Jika kotaknya terlalu besar, 1024 piksel tersebar ke area luas dan bayangan jadi buram.
 - **L28** · Keterbatasan presisi bisa membuat permukaan "membayangi dirinya sendiri" sehingga muncul garis-garis ([shadow acne](/kamus/cahaya/shadow-acne/)). `normalBias` menggeser titik perbandingan sedikit ke luar.
 
 Biayanya: setiap objek pemberi bayangan digambar **dua kali** per frame. Itu sebabnya panel Performance menunjukkan 4 draw call untuk 3 objek yang terlihat.
@@ -217,7 +217,7 @@ Selain itu, perhitungan cahaya dilakukan di ruang warna **linear** (akurat secar
 
 ## Kesalahan umum
 
-Kesalahan-kesalahan berikut sering terjadi, dan banyak di antaranya **tidak memunculkan error**. Mengenalinya lebih awal akan menghemat banyak waktu debugging.
+Kesalahan berikut sering terjadi, dan banyak di antaranya **tidak memunculkan error**, sehingga lama ditemukan saat debugging.
 
 ### Objek hitam total
 

@@ -24,7 +24,7 @@ import EngineTabs from '~/components/EngineTabs.astro'
 
 Menembakkan **sinar** tak terlihat dari satu titik ke satu arah, lalu mencari apa yang pertama kali tertabrak. Hasilnya biasanya berisi objek yang kena, titik tabrakan, jarak, dan [normal](/kamus/geometri/normal/) permukaan di titik itu.
 
-Satu alat sederhana ini dipakai di mana-mana dalam game:
+Raycast dipakai untuk banyak hal dalam game:
 
 - **Klik objek di dunia 3D:** sinar dari kamera melewati posisi kursor ([NDC & Koordinat Layar](/kamus/ruang/ndc/)).
 - **Tembakan instan:** sinar dari ujung senjata ke arah bidikan.
@@ -74,7 +74,7 @@ if hasil:
 
 ## Pelajari lebih dalam
 
-Raycast murah, tetapi tidak gratis. Ratusan sinar per frame ke dunia yang rumit bisa terasa bebannya. Cara menghematnya:
+Raycast murah, tetapi ratusan sinar per frame ke dunia yang rumit bisa terasa bebannya. Cara menghematnya:
 
 - **Batasi jarak** sinar.
 - **Filter dengan layer/mask**, misalnya sinar cek tanah hanya melihat layer "Tanah". Unity menyebutnya `layerMask`, Unreal *collision channel*, Godot *collision mask*.

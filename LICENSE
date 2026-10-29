@@ -22,5 +22,7 @@ SOFTWARE.
 
 ---
 
-Lisensi MIT ini berlaku untuk KODE (situs, komponen, eksperimen 3D).
-Konten di folder src/content/ dilisensikan terpisah: lihat LICENSE-CONTENT.md.
+Lisensi MIT ini berlaku untuk KODE: situs, komponen, eksperimen 3D, dan potongan
+kode di dalam pelajaran maupun Kamus.
+Konten di folder src/content/ dilisensikan terpisah (CC BY-NC-SA 4.0): lihat LICENSE-CONTENT.md.
+Nama, logo, dan rupa maskot Krekit tidak termasuk lisensi ini: lihat TRADEMARK.md.

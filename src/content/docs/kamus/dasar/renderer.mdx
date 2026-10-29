@@ -60,7 +60,7 @@ Secara garis besar, satu kali render berisi langkah-langkah ini:
 4. Jika ada cahaya yang memberi bayangan, [shadow map](/kamus/cahaya/shadow-map/) dibuat lebih dulu.
 5. Untuk setiap objek, satu atau beberapa [draw call](/kamus/performa/draw-call/) dikirim ke GPU.
 
-Saat sebuah material dipakai **pertama kali**, shadernya harus disiapkan (dikompilasi) untuk GPU. Proses ini bisa memakan puluhan milidetik, sehingga game sering tersendat saat efek atau objek baru pertama kali muncul. Semua engine besar punya cara untuk menyiapkan shader lebih awal, misalnya saat layar loading. Sebagai contoh, dokumentasi Godot menyebut renderer Forward+ dan Mobile memakai pendekatan *ubershader* sejak Godot 4.4 untuk mengurangi masalah ini, sedangkan di Compatibility kamu perlu memunculkan mesh dan efek sekali saat loading level.
+Saat sebuah material dipakai pertama kali, shadernya harus disiapkan (dikompilasi) untuk GPU. Proses ini bisa memakan puluhan milidetik, sehingga game sering tersendat saat efek atau objek baru pertama kali muncul. Semua engine besar punya cara untuk menyiapkan shader lebih awal, misalnya saat layar loading. Sebagai contoh, dokumentasi Godot menyebut renderer Forward+ dan Mobile memakai pendekatan *ubershader* sejak Godot 4.4 untuk mengurangi masalah ini, sedangkan di Compatibility kamu perlu memunculkan mesh dan efek sekali saat loading level.
 
 <Aside type="note" title="Di Lab (Three.js)">
 Renderer dibuat dengan `new THREE.WebGLRenderer()` di `src/experiment/core/setup.js`. Satu panggilan `renderer.render(scene, camera)` menghasilkan satu frame.

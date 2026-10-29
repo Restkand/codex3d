@@ -1,11 +1,6 @@
 {
   "fondasi-engine": [
     {
-      "num": 2,
-      "title": "Ruang, Transform, dan Hierarki",
-      "subtitle": "Koordinat 3D, rotasi, induk-anak, local vs world, dan matematika gerak."
-    },
-    {
       "num": 3,
       "title": "Mesh, Material, dan Cahaya",
       "subtitle": "Segitiga, normal, PBR, jenis cahaya, dan cara kerja shadow map."

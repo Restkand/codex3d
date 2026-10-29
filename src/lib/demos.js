@@ -231,6 +231,88 @@ const DEMOS = {
     draw(0.3)
   },
 
+  /** Induk-anak: posisi lokal anak tetap, posisi dunianya mengikuti geser & putar induk (tampak atas, 2D) */
+  hierarchy(root) {
+    const c = makeCanvas(360, 210)
+    const state = { px: -1, angle: 30, lx: 2 }
+    const info = el('p', 'demo__readout')
+    const UNIT = 32 // piksel per unit
+    const OX = 180
+    const OY = 105
+    // Dunia → kanvas (Y dunia ke atas, Y kanvas ke bawah)
+    const toCanvas = (x, y) => [OX + x * UNIT, OY - y * UNIT]
+
+    function arrow(ctx, [x0, y0], [x1, y1], color) {
+      ctx.strokeStyle = color
+      ctx.lineWidth = 2
+      ctx.beginPath()
+      ctx.moveTo(x0, y0)
+      ctx.lineTo(x1, y1)
+      ctx.stroke()
+    }
+
+    function draw() {
+      const { ctx, width, height } = c
+      ctx.clearRect(0, 0, width, height)
+      // Grid dan sumbu dunia
+      ctx.strokeStyle = COLORS.grid
+      ctx.lineWidth = 1
+      for (let x = OX % UNIT; x < width; x += UNIT) {
+        ctx.beginPath()
+        ctx.moveTo(x, 0)
+        ctx.lineTo(x, height)
+        ctx.stroke()
+      }
+      for (let y = OY % UNIT; y < height; y += UNIT) {
+        ctx.beginPath()
+        ctx.moveTo(0, y)
+        ctx.lineTo(width, y)
+        ctx.stroke()
+      }
+      arrow(ctx, [0, OY], [width, OY], COLORS.axis)
+      arrow(ctx, [OX, 0], [OX, height], COLORS.axis)
+
+      // Transform induk: posisi (px, 0), putar sebesar angle
+      const rad = (state.angle * Math.PI) / 180
+      const cos = Math.cos(rad)
+      const sin = Math.sin(rad)
+      const parent = toCanvas(state.px, 0)
+      // Posisi dunia anak = posisi induk + rotasi induk × posisi lokal anak
+      const wx = state.px + cos * state.lx
+      const wy = sin * state.lx
+      const child = toCanvas(wx, wy)
+
+      // Sumbu X lokal induk (ke arah anak) dan tali induk-anak
+      arrow(ctx, parent, toCanvas(state.px + cos * 3, sin * 3), 'rgba(255,43,214,0.35)')
+      arrow(ctx, parent, child, COLORS.magenta)
+      // Induk: kotak yang ikut berputar
+      ctx.save()
+      ctx.translate(...parent)
+      ctx.rotate(-rad)
+      ctx.fillStyle = COLORS.magenta
+      ctx.fillRect(-9, -9, 18, 18)
+      ctx.restore()
+      dot(ctx, ...child, COLORS.cyan, 8)
+
+      ctx.fillStyle = COLORS.text
+      ctx.font = '12px ui-monospace, monospace'
+      ctx.textAlign = 'left'
+      ctx.fillText('induk', parent[0] - 20, parent[1] + 26)
+      ctx.fillText('anak', child[0] + 12, child[1] + 4)
+
+      info.innerHTML = `Posisi lokal anak: <b>(${state.lx.toFixed(1)}, 0)</b>, tidak berubah saat induk digeser atau diputar. Posisi dunianya: <b>(${wx.toFixed(2)}, ${wy.toFixed(2)})</b>.`
+    }
+
+    root.append(
+      c.canvas,
+      makeSlider('Induk: geser X', { min: -2, max: 2, step: 0.1, value: state.px }, (v) => ((state.px = v), draw())),
+      makeSlider('Induk: putar (°)', { min: -180, max: 180, step: 1, value: state.angle }, (v) => ((state.angle = v), draw())),
+      makeSlider('Anak: X lokal', { min: 0, max: 2.5, step: 0.1, value: state.lx }, (v) => ((state.lx = v), draw())),
+      info,
+    )
+    draw()
+  },
+
   /** Visualisasi kurva easing GSAP + putar animasinya */
   easing(root) {
     const EASES = ['none', 'power1.out', 'power3.out', 'power2.inOut', 'expo.inOut', 'back.out(1.7)', 'elastic.out(1, 0.4)', 'bounce.out']

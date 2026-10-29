@@ -41,7 +41,7 @@ sidebar:
 
 import Aside from '~/components/Aside.astro'
 
-Setiap titik di dunia 3D ditulis dengan tiga angka: X, Y, dan Z. Sistem koordinat menentukan **ke mana arah masing-masing sumbu** dan **berapa panjang satu unit**. Semua engine memakai tiga sumbu, tetapi aturannya tidak sama.
+Setiap titik di dunia 3D ditulis dengan tiga angka: X, Y, dan Z. Sistem koordinat menentukan ke mana arah masing-masing sumbu dan berapa panjang satu unit. Semua engine memakai tiga sumbu, tetapi aturannya tidak sama.
 
 | | Sumbu atas | Sumbu depan | Tangan | Satu unit |
 | --- | --- | --- | --- | --- |
@@ -64,7 +64,7 @@ Godot memakai sistem tangan kanan dengan Y ke atas, dan menyatakan 1 unit = 1 me
 
 ## Pelajari lebih dalam
 
-Perbedaan ini paling terasa saat **memindahkan aset dan data antar-engine**. Model 3D dari Blender (Z ke atas, tangan kanan) yang diimpor ke Unity perlu diputar atau dikonversi, dan biasanya importer engine melakukannya otomatis. Angka posisi yang disalin dari Unity ke Unreal perlu dikali 100 (meter ke sentimeter) dan sumbunya ditukar.
+Perbedaan ini paling terasa saat memindahkan aset dan data antar-engine. Model 3D dari Blender (Z ke atas, tangan kanan) yang diimpor ke Unity perlu diputar atau dikonversi, dan biasanya importer engine melakukannya otomatis. Angka posisi yang disalin dari Unity ke Unreal perlu dikali 100 (meter ke sentimeter) dan sumbunya ditukar.
 
 Satuan sebenarnya hanya kesepakatan, tetapi tetap penting. Simulasi physics mengasumsikan gravitasi dalam satuan engine itu, dan nilai-nilai bawaan (jarak cahaya, kabut, near/far kamera) disesuaikan dengan skala tersebut. Karakter setinggi 2 unit di Unity berarti 2 meter, tetapi di Unreal hanya 2 sentimeter. Dokumentasi Unity juga mengingatkan bahwa objek yang dibuat terlalu besar akan tampak jatuh "dalam gerak lambat", karena gravitasinya tetap dihitung dalam meter.
 

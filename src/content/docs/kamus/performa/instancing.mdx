@@ -54,7 +54,7 @@ Instancing otomatis untuk MeshInstance3D dengan mesh dan material yang sama (khu
 
 ## Pelajari lebih dalam
 
-Instancing punya batas yang perlu diingat. Dokumentasi Godot menjelaskan bahwa satu MultiMesh **tidak bisa di-culling per salinan**: jutaan objek itu tampil semua atau tidak sama sekali, tergantung apakah MultiMesh secara keseluruhan terlihat. Solusinya, pecah menjadi beberapa MultiMesh per wilayah dunia. Itulah ide di balik HISM di Unreal: salinan dikelompokkan berdasarkan lokasi agar kelompok yang tidak terlihat bisa dibuang.
+Dokumentasi Godot menjelaskan bahwa satu MultiMesh **tidak bisa di-culling per salinan**: jutaan objek itu tampil semua atau tidak sama sekali, tergantung apakah MultiMesh secara keseluruhan terlihat. Solusinya, pecah menjadi beberapa MultiMesh per wilayah dunia. Itulah ide di balik HISM di Unreal: salinan dikelompokkan berdasarkan lokasi agar kelompok yang tidak terlihat bisa dibuang.
 
 <Aside type="note" title="Di Lab (Three.js)">
 Three.js menyebutnya `InstancedMesh`. Pecahan cangkang yang mengorbit Krekit, maskot situs ini, digambar dengan satu `InstancedMesh`. Lihat `src/site/krekit.js`.

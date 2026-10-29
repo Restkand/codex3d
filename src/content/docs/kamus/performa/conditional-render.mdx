@@ -1,6 +1,6 @@
 ---
 title: "Culling & Kerja Bersyarat"
-description: "Pekerjaan tercepat adalah yang tidak dikerjakan. Culling membuang objek yang tidak terlihat sebelum digambar. Prinsip yang sama berlaku untuk efek, animasi, dan logika: jalankan hanya saat hasilnya dibutuhkan."
+description: "Culling membuang objek yang tidak terlihat sebelum digambar. Prinsip yang sama berlaku untuk efek, animasi, dan logika: jalankan hanya saat hasilnya dibutuhkan."
 kind: term
 level: 2
 aka: "frustum culling, occlusion culling, visibility range, render bersyarat"
@@ -26,7 +26,7 @@ sidebar:
 import Aside from '~/components/Aside.astro'
 import EngineTabs from '~/components/EngineTabs.astro'
 
-Pekerjaan tercepat adalah yang **tidak dikerjakan**. Sebelum menggambar, engine membuang objek yang pasti tidak terlihat. Proses ini disebut **culling**:
+Sebelum menggambar, engine membuang objek yang pasti tidak terlihat, sehingga tidak ada kerja yang terbuang untuknya. Proses ini disebut **culling**:
 
 - **Frustum culling:** membuang objek di luar pandangan kamera ([Frustum & Clipping](/kamus/dasar/frustum/)). Selalu aktif otomatis di semua engine.
 - **Occlusion culling:** membuang objek yang ada di dalam pandangan tetapi **tertutup sepenuhnya** oleh objek lain, misalnya isi ruangan di balik dinding. Tidak otomatis, harus disiapkan.
