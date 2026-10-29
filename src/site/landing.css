@@ -547,84 +547,6 @@ main [data-krekit-say] {
   line-height: 1.55;
 }
 
-/* ---------- Kartu jalur ---------- */
-
-.tracks {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-  gap: 16px;
-  margin-top: 40px;
-}
-
-.track-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-height: 210px;
-  padding: 24px;
-  overflow: hidden;
-  text-decoration: none;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  transition: border-color 0.3s;
-  will-change: transform;
-}
-
-/* Kilau cahaya mengikuti posisi kursor (variabel --mx/--my diisi landing.js) */
-.track-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 0%), rgba(255, 204, 51, 0.16), transparent 60%);
-  opacity: 0;
-  transition: opacity 0.3s;
-  pointer-events: none;
-}
-
-.track-card:hover {
-  border-color: rgba(255, 204, 51, 0.6);
-}
-
-.track-card:hover::before {
-  opacity: 1;
-}
-
-.track-card__num {
-  font-family: var(--mono);
-  font-size: 13px;
-  color: var(--accent);
-}
-
-.track-card__title {
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-.track-card__blurb {
-  color: var(--muted);
-  line-height: 1.55;
-}
-
-.track-card__status {
-  margin-top: auto;
-  padding-top: 14px;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.track-card__status.is-live {
-  color: #7cff6b;
-}
-
-.track-card__status.is-soon {
-  color: rgba(242, 242, 245, 0.45);
-}
-
 /* ---------- Chip pipa grafis ---------- */
 
 .pipeline-chips {
@@ -922,15 +844,30 @@ main [data-krekit-say] {
   color: var(--accent);
 }
 
-/* ---------- Pos 2 · Layar pilih level ---------- */
+/* ---------- Pos 2 · Pohon skill ----------
+   Node diletakkan absolut di dalam pohon: --x = posisi tengah (% lebar), --r = baris (0 = akar).
+   Garis cabang (SVG) digambar landing.js dari posisi node. Node kerangka bergembok dan bergaya wireframe. */
 
-.tracks {
+.skill-tree {
+  --top: 104px;
+  --row: 150px;
+  --node-w: 27%;
+  grid-area: tree;
   position: relative;
-  gap: 28px;
+  height: calc(var(--top) + 2 * var(--row) + 72px);
 }
 
-/* Garis penghubung antar-node di celah kartu (path diisi landing.js) */
-.tracks__links {
+/* Panggung Krekit di atas akar: tingginya menentukan ukuran Krekit, posisinya mengikuti node terpilih */
+.krekit-spot--tree {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 120px;
+  height: calc(var(--top) - 6px);
+  transform: translateX(-50%);
+}
+
+.skill-tree__edges {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -939,12 +876,18 @@ main [data-krekit-say] {
   pointer-events: none;
 }
 
-.tracks__links path {
+.skill-tree__edges path {
   fill: none;
-  stroke: rgba(127, 240, 255, 0.55);
+  stroke: rgba(127, 240, 255, 0.28);
   stroke-width: 2;
   stroke-dasharray: 6 6;
-  animation: march 1.2s linear infinite;
+  transition: stroke 0.3s;
+}
+
+/* Cabang dari akar ke node terpilih menyala dan "mengalir" */
+.skill-tree__edges path.is-lit {
+  stroke: var(--accent);
+  animation: march 1s linear infinite;
 }
 
 @keyframes march {
@@ -953,24 +896,191 @@ main [data-krekit-say] {
   }
 }
 
+.skill {
+  position: absolute;
+  top: calc(var(--top) + var(--r) * var(--row));
+  left: var(--x);
+  width: var(--node-w);
+  min-height: 66px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding: 10px 14px;
+  color: var(--text);
+  text-decoration: none;
+  background: rgba(18, 18, 26, 0.92);
+  border: 1px dashed rgba(127, 240, 255, 0.3);
+  border-radius: 12px;
+  transform: translateX(-50%);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
 /* Jalur yang sudah ada pelajarannya: "ter-render", menyala */
-.track-card.is-live {
-  border-color: rgba(124, 255, 107, 0.45);
-  box-shadow: 0 0 28px rgba(124, 255, 107, 0.08);
+.skill.is-live {
+  border: 1px solid rgba(124, 255, 107, 0.55);
+  box-shadow: 0 0 24px rgba(124, 255, 107, 0.1);
 }
 
 /* Jalur kerangka: masih wireframe */
-.track-card.is-skeleton {
-  background-color: rgba(18, 18, 26, 0.85);
+.skill.is-locked {
   background-image:
     linear-gradient(rgba(127, 240, 255, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(127, 240, 255, 0.05) 1px, transparent 1px);
-  background-size: 24px 24px;
-  border: 1px dashed rgba(127, 240, 255, 0.3);
+  background-size: 18px 18px;
 }
 
-.track-card.is-skeleton .track-card__title {
+.skill.is-selected {
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 28px rgba(255, 204, 51, 0.18);
+}
+
+.skill:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.skill__num {
+  font: 600 11px/1 var(--mono);
+  color: var(--accent);
+}
+
+.skill__title {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.skill.is-locked .skill__title {
   color: rgba(242, 242, 245, 0.78);
+}
+
+/* Penanda status di pojok: bintang (terbuka) atau gembok (kerangka) */
+.skill__state {
+  position: absolute;
+  top: 9px;
+  right: 11px;
+  font-size: 13px;
+  line-height: 1;
+  color: #7cff6b;
+}
+
+.skill.is-locked .skill__state {
+  top: 14px;
+  width: 10px;
+  height: 8px;
+  border: 1.5px solid rgba(127, 240, 255, 0.55);
+  border-radius: 2px;
+}
+
+.skill.is-locked .skill__state::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 1px;
+  width: 5px;
+  height: 5px;
+  border: 1.5px solid rgba(127, 240, 255, 0.55);
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+}
+
+/* Nama cabang di atas node baris kedua; latarnya menutup garis cabang di belakangnya */
+.skill__branch {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-bottom: 8px;
+  padding: 2px 6px;
+  font: 600 10px/1.2 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(127, 240, 255, 0.65);
+  background: var(--bg, #0b0b10);
+  transform: translateX(-50%);
+}
+
+/* Panel ringkasan jalur terpilih */
+.skill-panel {
+  grid-area: panel;
+  max-width: 520px;
+  padding: 18px 20px;
+  background: rgba(8, 8, 13, 0.7);
+  border: 1px solid var(--line);
+  border-left: 3px solid #7cff6b;
+  border-radius: 12px;
+}
+
+.skill-panel.is-locked {
+  border-left: 3px dashed rgba(127, 240, 255, 0.55);
+}
+
+.skill-panel__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.skill-panel__nav {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  font: 12px/1 var(--mono);
+  color: var(--muted);
+}
+
+.skill-panel__nav button {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  font: 600 20px/1 var(--mono);
+  color: var(--text);
+  background: rgba(127, 240, 255, 0.06);
+  border: 1px solid rgba(127, 240, 255, 0.35);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.skill-panel__nav button:hover,
+.skill-panel__nav button:focus-visible {
+  background: rgba(255, 204, 51, 0.12);
+  border-color: var(--accent);
+  outline: none;
+}
+
+.skill-panel__meta {
+  margin: 0;
+  font: 12px/1.4 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.skill-panel__meta b {
+  margin-right: 6px;
+  color: var(--accent);
+}
+
+.skill-panel__title {
+  margin: 6px 0 4px;
+  font-size: clamp(20px, 2.8vh, 26px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.skill-panel__blurb {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.skill-panel__go {
+  margin-top: 14px;
 }
 
 /* ---------- Pos 3 · Satu frame lewat pipa ---------- */
@@ -1040,10 +1150,6 @@ main [data-krekit-say] {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tracks__links path {
-    animation: none;
-  }
-
   .belt__gate,
   .belt__label,
   .belt__egg > *,
@@ -1052,6 +1158,7 @@ main [data-krekit-say] {
     transition: none;
   }
 
+  .skill-tree__edges path.is-lit,
   .belt__station.is-here .belt__gate::after,
   .belt[data-stage='pemain'] .belt__egg {
     animation: none;
@@ -1097,25 +1204,6 @@ main [data-krekit-say] {
     padding-bottom: clamp(10px, 1.6vh, 16px);
   }
 
-  .tracks {
-    margin-top: clamp(16px, 3vh, 40px);
-    gap: clamp(14px, 2.4vh, 28px);
-  }
-
-  .track-card {
-    min-height: 0;
-    gap: 6px;
-    padding: clamp(14px, 2.2vh, 24px) 22px;
-  }
-
-  .track-card__title {
-    font-size: clamp(19px, 2.6vh, 24px);
-  }
-
-  .track-card__status {
-    padding-top: clamp(6px, 1.2vh, 14px);
-  }
-
   .frame-sim {
     max-width: min(440px, 36vh);
     margin-top: clamp(12px, 2.2vh, 24px);
@@ -1138,6 +1226,31 @@ main [data-krekit-say] {
 
   .belt {
     --sw: 46cqw;
+  }
+
+  /* Pos 2: judul dan panel ringkasan di kiri, pohon skill di kanan */
+  .section--tree {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    grid-template-areas: 'head tree' 'panel tree';
+    align-content: center;
+    column-gap: clamp(24px, 5vw, 80px);
+    row-gap: clamp(14px, 2.6vh, 28px);
+  }
+
+  .tree-head {
+    grid-area: head;
+    align-self: end;
+  }
+
+  .skill-tree {
+    --top: clamp(88px, 13vh, 110px);
+    --row: clamp(118px, 19vh, 156px);
+    align-self: center;
+  }
+
+  .skill-panel {
+    align-self: start;
   }
 }
 
@@ -1197,6 +1310,28 @@ main [data-krekit-say] {
 
   .belt__egg {
     display: block;
+  }
+
+  /* Pohon skill Pos 2: node ringkas (nomor, judul, status), ringkasan lengkap ada di panel di bawahnya */
+  .skill-tree {
+    --top: 6px;
+    --row: 104px;
+    --node-w: 28%;
+    margin: 22px 0 18px;
+  }
+
+  .skill {
+    min-height: 0;
+    padding: 8px 10px;
+  }
+
+  .skill__title {
+    font-size: 13px;
+  }
+
+  .skill__branch {
+    font-size: 9px;
+    letter-spacing: 0.06em;
   }
 
   /* Ruang di akhir halaman agar isi terakhir tidak tertutup Krekit */
@@ -1298,9 +1433,7 @@ main [data-krekit-say] {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .btn,
-  .track-card,
-  .track-card::before {
+  .btn {
     transition: none;
   }
 
