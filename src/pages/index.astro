@@ -25,6 +25,17 @@ const lessonsIn = (trackId) => docs.filter((d) => d.data.kind === 'lesson' && d.
 const trackStatus = (id) => docs.find((d) => d.id === `belajar/${id}`)?.data.status
 const pad2 = (n) => String(n).padStart(2, '0')
 
+// Pos 2 · Pohon skill: induk tiap jalur, posisi tengah node (% lebar pohon), baris, dan nama cabang.
+// Cabang hanya saran urutan belajar, bukan prasyarat.
+const SKILL_TREE = {
+  'fondasi-engine': { x: 50, row: 0 },
+  'lanskap-engine': { parent: 'fondasi-engine', x: 16, row: 1, branch: 'teknis' },
+  'desain-game': { parent: 'fondasi-engine', x: 50, row: 1, branch: 'kreatif' },
+  produksi: { parent: 'fondasi-engine', x: 84, row: 1, branch: 'tim & studio' },
+  'bisnis-indie': { parent: 'produksi', x: 57, row: 2 },
+  'industri-karier': { parent: 'produksi', x: 86, row: 2 },
+}
+
 // Pos 1 · Jalur produksi: stasiun yang dilewati sebuah game, dari engine sampai ke pemain
 const STATIONS = [
   { id: 'engine', label: 'Engine', tone: '#5cc1a8', caption: 'Engine menggambar dunia game, frame demi frame.' },
@@ -157,40 +168,59 @@ const progressItems = docs
         </div>
       </section>
 
-      <!-- 02 · Jalur belajar: Krekit berdiri di atas tepi kartu -->
-      <section id="jalur" class="section section--wide reveal" data-section>
-        <div class="section__inner">
-          <div class="section__head">
-            <div>
-              <p class="eyebrow" data-reveal>02 · Jalur belajar</p>
-              <h2 class="display display--md" data-reveal>Enam jalur, <span class="accent">satu peta.</span></h2>
-            </div>
-            <div class="krekit-spot krekit-spot--perch" data-krekit-spot aria-hidden="true"></div>
-          </div>
-          <!-- Pos 2 · Layar pilih level: kartu = node level. Jalur yang sudah ada pelajarannya "ter-render",
-               yang masih kerangka tampil wireframe. Garis penghubung digambar landing.js. -->
-          <div class="tracks" data-level-map>
-            <svg class="tracks__links" aria-hidden="true"><path data-level-path /></svg>
-            {
-              TRACKS.map((track, i) => (
+      <!--
+        02 · Jalur belajar sebagai pohon skill (landing.js): akar Fondasi Engine di atas, cabang di bawahnya.
+        Menyorot (desktop) atau mengetuk (HP) sebuah node: cabang dari akar menyala, panel menampilkan ringkasannya,
+        dan Krekit pindah ke atas node itu (desktop) atau berkomentar dari pojok (HP).
+      -->
+      <section id="jalur" class="section section--tree reveal" data-section>
+        <div class="tree-head">
+          <p class="eyebrow" data-reveal>02 · Jalur belajar</p>
+          <h2 class="display display--md" data-reveal>Enam jalur, <span class="accent">satu akar.</span></h2>
+          <p class="lead" data-reveal>Mulai dari akar, lalu pilih cabang sesuai peran yang kamu minati. Cabangnya saran, bukan syarat.</p>
+        </div>
+        <div class="skill-tree" data-skill-tree data-reveal>
+          <div class="krekit-spot krekit-spot--tree" data-krekit-spot aria-hidden="true"></div>
+          <svg class="skill-tree__edges" aria-hidden="true"></svg>
+          {
+            TRACKS.map((track, i) => {
+              const place = SKILL_TREE[track.id]
+              const live = trackStatus(track.id) !== 'kerangka'
+              return (
                 <a
-                  class:list={['track-card', trackStatus(track.id) === 'kerangka' ? 'is-skeleton' : 'is-live']}
+                  class:list={['skill', live ? 'is-live' : 'is-locked', i === 0 && 'is-selected']}
                   href={withBase(`/belajar/${track.id}/`)}
-                  data-reveal
-                  data-tilt
-                  data-level-node
-                  data-krekit-say={track.krekit}
+                  style={`--x: ${place.x}%; --r: ${place.row}`}
+                  data-skill={track.id}
+                  data-parent={place.parent}
+                  data-num={pad2(i + 1)}
+                  data-title={track.title}
+                  data-blurb={track.blurb}
+                  data-status={live ? `${lessonsIn(track.id)} pelajaran tersedia` : 'Kerangka · butuh kontributor'}
+                  data-krekit-line={track.krekit}
                 >
-                  <span class="track-card__num">{pad2(i + 1)}</span>
-                  <strong class="track-card__title">{track.title}</strong>
-                  <span class="track-card__blurb">{track.blurb}</span>
-                  <span class={`track-card__status ${trackStatus(track.id) === 'kerangka' ? 'is-soon' : 'is-live'}`}>
-                    {trackStatus(track.id) === 'kerangka' ? 'Kerangka · terbuka untuk kontribusi' : `${lessonsIn(track.id)} pelajaran tersedia`}
-                  </span>
+                  {place.branch && <span class="skill__branch">{place.branch}</span>}
+                  <span class="skill__num">{pad2(i + 1)}</span>
+                  <strong class="skill__title">{track.title}</strong>
+                  <span class="skill__state" aria-hidden="true">{live ? '✦' : ''}</span>
                 </a>
-              ))
-            }
+              )
+            })
+          }
+        </div>
+        <div class="skill-panel" data-skill-panel aria-live="polite" data-reveal>
+          <div class="skill-panel__top">
+            <p class="skill-panel__meta"><b data-panel-num>01</b> <span data-panel-status>{lessonsIn(TRACKS[0].id)} pelajaran tersedia</span></p>
+            <!-- Berpindah jalur tanpa menyentuh pohon; di HP pilihan tidak berubah sendiri saat halaman di-scroll -->
+            <div class="skill-panel__nav">
+              <button type="button" data-skill-step="-1" aria-label="Jalur sebelumnya">‹</button>
+              <span data-panel-count>1 / {TRACKS.length}</span>
+              <button type="button" data-skill-step="1" aria-label="Jalur berikutnya">›</button>
+            </div>
           </div>
+          <h3 class="skill-panel__title" data-panel-title>{TRACKS[0].title}</h3>
+          <p class="skill-panel__blurb" data-panel-blurb>{TRACKS[0].blurb}</p>
+          <a class="btn btn--ghost btn--wire skill-panel__go" data-panel-link href={withBase(`/belajar/${TRACKS[0].id}/`)}><span class="btn__label">Buka jalur →</span></a>
         </div>
       </section>
 

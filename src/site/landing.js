@@ -212,37 +212,99 @@ if (belt) {
   })
 }
 
-// Pos 2 · Layar pilih level: garis putus-putus menghubungkan node (kartu jalur) secara berurutan.
-// Dihitung dari offsetLeft/Top (posisi layout), sehingga tidak terpengaruh animasi masuk dan tilt kartu.
-const levelMap = document.querySelector('[data-level-map]')
-const levelNodes = [...document.querySelectorAll('[data-level-node]')]
-function layoutLevelLinks() {
-  if (!levelMap) return
-  const svg = levelMap.querySelector('svg')
-  svg.setAttribute('viewBox', `0 0 ${levelMap.offsetWidth} ${levelMap.offsetHeight}`)
-  const box = (el) => ({ l: el.offsetLeft, t: el.offsetTop, r: el.offsetLeft + el.offsetWidth, b: el.offsetTop + el.offsetHeight })
-  let d = ''
-  for (let i = 0; i < levelNodes.length - 1; i++) {
-    const a = box(levelNodes[i])
-    const b = box(levelNodes[i + 1])
-    if (Math.abs(a.t - b.t) < 4) {
-      // Satu baris: garis pendek di celah antar-kartu
-      const y = (a.t + a.b) / 2
-      d += `M${a.r} ${y}H${b.l}`
-    } else {
-      // Pindah baris: dari tepi bawah kartu ini ke tepi atas kartu berikutnya
-      d += `M${(a.l + a.r) / 2} ${a.b}L${(b.l + b.r) / 2} ${b.t}`
-    }
-  }
-  svg.querySelector('[data-level-path]').setAttribute('d', d)
+// Pos 2 · Pohon skill: akar Fondasi Engine di atas, cabang di bawahnya. Memilih node (sorot di desktop,
+// ketuk di HP) menyalakan cabang dari akar ke node itu dan mengisi panel ringkasan.
+// Garis cabang dihitung dari offsetLeft/Top (posisi layout), jadi tidak terpengaruh animasi masuk.
+const skillTree = document.querySelector('[data-skill-tree]')
+const skills = [...document.querySelectorAll('[data-skill]')]
+const skillRoot = skills[0]
+let skillSelected = skillRoot
+const skillById = (id) => skills.find((s) => s.dataset.skill === id)
+
+function layoutSkillEdges() {
+  if (!skillTree) return
+  const svg = skillTree.querySelector('svg')
+  svg.setAttribute('viewBox', `0 0 ${skillTree.offsetWidth} ${skillTree.offsetHeight}`)
+  svg.replaceChildren(
+    ...skills
+      .filter((s) => s.dataset.parent)
+      .map((child) => {
+        const parent = skillById(child.dataset.parent)
+        const x1 = parent.offsetLeft + parent.offsetWidth / 2
+        const y1 = parent.offsetTop + parent.offsetHeight
+        const x2 = child.offsetLeft + child.offsetWidth / 2
+        const y2 = child.offsetTop
+        // Siku: turun dari induk, mendatar, lalu turun ke anak
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+        path.setAttribute('d', `M${x1} ${y1}V${(y1 + y2) / 2}H${x2}V${y2}`)
+        path.dataset.to = child.dataset.skill
+        return path
+      }),
+  )
+  litSkillPath()
 }
-layoutLevelLinks()
-window.addEventListener('resize', layoutLevelLinks)
-ScrollTrigger.addEventListener('refresh', layoutLevelLinks)
-if (window.matchMedia('(hover: hover)').matches) {
-  levelNodes.forEach((node) => {
-    node.addEventListener('pointerenter', () => sceneHooks.levelNode?.(node))
-    node.addEventListener('pointerleave', () => sceneHooks.levelNode?.(null))
+
+/** Nyalakan cabang dari akar sampai node terpilih */
+function litSkillPath() {
+  const lit = new Set()
+  for (let node = skillSelected; node?.dataset.parent; node = skillById(node.dataset.parent)) lit.add(node.dataset.skill)
+  skillTree.querySelectorAll('path').forEach((path) => path.classList.toggle('is-lit', lit.has(path.dataset.to)))
+}
+
+function selectSkill(node, { say = true } = {}) {
+  if (node === skillSelected) return
+  skillSelected = node
+  skills.forEach((s) => s.classList.toggle('is-selected', s === node))
+  litSkillPath()
+  const panel = document.querySelector('[data-skill-panel]')
+  const { num, title, blurb, status } = node.dataset
+  panel.classList.toggle('is-locked', node.classList.contains('is-locked'))
+  panel.querySelector('[data-panel-num]').textContent = num
+  panel.querySelector('[data-panel-status]').textContent = status
+  panel.querySelector('[data-panel-title]').textContent = title
+  panel.querySelector('[data-panel-blurb]').textContent = blurb
+  panel.querySelector('[data-panel-link]').href = node.href
+  panel.querySelector('[data-panel-count]').textContent = `${skills.indexOf(node) + 1} / ${skills.length}`
+  sceneHooks.skill?.(node, say ? node.dataset.krekitLine : null)
+}
+
+if (skillTree) {
+  layoutSkillEdges()
+  window.addEventListener('resize', layoutSkillEdges)
+  ScrollTrigger.addEventListener('refresh', layoutSkillEdges)
+  const panel = document.querySelector('[data-skill-panel]')
+  // Desktop: sorot dengan mouse untuk memilih. Kursor keluar dari pohon dan panel: kembali ke akar setelah jeda.
+  // Hanya untuk mouse: di sebagian HP, jari yang menyentuh node saat scroll juga memicu pointerenter,
+  // sehingga pilihan berubah sendiri. Di layar sentuh node dipilih dengan ketukan atau tombol ‹ › di panel.
+  let backToRoot
+  const stay = () => backToRoot?.kill()
+  const byMouse = (handler) => (event) => event.pointerType === 'mouse' && handler()
+  skills.forEach((node) => node.addEventListener('pointerenter', byMouse(() => (stay(), selectSkill(node)))))
+  for (const zone of [skillTree, panel]) {
+    zone.addEventListener('pointerenter', byMouse(stay))
+    zone.addEventListener(
+      'pointerleave',
+      byMouse(() => {
+        stay()
+        backToRoot = gsap.delayedCall(0.7, () => selectSkill(skillRoot, { say: false }))
+      }),
+    )
+  }
+  panel.querySelectorAll('[data-skill-step]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const next = (skills.indexOf(skillSelected) + Number(button.dataset.skillStep) + skills.length) % skills.length
+      stay()
+      selectSkill(skills[next])
+    })
+  })
+  skills.forEach((node) => {
+    node.addEventListener('focus', () => (stay(), selectSkill(node)))
+    // Layar sempit: ketukan pertama memilih node; tautannya dibuka lewat tombol di panel
+    node.addEventListener('click', (event) => {
+      if (!window.matchMedia(STACKED).matches) return
+      event.preventDefault()
+      selectSkill(node)
+    })
   })
 }
 
@@ -538,8 +600,6 @@ function initScene() {
       () => {
         shownIndex = activeIndex
         placed = false
-        // Sorotan kartu Pos 2 yang lama (pointerleave tidak selalu terpicu saat scroll) tidak dibawa
-        nodePerch = null
       },
       0.55,
       { skipOut: !spotVisible(shownIndex) },
@@ -557,8 +617,7 @@ function initScene() {
     teleport()
   }
 
-  // Pijakan khusus di dalam panggung: ban berjalan Pos 1, atau kolom kartu yang disorot di Pos 2
-  let nodePerch = null
+  // Pijakan khusus di dalam panggung: ban berjalan Pos 1, atau node pohon skill yang terpilih di Pos 2
   const sectionId = () => sections[shownIndex]?.id
   const onBelt = () => belt && !compact && sectionId() === 'kenapa'
 
@@ -570,9 +629,10 @@ function initScene() {
       screenToWorld(b.left + b.width / 2, b.bottom - BELT_BAND, target)
       return (b.height * 0.46 * unitsPerPixel(target)) / krekit.height
     }
-    // Pos 2: tetap di atas deretan kartu, bergeser ke kolom kartu yang disorot
-    const node = sectionId() === 'jalur' && nodePerch ? nodePerch.getBoundingClientRect() : null
-    screenToWorld(node ? node.left + node.width / 2 : rect.left + rect.width / 2, rect.bottom, target)
+    // Pos 2: berdiri di atas node terpilih (awalnya akar); tingginya tetap mengikuti panggung di atas akar
+    const node = sectionId() === 'jalur' ? skillSelected?.getBoundingClientRect() : null
+    if (node) screenToWorld(node.left + node.width / 2, node.top, target)
+    else screenToWorld(rect.left + rect.width / 2, rect.bottom, target)
     // Tinggi Krekit (plus ruang untuk pecahan & aura) mengikuti tinggi panggung
     return (rect.height * unitsPerPixel(target)) / (krekit.height + 0.6)
   }
@@ -599,9 +659,15 @@ function initScene() {
       bubble.say(STATION_LINES[index], 2.6)
     })
   }
-  sceneHooks.levelNode = (node) => {
-    if (node && node !== nodePerch && !compact && sectionId() === 'jalur') krekit.jump()
-    nodePerch = node
+  // Pohon skill Pos 2: Krekit melompat lalu menggelinding menyusuri cabang ke node terpilih
+  // (spotTarget membaca skillSelected), dan mengomentari jalurnya. Di HP ia berkomentar dari pojok.
+  sceneHooks.skill = (node, line) => {
+    if (sectionId() !== 'jalur' && !(compact && activeIndex === 2)) return
+    if (!compact) krekit.jump()
+    if (line) {
+      spoken.add(2)
+      bubble.say(line, 3)
+    }
   }
   // Stempel pertama: Krekit melompat; stempel terakhir: tersenyum puas
   sceneHooks.stamp = (i, total) => {
