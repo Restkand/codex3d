@@ -39,6 +39,66 @@ gsap.fromTo(
   { autoAlpha: 1, y: 0, duration: reduceMotion ? 0.01 : 0.9, stagger: reduceMotion ? 0 : 0.1, ease: 'power3.out', delay: 0.2 },
 )
 
+// ---------- Judul Pos 0: baris wireframe "menangkap sinyal", lalu ter-render ----------
+// Huruf diacak lalu tersusun dari kiri ke kanan, seperti layar yang baru menyala, ditutup getar glitch.
+const heroTitle = document.querySelector('[data-hero-title]')
+const heroWire = document.querySelector('[data-hero-wire]')
+
+/** Getar glitch singkat pada baris kuning (CSS .is-glitching) */
+function glitchHeroWire() {
+  if (reduceMotion || !heroWire) return
+  heroWire.classList.remove('is-glitching')
+  void heroWire.offsetWidth // mulai ulang animasi CSS
+  heroWire.classList.add('is-glitching')
+}
+
+/** Baris kuning terisi penuh (ter-render) atau kembali wireframe, dengan glitch saat berubah */
+const heroTextBox = document.querySelector('.hero__text')
+const heroButtons = [...document.querySelectorAll('.hero .btn')]
+function setHeroRendered(rendered) {
+  if (!heroTitle || heroTitle.classList.contains('is-rendered') === rendered) return
+  heroTitle.classList.toggle('is-rendered', rendered)
+  // Tombol hero ikut ter-render bersama judul (lihat landing.css: "Tombol Pos 0")
+  heroTextBox?.classList.toggle('is-rendered', rendered)
+  glitchHeroWire()
+  if (reduceMotion) return
+  heroButtons.forEach((button) => {
+    button.classList.remove('is-glitching')
+    void button.offsetWidth // mulai ulang animasi CSS
+    button.classList.add('is-glitching')
+  })
+}
+
+if (heroWire && !reduceMotion) {
+  const text = heroWire.textContent
+  // Huruf acak diambil dari kalimat itu sendiri: lebarnya mirip, jadi jumlah baris tidak berubah saat diacak
+  const GLYPHS = text.replace(/[^a-z]/gi, '')
+  const state = { revealed: 0 }
+  // Kunci tinggi baris setelah font siap, agar teks di bawahnya tidak bergeser selama animasi
+  document.fonts?.ready.then(() => {
+    heroWire.style.minHeight = `${heroWire.offsetHeight}px`
+  })
+  const scramble = () => {
+    const shown = Math.floor(state.revealed)
+    heroWire.textContent = [...text]
+      .map((char, i) => (i < shown || char === ' ' ? char : GLYPHS[Math.floor(Math.random() * GLYPHS.length)]))
+      .join('')
+  }
+  scramble()
+  gsap.to(state, {
+    revealed: text.length,
+    duration: 1.1,
+    delay: 0.45,
+    ease: 'power1.inOut',
+    onUpdate: scramble,
+    onComplete: () => {
+      heroWire.textContent = text
+      heroWire.style.minHeight = ''
+      glitchHeroWire()
+    },
+  })
+}
+
 document.querySelectorAll('.reveal').forEach((section) => {
   gsap.fromTo(
     section.querySelectorAll('[data-reveal]'),
@@ -564,7 +624,11 @@ function initScene() {
         scrub: true,
         refreshPriority: 1,
         animation: heroText,
-        onUpdate: (self) => (heroProgress = self.progress),
+        onUpdate: (self) => {
+          heroProgress = self.progress
+          // Begitu mulai mengikuti Krekit, judul ikut ter-render (sebelum teks hero memudar)
+          setHeroRendered(self.progress > 0.06)
+        },
       })
       return () => (heroProgress = 0)
     })
@@ -576,6 +640,8 @@ function initScene() {
   function setRenderLevel(value) {
     renderLevel = value
     dunia.setLevel(value)
+    // Baris kuning judul ikut ter-render di tingkat "Render", dan kembali wireframe di tingkat lain
+    setHeroRendered(value === LEVEL_LINES.length - 1)
     stepButtons.forEach((button) => button.setAttribute('aria-pressed', String(Number(button.dataset.renderStep) === value)))
     spoken.add(0)
     krekit.jump()

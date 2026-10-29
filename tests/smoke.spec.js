@@ -31,10 +31,17 @@ test.describe('desktop', () => {
       await scrollToPos(page, id)
       await expect(html(page)).toHaveAttribute('data-krekit-pos', String(index), { timeout: 10_000 })
     }
-    // Lompat dari paling bawah ke paling atas: Krekit harus kembali ke hero, bukan tersangkut di pos yang dilewati
-    // Batas 3 detik: rantai teleport lama sempat mampir ke pos yang sudah lewat dan butuh beberapa detik
-    await page.evaluate(() => window.scrollTo(0, 0))
-    await expect(html(page)).toHaveAttribute('data-krekit-pos', '0', { timeout: 3_000 })
+    // Scroll cepat dengan roda mouse dari paling bawah ke paling atas: pos aktif berganti beberapa kali
+    // selagi Krekit masih teleport. Rantai teleport tidak boleh macet, dan Krekit harus tiba di hero.
+    // Catatan: tes ini tidak bisa menilai glitch visual sesaat (mis. animasi teleport yang diputar di
+    // panggung yang sudah di luar layar); itu tetap diperiksa dengan mata. Batas waktu dibuat longgar
+    // karena di CI WebGL dirender CPU, dan GSAP memperlambat animasi saat frame berat.
+    await page.mouse.move(683, 384)
+    for (let i = 0; i < 12; i++) {
+      await page.mouse.wheel(0, -900)
+      await page.waitForTimeout(60)
+    }
+    await expect(html(page)).toHaveAttribute('data-krekit-pos', '0', { timeout: 15_000 })
     expect(errors).toEqual([])
   })
 

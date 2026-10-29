@@ -8,6 +8,8 @@
  */
 import { getCollection } from 'astro:content'
 import '../site/landing.css'
+// Font judul Pos 0, dipasang dari npm (tanpa permintaan ke Google Fonts). Hanya dimuat di beranda.
+import '@fontsource-variable/bricolage-grotesque/opsz.css'
 import { SITE } from '../site.config.mjs'
 import { TRACKS } from '../lib/sections.js'
 import { withBase } from '../lib/inline.js'
@@ -76,7 +78,7 @@ const progressItems = docs
       <!-- Pos 0 · Dunia belum di-render (landing.js + dunia.js). Desktop: hero di-pin, Krekit menggelinding. Layar sempit: diorama, ketuk untuk me-render -->
       <section id="mulai" class="section section--split hero" data-section>
         <div class="hero__text">
-          <h1 class="display">Lewat celah ini, <span class="accent">kelihatan cara game dibuat.</span></h1>
+          <h1 class="display display--hero" aria-label="Lewat celah ini, kelihatan cara game dibuat." data-hero-title>Lewat celah ini, <span class="accent" data-hero-wire>kelihatan cara game dibuat.</span></h1>
           <p class="lead">Krekit sudah mengintip duluan. Ikuti dia: dari engine dan shader, desain dan produksi, sampai bisnis studio indie.</p>
           <div class="actions">
             <a class="btn btn--primary" href={withBase('/belajar/')} data-krekit-say="Pelajaran 1 tidak butuh pengetahuan 3D sebelumnya.">Mulai belajar →</a>
