@@ -24,6 +24,28 @@ const lessonsIn = (trackId) => docs.filter((d) => d.data.kind === 'lesson' && d.
 const trackStatus = (id) => docs.find((d) => d.id === `belajar/${id}`)?.data.status
 const pad2 = (n) => String(n).padStart(2, '0')
 
+// Pos 4 · Chat tanya-jawab: keraguan pembaca dan aturan konten yang menjawabnya (lihat Standar konten)
+const RULES_QA = [
+  {
+    id: 'bersumber',
+    title: 'Bersumber',
+    question: 'Angka di artikel ini dari mana?',
+    answer: 'Setiap angka, kebijakan platform, dan ketentuan lisensi wajib menautkan sumbernya, lengkap dengan tanggal akses. Jadi kamu bisa mengeceknya sendiri.',
+  },
+  {
+    id: 'ditinjau',
+    title: 'Ditinjau',
+    question: 'Sudah dicek orang yang paham?',
+    answer: 'Status setiap halaman ditampilkan terbuka di bagian atas: kerangka, draf, atau ditinjau praktisi. Kamu tahu seberapa jauh isinya sudah diperiksa.',
+  },
+  {
+    id: 'netral',
+    title: 'Netral',
+    question: 'Ini iklan, bukan?',
+    answer: 'Kerja sama dengan mitra selalu diungkap di halaman, dan kerja sama itu tidak mengubah penilaian di konten edukasi.',
+  },
+]
+
 // Pos 3 · Tarik kartu istilah: semua istilah Kamus sebagai tumpukan kartu (dikocok di browser, landing.js)
 const DECK = docs
   .filter((d) => d.data.kind === 'term')
@@ -283,17 +305,52 @@ const progressItems = docs
       </section>
 
       <!-- 04 · Prinsip -->
-      <section id="prinsip" class="section section--split section--flip reveal" data-section>
-        <div class="krekit-spot" data-krekit-spot aria-hidden="true"></div>
+      <section id="prinsip" class="section section--split section--flip section--chat reveal" data-section>
+        <!--
+          Pos 4 · Chat tanya-jawab (landing.js): tiga keraguan yang wajar dirasakan pembaca, dijawab Krekit
+          dengan aturan konten beserta contoh wujudnya di halaman. Pertanyaan dipilih lewat tombol balasan cepat.
+          Tanpa JavaScript seluruh percakapan tampil. Desktop: Krekit 3D berdiri di samping jendela chat.
+        -->
+        <figure class="chat" data-chat data-reveal>
+          <div class="chat__window">
+            <div class="chat__bar"><img src={withBase('/favicon.svg')} alt="" width="26" height="26" /><b>Krekit</b><span>● daring</span></div>
+            <div class="chat__log" data-chat-log aria-live="polite">
+              <div class="msg msg--krekit">Ada yang membuatmu ragu saat membaca konten game? Pilih pertanyaanmu di bawah.</div>
+              {RULES_QA.map((rule, i) => (
+                <>
+                  <div class="msg msg--you" data-chat-q={rule.id}>{rule.question}</div>
+                  <div class="msg msg--krekit" data-chat-a={rule.id}>
+                    <span class="msg__rule">Aturan {i + 1} · {rule.title}</span>
+                    <p>{rule.answer}</p>
+                    <div class="msg__example">
+                      <small>Contoh di halaman</small>
+                      {rule.id === 'bersumber' && <span>¹ Sumber: dokumen resmi platform · diakses 28 Okt 2026</span>}
+                      {rule.id === 'ditinjau' && (
+                        <span class="msg__chips"><i class="is-kerangka">Kerangka</i><i class="is-draf">Draf</i><i class="is-ditinjau">Ditinjau praktisi</i></span>
+                      )}
+                      {rule.id === 'netral' && <span class="msg__disclose">Pengungkapan: halaman ini menyebut mitra Krekit. Kerja sama tidak mengubah penilaian.</span>}
+                    </div>
+                  </div>
+                </>
+              ))}
+              <div class="msg msg--krekit" data-chat-outro>Itu tiga aturan untuk setiap halaman. Lengkapnya ada di Standar konten.</div>
+            </div>
+            <div class="chat__replies" data-chat-replies>
+              {RULES_QA.map((rule) => <button type="button" data-chat-ask={rule.id}>{rule.question}</button>)}
+              <button type="button" data-chat-reset hidden>Ulangi dari awal</button>
+            </div>
+          </div>
+          <div class="krekit-spot krekit-spot--chat" data-krekit-spot aria-hidden="true"></div>
+        </figure>
         <div class="section__inner">
           <p class="eyebrow" data-reveal>04 · Prinsip konten</p>
           <h2 class="display display--md" data-reveal>Tiga aturan<br /><span class="accent">untuk setiap halaman.</span></h2>
-          <!-- Pos 4 · Stempel verifikasi: Krekit melompat dan setiap aturan dicap bergantian (landing.js) -->
-          <ul class="principles" data-stamps>
-            <li data-reveal data-krekit-say="Daftar sumber ada di bagian bawah setiap artikel." data-stamp><b>Bersumber</b><span>Setiap angka, kebijakan platform, dan ketentuan lisensi wajib menautkan sumbernya, lengkap dengan tanggal akses.</span></li>
-            <li data-reveal data-krekit-say="Label draf muncul di bagian paling atas halaman." data-stamp><b>Ditinjau</b><span>Status setiap halaman ditampilkan terbuka: kerangka, draf, atau ditinjau praktisi.</span></li>
-            <li data-reveal data-krekit-say="Aturannya tertulis lengkap di halaman Standar konten." data-stamp><b>Netral</b><span>Kerja sama dengan mitra selalu diungkap dan tidak mengubah penilaian di konten edukasi.</span></li>
-          </ul>
+          <p class="lead" data-reveal>Tiga pertanyaan yang wajar muncul saat membaca konten game, dan aturan yang dipakai Krekit untuk menjawabnya.</p>
+          <ol class="rule-chips" data-reveal>
+            {RULES_QA.map((rule, i) => (
+              <li data-rule={rule.id}><span>{i + 1}</span>{rule.title}</li>
+            ))}
+          </ol>
           <div class="actions" data-reveal>
             <a class="btn btn--ghost" href={withBase('/kontribusi/standar-konten/')}>Baca standar konten</a>
           </div>
