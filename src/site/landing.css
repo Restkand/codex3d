@@ -1234,34 +1234,261 @@ main [data-krekit-say] {
   text-decoration: underline;
 }
 
-/* ---------- Pos 4 · Stempel verifikasi ---------- */
+/* ---------- Pos 4 · Chat tanya-jawab ----------
+   Pesan yang belum ditanyakan disembunyikan (.js-chat, landing.js); urutan tampil mengikuti urutan
+   pertanyaan dipilih (style.order). Desktop: tinggi jendela tetap, log bisa di-scroll. HP: tinggi mengikuti isi. */
 
-.principles li {
+.chat {
   position: relative;
-  /* Ruang untuk stempel di pojok kanan atas */
-  padding-right: 92px;
-  transition: border-left-color 0.3s;
+  margin: 0;
+  padding-left: clamp(110px, 12vw, 150px);
 }
 
-.principles li.is-stamped {
-  border-left-color: #7cff6b;
-}
-
-.stamp {
+/* Krekit berdiri di kiri bawah jendela chat, di tengah antara tulisan dan chat */
+.krekit-spot--chat {
   position: absolute;
-  top: 12px;
-  right: 14px;
-  padding: 3px 8px;
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 700;
+  left: 0;
+  bottom: 0;
+  width: clamp(110px, 12vw, 150px);
+  height: clamp(130px, 22vh, 180px);
+}
+
+.chat__window {
+  display: flex;
+  flex-direction: column;
+  height: clamp(380px, 62vh, 520px);
+  overflow: hidden;
+  background: #0c0c13;
+  border: 1px solid rgba(127, 240, 255, 0.3);
+  border-radius: 14px;
+  box-shadow: 0 0 40px rgba(0, 229, 255, 0.08);
+}
+
+.chat__bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(127, 240, 255, 0.15);
+}
+
+.chat__bar span {
+  font: 11px/1 var(--mono);
+  color: #7cff6b;
+}
+
+.chat__log {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+}
+
+.msg {
+  max-width: 86%;
+  padding: 10px 13px;
+  font-size: 14.5px;
+  line-height: 1.5;
+  border-radius: 14px;
+  animation: msg-in 0.3s ease-out;
+}
+
+@keyframes msg-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.msg--you {
+  align-self: flex-end;
+  font-weight: 600;
+  color: #07070b;
+  background: var(--accent);
+  border-bottom-right-radius: 4px;
+}
+
+.msg--krekit {
+  align-self: flex-start;
+  color: var(--text);
+  background: #171722;
+  border: 1px solid var(--line);
+  border-bottom-left-radius: 4px;
+}
+
+.msg p {
+  margin: 6px 0 0;
+}
+
+.msg__rule {
+  font: 700 11px/1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+/* Contoh wujud aturan di halaman */
+.msg__example {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 8px 10px;
+  font: 12px/1.5 var(--mono);
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(127, 240, 255, 0.3);
+  border-radius: 8px;
+}
+
+.msg__example small {
+  font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #7cff6b;
-  border: 2px solid #7cff6b;
+  color: rgba(242, 242, 245, 0.45);
+}
+
+.msg__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.msg__chips i {
+  padding: 2px 8px;
+  font-style: normal;
+  font-weight: 700;
   border-radius: 4px;
-  transform: rotate(-8deg);
-  pointer-events: none;
+}
+
+.msg__chips .is-kerangka {
+  color: var(--muted);
+  border: 1px dashed rgba(242, 242, 245, 0.35);
+}
+
+.msg__chips .is-draf {
+  color: #6b4a00;
+  background: #ffd76a;
+}
+
+.msg__chips .is-ditinjau {
+  color: #07070b;
+  background: #7cff6b;
+}
+
+.msg__disclose {
+  padding-left: 8px;
+  color: var(--text);
+  border-left: 3px solid #00b3ff;
+}
+
+/* "Krekit sedang mengetik": tiga titik memantul */
+.msg--typing {
+  display: flex;
+  gap: 5px;
+  padding: 14px 16px;
+}
+
+.msg--typing i {
+  width: 6px;
+  height: 6px;
+  background: var(--muted);
+  border-radius: 50%;
+  animation: typing-dot 0.9s ease-in-out infinite;
+}
+
+.msg--typing i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.msg--typing i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes typing-dot {
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.js-chat .chat__log > :is([data-chat-q], [data-chat-a], [data-chat-outro]):not(.is-shown) {
+  display: none;
+}
+
+/* Balasan cepat: pertanyaan yang bisa dipilih */
+.chat__replies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1px solid rgba(127, 240, 255, 0.15);
+}
+
+.chat:not(.js-chat) .chat__replies {
+  display: none;
+}
+
+.chat__replies button {
+  padding: 8px 13px;
+  font: 600 13.5px/1.3 inherit;
+  font-family: inherit;
+  color: var(--accent);
+  background: rgba(255, 204, 51, 0.06);
+  border: 1px solid rgba(255, 204, 51, 0.55);
+  border-radius: 99px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.chat__replies button:hover,
+.chat__replies button:focus-visible {
+  background: rgba(255, 204, 51, 0.16);
+  outline: none;
+}
+
+.chat__replies button[hidden] {
+  display: none;
+}
+
+/* Penanda aturan di samping judul: menyala setelah pertanyaannya dijawab */
+.rule-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: clamp(14px, 2.6vh, 28px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rule-chips li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 13px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  border: 1px dashed rgba(242, 242, 245, 0.3);
+  border-radius: 99px;
+  transition: color 0.3s, border-color 0.3s;
+}
+
+.rule-chips span {
+  font: 11px/1 var(--mono);
+  color: var(--accent);
+}
+
+.rule-chips li.is-checked {
+  color: #7cff6b;
+  border: 1px solid #7cff6b;
+}
+
+.rule-chips li.is-checked span {
+  color: #7cff6b;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1273,6 +1500,8 @@ main [data-krekit-say] {
     transition: none;
   }
 
+  .msg,
+  .msg--typing i,
   .skill-tree__edges path.is-lit,
   .belt__station.is-here .belt__gate::after,
   .belt[data-stage='pemain'] .belt__egg {
@@ -1326,6 +1555,15 @@ main [data-krekit-say] {
 
   .belt {
     --sw: 46cqw;
+  }
+
+  /* Pos 4: tulisan di kiri, jendela chat (dengan Krekit di sisi kirinya) di kanan. Di HP chat tetap di atas */
+  .section--chat.section--flip {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+
+  .section--chat .chat {
+    order: 1;
   }
 
   /* Pos 3: tumpukan + Krekit di kiri, kartu di tengah, tulisan di kanan. Di HP urutannya tetap
@@ -1420,6 +1658,25 @@ main [data-krekit-say] {
 
   .belt__egg {
     display: block;
+  }
+
+  /* Chat Pos 4: tanpa ruang Krekit di samping (Krekit berjaga di pojok). Tinggi mengikuti isi,
+     jadi jawaban muncul di tempat tanpa scroll di dalam kotak */
+  .chat {
+    margin-bottom: 18px;
+    padding-left: 0;
+  }
+
+  .chat__window {
+    height: auto;
+  }
+
+  .chat__log {
+    overflow: visible;
+  }
+
+  .msg {
+    max-width: 92%;
   }
 
   /* Tarik kartu Pos 3: kartu di atas, tumpukan kecil dan tombol sejajar di bawahnya (Krekit di pojok) */

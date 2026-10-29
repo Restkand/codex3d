@@ -376,49 +376,64 @@ if (draw) {
   stack.addEventListener('click', drawCard)
 }
 
-// Pos 4 · Stempel verifikasi: setiap aturan dicap bergantian saat bagian ini masuk layar
-const stampItems = [...document.querySelectorAll('[data-stamp]')]
-const stamps = stampItems.map((item) => {
-  const stamp = el('span', 'stamp', '✓ Lolos')
-  stamp.setAttribute('aria-hidden', 'true')
-  item.append(stamp)
-  return stamp
-})
-if (stamps.length) {
-  if (reduceMotion) stampItems.forEach((item) => item.classList.add('is-stamped'))
-  else {
-    gsap.set(stamps, { autoAlpha: 0, scale: 1.8, rotate: -16 })
-    const stamping = gsap.timeline({ paused: true, delay: 0.5 })
-    stamps.forEach((stamp, i) => {
-      stamping
-        .call(() => {
-          stampItems[i].classList.add('is-stamped')
-          sceneHooks.stamp?.(i, stamps.length)
-        })
-        .to(stamp, { autoAlpha: 1, scale: 1, rotate: -8, duration: 0.3, ease: 'back.out(3)' }, '<')
-        // Glitch kecil saat cap mendarat
-        .fromTo(stamp, { x: -4 }, { x: 0, duration: 0.18, ease: 'steps(4)' })
-        .to({}, { duration: 0.35 })
-    })
-    ScrollTrigger.create({
-      trigger: '[data-stamps]',
-      start: 'top 70%',
-      onEnter: () => stamping.play(0),
-      onLeaveBack: () => {
-        stamping.pause(0)
-        gsap.set(stamps, { autoAlpha: 0, scale: 1.8, rotate: -16 })
-        stampItems.forEach((item) => item.classList.remove('is-stamped'))
-      },
+// Pos 4 · Chat tanya-jawab: pengunjung memilih pertanyaan, Krekit "mengetik" lalu membalas dengan aturan
+// konten beserta contohnya. Pesan tampil sesuai urutan pertanyaan dipilih (style.order). Setelah ketiganya
+// dijawab, muncul penutup dan tombol "Ulangi dari awal". Tanpa JavaScript seluruh percakapan tampil.
+const chat = document.querySelector('[data-chat]')
+if (chat) {
+  chat.classList.add('js-chat')
+  const log = chat.querySelector('[data-chat-log]')
+  const asks = [...chat.querySelectorAll('[data-chat-ask]')]
+  const resetButton = chat.querySelector('[data-chat-reset]')
+  const outro = chat.querySelector('[data-chat-outro]')
+  const chips = [...document.querySelectorAll('.rule-chips [data-rule]')]
+  const answered = new Set()
+  let order = 0
+  let busy = false
+
+  const place = (node) => {
+    node.style.order = ++order
+    node.classList.add('is-shown')
+    // Desktop: log punya tinggi tetap, jadi gulir ke pesan terbaru. HP: log memanjang mengikuti isi
+    // Ditunda satu frame: tunggu pesan baru selesai ditata agar pesan terakhir terlihat utuh
+    requestAnimationFrame(() => log.scrollTo({ top: log.scrollHeight }))
+  }
+
+  function ask(id) {
+    if (busy || answered.has(id)) return
+    busy = true
+    answered.add(id)
+    chat.querySelector(`[data-chat-ask="${id}"]`).hidden = true
+    place(log.querySelector(`[data-chat-q="${id}"]`))
+    const typing = document.createElement('div')
+    typing.className = 'msg msg--krekit msg--typing'
+    typing.setAttribute('aria-label', 'Krekit sedang mengetik')
+    typing.innerHTML = '<i></i><i></i><i></i>'
+    log.append(typing)
+    place(typing)
+    sceneHooks.chat?.(false)
+    gsap.delayedCall(reduceMotion ? 0 : 0.8, () => {
+      typing.remove()
+      place(log.querySelector(`[data-chat-a="${id}"]`))
+      chips.find((chip) => chip.dataset.rule === id)?.classList.add('is-checked')
+      busy = false
+      if (answered.size < asks.length) return
+      place(outro)
+      resetButton.hidden = false
+      sceneHooks.chat?.(true)
     })
   }
-}
 
-/** Elemen DOM kecil (untuk stempel) */
-function el(tag, className, text) {
-  const node = document.createElement(tag)
-  node.className = className
-  node.textContent = text
-  return node
+  asks.forEach((button) => button.addEventListener('click', () => ask(button.dataset.chatAsk)))
+  resetButton.addEventListener('click', () => {
+    answered.clear()
+    order = 0
+    log.querySelectorAll('.is-shown').forEach((node) => node.classList.remove('is-shown'))
+    chips.forEach((chip) => chip.classList.remove('is-checked'))
+    asks.forEach((button) => (button.hidden = false))
+    resetButton.hidden = true
+    log.scrollTop = 0
+  })
 }
 
 // ---------- Tahap pertumbuhan Krekit dari progres belajar (localStorage, tanpa server) ----------
@@ -458,7 +473,7 @@ const MOODS = [
   },
   { glow: '#9dff8a', aura: '#7cff6b', bg: '#08100d', line: 'Baru Fondasi Engine yang sudah ada pelajarannya. Lima jalur lain masih kerangka.' },
   { glow: '#8ad2ff', aura: '#00b3ff', bg: '#080b14', line: touchOnly ? 'Ketuk Tarik kartu. Aku juga penasaran istilah apa yang keluar.' : 'Tarik satu kartu dari tumpukanku. Aku juga penasaran istilah apa yang keluar.' },
-  { glow: '#ffe08a', aura: '#ffcc33', bg: '#0d0b08', line: 'Ketemu angka tanpa sumber? Bilang saja lewat GitHub.' },
+  { glow: '#ffe08a', aura: '#ffcc33', bg: '#0d0b08', line: 'Pilih pertanyaan di obrolan itu. Aku jawab satu per satu.' },
   { glow: '#ffa6f0', aura: '#ff5ce1', bg: '#0b0b10', line: 'Sampai bawah juga. Kalau ada yang salah di situs ini, kamu bisa ikut memperbaikinya.' },
 ]
 const STAGE_LINES = [
@@ -722,10 +737,17 @@ function initScene() {
     bubble.say(lines[Math.floor(Math.random() * lines.length)], 2.8)
     gsap.delayedCall(0.9, term.level === 3 ? krekit.confused : krekit.smile)
   }
-  // Stempel pertama: Krekit melompat; stempel terakhir: tersenyum puas
-  sceneHooks.stamp = (i, total) => {
-    if (i === 0) krekit.jump()
-    if (i === total - 1) gsap.delayedCall(0.6, krekit.smile)
+  // Chat Pos 4: Krekit berbicara selama "mengetik" balasan (gelembung tidak dipakai, chat itu sendiri
+  // ucapannya), lalu tersenyum setelah ketiga aturan dijawab
+  sceneHooks.chat = (done) => {
+    if (sectionId() !== 'prinsip' && !(compact && activeIndex === 4)) return
+    spoken.add(4)
+    if (!done) {
+      krekit.talk(0.8)
+      return
+    }
+    if (!compact) krekit.jump()
+    gsap.delayedCall(0.5, krekit.smile)
   }
 
   // ---------- Layar sempit, setelah Pos 0: Krekit kecil di pojok kanan bawah ----------
