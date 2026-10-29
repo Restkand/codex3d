@@ -11,19 +11,33 @@ import '../site/landing.css'
 // Font judul Pos 0, dipasang dari npm (tanpa permintaan ke Google Fonts). Hanya dimuat di beranda.
 import '@fontsource-variable/bricolage-grotesque/opsz.css'
 import { SITE } from '../site.config.mjs'
-import { TRACKS } from '../lib/sections.js'
+import { TRACKS, KAMUS_CHAPTERS } from '../lib/sections.js'
 import { withBase } from '../lib/inline.js'
 import BottomNav from '../components/BottomNav.astro'
 import SocialMeta from '../components/SocialMeta.astro'
 import ShareButton from '../components/ShareButton.astro'
 import { LEVELS, LESSON_XP } from '../lib/progress.js'
-import pipeline from '../data/pipeline.json'
 
 const docs = await getCollection('docs')
 const termCount = docs.filter((d) => d.data.kind === 'term').length
 const lessonsIn = (trackId) => docs.filter((d) => d.data.kind === 'lesson' && d.id.startsWith(`belajar/${trackId}/`)).length
 const trackStatus = (id) => docs.find((d) => d.id === `belajar/${id}`)?.data.status
 const pad2 = (n) => String(n).padStart(2, '0')
+
+// Pos 3 · Tarik kartu istilah: semua istilah Kamus sebagai tumpukan kartu (dikocok di browser, landing.js)
+const DECK = docs
+  .filter((d) => d.data.kind === 'term')
+  .map((d) => ({
+    title: d.data.title,
+    aka: d.data.aka ?? '',
+    description: d.data.description ?? '',
+    chapter: KAMUS_CHAPTERS.find((c) => c.id === d.id.split('/')[1])?.title ?? '',
+    level: d.data.level ?? 1,
+    levelName: LEVELS[d.data.level ?? 1].name,
+    status: d.data.status ?? 'draf',
+    href: withBase(`/${d.id}/`),
+  }))
+const firstCard = DECK.find((t) => t.title === 'Frame') ?? DECK[0]
 
 // Pos 2 · Pohon skill: induk tiap jalur, posisi tengah node (% lebar pohon), baris, dan nama cabang.
 // Cabang hanya saran urutan belajar, bukan prasyarat.
@@ -225,26 +239,47 @@ const progressItems = docs
       </section>
 
       <!-- 03 · Kamus -->
-      <section id="kamus" class="section section--split reveal" data-section>
+      <section id="kamus" class="section section--split section--draw reveal" data-section>
         <div class="section__inner">
           <p class="eyebrow" data-reveal>03 · Kamus</p>
-          <h2 class="display display--md" data-reveal><span data-count={termCount}>{termCount}</span> istilah,<br /><span class="accent">saling terhubung.</span></h2>
-          <p class="lead" data-reveal>Kamus teknis dengan analogi, demo, dan tautan antar-konsep. Mulai dari perjalanan satu frame:</p>
-          <!-- Pos 3 · Satu frame lewat pipa: kubus berubah per tahap, chip tahap menyala mengikuti scroll (frame-sim.js) -->
-          <figure class="frame-sim" data-frame-sim data-reveal>
-            <canvas class="frame-sim__canvas" aria-hidden="true"></canvas>
-            <figcaption class="frame-sim__caption" data-frame-caption aria-live="polite"></figcaption>
-          </figure>
-          <ol class="pipeline-chips" data-reveal>
-            {pipeline.map((step, i) => (
-              <li><a href={withBase(step.href)} data-krekit-say={step.krekit} data-frame-step={i} data-sub={step.sub}><span>{i + 1}</span>{step.label}</a></li>
-            ))}
-          </ol>
+          <h2 class="display display--md" data-reveal><span data-count={termCount}>{termCount}</span> istilah,<br /><span class="accent">tarik satu kartu.</span></h2>
+          <p class="lead" data-reveal>Setiap kartu berisi satu istilah teknis dengan penjelasan singkat. Di Kamus, setiap istilah punya analogi, demo, dan tautan ke istilah lain yang berkaitan.</p>
           <div class="actions" data-reveal>
-            <a class="btn btn--primary" href={withBase('/kamus/')} data-krekit-say="Di halaman Kamus ada pencarian. Ketik saja istilah yang membuatmu bingung.">Buka Kamus →</a>
+            <a class="btn btn--ghost" href={withBase('/kamus/')} data-krekit-say="Di halaman Kamus ada pencarian. Ketik saja istilah yang membuatmu bingung.">Buka Kamus →</a>
           </div>
         </div>
-        <div class="krekit-spot" data-krekit-spot aria-hidden="true"></div>
+        <!--
+          Pos 3 · Tarik kartu istilah (landing.js): tumpukan dikocok di browser, kartu terbang dari tumpukan
+          lalu terbalik. Desktop: Krekit berdiri di atas tumpukan. HP: Krekit berkomentar dari pojok.
+        -->
+        <div class="draw" data-draw data-reveal>
+          <div class="draw__deck">
+            <div class="krekit-spot krekit-spot--deck" data-krekit-spot aria-hidden="true"></div>
+            <div class="draw__stack" data-draw-stack aria-hidden="true"><span>KREKIT</span></div>
+            <button type="button" class="btn btn--primary draw__btn" data-draw-btn>Tarik kartu</button>
+            <p class="draw__count" data-draw-count>{DECK.length} kartu di tumpukan</p>
+          </div>
+          <div class="draw__slot">
+            <div class="term-card" data-card>
+              <div class="term-card__inner" data-card-inner>
+                <article class="term-card__face term-card__front" aria-live="polite">
+                  <p class="term-card__top">
+                    <span data-card-chapter>{firstCard.chapter}</span>
+                    <span class="term-card__level" data-card-level={firstCard.level} title="Level">
+                      <i></i><i></i><i></i> <span data-card-level-name>{firstCard.levelName}</span>
+                    </span>
+                  </p>
+                  <h3 class="term-card__title" data-card-title>{firstCard.title}</h3>
+                  <p class="term-card__aka" data-card-aka>{firstCard.aka}</p>
+                  <p class="term-card__desc" data-card-desc>{firstCard.description}</p>
+                  <a class="term-card__link" data-card-link href={firstCard.href}>Baca di Kamus →</a>
+                </article>
+                <div class="term-card__face term-card__back" aria-hidden="true"><span>KREKIT</span><small>Kamus</small></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script type="application/json" id="kamus-deck" set:html={JSON.stringify(DECK)} />
       </section>
 
       <!-- 04 · Prinsip -->
