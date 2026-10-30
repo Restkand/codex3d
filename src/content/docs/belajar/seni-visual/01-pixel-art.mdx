@@ -1,0 +1,559 @@
+---
+title: "Pixel Art"
+description: "Resolusi dasar dan ukuran tile, palet terbatas, scaling kelipatan bulat, filter tekstur dan mipmap, kamera pixel-perfect, animasi frame demi frame, pengaturan di Unity, Godot, dan Unreal, serta biayanya bagi memori dan draw call."
+fundamental: "Sprite yang tajam di editor bisa tampil buram di layar penuh, dan karakter bisa bergetar satu piksel saat kamera mengikutinya. Gambarnya sendiri biasanya sudah benar. Penyebabnya ada di cara engine memperbesar gambar dan membulatkan posisi, dan perbaikannya baru terlihat kalau kamu paham hubungan antara piksel gambar dan piksel layar."
+kind: lesson
+minutes: 30
+status: draf
+lastReviewed: 2026-10-30
+terms:
+  - 2d/sprite
+  - 2d/sprite-sheet
+  - 2d/sprite-atlas
+  - 2d/tilemap
+  - 2d/pixel-perfect
+  - 2d/parallax
+  - texture
+  - texture-filtering
+  - ortho
+  - delta-time
+  - draw-call
+  - overdraw
+krekit:
+  gambaran-besar: "Satu aturan untuk diingat: satu piksel seni harus selalu jadi kotak piksel layar yang sama besar."
+  resolusi-dasar-dan-ukuran-tile: "Tetapkan dua angka ini sebelum menggambar aset pertama. Mengubahnya belakangan berarti menggambar ulang."
+  scaling-dengan-kelipatan-bulat: "Coba hitung dengan resolusi monitormu sendiri. Berapa faktor bulat yang kamu dapat?"
+  palet-terbatas: "Palet yang sama juga memudahkan kerja tim. Aset dari dua artist tetap terlihat berasal dari satu dunia."
+  filter-tekstur-mipmap-dan-kompresi: "Kalau sprite tiba-tiba buram atau warnanya bergeser, periksa tiga pengaturan impor ini dulu."
+  kamera-pixel-perfect-dan-posisi-sub-piksel: "Posisi logika boleh pecahan. Yang dibulatkan hanya posisi saat digambar."
+  animasi-frame-demi-frame: "Hitung durasi dalam detik. Jumlah frame game per detik berbeda di setiap layar, durasinya tidak."
+  menyiapkan-proyek-di-tiap-engine: "Simpan daftar ini. Setiap sprite baru perlu melewati pengaturan yang sama."
+  biaya-tekstur-kecil-atlas-dan-draw-call: "Satu tekstur pixel art memang kecil, tapi jumlahnya bisa ratusan. Hitung juga draw call-nya."
+  kesalahan-umum: "Hampir semua kesalahan ini tidak terlihat di jendela editor yang kecil. Cek di build dengan beberapa ukuran layar."
+sidebar:
+  order: 1
+  label: "1 · Pixel Art"
+quiz:
+  - q: "Resolusi dasar game 320×180, dan pemain memakai layar 1366×768 dengan skala bulat. Berapa ukuran gambar game di layar?"
+    options:
+      - "1366×768, memenuhi layar"
+      - "1280×720, dengan sisa layar di sekelilingnya"
+      - "1600×900, sebagian terpotong"
+      - "960×540, dengan sisa layar di sekelilingnya"
+    answer: 1
+    explain: "1366 ÷ 320 ≈ 4,27 dan 768 ÷ 180 ≈ 4,27. Faktor bulat terbesar yang masih muat adalah 4, jadi gambar menjadi 1280×720. Sisa 86 × 48 piksel layar diisi bingkai atau area dunia tambahan."
+  - q: "Resolusi dasar dan skalanya sudah benar, tetapi semua sprite tampak sedikit buram, terutama di tepi. Pengaturan mana yang paling mungkin salah?"
+    options:
+      - "Pixels Per Unit terlalu kecil"
+      - "Filter tekstur masih bilinear"
+      - "Mipmap dimatikan"
+      - "Sprite Mode masih Single"
+    answer: 1
+    explain: "Filter bilinear mencampur warna empat texel terdekat, sehingga tepi setiap piksel seni bergradasi ke warna tetangganya. Point atau nearest hanya mengambil satu texel, sehingga setiap piksel seni tampil sebagai kotak tegas. Mematikan mipmap tidak membuat sprite yang dibesarkan menjadi buram."
+  - q: "Kenapa kompresi GPU (misalnya mode VRAM Compressed di Godot) tidak disarankan untuk tekstur pixel art?"
+    options:
+      - "GPU tidak bisa membaca tekstur terkompresi di game 2D"
+      - "Kompresi menyimpan perkiraan warna per blok, sehingga warna bisa keluar dari palet dan tepi tajam berbintik, sementara penghematannya kecil karena teksturnya kecil"
+      - "Kompresi selalu menambah jumlah draw call"
+      - "Kompresi mengubah Pixels Per Unit tekstur"
+    answer: 1
+    explain: "Pada foto, perkiraan warna per blok hampir tidak terlihat. Pixel art bergantung pada setiap piksel dan warna palet yang tepat. Dokumentasi Godot menulis bahwa kompresi VRAM merusak tampilan pixel art tanpa menambah performa secara berarti, karena resolusinya kecil."
+  - q: "Kamu menggambar scene di resolusi dasar lalu membesarkannya (Stretch Mode viewport di Godot, atau Upscale Render Texture di Unity). Gambar selalu rapi, tetapi kamera yang bergerak pelan terasa patah-patah. Kenapa?"
+    options:
+      - "Delta time tidak dipakai"
+      - "Semua posisi jatuh di grid piksel seni, jadi kamera hanya bisa bergeser satu piksel seni penuh, misalnya 4 piksel layar, sekaligus"
+      - "Filter nearest memperlambat GPU"
+      - "Mipmap membuat gambar melompat"
+    answer: 1
+    explain: "Di resolusi dasar, tidak ada posisi di antara dua piksel seni. Gerakan pelan menjadi rangkaian lompatan sebesar satu piksel seni. Jika kamera harus lebih halus, pakai render resolusi layar dengan snapping. Konsekuensinya, sprite yang diputar tidak lagi punya piksel yang seragam."
+  - q: "Klip lari 8 frame diputar pada 12 FPS. Di layar 144 Hz, berapa frame game setiap gambar tampil, dan berapa lama satu siklus?"
+    options:
+      - "12 frame game, satu siklus sekitar 0,67 detik"
+      - "1 frame game, satu siklus sekitar 0,06 detik"
+      - "5 frame game, satu siklus sekitar 0,67 detik"
+      - "12 frame game, satu siklus 1,5 detik"
+    answer: 0
+    explain: "Setiap gambar tampil 1/12 detik. Dalam waktu itu, layar 144 Hz menggambar 144 ÷ 12 = 12 frame game. Satu siklus 8 ÷ 12 ≈ 0,67 detik, sama di semua layar karena waktunya diukur dalam detik. Jawaban 5 frame game berlaku untuk layar 60 Hz."
+sources:
+  - title: "Sprite (2D and UI) texture Import Settings window reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/textures-reference/texture-type-sprite"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Platform-specific texture overrides panel reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/textures-reference/class-texture-importer/type-specific"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Import a sprite or spritesheet texture"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/import-images-sprites"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Scale and rotate pixel art precisely in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/2d-urp/2d-pixelperfect"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Add a pixel perfect camera"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/2d-urp/2d-pixelperfect/prep-sprites"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Configure a pixel perfect camera"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/2d-urp/2d-pixelperfect/configure"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Pixel Perfect Camera component reference for URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/2d-urp/2d-pixelperfect/ref"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Packing sprites into atlas textures"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/atlas"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Sprite Atlas Inspector window reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/atlas/sprite-atlas-reference"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "2D game creation workflow"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/2d-game-development/2d-game-creation-wokflow"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Animation window"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/animation-section/animation-mecanim/animation-clips/animation-editor-guide"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Camera.orthographicSize"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/camera/orthographicsize"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Multiple resolutions"
+    url: "https://docs.godotengine.org/en/stable/tutorials/rendering/multiple_resolutions.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "ProjectSettings"
+    url: "https://docs.godotengine.org/en/stable/classes/class_projectsettings.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "CanvasItem"
+    url: "https://docs.godotengine.org/en/stable/classes/class_canvasitem.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Importing images"
+    url: "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_images.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "2D sprite animation"
+    url: "https://docs.godotengine.org/en/stable/tutorials/2d/2d_sprite_animation.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "SpriteFrames"
+    url: "https://docs.godotengine.org/en/stable/classes/class_spriteframes.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "TileSetAtlasSource"
+    url: "https://docs.godotengine.org/en/stable/classes/class_tilesetatlassource.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Camera2D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_camera2d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Sprite sheets"
+    url: "https://www.aseprite.org/docs/sprite-sheet/"
+    publisher: "Aseprite Documentation"
+    accessed: 2026-10-30
+  - title: "Frame Duration"
+    url: "https://www.aseprite.org/docs/frame-duration/"
+    publisher: "Aseprite Documentation"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Memilih resolusi dasar dan ukuran tile yang bisa dibesarkan dengan kelipatan bulat ke layar umum.
+- Menjelaskan kenapa skala yang tidak bulat merusak pixel art, dan memilih cara mengisi sisa layar.
+- Mengatur filter tekstur, mipmap, dan kompresi yang cocok untuk sprite pixel art.
+- Menjelaskan asal getaran satu piksel saat kamera bergerak, dan cara kamera pixel-perfect mencegahnya.
+- Menentukan jumlah frame dan durasi animasi frame demi frame dalam detik.
+- Menyiapkan proyek pixel art di Unity dan Godot, dan mengenali pengaturan yang setara di Unreal.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: gambar di kertas berpetak">
+Bayangkan gambar di kertas berpetak, dengan satu warna di setiap petak. Untuk memperbesarnya, kamu memfotokopi dengan zoom 200% atau 300%. Setiap petak menjadi kotak 2×2 atau 3×3, dan gambarnya tetap rapi. Dengan zoom 250%, mesin fotokopi harus memutuskan petak mana yang menjadi 2 kolom dan mana yang menjadi 3 kolom, sehingga garis yang tadinya sama tebal kini berbeda tebalnya.
+</Aside>
+
+**Pixel art** adalah gaya gambar yang setiap pikselnya ditempatkan dengan sengaja. Gambarnya kecil, misalnya karakter 16×16 atau 32×32 piksel, lalu diperbesar beberapa kali lipat saat tampil di layar. Ciri khasnya adalah tepi kotak yang tegas dan ukuran piksel yang sama di seluruh layar. Foto yang diperkecil lalu diperbesar lagi juga tampak kotak-kotak, tetapi susunan pikselnya tidak dirancang, sehingga hasilnya terasa berbeda.
+
+Dalam game, gambar 2D seperti ini dipakai sebagai **[sprite](/kamus/2d/sprite/)**: [tekstur](/kamus/geometri/texture/) yang ditempelkan pada persegi di dunia game. Ada dua jenis piksel yang perlu dibedakan:
+
+- **Piksel seni:** satu piksel di file gambar, yang ditempatkan artist. Di dalam GPU, piksel tekstur disebut *texel*.
+- **Piksel layar:** satu titik cahaya di monitor pemain.
+
+Semua pengaturan di pelajaran ini mengejar satu tujuan: **setiap piksel seni menutupi kotak piksel layar yang sama besar**, misalnya 4×4, di seluruh layar dan di setiap frame. Jalurnya kira-kira seperti ini:
+
+```text title="Pseudocode: dari piksel seni ke piksel layar"
+gambar = render(scene, resolusi_dasar)        // misalnya 320 × 180 piksel seni
+skala  = bilangan_bulat_terbesar_yang_muat(layar, resolusi_dasar)
+tampilkan(gambar, skala, filter = nearest)    // setiap piksel seni jadi skala × skala piksel layar
+sisa_layar = bingkai, atau area dunia tambahan
+```
+
+Pengaturan bawaan engine umumnya ditujukan untuk gambar halus: tekstur dihaluskan saat dibesarkan, objek boleh berada di posisi pecahan, dan ukuran tampilan tidak dibatasi ke kelipatan bulat. Untuk pixel art, semua itu membuat gambar buram atau tidak rata. Karena itu proyek pixel art butuh beberapa pengaturan yang disengaja, dan setiap bagian berikut membahas satu di antaranya.
+
+## Resolusi dasar dan ukuran tile
+
+**Resolusi dasar** adalah ukuran kanvas game dalam piksel seni, misalnya 320×180 atau 640×360. Semua sprite, tile, dan antarmuka digambar untuk ukuran ini, lalu seluruh gambar dibesarkan ke layar pemain. Nama lain yang sering dipakai adalah *native resolution*, *internal resolution*, atau *reference resolution*.
+
+Dunia game 2D sering disusun dari kotak berukuran sama, misalnya 16×16 piksel, yang ditata di atas **[tilemap](/kamus/2d/tilemap/)**. Resolusi dasar dan ukuran tile bersama-sama menentukan berapa banyak dunia yang terlihat:
+
+```text title="Berapa tile yang muat di layar"
+320 × 180, tile 16 px  →  20 × 11.25 tile
+320 × 180, tile 32 px  →  10 × 5.6 tile
+640 × 360, tile 16 px  →  40 × 22.5 tile
+```
+
+Resolusi dasar yang lebih besar dengan tile yang sama memperlihatkan lebih banyak dunia, tetapi setiap objek tampil lebih kecil dan layar butuh lebih banyak aset untuk terisi. Tile yang lebih besar memberi ruang detail untuk setiap objek, tetapi pemain melihat lebih sedikit dunia. Pilihan ini memengaruhi desain level, misalnya seberapa jauh pemain bisa melihat musuh datang, dan juga beban kerja artist. Tetapkan sebelum aset pertama dibuat. Mengubahnya di tengah produksi berarti menggambar ulang atau menskalakan aset, dan menskalakan pixel art dengan faktor tidak bulat akan merusaknya.
+
+Engine juga perlu tahu berapa piksel seni yang setara dengan satu satuan dunia (**pixels per unit**, PPU). Di Unity, angka ini diatur per tekstur. Godot 2D mengukur posisi langsung dalam piksel. Aturan pentingnya: **semua aset memakai kepadatan piksel yang sama**. Jika sebuah pedang digambar dua kali lebih detail lalu diperkecil agar cocok dengan karakter, pikselnya tampil setengah ukuran piksel lain. Piksel yang ukurannya berbeda seperti ini (sering disebut *mixel*) langsung terlihat janggal di samping aset lain.
+
+Satu pilihan yang memudahkan adalah menyamakan PPU dengan ukuran tile, misalnya 16. Satu tile menjadi tepat satu unit, sehingga koordinat level, grid editor, dan ukuran collider memakai angka bulat. Kamera [ortografis](/kamus/dasar/ortho/) lalu diatur agar tinggi pandangnya sama dengan tinggi resolusi dasar: 180 ÷ 16 = 11,25 unit. Di Unity, nilai yang disimpan kamera ortografis adalah setengahnya, yaitu `orthographicSize` 5,625.
+
+## Scaling dengan kelipatan bulat
+
+Monitor 1920×1080 dengan resolusi dasar 320×180 menghasilkan skala 1920 ÷ 320 = 6. Setiap piksel seni menjadi kotak 6×6 piksel layar, dan semuanya rapi. Laptop 1366×768 menghasilkan 1366 ÷ 320 ≈ 4,27. Layar tidak bisa menampilkan 0,27 piksel, jadi sebagian piksel seni harus menjadi 4 kolom dan sebagian lagi 5 kolom.
+
+```text title="Ilustrasi: 8 piksel seni dibesarkan 2 kali dan 2,5 kali"
+piksel seni : A   B   C   D   E   F   G   H
+skala 2     : AA  BB  CC  DD  EE  FF  GG  HH       semua 2 piksel layar
+skala 2.5   : AA  BBB CC  DDD EE  FFF GG  HHH      bergantian 2 dan 3 piksel layar
+```
+
+Hasilnya bergantung pada filter tekstur, yang dibahas di bagian berikutnya. Dengan filter *nearest*, garis setebal satu piksel seni kadang tampil 2 piksel layar dan kadang 3, dan polanya berubah setiap kali objek bergerak, sehingga gambar tampak berkilau. Dengan filter *bilinear*, tepi setiap piksel seni dicampur dengan tetangganya, sehingga seluruh gambar buram. Dokumentasi Godot memperlihatkan efek ini dengan papan catur yang petaknya tidak lagi sama besar.
+
+Solusinya **integer scaling**: pakai faktor bulat terbesar yang masih muat, lalu isi sisa layar dengan cara lain.
+
+```text title="Pseudocode: memilih skala bulat"
+dasar  = (320, 180)
+layar  = (1366, 768)
+skala  = floor(min(layar.x / dasar.x, layar.y / dasar.y))   // floor(4.27) = 4
+gambar = dasar * skala                                       // 1280 × 720
+sisa   = layar - gambar                                      // 86 × 48 piksel layar
+```
+
+Tabel berikut menunjukkan faktor bulat untuk tiga resolusi dasar 16:9 di beberapa ukuran layar:
+
+| Resolusi dasar | 1280×720 | 1366×768 | 1920×1080 | 2560×1440 | 3840×2160 |
+| --- | --- | --- | --- | --- | --- |
+| 320×180 | ×4 | ×4, ada sisa | ×6 | ×8 | ×12 |
+| 480×270 | ×2, ada sisa | ×2, ada sisa | ×4 | ×5, ada sisa | ×8 |
+| 640×360 | ×2 | ×2, ada sisa | ×3 | ×4 | ×6 |
+
+Resolusi 320×180 dan 640×360 pas di semua layar 16:9 di tabel, kecuali 1366×768. Dokumentasi Godot menyebut kebanyakan game pixel art memakai ukuran antara 256×224 dan 640×480, dan menyarankan 640×360 sebagai titik awal karena bisa dibesarkan ke 1280×720, 1920×1080, 2560×1440, dan 3840×2160 tanpa bingkai. Layar 16:10 seperti 1920×1200 selalu menyisakan ruang di atas dan bawah untuk resolusi dasar 16:9.
+
+Ada tiga cara mengisi sisa layar:
+
+1. **Bingkai hitam.** Paling sederhana, dan gambar tetap persis seperti yang dirancang. Di Unity, ini pilihan **Crop Frame** (Pillarbox, Letterbox, atau Windowbox). Di Godot, ini Stretch Aspect `keep`.
+2. **Area dunia tambahan.** Resolusi dasar dilebarkan sedikit agar layar terisi, misalnya menjadi sekitar 341×192 di layar 1366×768 dengan skala 4. Pemain di layar tertentu melihat sedikit lebih banyak dunia, jadi desain level dan posisi HUD harus siap untuk itu. Di Godot, ini Stretch Aspect `expand`.
+3. **Skala pecahan yang dihaluskan.** Gambar diregangkan sampai penuh dengan filter halus. Layar terisi, tetapi piksel sedikit buram. Unity menyediakan pilihan ini lewat Crop Frame **Stretch Fill**.
+
+## Palet terbatas
+
+Pixel art hampir selalu memakai **palet** kecil: sekumpulan warna tetap yang dipakai untuk semua aset. Dulu batasan ini datang dari perangkat keras yang hanya bisa menampilkan sedikit warna sekaligus. Sekarang batasannya dipilih sendiri, karena memberi beberapa keuntungan:
+
+- **Aset terlihat berasal dari dunia yang sama.** Dua artist yang memakai palet yang sama menghasilkan karakter dan latar yang serasi tanpa banyak koreksi warna.
+- **Setiap piksel lebih mudah dibaca.** Sprite 16×16 hanya punya 256 piksel. Dua warna yang hampir sama di satu sprite memakai piksel tanpa menambah informasi. Dengan sedikit warna, siluet dan kontras yang menentukan bentuk.
+- **Gradasi dirancang dengan sengaja.** Setiap bahan, misalnya kulit atau logam, mendapat deret beberapa warna dari gelap ke terang. Deret ini sering dibuat dengan menggeser rona (*hue*), misalnya bayangan dibuat sedikit lebih biru, tidak hanya lebih gelap.
+
+Palet juga punya konsekuensi teknis. Artist pixel art sering menambahkan warna perantara di tepi garis dengan tangan untuk menghaluskannya (anti-aliasing manual). Jika engine juga menghaluskan dengan filter bilinear, hasilnya buram dua kali. Kompresi tekstur juga bisa memunculkan warna yang tidak ada di palet, seperti dibahas di bagian berikutnya.
+
+Palet kecil membuka teknik **palette swap**: satu sprite dipakai untuk beberapa varian, misalnya musuh hijau dan musuh merah, dengan menukar paletnya di [fragment shader](/kamus/shader/fragment-shader/):
+
+```text title="Pseudocode: palette swap di fragment shader"
+indeks = baca_tekstur(sprite_indeks, uv).r            // sprite menyimpan nomor warna 0, 1, 2, ...
+warna  = baca_tekstur(palet, (indeks, baris_varian))  // baris 0 = hijau, baris 1 = merah
+```
+
+Teknik ini hanya bekerja jika kedua tekstur dibaca dengan filter *nearest*. Filter bilinear mencampur nomor warna di tepi piksel, misalnya nomor 2 dan 4 menjadi 3, sehingga muncul warna yang sama sekali salah. Cara kerja shader dibahas di [Pelajaran 4 Fondasi Engine](/belajar/fondasi-engine/04-shader/).
+
+## Filter tekstur, mipmap, dan kompresi
+
+Tiga pengaturan impor ini menentukan apakah sprite tampil tajam dan warnanya tepat.
+
+### Filter tekstur
+
+Saat satu piksel seni dibesarkan menjadi 4×4, GPU harus menentukan warna untuk 16 piksel layar dari satu texel dan tetangganya. Aturannya disebut [texture filtering](/kamus/geometri/texture-filtering/):
+
+- **Point / nearest:** ambil warna texel terdekat. Setiap piksel seni tampil sebagai kotak berwarna rata dengan tepi tegas. Ini yang dibutuhkan pixel art.
+- **Bilinear / linear:** campur empat texel terdekat. Di dalam setiap kotak 4×4, warna bergradasi ke warna tetangga, sehingga tepinya buram.
+
+Filter diatur per tekstur di Unity, dan per node di Godot dengan nilai bawaan di Project Settings. Atlas yang menggabungkan banyak sprite juga punya pengaturan filternya sendiri.
+
+### Mipmap
+
+[Mipmap](/kamus/geometri/texture-filtering/#mipmap) adalah salinan tekstur yang makin kecil, dipakai saat tekstur tampil lebih kecil dari ukuran aslinya. Pixel art yang selalu dibesarkan dengan faktor bulat 1 atau lebih tidak pernah memakai salinan kecil itu, sehingga mipmap hanya menambah sekitar 33% memori. Matikan mipmap untuk sprite 2D seperti ini. Bawaan impor Godot untuk tekstur 2D memang tanpa mipmap.
+
+Pengecualiannya adalah tekstur yang bisa tampil mengecil, misalnya saat kamera di-zoom out atau saat tekstur pixel art dipakai di permukaan 3D yang menjauh dari kamera. Tanpa mipmap, tekstur itu tampak berbintik dari jauh dan berkilau saat bergerak. Godot menyediakan filter **Nearest With Mipmaps** untuk kasus ini: kotak tegas dari dekat, halus dari jauh.
+
+### Kompresi
+
+Format kompresi GPU menyimpan tekstur dalam blok kecil beberapa piksel, dan hanya menyimpan perkiraan warnanya. Pada foto dan tekstur 3D, perbedaannya hampir tidak terlihat. Pada pixel art, setiap piksel penting: warna bisa bergeser keluar dari palet, dan tepi yang tajam mendapat bintik. Dokumentasi Godot menyarankan mode **Lossless** untuk pixel art, dan menulis bahwa kompresi VRAM pada tekstur pixel art merusak tampilannya tanpa menambah performa secara berarti, karena resolusinya kecil. Panduan pixel-perfect Unity juga meminta Compression diatur ke **None**.
+
+Harga tanpa kompresi kecil untuk gambar sekecil ini. Sprite sheet 256×256 dengan 4 byte per piksel (RGBA) memakan 256 × 256 × 4 = 262.144 byte, atau 256 KB. Sebagai pembanding, satu tekstur 2048×2048 untuk game 3D memakan sekitar 16 MB tanpa kompresi.
+
+## Kamera pixel-perfect dan posisi sub-piksel
+
+Posisi objek disimpan sebagai bilangan pecahan. Karakter yang berjalan 50 piksel seni per detik di layar 60 Hz bergeser sekitar 0,83 piksel seni setiap frame, jadi posisinya hampir selalu jatuh di antara dua piksel seni. Yang terlihat di layar bergantung pada cara engine menggambar:
+
+- **Digambar di resolusi layar.** Dengan skala 6, sprite bisa berhenti di posisi 1/6 piksel seni, sehingga tidak lagi sejajar dengan grid piksel latar. Sprite yang diputar juga menampilkan garis miring dengan piksel yang lebih kecil dari piksel seni.
+- **Digambar di resolusi dasar, lalu dibesarkan.** Semua posisi otomatis jatuh di grid piksel seni, termasuk sprite yang diputar. Gambar selalu rapi, tetapi gerakan hanya bisa melompat satu piksel seni penuh (6 piksel layar) sekaligus, sehingga kamera yang bergerak pelan terlihat patah-patah.
+
+Masalah yang paling mudah terlihat muncul saat dua hal dibulatkan secara terpisah. Kamera mengikuti karakter dengan *smoothing*, sehingga keduanya berada di posisi pecahan yang berbeda. Di satu frame karakter dibulatkan ke atas dan kamera ke bawah, di frame berikutnya sebaliknya. Akibatnya karakter tampak bergetar satu piksel bolak-balik terhadap latar (*jitter*), walaupun gerakannya sendiri halus.
+
+Kamera **[pixel-perfect](/kamus/2d/pixel-perfect/)** mencegah ini dengan satu aturan: posisi logika boleh pecahan, tetapi posisi tampil dibulatkan ke grid piksel seni, untuk kamera dan semua objek dengan cara yang sama.
+
+```text title="Pseudocode: posisi logika dan posisi tampil"
+ppu = 16                                         // piksel seni per unit
+
+// update: objek bergerak dengan posisi pecahan, physics tetap akurat
+pemain.posisi += pemain.kecepatan * delta
+
+// setelah semua objek bergerak, baru kamera menyusul
+kamera.posisi = ikuti(kamera.posisi, pemain.posisi, delta)
+
+// saat menggambar: bulatkan dengan aturan yang sama
+gambar_pemain_di(round(pemain.posisi * ppu) / ppu)
+kamera_tampil = round(kamera.posisi * ppu) / ppu
+```
+
+Urutannya juga penting. Jika kamera dihitung sebelum pemain bergerak, kamera selalu tertinggal satu frame, dan selisihnya berubah-ubah mengikuti panjang frame.
+
+Pembulatan punya efek samping. Lapisan latar **[parallax](/kamus/2d/parallax/)** yang bergerak setengah kecepatan kamera akan bergeser setengah piksel seni setiap kali kamera bergeser satu piksel. Setelah dibulatkan, lapisan itu bergeser satu piksel setiap dua langkah kamera, dan gerakannya tampak tersendat dibanding lapisan depan. Dokumentasi Godot juga mencatat bahwa snapping membuat gambar lebih tajam dengan harga gerakan yang kurang mulus, terutama saat smoothing Camera2D aktif.
+
+Pilih render di resolusi dasar jika kamu ingin semua piksel selalu seragam, termasuk sprite yang diputar. Pilih render di resolusi layar dengan snapping jika kamu butuh gerakan kamera yang lebih halus, atau teks dan efek beresolusi tinggi di atas pixel art. Pengaturannya di setiap engine ada di bagian [Menyiapkan proyek di tiap engine](#menyiapkan-proyek-di-tiap-engine).
+
+## Animasi frame demi frame
+
+Animasi pixel art umumnya dibuat **frame demi frame**: setiap pose digambar sebagai gambar terpisah, lalu diputar berurutan seperti buku bergambar yang dibalik cepat. Semua frame satu karakter biasanya disimpan dalam satu gambar besar yang disebut **[sprite sheet](/kamus/2d/sprite-sheet/)**.
+
+Ada dua angka yang menentukan rasa sebuah animasi:
+
+- **Jumlah frame:** berapa gambar dalam satu siklus. Lebih banyak frame membuat gerakan lebih halus, tetapi setiap frame digambar dengan tangan.
+- **Durasi setiap frame:** berapa lama satu gambar tampil. Durasi ini diukur dalam detik, tidak dalam frame game.
+
+Frame animasi dan frame game adalah dua hal yang berbeda. Game menggambar 60 atau 144 kali per detik, sedangkan animasi lari mungkin hanya berganti gambar 12 kali per detik. Klip lari 8 frame pada 12 FPS berlangsung 8 ÷ 12 ≈ 0,67 detik per siklus. Di layar 60 Hz, setiap gambar tampil selama 5 frame game. Di layar 144 Hz, selama 12 frame game. Karena itu waktu animasi harus maju dengan [delta time](/kamus/dasar/delta-time/), seperti gerakan lain di [Pelajaran 1 Fondasi Engine](/belajar/fondasi-engine/01-frame/).
+
+```text title="Pseudocode: memutar animasi frame demi frame"
+durasi = [0.08, 0.08, 0.08, 0.20]   // detik per frame; frame terakhir ditahan lebih lama
+waktu += delta
+selama waktu >= durasi[indeks]:
+    waktu -= durasi[indeks]
+    indeks = (indeks + 1) % jumlah_frame
+sprite.gambar = frame[indeks]        // langsung ganti, tanpa interpolasi
+```
+
+Durasi tidak harus sama untuk setiap frame. Menahan frame ancang-ancang atau frame benturan lebih lama, lalu memutar frame ayunan dengan cepat, membuat serangan terasa lebih berat. Aplikasi seperti Aseprite menyimpan durasi untuk setiap frame (menu **Frame → Frame Properties**), dan SpriteFrames di Godot juga menyimpan durasi relatif per frame.
+
+Beberapa hal teknis yang sering terlewat:
+
+- **Pergantian gambar tidak diinterpolasi.** Track yang mengganti sprite memakai mode *nearest* atau *constant*, seperti dibahas di [Pelajaran 7 Fondasi Engine](/belajar/fondasi-engine/07-animasi/#keyframe-dan-interpolasi).
+- **Semua frame memakai ukuran kanvas dan pivot yang sama.** Jika pivot setiap frame berbeda, karakter tampak bergeser satu piksel setiap kali gambarnya berganti. Letakkan pivot di titik yang tetap, misalnya di antara kedua kaki.
+- **Kecepatan gerak cocok dengan langkah gambar.** Jika karakter bergerak lebih cepat atau lebih lambat dari langkah kakinya, kakinya tampak meluncur di tanah.
+
+Dokumentasi Unity menyebut animasi frame demi frame relatif boros sumber daya, baik saat dibuat maupun saat dijalankan. Biaya memorinya mudah dihitung. Karakter 32×32 memakan 32 × 32 × 4 = 4.096 byte per frame, jadi 100 frame hanya sekitar 400 KB. Bos berukuran 256×256 memakan 256 KB per frame, dan 60 frame sudah sekitar 15 MB. Untuk karakter besar dengan banyak gerakan, [animasi tulang](/kamus/animasi/skeletal/) 2D bisa jadi pilihan: potongan gambar yang sama digerakkan oleh tulang, sehingga pose baru tidak perlu digambar ulang.
+
+<EngineTabs>
+<div slot="unity">
+
+Atur **Sprite Mode** tekstur sprite sheet ke **Multiple**, lalu potong menjadi frame di **Sprite Editor**. Animasinya berupa **Animation Clip** yang dibuat di jendela **Animation**: satu track mengganti properti **Sprite** pada komponen **Sprite Renderer** di setiap keyframe. Jarak antar-keyframe menentukan durasi setiap frame.
+
+</div>
+<div slot="unreal">
+
+Plugin **Paper2D** menyimpan animasi frame demi frame sebagai aset **Flipbook**, yaitu urutan aset Sprite yang diputar dengan kecepatan tertentu dalam frame per detik. Flipbook ditampilkan oleh komponen **Paper Flipbook Component**.
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-30): Flipbook, Paper Flipbook Component. */}
+
+</div>
+<div slot="godot">
+
+Dokumentasi Godot menjelaskan dua cara:
+
+- Node **AnimatedSprite2D** dengan resource **SpriteFrames**. Frame bisa diambil dari sprite sheet lewat **Add frames from a Sprite Sheet**. Kecepatannya diatur lewat **Speed (FPS)** per animasi, dan setiap frame punya durasi relatif: frame berdurasi 2,0 tampil dua kali lebih lama dari frame berdurasi 1,0.
+- Node **Sprite2D** dengan **Hframes** dan **Vframes** (jumlah kolom dan baris di sprite sheet), lalu properti **Frame** dianimasikan dengan **AnimationPlayer**.
+
+</div>
+</EngineTabs>
+
+## Menyiapkan proyek di tiap engine
+
+Daftar berikut menerjemahkan bagian-bagian sebelumnya menjadi pengaturan di engine. Lakukan sekali di awal proyek, lalu periksa setiap sprite baru dengan daftar yang sama.
+
+<EngineTabs>
+<div slot="unity">
+
+Panduan pixel-perfect Unity 6 memakai Universal Render Pipeline (URP). Komponen **Pixel Perfect Camera** sudah tersedia di proyek yang dibuat dengan template **Universal 2D**. Jangan memasang paket terpisah **2D Pixel Perfect**, karena paket itu hanya bekerja dengan Built-In Render Pipeline.
+
+**Impor tekstur.** Beberapa tekstur bisa dipilih sekaligus di jendela Project.
+
+- **Texture Type:** Sprite (2D and UI). Di proyek 2D, Unity mengaturnya otomatis.
+- **Pixels Per Unit:** sama untuk semua sprite, misalnya 16.
+- **Filter Mode:** Point (no filter).
+- **Compression:** None, di tab **Default** pada panel bawah.
+- **Generate Mipmap:** matikan untuk sprite yang tidak pernah tampil mengecil.
+- Untuk sprite sheet: **Sprite Mode** Multiple, lalu buka **Sprite Editor**. Atur **Pivot** ke Custom dan **Pivot Unit Mode** ke Pixels agar pivot jatuh tepat di piksel.
+
+**Kamera.** Pilih Main Camera, lalu **Add Component** dan cari **Pixel Perfect Camera**.
+
+- **Asset Pixels Per Unit:** sama dengan Pixels Per Unit sprite.
+- **Reference Resolution:** resolusi dasar, misalnya X 320 dan Y 180.
+- **Crop Frame:** cara mengisi sisa layar. Pilihannya None, Pillarbox, Letterbox, Windowbox, dan Stretch Fill.
+- **Grid Snapping:** **Pixel Snapping** menggambar sprite sejajar grid piksel tanpa mengubah posisi Transform-nya. **Upscale Render Texture** menggambar scene ke tekstur seukuran Reference Resolution (atau sedikit lebih besar jika rasio layarnya berbeda), lalu membesarkannya, sehingga piksel tetap tegak saat sprite diputar.
+- **Filter Mode:** dipakai saat Crop Frame diatur ke Stretch Fill. Bawaannya **Retro AA**, yang mengurangi kilau dengan harga tepi piksel sedikit buram. **Point** lebih tajam, tetapi lebih berkilau.
+- **Current Pixel Ratio** menampilkan skala yang sedang dipakai. Misalnya 2:1 berarti sprite tampil dua kali ukuran aslinya.
+
+**Scene view.** Di overlay **Grid and Snap**, atur Grid Size ke 1 ÷ PPU (0,0625 untuk PPU 16) dan aktifkan grid snapping, agar sprite ditempatkan tepat di grid piksel saat menyusun level.
+
+</div>
+<div slot="unreal">
+
+Unreal menyediakan plugin **Paper2D** untuk game 2D, dengan aset **Sprite**, **Flipbook**, **Tile Set**, dan **Tile Map**.
+
+- Pada tekstur, menu klik kanan **Sprite Actions → Apply Paper2D Texture Settings** mengubah beberapa pengaturan tekstur sekaligus agar cocok untuk sprite, termasuk filter nearest.
+- Jika diatur manual: **Filter** ke Nearest pada aset tekstur, dan **Mip Gen Settings** ke tanpa mipmap.
+- Pakai kamera dengan **Projection Mode** Orthographic.
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-30): Sprite Actions → Apply Paper2D Texture Settings, Filter Nearest, Mip Gen Settings, Projection Mode Orthographic. */}
+
+</div>
+<div slot="godot">
+
+Pengaturan berikut ada di **Project Settings**. Jika sebuah opsi tidak terlihat, aktifkan **Advanced Settings**.
+
+- **Display → Window → Size:** isi **Viewport Width** dan **Viewport Height** dengan resolusi dasar, misalnya 640 dan 360.
+- **Display → Window → Stretch:**
+  - **Mode:** `viewport`. Scene digambar di resolusi dasar, lalu dibesarkan ke ukuran jendela. Pakai `canvas_items` jika kamu ingin sprite bisa berada di posisi sub-piksel, atau butuh viewport 3D beresolusi tinggi.
+  - **Aspect:** `keep` untuk bingkai hitam, atau `expand` untuk area dunia tambahan.
+  - **Scale Mode:** `integer` (tersedia sejak Godot 4.2). Faktor skala dibulatkan ke bawah, misalnya 2,5 menjadi 2.
+- **Rendering → Textures → Canvas Textures → Default Texture Filter:** Nearest. Setiap node CanvasItem bisa menimpanya lewat properti **Texture Filter**.
+- **Rendering → 2D → Snap → Snap 2D Transforms To Pixel** (opsional): posisi node 2D dibulatkan ke piksel penuh saat digambar. Dokumentasi Godot menyarankan untuk tidak menyalakannya bersamaan dengan Snap 2D Vertices To Pixel. Pengaturan ini hanya dibaca saat proyek dimulai.
+
+Di dock **Import**, mode kompresi bawaan untuk tekstur 2D adalah **Lossless** tanpa mipmap, dan mode itu yang disarankan untuk pixel art. Hati-hati jika tekstur yang sama dipakai di 3D: fitur **Detect 3D** menyalakan mipmap dan mengganti kompresi ke VRAM Compressed. Atur **Detect 3D → Compress To** sebelum tekstur dipakai di 3D, atau kembalikan **Compress → Mode** ke Lossless sesudahnya.
+
+Untuk layar penuh, pakai mode jendela **Exclusive Fullscreen**. Mode **Fullscreen** menyisakan satu baris piksel di bawah layar, dan dengan integer scaling baris itu bisa membuat faktor skalanya turun satu tingkat.
+
+</div>
+</EngineTabs>
+
+## Biaya: tekstur kecil, atlas, dan draw call
+
+Tekstur pixel art kecil, jadi memori jarang menjadi masalah pertama. Biaya yang lebih mudah membengkak adalah **jumlah** gambar terpisah. Engine hanya bisa menggabungkan objek yang memakai tekstur dan material yang sama, jadi setiap tekstur berbeda biasanya berarti [draw call](/kamus/performa/draw-call/) terpisah ([Pelajaran 8 Fondasi Engine](/belajar/fondasi-engine/08-profiling/#draw-call-dan-batching)). Level dengan ratusan sprite dari ratusan file PNG bisa membuat CPU sibuk mengirim perintah, walaupun GPU hampir tidak bekerja.
+
+Solusinya adalah menggabungkan banyak sprite ke satu tekstur besar, yang disebut **[sprite atlas](/kamus/2d/sprite-atlas/)**. Dokumentasi Unity menyebut Unity hanya perlu satu draw call untuk semua sprite dalam satu sprite atlas. Sprite sheet dan tileset memakai prinsip yang sama, karena semua frame atau tile ada di satu gambar. Dalam praktik, batch bisa terpotong jika urutan gambar menyelipkan sprite dari tekstur lain di antaranya. Periksa hasilnya dengan **Frame Debugger** di Unity, atau jumlah draw call di **Debugger → Monitors** di Godot.
+
+Atlas punya dua jebakan untuk pixel art:
+
+- **Warna tetangga bocor.** Jika sprite di atlas berdempetan, filter atau posisi pecahan bisa mengambil texel dari sprite sebelahnya, sehingga muncul garis tipis di tepi sprite atau di antara tile. Sprite Atlas di Unity memberi jarak antar-sprite lewat **Padding** (bawaannya 4 piksel). Di Godot, TileSetAtlasSource punya opsi **Use Texture Padding** (aktif secara bawaan) yang menambahkan satu piksel di sekeliling setiap tile untuk mencegah garis di antara tile.
+- **Pengaturan atlas terpisah dari pengaturan sprite.** Sprite Atlas di Unity punya **Filter Mode**, **Generate Mip Maps**, dan **Compression** sendiri. Samakan dengan pengaturan sprite-nya: Point, tanpa mipmap, dan tanpa kompresi.
+
+Di sisi GPU, menggambar di resolusi dasar menghemat banyak kerja per piksel. Gambar 640×360 berisi 230.400 piksel, sedangkan 1920×1080 berisi 2.073.600 piksel, sembilan kali lebih banyak. Mode yang menggambar di resolusi dasar lalu membesarkannya (`viewport` di Godot, Upscale Render Texture di Unity) hanya mewarnai piksel seni, ditambah satu langkah pembesaran di akhir. Sprite transparan yang bertumpuk tetap menimbulkan [overdraw](/kamus/performa/overdraw/), tetapi di resolusi rendah biayanya jauh lebih kecil.
+
+## Kesalahan umum
+
+Sebagian besar kesalahan berikut tidak terlihat di jendela editor yang kecil. Periksa di build, dengan beberapa ukuran layar.
+
+### Sprite buram di layar penuh
+
+```text title="✗ Keliru"
+Filter: Bilinear
+```
+
+```text title="✓ Benar"
+Filter: Point / Nearest
+```
+
+Filter bilinear mencampur tepi setiap piksel seni dengan tetangganya. Periksa juga atlasnya, karena atlas punya pengaturan filter sendiri.
+
+### Garis setebal satu piksel tampil tidak rata
+
+```text title="✗ Keliru"
+skala = layar.lebar / 320            // 1366 / 320 = 4.27
+```
+
+```text title="✓ Benar"
+skala = floor(min(layar.lebar / 320, layar.tinggi / 180))   // 4, sisanya bingkai atau area tambahan
+```
+
+Skala pecahan membuat sebagian piksel seni lebih lebar dari yang lain.
+
+### Warna sprite bergeser dan tepinya berbintik
+
+```text title="✗ Keliru"
+Kompresi: VRAM Compressed (Godot) / Normal Quality (Unity)
+```
+
+```text title="✓ Benar"
+Kompresi: Lossless (Godot) / None (Unity)
+```
+
+Kompresi GPU menyimpan perkiraan warna per blok. Pada tekstur sekecil ini, penghematannya juga kecil.
+
+### Karakter bergetar saat kamera mengikutinya
+
+```text title="✗ Keliru"
+update_kamera()          // mengikuti posisi pemain dari frame sebelumnya
+gerak_pemain()
+gambar(pemain.posisi)    // posisi pecahan, dibulatkan terpisah dari kamera
+```
+
+```text title="✓ Benar"
+gerak_pemain()
+update_kamera()          // setelah pemain bergerak
+gambar(bulatkan_ke_piksel(pemain.posisi), bulatkan_ke_piksel(kamera.posisi))
+```
+
+Kamera dan objek harus dibulatkan dengan aturan yang sama, setelah semua gerakan di frame itu selesai.
+
+### Satu aset tampil dengan piksel yang lebih kecil
+
+```text title="✗ Keliru"
+pemain.png : Pixels Per Unit 16
+pedang.png : Pixels Per Unit 32     // digambar dua kali lebih detail
+```
+
+```text title="✓ Benar"
+pemain.png : Pixels Per Unit 16
+pedang.png : Pixels Per Unit 16     // digambar dengan kepadatan piksel yang sama
+```
+
+Piksel yang ukurannya berbeda langsung terlihat di samping aset lain.
+
+### Garis tipis di antara tile
+
+```text title="✗ Keliru"
+tile berdempetan di atlas, tanpa padding
+kamera berhenti di posisi pecahan
+```
+
+```text title="✓ Benar"
+padding di sekeliling setiap tile (Padding di Unity, Use Texture Padding di Godot)
+posisi kamera dibulatkan ke grid piksel seni
+```
+
+Texel dari tile sebelah ikut terbaca di tepi tile.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan di Unity atau Godot. Buat sendiri sprite uji 16×16 di aplikasi gambar apa pun: kotak dengan garis tepi setebal satu piksel dan satu garis diagonal.
+
+1. Tampilkan sprite itu dengan filter bilinear, lalu dengan point atau nearest. Sebelum mengaktifkan skala bulat, perbesar jendela game sedikit demi sedikit. Pada ukuran berapa garis diagonal mulai tampil tidak rata?
+2. Atur resolusi dasar 320×180 dengan skala bulat (Unity: Pixel Perfect Camera, Godot: Stretch Mode `viewport` dan Scale Mode `integer`). Ubah ukuran jendela ke sekitar 1366×768. Bandingkan bingkai hitam dengan area dunia tambahan (Crop Frame di Unity, Stretch Aspect `keep` dan `expand` di Godot).
+3. Gerakkan sprite pelan, misalnya 5 piksel seni per detik, dan buat kamera mengikutinya dengan smoothing. Bandingkan tiga keadaan: tanpa snapping, dengan snapping (Pixel Snapping di Unity, Snap 2D Transforms To Pixel di Godot), dan dengan render di resolusi dasar (Upscale Render Texture di Unity, Stretch Mode `viewport` di Godot). Di Godot, pakai Stretch Mode `canvas_items` untuk dua keadaan pertama, dan jalankan ulang game setiap kali mengubah pengaturan snap. Mana yang paling tajam, dan mana yang paling mulus?
+4. Buat animasi 4 frame, misalnya bola yang memantul, lalu putar pada 8 dan 12 FPS. Tahan frame saat bola menyentuh lantai dua kali lebih lama. Bagaimana rasanya berubah?

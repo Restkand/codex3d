@@ -516,7 +516,7 @@ const MOODS = [
       ? 'Telur di ban itu aku, waktu masih garis-garis. Geser bannya, aku dibentuk di setiap stasiun.'
       : 'Badanku masih garis-garis, begini rupaku di mata engine. Scroll pelan-pelan, aku dibentuk sepanjang ban ini.',
   },
-  { glow: '#9dff8a', aura: '#7cff6b', bg: '#08100d', line: 'Baru Fondasi Engine yang sudah ada pelajarannya. Enam jalur lain masih kerangka.' },
+  { glow: '#9dff8a', aura: '#7cff6b', bg: '#08100d', line: 'Fondasi Engine yang paling lengkap. Jalur lain sedang diisi satu per satu.' },
   { glow: '#8ad2ff', aura: '#00b3ff', bg: '#080b14', line: touchOnly ? 'Ketuk Tarik kartu. Aku juga penasaran istilah apa yang keluar.' : 'Tarik satu kartu dari tumpukanku. Aku juga penasaran istilah apa yang keluar.' },
   { glow: '#ffe08a', aura: '#ffcc33', bg: '#0d0b08', line: 'Pilih pertanyaan di obrolan itu. Aku jawab satu per satu.' },
   { glow: '#ffa6f0', aura: '#ff5ce1', bg: '#0b0b10', line: 'Terima kasih sudah ikut sampai akhir. Slot kontributor di kredit itu masih kosong.' },

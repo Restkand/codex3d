@@ -1,0 +1,100 @@
+---
+title: "Sorting Layer & Urutan Gambar"
+description: "Aturan yang menentukan sprite mana tampil di depan. Sprite digambar dari belakang ke depan, dan engine menentukan urutannya bertingkat: lapisan, nomor urut di dalam lapisan, lalu posisi."
+kind: term
+level: 2
+aka: "Order in Layer, Sorting Group, z_index, Y-sort, CanvasLayer, draw order"
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "Change the sorting order of 2D GameObjects"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/sort-sprites/2d-renderer-sorting"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Prevent 2D GameObjects mixing in sorting layers"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/sort-sprites/use-sorting-groups"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Renderer.sortingOrder"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/renderer/sortingorder"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "CanvasItem"
+    url: "https://docs.godotengine.org/en/stable/classes/class_canvasitem.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Canvas layers"
+    url: "https://docs.godotengine.org/en/stable/tutorials/2d/canvas_layers.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+sidebar:
+  order: 5
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Di game 2D, sprite yang digambar belakangan menutupi sprite yang digambar lebih dulu. Ini cara kerja pelukis (*painter's algorithm*): langit dulu, lalu pohon, lalu karakter. Tepi sprite yang semi-transparan harus dicampur dengan warna di belakangnya ([Transparansi & Blending](/kamus/geometri/blending/)), jadi yang di belakang harus sudah tergambar lebih dulu.
+
+Engine menentukan urutan itu secara bertingkat:
+
+1. **Lapisan besar:** misalnya Latar, Dunia, Depan, UI. Seluruh lapisan Latar digambar sebelum lapisan Dunia.
+2. **Nomor urut di dalam lapisan:** angka kecil digambar lebih dulu, jadi tampil di belakang.
+3. **Posisi**, jika lapisan dan nomornya sama. Game top-down sering memakai posisi Y: objek yang lebih ke bawah layar dianggap lebih dekat, sehingga karakter bisa berjalan di depan atau di belakang pohon.
+
+```text title="Contoh susunan lapisan game top-down"
+Latar : langit, gunung
+Dunia : tanah (0), pohon dan karakter (1, diurutkan menurut posisi Y)
+Depan : semak yang menutupi pemain
+UI    : skor, nyawa
+```
+
+<Aside type="note" title="Analogi">
+Panggung teater. Layar latar dipasang paling belakang, lalu aktor, lalu properti di bibir panggung. Di antara para aktor, yang berdiri lebih dekat ke penonton menutupi yang berdiri di belakangnya.
+</Aside>
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Setiap renderer 2D, termasuk Sprite Renderer dan Tilemap Renderer, punya **Sorting Layer** dan **Order in Layer**. Lapisan dibuat di **Edit → Project Settings → Tags and Layers → Sorting Layers**. Unity menggambar lapisan sesuai urutan daftar dari atas ke bawah, jadi lapisan paling bawah di daftar tampil paling depan. Semua objek awalnya ada di lapisan **Default** dengan Order in Layer 0.
+
+Jika lapisan dan nomornya sama, Unity memakai render queue material, lalu jarak ke kamera. Untuk urutan berdasarkan posisi Y, atur **Transparency Sort Mode** menjadi **Custom Axis** dengan **Transparency Sort Axis** (0, 1, 0) di aset 2D Renderer. Titik yang dipakai sprite diatur lewat **Sprite Sort Point** (Center atau Pivot).
+
+Untuk karakter yang tersusun dari banyak sprite, tambahkan komponen **Sorting Group** di objek induknya. Seluruh karakter lalu diurutkan sebagai satu kesatuan.
+
+```csharp
+var sr = GetComponent<SpriteRenderer>();
+sr.sortingLayerName = "Depan";
+sr.sortingOrder = 5;
+```
+
+</div>
+<div slot="godot">
+
+Urutan dasarnya mengikuti pohon scene: node yang letaknya lebih bawah di panel Scene digambar belakangan, jadi tampil di depan. Properti yang mengubahnya:
+
+- `z_index` (bawaan 0): angka lebih besar tampil di depan. Selama `z_as_relative` aktif, nilainya ditambahkan ke z_index induk.
+- `y_sort_enabled` pada node induk: anak dengan posisi Y lebih besar (lebih bawah di layar) tampil di depan. Pengurutan ini hanya berlaku di antara node dengan z_index yang sama.
+- **CanvasLayer** untuk lapisan besar seperti UI dan latar. Node biasa berada di lapisan 0, dan CanvasLayer dengan angka `layer` lebih besar digambar di atasnya.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Kesalahan umum di Unity: mengubah posisi Z untuk mengatur urutan, lalu bingung karena tidak ada efeknya. Sorting Layer dan Order in Layer diperiksa lebih dulu. Posisi atau jarak ke kamera baru berpengaruh jika keduanya sama.
+
+Masalah lain muncul pada karakter yang tersusun dari beberapa sprite (kepala, badan, tangan) dengan Order in Layer berbeda. Saat dua karakter berdekatan, tangan karakter A bisa muncul di depan badan karakter B. Di Unity, Sorting Group mencegahnya. Di Godot, jika induk memakai Y-sort tetapi node karakter tidak, anak-anak karakter itu digambar bersama di posisi Y karakternya.
+
+Untuk Y-sort, titik acuan objek harus berada di dasarnya. Jika pohon tinggi memakai pivot di tengah, karakter yang berdiri di belakang batangnya justru tampil di depan pohon.
+
+Di Godot, z_index hanya mengubah urutan gambar. Urutan pemrosesan node dan penanganan input tidak ikut berubah, dan ini penting diingat untuk node UI (Control).
+
+## Terkait
+
+- [Transparansi & Blending](/kamus/geometri/blending/)
+- [Depth Buffer](/kamus/geometri/depth-buffer/)
+- [Tilemap & Tileset](/kamus/2d/tilemap/)
+- [Parallax Scrolling](/kamus/2d/parallax/)

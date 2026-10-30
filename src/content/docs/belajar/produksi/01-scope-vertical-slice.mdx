@@ -1,0 +1,521 @@
+---
+title: "Scope dan Vertical Slice"
+description: "Apa itu scope dan kenapa proyek macet, memperkirakan pekerjaan dengan jujur, memotong fitur, beda prototipe, vertical slice, dan MVP, serta milestone dari prototipe sampai release candidate."
+fundamental: "Banyak proyek game berhenti di tengah jalan karena rencananya lebih besar daripada waktu, dana, dan orang yang tersedia, dan ketidakcocokan itu baru terasa setelah berbulan-bulan bekerja. Bekerja lebih cepat atau lebih lama tidak mengubah hitungannya. Yang menolong adalah kemampuan memperkirakan pekerjaan, memilih apa yang dipotong, dan membuktikan cara membuat game-mu sebelum memproduksi semuanya."
+kind: lesson
+minutes: 30
+status: draf
+lastReviewed: 2026-10-30
+krekit:
+  gambaran-besar: "Hampir semua developer pernah merencanakan game yang terlalu besar. Yang bisa dilatih adalah menyadarinya lebih cepat."
+  apa-itu-scope: "Tulis scope lengkap dengan jumlahnya. \"Banyak level\" belum bisa dihitung, \"40 level\" bisa."
+  memperkirakan-pekerjaan-dengan-jujur: "Rentang yang lebar itu jujur. Angka tunggal yang kecil biasanya cuma harapan."
+  memotong-scope: "Memotong di awal cuma menghapus satu baris di dokumen. Memotong di akhir membuang kerja berminggu-minggu."
+  prototipe-vertical-slice-dan-mvp: "Sebelum membuat build, tanya dulu: build ini mau menjawab pertanyaan apa? Jawabannya menentukan namanya."
+  apa-yang-harus-dibuktikan-vertical-slice: "Siapkan stopwatch. Berapa hari satu level selesai adalah salah satu angka terpenting dari vertical slice."
+  milestone-dari-prototipe-sampai-release-candidate: "Coba tanya timmu apa definisi alpha kalian. Kalau jawabannya beda-beda, tulis sekarang."
+  contoh-scoping-game-2d-untuk-tim-dua-orang: "Angka di bagian ini karangan. Cara menghitungnya yang perlu kamu tiru."
+  kesalahan-umum: "Kesalahan ketiga sering terjadi diam-diam: polish dipotong sedikit demi sedikit tanpa ada yang memutuskan."
+sidebar:
+  order: 1
+  label: "1 · Scope dan Vertical Slice"
+quiz:
+  - q: "Tanggal rilismu tidak bisa digeser dan proyek mulai terlambat. Item mana yang sebaiknya dilepas lebih dulu?"
+    options:
+      - "Waktu tuning core loop"
+      - "Item could have, misalnya mode tambahan atau kostum karakter"
+      - "Cadangan waktu untuk perbaikan bug"
+      - "Pengujian di perangkat target"
+    answer: 1
+    explain: "Could have memang disiapkan sebagai cadangan pertama. Core loop dipakai di seluruh game, sedangkan cadangan bug dan pengujian di perangkat target melindungi kualitas build yang dirilis. Memotong salah satu dari ketiganya menurunkan kualitas di setiap menit permainan."
+  - q: "Apa perbedaan utama prototipe dan vertical slice?"
+    options:
+      - "Prototipe dibuat di kertas, vertical slice di engine"
+      - "Prototipe menjawab satu pertanyaan dengan cepat dan boleh dibuang. Vertical slice membuat satu bagian kecil game sampai mendekati final untuk membuktikan cara membuatnya dan biayanya"
+      - "Vertical slice selalu dirilis ke publik"
+      - "Prototipe harus memakai art final"
+    answer: 1
+    explain: "Prototipe memakai aset sementara dan fokus pada satu pertanyaan, misalnya apakah mekaniknya menyenangkan. Vertical slice melewati semua lapisan (gameplay, art, audio, UI, performa) untuk satu bagian kecil, sehingga tim tahu cara membuatnya dan berapa biayanya. Di industri, kedua istilah ini kadang dipakai longgar, jadi sepakati artinya di timmu."
+  - q: "Rencanamu memuat 30 level dengan asumsi 4 orang-hari per level. Di vertical slice, satu level ternyata butuh 12 orang-hari. Langkah mana yang paling tepat?"
+    options:
+      - "Tetap pada rencana, karena tim akan makin cepat seiring waktu"
+      - "Hitung ulang dengan angka dari slice, lalu kurangi jumlah level atau perbaiki pipeline sebelum produksi dimulai"
+      - "Kurangi waktu playtest agar level lebih cepat selesai"
+      - "Abaikan, karena level di vertical slice selalu lebih lama dibuat"
+    answer: 1
+    explain: "30 level × 12 orang-hari = 360 orang-hari, tiga kali lipat rencana. Tim memang bisa sedikit lebih cepat setelah terbiasa, tetapi tidak bisa diandalkan untuk menutup selisih sebesar itu. Angka dari slice adalah data terbaik yang kamu punya, jadi pakai untuk menghitung ulang: kurangi jumlah level, sederhanakan pipeline (misalnya dengan memakai ulang tile), atau keduanya."
+  - q: "Menurut definisi milestone yang umum, apa bedanya alpha dan beta?"
+    options:
+      - "Alpha untuk tim internal, beta selalu terbuka untuk publik"
+      - "Di alpha semua fitur sudah ada. Di beta fitur dan konten sudah lengkap, dan pekerjaan beralih ke bug, performa, dan balancing"
+      - "Alpha dan beta hanya penanda tanggal tanpa syarat"
+      - "Di beta tim mulai menambahkan fitur besar"
+    answer: 1
+    explain: "Alpha umumnya berarti fitur lengkap dengan konten yang belum lengkap. Beta berarti konten juga lengkap dan tim berhenti menambah fitur. Definisi tepatnya berbeda antar studio dan antar kontrak, jadi selalu tulis kriteria keluarnya."
+  - q: "Kenapa daftar won't have perlu ditulis, padahal isinya tidak akan dibuat?"
+    options:
+      - "Untuk menambah panjang dokumen desain"
+      - "Agar batas scope jelas dan ide yang sudah dibuang tidak masuk kembali diam-diam"
+      - "Karena setiap publisher mewajibkannya"
+      - "Supaya item itu bisa dikerjakan saat lembur"
+    answer: 1
+    explain: "Daftar won't have mencatat keputusan yang sudah disepakati. Tanpa catatan itu, ide yang sama muncul lagi di rapat berikutnya dan pelan-pelan masuk ke jadwal."
+  - q: "Vertical slice-mu butuh 25 ms per frame di laptop terlemah yang ingin kamu dukung, padahal targetnya 60 FPS. Apa artinya untuk scope?"
+    options:
+      - "Tidak ada, performa diurus saat beta"
+      - "Satu level saja sudah melewati anggaran 16,7 ms, jadi penyebabnya harus ditemukan dan anggaran performa (jumlah musuh, efek, resolusi) ditetapkan sebelum level lain diproduksi"
+      - "Turunkan target ke 30 FPS tanpa perlu mengukur lagi"
+      - "Tambahkan lebih banyak level agar bebannya terbagi"
+    answer: 1
+    explain: "Level-level berikutnya biasanya lebih ramai daripada satu slice. Kalau slice sudah melewati anggaran, cari penyebabnya dengan profiler lalu tetapkan batas yang dipakai selama produksi. Memperbaikinya setelah puluhan level selesai jauh lebih mahal."
+sources:
+  - title: "The Vertical Slice Challenge"
+    url: "https://gdcvault.com/play/1022329/The-Vertical-Slice"
+    publisher: "Greg Donovan (Volition), GDC 2015, GDC Vault"
+    accessed: 2026-10-30
+  - title: "Dealing with Scope Change in 'Heat Signature' and 'Gunpoint'"
+    url: "https://gdcvault.com/play/1024932/Dealing-with-Scope-Change-in"
+    publisher: "Tom Francis (Suspicious Developments), GDC 2018, GDC Vault"
+    accessed: 2026-10-30
+  - title: "Finishing a Game"
+    url: "https://makegames.tumblr.com/post/1136623767/finishing-a-game"
+    publisher: "Derek Yu, blog Make Games"
+    accessed: 2026-10-30
+  - title: "Indie Game Dev: Assessing Risk"
+    url: "https://www.derekyu.com/makegames/risk.html"
+    publisher: "Derek Yu"
+    accessed: 2026-10-30
+  - title: "How to Prototype a Game in Under 7 Days"
+    url: "https://www.gamedeveloper.com/game-platforms/how-to-prototype-a-game-in-under-7-days"
+    publisher: "Kyle Gabler, Kyle Gray, Matt Kucic, Shalin Shodhan, Game Developer (2005)"
+    accessed: 2026-10-30
+  - title: "Kine dev Gwen Frey hopes flexible scopes help devs avoid bad funding deals"
+    url: "https://www.gamedeveloper.com/business/-i-kine-i-dev-gwen-frey-hopes-flexible-scopes-help-devs-avoid-bad-funding-deals"
+    publisher: "Game Developer (2020)"
+    accessed: 2026-10-30
+  - title: "What is MoSCoW Prioritization?"
+    url: "https://www.agilebusiness.org/resource/what-is-moscow-prioritization/"
+    publisher: "Agile Business Consortium"
+    accessed: 2026-10-30
+  - title: "Alpha, Beta, Gold: A Commitment to High-quality Game Development"
+    url: "https://www.filamentgames.com/blog/alpha-beta-gold-commitment-high-quality-game-development"
+    publisher: "Jennifer Javornik, Filament Games (2017)"
+    accessed: 2026-10-30
+  - title: "The Game Production Toolbox"
+    url: "https://www.routledge.com/The-Game-Production-Toolbox/Chandler/p/book/9781138341708"
+    publisher: "Heather Maxwell Chandler, CRC Press (2019)"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menjelaskan apa itu scope dan kenapa proyek macet saat scope melebihi waktu, dana, dan tim.
+- Memecah fitur menjadi tugas dan memperkirakannya dalam rentang, lengkap dengan cadangan.
+- Membedakan biaya membuat sistem dan biaya membuat konten.
+- Memotong scope dengan kategori must, should, could, dan won't.
+- Membedakan prototipe, vertical slice, dan MVP, dan tahu apa yang harus dibuktikan vertical slice.
+- Menjelaskan milestone umum dari prototipe sampai release candidate.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: rumah contoh di perumahan">
+Sebelum membangun ratusan rumah, pengembang perumahan biasanya menyelesaikan satu rumah contoh sampai benar-benar siap dihuni. Calon pembeli bisa melihat hasil akhirnya. Tim pembangunnya sudah sekali menjalani seluruh proses, dari fondasi sampai cat, jadi mereka tahu berapa lama dan berapa biaya satu unit. Angka itulah yang dipakai untuk menghitung sisa proyek. **Vertical slice** adalah rumah contoh untuk game-mu.
+</Aside>
+
+Setiap proyek game dibatasi oleh waktu, dana, dan jumlah orang. **Scope** adalah semua hal yang kamu rencanakan ada di game saat rilis. Selama scope muat di dalam batas itu, proyek bisa selesai. Kalau tidak muat, jadwal mundur, dana habis sebelum game jadi, atau tim kelelahan, dan sering lebih dari satu terjadi bersamaan.
+
+Ketidakcocokan itu jarang terlihat di awal. Ide terasa kecil saat ditulis di satu halaman. Ukurannya baru terasa saat kamu mengerjakan level kelima, musuh kedelapan, dan menu pengaturan yang tadinya tidak ada di daftar.
+
+Pelajaran ini membahas cara melihat ukuran itu lebih awal:
+
+1. **Memperkirakan** pekerjaan dengan memecahnya menjadi tugas kecil.
+2. **Memotong** scope dengan urutan prioritas yang disepakati.
+3. **Membuktikan** ide dan cara membuatnya lewat prototipe dan vertical slice, sebelum memproduksi seluruh game.
+4. **Memeriksa** kemajuan di setiap milestone dengan kriteria yang tertulis.
+
+## Apa itu scope
+
+Scope mencakup lebih dari daftar fitur. Biasanya ada beberapa lapisan:
+
+- **Sistem**: aturan dan kode yang menjalankan game, misalnya gerak karakter, pertarungan, inventaris, dan save.
+- **Konten**: hal yang dibuat satu per satu, misalnya level, musuh, item, dialog, dan animasi.
+- **Platform dan bahasa**: PC saja atau juga konsol dan ponsel, satu bahasa atau beberapa.
+- **Kualitas**: seberapa halus animasinya, seberapa lengkap efek suaranya, dan berapa frame rate yang ditargetkan.
+
+Dua game dengan daftar fitur yang sama bisa punya scope yang sangat berbeda. Platformer dengan 10 level dan platformer dengan 60 level memakai sistem yang sama, tetapi pekerjaan kontennya berbeda enam kali lipat.
+
+### Kenapa proyek macet
+
+Proyek jarang macet karena satu keputusan besar. Biasanya penyebabnya kumpulan hal kecil:
+
+- **Ide baru masuk tanpa ada yang keluar.** Setiap tambahan terasa kecil, tetapi tidak ada yang dihapus untuk memberinya tempat. Pola ini disebut *scope creep*.
+- **Perkiraan hanya menghitung jalur yang lancar.** Integrasi dengan sistem lain, bug, tuning, menu, dan pengaturan sering tidak masuk hitungan.
+- **Bagian akhir lebih lama dari dugaan.** Derek Yu, pembuat *Spelunky*, mengutip ungkapan bahwa 10 persen terakhir sebuah game sebenarnya 90 persen, dan menurutnya ungkapan itu ada benarnya. Sistem pertarungan yang berfungsi mungkin selesai dalam seminggu, tetapi membuatnya bagus, kaya, dan bebas bug bisa makan berbulan-bulan.
+- **Jarak ke rilis sulit dilihat.** Di tulisan lain, Derek Yu mencatat bahwa developer jarang tahu pasti seberapa dekat mereka dengan rilis, dan mengubah arah di tengah jalan berarti membuang banyak kerja keras.
+
+Contoh dari pelakunya sendiri: di GDC 2018, Tom Francis menjelaskan kenapa *Heat Signature* butuh waktu sekitar tiga kali lebih lama daripada game sebelumnya, *Gunpoint*. Menurut deskripsi sesinya, banyak waktu dalam 3,5 tahun pengembangan *Heat Signature* habis untuk fitur yang akhirnya tidak menjadi bagian terkuat game itu, sementara fitur yang paling berhasil termasuk yang paling mudah ditambahkan.
+
+## Memperkirakan pekerjaan dengan jujur
+
+Perkiraan yang jujur menghitung semua pekerjaan, termasuk bagian yang membosankan, dan terus terang soal bagian yang belum kamu ketahui.
+
+### Pecah fitur menjadi tugas
+
+"Tambah dash" terdengar seperti satu tugas. Kalau dipecah, isinya kira-kira seperti ini (angkanya hanya contoh):
+
+```text title="Contoh: memecah fitur dash"
+Fitur: dash (melesat pendek ke arah input)
+
+  input dan arah dash                  0,5 sampai 1 hari
+  gerak dan tabrakan saat dash         1 sampai 2 hari
+  animasi dash                         1 sampai 3 hari
+  efek visual dan suara                1 sampai 2 hari
+  aturan: cooldown, kebal sesaat       0,5 sampai 1 hari
+  interaksi dengan musuh dan jebakan   1 sampai 3 hari
+  petunjuk di level atau tutorial      0,5 sampai 1 hari
+  tuning setelah playtest              1 sampai 3 hari
+  -------------------------------------------------------
+  total                                6,5 sampai 16 hari
+```
+
+Daftar ini memperlihatkan dua hal. Fitur yang terdengar kecil ternyata menyentuh banyak bagian game: animasi, suara, musuh, level, tutorial. Rentangnya juga lebar, dan itu wajar karena rentang mencerminkan seberapa banyak yang belum kamu ketahui.
+
+Kalau satu tugas masih terasa lebih dari beberapa hari kerja, biasanya isinya belum jelas. Pecah lagi sampai kamu bisa membayangkan langkah-langkah setiap tugas.
+
+### Tulis rentang dan sisakan cadangan
+
+Satu angka ("dash: 3 hari") menyembunyikan ketidakpastian. Rentang ("6,5 sampai 16 hari") memperlihatkannya, sehingga tim bisa memutuskan apakah risikonya layak diambil.
+
+Seberapa lebar rentangnya, dan seberapa besar cadangan yang perlu disisakan, bergantung pada seberapa baru pekerjaan itu bagimu. Derek Yu menyebut dua hal yang menambah waktu: seberapa banyak eksperimen yang dibutuhkan sampai mekaniknya terasa menyenangkan, dan seberapa sedikit pengalaman tim dengan jenis game itu. Mekanik yang benar-benar baru, atau genre yang belum pernah kamu buat, butuh cadangan lebih besar daripada fitur yang sudah sering kamu kerjakan.
+
+Cara paling jujur untuk menentukan cadangan adalah melihat catatanmu sendiri. Tulis perkiraan sebelum mengerjakan tugas, tulis waktu sebenarnya setelah selesai, lalu bandingkan setiap minggu. Setelah beberapa minggu, kamu punya angka yang lebih bisa dipercaya daripada tebakan, termasuk tebakanmu sendiri di awal proyek.
+
+Pekerjaan berikut sering tidak masuk perkiraan sama sekali:
+
+- Menu utama, pengaturan grafis dan suara, dan pengaturan ulang tombol.
+- Save dan load.
+- Dukungan controller dan berbagai resolusi layar.
+- Build untuk setiap platform, halaman toko, dan trailer.
+- Pengujian dan perbaikan bug, yang biasanya berjalan terus sampai rilis.
+
+### Konten dan sistem punya biaya berbeda
+
+**Sistem** dibuat sekali lalu dipakai berulang. Sistem pertarungan yang baik melayani semua musuh di game. Biaya utamanya adalah ketidakpastian: kamu belum tahu berapa kali harus mencoba sampai hasilnya terasa benar.
+
+**Konten** dibuat satu per satu. Setiap level baru butuh desain, art, penempatan musuh, playtest, dan perbaikan. Biayanya lebih mudah ditebak, tetapi berlipat sesuai jumlahnya. Menambah "satu jenis musuh lagi" berarti menambah art, animasi, suara, logika perilaku, tuning, dan penempatannya di level.
+
+Derek Yu memberi contoh dari dua game Mario. Di *Super Mario Bros.* pertama, segelintir tile dipakai ulang dan diwarnai ulang untuk mengisi sebagian besar lingkungan. Awan dan semaknya bahkan sprite yang sama dengan warna berbeda. *Super Mario Bros. 3* punya jauh lebih banyak konten unik, seperti Sepatu Kuribo yang hanya muncul di satu stage. Semakin banyak konten unik yang tidak bisa dipakai ulang, semakin banyak waktu yang dibutuhkan.
+
+Untuk perkiraan, artinya biaya konten bisa dihitung **per unit** (per level, per musuh) lalu dikalikan jumlahnya. Angka per unit itu baru bisa dipercaya setelah kamu benar-benar membuat beberapa unit dengan kualitas final. Di situlah vertical slice berperan.
+
+## Memotong scope
+
+Hampir setiap proyek perlu memotong sesuatu. Yang bisa kamu atur adalah kapan memotong dan dengan urutan apa. Memotong di awal hanya menghapus baris di dokumen. Memotong di akhir membuang pekerjaan yang sudah selesai.
+
+### Must, should, could, won't
+
+Satu cara yang banyak dipakai adalah **MoSCoW**, dari metode proyek DSDM. Setiap item diberi satu dari empat kategori:
+
+| Kategori | Arti | Contoh di platformer |
+| --- | --- | --- |
+| **Must have** | Tanpa ini, game tidak ada gunanya dirilis | Gerak, lompat, core loop, cukup level untuk satu permainan utuh |
+| **Should have** | Penting dan berat kalau dibuang, tetapi game tetap bisa dimainkan | Boss di akhir game, pengaturan ulang tombol |
+| **Could have** | Diinginkan, dampaknya kecil kalau dibuang | Kostum karakter, mode time attack |
+| **Won't have (kali ini)** | Disepakati tidak dibuat untuk rilis ini | Mode co-op, versi konsol |
+
+Dua aturan membuat cara ini berguna:
+
+1. **Could have adalah cadangan pertama.** Saat jadwal terancam, item could have yang pertama dilepas. Kalau semua item dianggap must, tidak ada yang bisa dilepas, dan yang akhirnya mundur adalah tanggal rilis.
+2. **Won't have ditulis, tidak dibiarkan menggantung.** Daftar ini memperjelas batas scope dan mencegah ide yang sudah dibuang masuk kembali diam-diam.
+
+Panduan DSDM menyarankan agar pekerjaan must have umumnya tidak lebih dari sekitar 60 persen dari total upaya, supaya sisanya bisa berfungsi sebagai cadangan. Angka ini dibuat untuk proyek pada umumnya, dan pembagian tepatnya diserahkan ke setiap tim. Untuk game, angka ini berguna sebagai tanda bahaya: kalau must have-mu sudah memakan hampir seluruh waktu, rencanamu tidak punya ruang untuk kejutan.
+
+### Potong lebar sebelum dalam
+
+Scope punya dua arah:
+
+- **Lebar**: berapa banyak hal yang ada. Jumlah level, senjata, mode, karakter, dan platform.
+- **Dalam**: seberapa matang hal-hal itu. Rasa kontrol, respons, animasi, balancing, dan polish.
+
+Saat harus memotong, kurangi lebar lebih dulu. Mengurangi jumlah level mengurangi pekerjaan tanpa mengubah rasa bermain. Mengurangi waktu untuk tuning dan polish menurunkan kualitas setiap menit yang dimainkan, karena core loop dipakai di sepanjang game.
+
+Derek Yu menyarankan hal serupa: pastikan mekanik inti menyenangkan, lalu terus potong sampai tersisa inti itu. Mekanik inti yang kuat menjadi pegangan saat kamu harus membuang bagian lain.
+
+### Rencanakan beberapa ukuran scope
+
+Gwen Frey, developer *Kine*, menyarankan menyiapkan beberapa scope untuk satu game: satu yang bisa diselesaikan dengan dana yang sudah ada (dalam kasusnya, dikerjakan sendiri tanpa dana), satu yang bisa dibuat dengan tambahan dana menengah, dan satu versi impian. Dengan begitu, kamu tetap bisa merilis game yang kamu banggakan walaupun dana tambahan tidak pernah datang.
+
+Kategori MoSCoW bisa langsung dipetakan ke sini. Must have membentuk scope terkecil, should dan could mengisi scope menengah, dan daftar won't have menyimpan sisa versi impian.
+
+## Prototipe, vertical slice, dan MVP
+
+Ketiga istilah ini sering dipakai bergantian, bahkan di studio besar. Deskripsi talk GDC 2015 Greg Donovan dari Volition, misalnya, menyebut vertical slice, proof of concept, dan minimum viable product sebagai satu alat yang sama. Karena itu, sepakati dulu artinya di timmu. Pelajaran ini memakai arti berikut.
+
+### Prototipe
+
+Prototipe dibuat untuk menjawab **satu pertanyaan** secepat mungkin, misalnya apakah mekanik ini menyenangkan, atau apakah engine sanggup menampilkan 500 musuh sekaligus. Art-nya boleh kotak abu-abu, kodenya boleh berantakan, dan setelah pertanyaannya terjawab, prototipe boleh dibuang.
+
+Tim Experimental Gameplay Project di Carnegie Mellon (empat mahasiswa pascasarjana) membuat lebih dari 50 game dalam satu semester, masing-masing oleh satu orang dalam waktu kurang dari seminggu. Salah satu saran mereka: bangun "mainan"-nya dulu, yaitu mekanik inti tanpa tujuan dan tanpa kondisi menang atau kalah, lalu lihat apakah itu menyenangkan. Saran lainnya: kenali ide yang buntu dengan cepat dan tinggalkan. Mereka pernah menghabiskan seminggu tambahan untuk memaksa mekanik pegas, yang dibuat dalam beberapa jam, menjadi sebuah game, dan tetap tidak berhasil.
+
+### Vertical slice
+
+Vertical slice adalah potongan kecil game, misalnya satu level, yang dibuat sampai **kualitas mendekati final di semua lapisan**: gameplay, art, animasi, audio, UI, dan performa. Disebut vertikal karena potongannya menembus semua lapisan untuk satu bagian kecil game. Pengerjaan horizontal adalah kebalikannya: satu lapisan diselesaikan untuk seluruh game, misalnya semua level dibuat dalam bentuk kotak abu-abu.
+
+```text title="Horizontal dan vertikal"
+Pengerjaan horizontal: satu lapisan, semua level
+
+              L1     L2     L3     L4     L5
+  Gameplay    ###    ###    ###    ###    ###
+  Art          .      .      .      .      .
+  Audio        .      .      .      .      .
+  UI           .      .      .      .      .
+  Performa     .      .      .      .      .
+
+Vertical slice: semua lapisan, satu level
+
+              L1     L2     L3     L4     L5
+  Gameplay    ###     .      .      .      .
+  Art         ###     .      .      .      .
+  Audio       ###     .      .      .      .
+  UI          ###     .      .      .      .
+  Performa    ###     .      .      .      .
+```
+
+Deskripsi talk Greg Donovan yang tadi menggambarkan vertical slice sebagai gerbang dari pra-produksi ke produksi. Gerbang itu menunjukkan apakah tim benar-benar paham apa yang sedang dibuat dan bagaimana cara membuatnya.
+
+### MVP
+
+MVP (*minimum viable product*) adalah versi terkecil game yang sudah layak dirilis ke pemain sungguhan, misalnya sebagai early access, demo publik, atau rilis terbatas di satu negara. Pertanyaan yang dijawabnya berbeda: apakah ada pemain yang mau memainkan game ini, dan mungkin membayarnya? Scope-nya sempit, tetapi kualitasnya harus cukup untuk dinilai orang di luar tim.
+
+| | Prototipe | Vertical slice | MVP |
+| --- | --- | --- | --- |
+| Pertanyaan | Apakah ide ini menyenangkan atau mungkin dibuat? | Apakah kita tahu cara membuatnya, dan berapa biayanya? | Apakah pemain mau memainkannya? |
+| Ukuran | Satu mekanik atau satu teknik | Satu bagian kecil, misalnya satu level | Game terkecil yang utuh |
+| Kualitas | Kasar, aset sementara | Mendekati final | Cukup untuk dirilis |
+| Yang melihat | Tim sendiri | Tim, publisher, investor | Pemain sungguhan |
+| Setelahnya | Biasanya dibuang | Menjadi acuan produksi | Dikembangkan berdasarkan respons pemain |
+
+## Apa yang harus dibuktikan vertical slice
+
+Vertical slice yang berguna menjawab pertanyaan-pertanyaan berikut dengan sesuatu yang bisa dimainkan dan diukur.
+
+### Core loop terasa benar
+
+Core loop adalah rangkaian aksi yang diulang pemain sepanjang game, misalnya lari, lompat, hindari musuh, ambil paket, sampai di tujuan. Konsep ini dibahas di jalur [Desain Game](/belajar/desain-game/). Di vertical slice, core loop dimainkan dengan art, animasi, dan suara final, sehingga yang kamu nilai adalah rasa bermain secara utuh. Ajak orang di luar tim memainkannya tanpa penjelasan, lalu amati: apakah mereka ingin mengulang?
+
+### Satu level yang mewakili game
+
+Pilih level yang **paling mirip dengan kebanyakan level** di game-mu. Level tutorial terlalu sederhana, dan level terakhir terlalu istimewa. Kalau sebagian besar game terdiri dari level aksi berukuran sedang dengan tiga jenis musuh, slice-mu juga harus begitu, karena angka dari slice ini akan dikalikan untuk seluruh game.
+
+### Pipeline bisa diulang dan diukur
+
+Pipeline adalah jalan yang ditempuh satu aset dari ide sampai muncul di game: sketsa, sprite atau model, animasi, impor ke engine, pengaturan, penempatan di level, dan pengujian. Vertical slice adalah kesempatan pertama untuk menjalani jalan itu sampai ujung.
+
+Catat waktu setiap langkah. Hasilnya berupa angka seperti "satu jenis musuh butuh sekitar 5 orang-hari" (satu **orang-hari** berarti satu orang bekerja selama satu hari). Angka ini menggantikan tebakan di rencanamu. Kalau ternyata satu level butuh waktu tiga kali lipat dari perkiraan, kamu mengetahuinya sekarang, sebelum level kedua dibuat.
+
+Syaratnya, slice dibuat dengan cara yang akan dipakai selama produksi. Kalau satu level selesai berkat lembur dua minggu atau trik manual yang tidak bisa diulang, angkanya menyesatkan.
+
+### Performa muat di anggaran
+
+Jalankan slice di **perangkat terlemah** yang ingin kamu dukung, lalu ukur waktu frame dengan profiler seperti di pelajaran [Profiling & Optimasi](/belajar/fondasi-engine/08-profiling/) di jalur Fondasi Engine. Kalau satu level saja sudah menghabiskan seluruh anggaran frame, level yang lebih ramai tidak akan muat.
+
+Dari pengukuran ini kamu bisa menetapkan **anggaran performa** untuk produksi, misalnya berapa musuh yang boleh muncul bersamaan di layar dan berapa besar tekstur yang dipakai. Batas seperti ini jauh lebih murah ditetapkan sekarang daripada dipaksakan setelah 30 level selesai.
+
+### Keputusan setelah slice
+
+Setelah slice selesai, tim memilih: lanjut ke produksi dengan scope yang sudah dihitung ulang, perkecil scope agar muat, atau ubah arah. Pilihan mana pun lebih murah diambil sekarang, dengan angka dari slice, daripada setelah sebagian besar dana terpakai.
+
+## Milestone: dari prototipe sampai release candidate
+
+Milestone adalah titik periksa dalam jadwal. Setiap milestone punya **kriteria keluar**: syarat yang harus dipenuhi build sebelum tim dianggap lulus dari tahap itu. Tanpa kriteria tertulis, "alpha" hanya tanggal di kalender.
+
+Nama-nama di bawah ini umum dipakai, tetapi definisinya berbeda antar studio dan antar kontrak publisher. Kalau kamu bekerja dengan publisher, baca definisi di kontraknya.
+
+| Milestone | Pertanyaan utama | Kriteria keluar yang umum |
+| --- | --- | --- |
+| Prototipe | Apakah idenya menyenangkan dan mungkin dibuat? | Core loop bisa dimainkan dengan aset sementara |
+| Vertical slice | Apakah kita tahu cara membuatnya, dan berapa biayanya? | Satu level mendekati final, pipeline teruji, waktu per aset tercatat, performa diukur di perangkat target |
+| Alpha | Apakah semua fitur sudah ada? | Fitur lengkap (*feature complete*), konten belum lengkap, masih ada aset sementara |
+| Beta | Apakah semua konten sudah ada? | Fitur dan konten lengkap, pekerjaan beralih ke bug, performa, dan balancing, tidak ada fitur baru |
+| Release candidate | Apakah build ini bisa dirilis? | Build yang akan dirilis jika lolos pengujian akhir, dan untuk konsol juga sertifikasi platform |
+
+Di antara vertical slice dan alpha ada fase **produksi**, tahap terpanjang, saat sebagian besar konten dibuat dengan pipeline yang sudah teruji.
+
+Sebagai contoh nyata, Filament Games menulis kriteria keluarnya secara terbuka. Di sana, alpha berarti fitur kurang lebih lengkap, art dan UI cukup untuk membuat pemain mau memainkan core loop, dan performa minimal layak di platform target. Beta berarti fitur dan konten lengkap, tidak ada lagi aset sementara, dan game berjalan di frame rate target pada sebagian besar skenario yang diuji. Tahap siap rilis mereka, Gold, mensyaratkan frame rate target di semua skenario yang diuji. Jadi anggaran performa ikut diperiksa di setiap tahap, dengan batas yang makin ketat.
+
+Semakin jauh dari prototipe, semakin mahal perubahan scope. Fitur yang ditambahkan setelah alpha masih harus didesain, dibuat, diuji, dan diperbaiki pada saat tim seharusnya sudah fokus memoles. Karena itu, keputusan scope yang besar sebaiknya selesai paling lambat di vertical slice.
+
+Buku seperti *The Game Production Toolbox* karya Heather Maxwell Chandler membahas tahap-tahap ini lebih panjang, dari prototipe, jadwal, dan anggaran sampai QA dan rilis.
+
+## Contoh: scoping game 2D untuk tim dua orang
+
+<Aside type="caution" title="Ilustrasi, bukan data">
+Semua angka di bagian ini dibuat untuk menunjukkan cara berhitung dan tidak berasal dari proyek nyata. Kecepatan kerja setiap tim berbeda, jadi ganti angkanya dengan catatan timmu sendiri.
+</Aside>
+
+**Situasinya.** Sari (programmer dan desain) dan Dimas (art dan audio) ingin membuat platformer 2D tentang kurir yang mengantar paket di kota bertingkat. Tabungan mereka cukup untuk bekerja penuh waktu selama **9 bulan**.
+
+**Versi impian** mereka:
+
+- 6 dunia × 8 level = 48 level
+- 12 jenis musuh dan 6 boss
+- Toko upgrade
+- Mode co-op lokal
+- Cutscene cerita
+- 3 bahasa
+- Rilis di PC dan konsol
+
+### Langkah 1: hitung kapasitas
+
+```text title="Kapasitas (ilustrasi)"
+9 bulan × ±20 hari kerja × 2 orang              ±360 orang-hari
+waktu di luar produksi (asumsi 25%):
+  administrasi, marketing, sakit, libur          -90
+kapasitas efektif                               ±270 orang-hari
+```
+
+### Langkah 2: bagi waktu per tahap
+
+```text title="Jadwal kasar (ilustrasi)"
+bulan 1 sampai 3   prototipe dan vertical slice      ±90 orang-hari
+bulan 4 sampai 9   produksi sampai release candidate ±180 orang-hari
+
+dari 180 orang-hari itu:
+  pekerjaan tetap (menu, pengaturan, save,
+  controller, build, halaman toko, trailer)          -45
+  cadangan untuk bug, polish, dan kejutan (25%)      -45
+  sisa untuk fitur dan konten baru                    90 orang-hari
+```
+
+Cadangan disisihkan **sebelum** fitur dibagi. Kalau cadangan baru dicari setelah semua fitur masuk jadwal, biasanya ruangnya sudah tidak ada.
+
+### Langkah 3: ambil angka dari vertical slice
+
+Vertical slice mereka berisi gerak karakter, kamera, satu level, dan dua jenis musuh, semuanya mendekati final. Selama membuatnya, mereka mencatat:
+
+```text title="Angka dari vertical slice (ilustrasi)"
+1 level                       ±4 orang-hari
+1 jenis musuh                 ±5 orang-hari
+1 boss                        ±10 orang-hari
+
+perkiraan untuk yang belum dicoba:
+mode co-op lokal              25 sampai 50 orang-hari
+toko upgrade                  10 sampai 20 orang-hari
+cutscene cerita               15 sampai 25 orang-hari
+2 bahasa tambahan             ±10 orang-hari
+port konsol                   ±30 orang-hari (ketidakpastian tinggi)
+```
+
+### Langkah 4: hitung versi impian
+
+```text title="Biaya versi impian (ilustrasi)"
+47 level baru × 4             188
+10 jenis musuh baru × 5        50
+6 boss × 10                    60
+co-op, toko, cutscene,
+bahasa, konsol             90 sampai 135
+--------------------------------------
+total                     388 sampai 433 orang-hari
+tersedia                   90 orang-hari
+```
+
+Versi impian butuh empat sampai lima kali lipat waktu yang ada, selisih yang tidak bisa ditutup dengan menambah jam kerja.
+
+### Langkah 5: susun MoSCoW
+
+| Kategori | Isi | Biaya (orang-hari) |
+| --- | --- | --- |
+| Must have | 12 level (11 baru), 4 jenis musuh (2 baru) | 44 + 10 = **54** (60% dari 90) |
+| Should have | 1 boss di akhir game, 4 level tambahan | 10 + 16 = **26** |
+| Could have | 2 jenis musuh tambahan, 1 bahasa tambahan | 10 + 5 = **15** |
+| Won't have (kali ini) | Co-op, toko upgrade, cutscene, port konsol, level ke-17 dan seterusnya | - |
+
+Totalnya 95, sedikit di atas 90. Itu masih wajar karena could have memang bagian yang paling mungkin tidak selesai. Perhatikan apa yang dipotong: jumlah level turun dari 48 menjadi 12 sampai 16, dan co-op keluar. Core loop dan cadangan untuk bug dan polish tidak disentuh.
+
+Mengikuti saran Gwen Frey, mereka juga mencatat tiga ukuran scope:
+
+- **Scope kecil** (dana sekarang): must have saja, 12 level.
+- **Scope menengah** (jika mendapat dana tambahan atau publisher): ditambah should dan could, lalu mungkin co-op.
+- **Versi impian**: 48 level, co-op, konsol. Disimpan untuk update atau game berikutnya.
+
+### Langkah 6: hitung ulang di tengah produksi
+
+Di bulan kelima, catatan mereka menunjukkan level baru rata-rata butuh 6 orang-hari, lebih lama dari angka slice karena setiap level ternyata butuh tile baru.
+
+```text title="Hitung ulang di bulan ke-5 (ilustrasi)"
+must have     11 level × 6 + 10 musuh    =  76   (84% dari 90)
+should have   boss 10 + 4 level × 6      =  34
+could have                               =  15
+---------------------------------------------------
+total                                       125   (lebih 35)
+
+keputusan:
+  lepas semua could have                    -15
+  pindahkan 4 level tambahan ke won't have  -24
+  sisa: 12 level, 4 jenis musuh, 1 boss      86   (muat dalam 90)
+```
+
+Game tetap bisa rilis tepat waktu, dan cadangan 45 orang-hari untuk bug dan polish masih utuh. Tetapi must have kini memakan 84% dari waktu fitur, jauh di atas 60%. Kalau terjadi keterlambatan lagi, pilihan yang tersisa adalah memotong level ke-11 dan ke-12 atau memundurkan rilis. Keputusan itu lebih baik dibicarakan sekarang daripada di bulan kesembilan. Mereka juga mencari penyebab naiknya biaya per level, misalnya dengan menyusun satu set tile yang bisa dipakai ulang di banyak level, seperti contoh *Super Mario Bros.* tadi.
+
+## Kesalahan umum
+
+### Perkiraan dengan satu angka optimistis
+
+```text title="✗ Keliru"
+Dash: 3 hari
+```
+
+```text title="✓ Benar"
+Dash: 6,5 sampai 16 hari (8 tugas, lihat rinciannya)
+```
+
+Satu angka hanya menghitung jalur yang lancar. Rentang memperlihatkan risiko yang perlu diputuskan bersama.
+
+### Menambah tanpa mengurangi
+
+```text title="✗ Keliru"
++ mode time attack   (ide bagus dari playtest)
+```
+
+```text title="✓ Benar"
++ mode time attack   (could have)
+- kostum karakter    (dipindah ke won't have)
+```
+
+Setiap ide baru diberi kategori. Kalau ide itu masuk must atau should, harus ada item lain yang turun kategori.
+
+### Memotong kedalaman demi mempertahankan jumlah
+
+Waktu tuning dan polish core loop dikurangi supaya tetap bisa membuat 40 level. Core loop dipakai di setiap level, jadi kualitasnya terasa di seluruh game. Kurangi jumlah level lebih dulu.
+
+### Vertical slice yang tidak bisa diulang
+
+Slice selesai berkat lembur dan trik manual, sehingga angka per level terlihat bagus. Saat produksi, setiap level ternyata jauh lebih lambat dibuat. Buat slice dengan alat dan cara kerja yang memang akan dipakai selama produksi.
+
+### Mengukur performa di akhir proyek
+
+Profiler baru dibuka saat beta, ketika puluhan level sudah penuh efek. Ukur di vertical slice, tetapkan anggaran performa, lalu ukur lagi di setiap milestone.
+
+### Kode prototipe menjadi fondasi produksi
+
+Kode yang ditulis cepat untuk menjawab satu pertanyaan jarang siap menanggung game yang utuh. Setelah pertanyaannya terjawab, tulis ulang bagian yang akan dipakai seterusnya dengan lebih rapi.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan di kertas atau spreadsheet. Pakai ide game-mu sendiri, atau game kecil yang pernah kamu mainkan.
+
+1. Tulis scope versi impian: sistem, konten (lengkap dengan jumlahnya), platform, dan bahasa.
+2. Pilih satu fitur dan pecah menjadi tugas dengan rentang waktu, seperti contoh dash. Berapa total rentangnya?
+3. Hitung kapasitas timmu dalam orang-hari untuk jadwal yang realistis, lalu kurangi waktu di luar produksi dan sisihkan cadangan.
+4. Beri kategori must, should, could, atau won't pada setiap item. Apakah must have muat dalam sekitar 60 persen waktu yang tersedia untuk fitur dan konten?
+5. Rancang vertical slice: level mana yang paling mewakili game-mu, apa saja yang harus berkualitas final, dan angka apa yang akan kamu catat (waktu per aset, waktu frame di perangkat target).
+6. Selama seminggu, tulis perkiraan sebelum mengerjakan setiap tugas dan waktu sebenarnya sesudahnya. Seberapa jauh selisihnya?

@@ -1,0 +1,104 @@
+---
+title: "Pixel Perfect"
+description: "Menampilkan pixel art agar setiap piksel gambar menjadi kotak piksel layar yang sama besar dan tetap tajam saat bergerak. Caranya menggabungkan filter nearest, pembesaran bilangan bulat, dan posisi yang dibulatkan."
+kind: term
+level: 2
+aka: "pixel snapping, integer scaling, Pixel Perfect Camera, nearest filtering"
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "Add a pixel perfect camera"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/2d-urp/2d-pixelperfect/prep-sprites"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Pixel Perfect Camera component reference for URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/2d-urp/2d-pixelperfect/ref"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Multiple resolutions"
+    url: "https://docs.godotengine.org/en/stable/tutorials/rendering/multiple_resolutions.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "ProjectSettings"
+    url: "https://docs.godotengine.org/en/stable/classes/class_projectsettings.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Viewport"
+    url: "https://docs.godotengine.org/en/stable/classes/class_viewport.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Importing images"
+    url: "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_images.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+sidebar:
+  order: 7
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Pixel art digambar di resolusi kecil, misalnya 320×180, lalu diperbesar ke layar. Tampilannya rusak jika salah satu dari hal berikut terjadi:
+
+- **Buram.** Filter linear mencampur warna piksel tetangga saat gambar diperbesar. Pixel art butuh filter **nearest** atau **point** ([Texture Filtering & Mipmap](/kamus/geometri/texture-filtering/)).
+- **Piksel tidak rata.** Faktor pembesarannya bukan bilangan bulat. Dari 320×180 ke 1920×1080 tepat 6 kali, jadi setiap piksel gambar menjadi kotak 6×6. Ke 1366×768 faktornya sekitar 4,27, jadi sebagian piksel selebar 4 piksel layar dan sebagian selebar 5. Garis yang seharusnya sama tebal tampak berbeda.
+- **Bergetar.** Sprite atau kamera berada di posisi pecahan piksel, lalu dibulatkan ke arah yang berbeda dari frame ke frame. Paling terasa saat kamera bergerak pelan atau sprite diputar.
+
+*Pixel perfect* adalah gabungan solusinya: filter nearest, pembesaran bilangan bulat (sisa layar diisi bingkai hitam), dan posisi yang dibulatkan ke grid piksel gambar.
+
+```text title="Pseudocode: pembesaran bilangan bulat dan pembulatan posisi"
+skala = floor(min(lebar_layar / 320, tinggi_layar / 180))   // 1366×768 → 4
+area_game = (320 * skala, 180 * skala)                     // 1280×720, sisanya bingkai hitam
+posisi_gambar = round(posisi * piksel_per_unit) / piksel_per_unit
+```
+
+<Aside type="note" title="Analogi">
+Mozaik ubin. Polanya rapi selama setiap ubin utuh dan sama besar. Satu ubin yang dipotong atau berukuran lain langsung merusak pola di sekitarnya.
+</Aside>
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Komponen **Pixel Perfect Camera** pada kamera utama (URP). Komponen ini sudah termasuk saat proyek dibuat dari template Universal 2D. Paket terpisah *2D Pixel Perfect* hanya untuk Built-In Render Pipeline. Langkah dari dokumentasi Unity:
+
+1. Samakan **Pixels Per Unit** semua sprite, atur **Filter Mode: Point** dan **Compression: None**.
+2. Di Pixel Perfect Camera, isi **Assets Pixels Per Unit** dengan nilai yang sama, dan **Reference Resolution** dengan resolusi pixel art, misalnya 320×180.
+3. Pilih **Grid Snapping**: **Pixel Snapping** (gambar sprite diluruskan ke grid piksel, tanpa mengubah posisi Transform) atau **Upscale Render Texture** (scene dirender di resolusi kecil lalu diperbesar, sehingga piksel tetap kotak utuh walau sprite diputar).
+4. **Crop Frame** menambahkan bingkai hitam untuk menutup area di luar rasio aspek Reference Resolution.
+
+Untuk menata objek di editor, atur **Grid Size** di overlay Grid and Snap menjadi 1 dibagi Pixels Per Unit (misalnya 1/16 = 0,0625) dan nyalakan grid snapping.
+
+</div>
+<div slot="godot">
+
+Pengaturan proyek yang disarankan dokumentasi *Multiple resolutions* untuk pixel art:
+
+- **Display → Window → Stretch → Mode: viewport.** Game dirender di resolusi dasar, lalu hasilnya diperbesar ke layar.
+- **Stretch → Scale Mode: integer** (bawaan `fractional`). Faktor pembesaran dibulatkan ke bawah.
+- Resolusi dasar 640×360 disebut sebagai titik awal yang baik, karena terbagi rata ke 1280×720, 1920×1080, 2560×1440, dan 3840×2160.
+
+Filter tekstur 2D bawaannya Linear. Untuk pixel art, ubah **Rendering → Textures → Canvas Textures → Default Texture Filter** menjadi **Nearest**, atau atur `texture_filter` per node. Untuk membulatkan posisi, nyalakan **Rendering → 2D → Snap → Snap 2D Transforms to Pixel**. Dokumentasi tidak menyarankan menyalakannya bersamaan dengan Snap 2D Vertices to Pixel. Mode kompresi impor **Lossless**, bawaan untuk aset 2D, juga disarankan untuk pixel art.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Pembulatan posisi punya harga. Dokumentasi Godot menyebut gerakan menjadi kurang halus, terutama saat Camera2D memakai smoothing, karena kamera hanya bisa melompat per satu piksel gambar. Sebagian game memilih merender dunia di resolusi tinggi (mode `canvas_items` di Godot) agar gerakan kamera tetap mulus, dengan risiko piksel yang sedikit tidak rata.
+
+Kesalahan umum lain:
+
+- Sprite dengan Pixels Per Unit berbeda-beda di Unity, sehingga ukuran piksel antar-sprite tidak sama di layar.
+- Memutar atau memperbesar sprite dengan skala pecahan, misalnya 1,5 kali. Hasilnya piksel miring atau tidak rata.
+- Sprite berukuran ganjil dengan `centered = true` di Godot yang jatuh di antara dua piksel. Dokumentasi Sprite2D menyarankan mematikan `centered` atau menyalakan snap.
+
+Di browser, perbandingan piksel layar dengan piksel CSS juga ikut menentukan ketajaman ([Pixel Ratio](/kamus/web/pixel-ratio/)).
+
+## Terkait
+
+- [Texture Filtering & Mipmap](/kamus/geometri/texture-filtering/)
+- [Kamera Ortografis](/kamus/dasar/ortho/)
+- [Aspect Ratio & Resize](/kamus/dasar/aspect/)
+- [Sprite](/kamus/2d/sprite/)

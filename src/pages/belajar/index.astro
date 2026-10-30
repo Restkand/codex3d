@@ -14,13 +14,14 @@ const docs = await getCollection('docs')
 const statusOf = (id) => docs.find((d) => d.id === `belajar/${id}`)?.data.status
 const lessonCount = (id) => docs.filter((d) => d.data.kind === 'lesson' && d.id.startsWith(`belajar/${id}/`)).length
 const pad2 = (n) => String(n).padStart(2, '0')
+const filled = TRACKS.filter((t) => lessonCount(t.id) > 0).length
 ---
 
 <LearnLayout
   title="Jalur Belajar"
   description={entry.data.description}
   editPath={entry.filePath}
-  greeting="Baru Fondasi Engine yang sudah ada pelajarannya. Enam jalur lain masih kerangka."
+  greeting={`${filled} dari ${TRACKS.length} jalur sudah punya pelajaran. Fondasi Engine yang paling lengkap.`}
   crumbs={[{ label: 'Jalur Belajar' }]}
 >
   <Fragment slot="side">

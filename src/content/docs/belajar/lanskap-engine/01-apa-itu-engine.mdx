@@ -1,0 +1,516 @@
+---
+title: "Apa Itu Engine, Sebenarnya"
+description: "Library, framework, dan engine; komponen yang ada di hampir setiap engine; empat cara menyusun isi dunia game; perbedaan editor dan build; engine buatan sendiri; dan cara membaca dokumentasi engine."
+fundamental: "Game yang lancar saat diuji di editor bisa gagal memuat file begitu dijadikan build, karena tidak semua yang ada di editor ikut dikirim ke pemain. Saat pindah engine, nama fitur dan susunan objeknya juga berubah, sehingga dokumentasi engine baru terasa asing. Keduanya lebih mudah dihadapi kalau kamu tahu bagian apa saja yang ada di dalam sebuah engine dan bagian mana yang benar-benar berjalan di perangkat pemain."
+kind: lesson
+minutes: 30
+status: draf
+lastReviewed: 2026-10-30
+terms:
+  - renderer
+  - scene
+  - hierarchy
+  - transform
+krekit:
+  gambaran-besar: "Nama fiturnya beda-beda di tiap engine, tapi daftar bagiannya hampir selalu sama."
+  library-framework-dan-engine: "Pertanyaan tercepat: siapa yang memegang game loop, kodemu atau alatnya?"
+  komponen-yang-selalu-ada: "Simpan tabel ini. Berguna sekali saat membuka dokumentasi engine yang belum pernah kamu pakai."
+  cara-engine-menyusun-isi-dunia: "Bayangkan petinya di engine yang biasa kamu pakai dulu, baru bandingkan dengan model lain."
+  runtime-dan-editor-apa-yang-ikut-ke-build: "Kalau sesuatu hanya rusak di build, cek dulu apa yang tidak ikut terbawa."
+  engine-buatan-sendiri: "Kalau menghitung waktunya, masukkan juga editor dan alat impornya, jangan cuma renderer."
+  membaca-dokumentasi-engine: "Cocokkan dulu versi dokumentasi dengan versi engine-mu. Banyak kebingungan berawal dari situ."
+  kesalahan-umum: "Kesalahan ketiga sering muncul di minggu-minggu pertama setelah pindah engine."
+sidebar:
+  order: 1
+  label: "1 · Apa Itu Engine"
+quiz:
+  - q: "Kamu menulis perulangan `selama game berjalan` sendiri, lalu di dalamnya memanggil fungsi untuk membaca keyboard dan menggambar sprite. Alat yang menyediakan fungsi-fungsi itu paling tepat disebut apa?"
+    options:
+      - "Engine"
+      - "Library"
+      - "Framework"
+      - "Editor"
+    answer: 1
+    explain: "Kodemu yang memegang game loop dan memanggil fungsi saat dibutuhkan, jadi alat itu dipakai sebagai library. Pada framework dan engine arahnya terbalik: merekalah yang memegang loop dan memanggil kodemu."
+  - q: "Di Unity, kamu membuat GameObject kosong lalu mencoba melepas semua komponennya. Komponen apa yang pasti tetap ada?"
+    options:
+      - "MeshRenderer"
+      - "Transform"
+      - "BoxCollider"
+      - "Tidak ada, GameObject bisa benar-benar kosong"
+    answer: 1
+    explain: "Setiap GameObject punya tepat satu Transform yang menyimpan posisi, rotasi, dan skalanya. Komponen ini tidak bisa dilepas."
+  - q: "Di Godot, kamu menyimpan susunan node lampu berkedip sebagai scene, lalu memasangnya di 30 tempat dalam satu level. Setelah itu kamu mengubah warna lampu di scene aslinya dan menyimpannya. Apa yang terjadi?"
+    options:
+      - "Hanya lampu yang terakhir dipasang yang berubah"
+      - "Ketiga puluh lampu ikut berubah"
+      - "Tidak ada yang berubah sampai level dibuat ulang"
+      - "Godot membuat scene baru yang terpisah dari aslinya"
+    answer: 1
+    explain: "Scene yang dipasang di scene lain adalah instance dari scene aslinya. Perubahan yang disimpan di scene asli ikut terlihat di semua instance-nya."
+  - q: "Dalam ECS, di mana logika \"gerakkan semua benda yang punya Posisi dan Kecepatan\" biasanya ditulis?"
+    options:
+      - "Di dalam komponen Posisi"
+      - "Di sebuah sistem yang berjalan atas semua entitas yang punya Posisi dan Kecepatan"
+      - "Di entitas, karena entitas adalah objek utamanya"
+      - "Di editor"
+    answer: 1
+    explain: "Di ECS, komponen hanya berisi data dan entitas hanya nomor pengenal. Logika ditulis di sistem, yang memproses semua entitas dengan kombinasi komponen tertentu."
+  - q: "Game berjalan normal di editor, tetapi di build gagal memuat gambar yang dibaca langsung dari folder proyek dengan fungsi baca file biasa. Apa penyebab yang paling mungkin?"
+    options:
+      - "GPU di komputer pemain berbeda"
+      - "Build berisi data hasil impor yang dikemas engine, sedangkan file sumber gambarnya tidak ikut"
+      - "Delta time di build berbeda"
+      - "Build memuat aset lebih lambat, jadi waktunya habis"
+    answer: 1
+    explain: "Di editor, file sumber ada di folder proyek. Saat build, engine mengemas data hasil impornya, dan file sumber biasanya tidak ikut. Aset perlu dimuat lewat sistem aset engine."
+  - q: "Di Unity, kenapa kode C# yang lancar di Play mode editor tetap perlu diuji di build yang memakai IL2CPP?"
+    options:
+      - "Karena IL2CPP tidak bisa menjalankan C#"
+      - "Karena editor menjalankan kode dengan Mono (JIT), sedangkan IL2CPP mengompilasi kode ke kode mesin sebelum game berjalan (AOT) dan punya keterbatasan sendiri"
+      - "Karena IL2CPP hanya dipakai di editor"
+      - "Karena build tidak memakai GameObject"
+    answer: 1
+    explain: "Editor Unity selalu menjalankan kode dengan Mono. Build bisa memakai IL2CPP, yang bekerja dengan cara berbeda dan punya daftar keterbatasan sendiri, jadi perilakunya perlu dicek di build."
+sources:
+  - title: "Introduction to GameObjects"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/working-with-gameobjects/game-objects"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Introduction to components"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/working-with-gameobjects/unity-components/components"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "MonoBehaviour"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/monobehaviour"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Scripting back ends"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/programming-environment/scripting-backends"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Mono scripting back end"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/programming-environment/scripting-backends/mono"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "IL2CPP scripting back end"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/programming-environment/scripting-backends/il2cpp"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Reserved folder name reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/get-started/project-configuration/special-folders"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Introduction to conditional compilation in Unity"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/programming-environment/script-compilation/conditional-compilation/platform-dependent-compilation"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Introduction to importing assets"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/assets-and-media/import-assets/importing-assets"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Create a build from the Editor"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/building-and-publishing/build-settings"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Entities overview"
+    url: "https://docs.unity3d.com/Packages/com.unity.entities@1.3/manual/index.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Overview of Godot's key concepts"
+    url: "https://docs.godotengine.org/en/stable/getting_started/introduction/key_concepts_overview.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Nodes and Scenes"
+    url: "https://docs.godotengine.org/en/stable/getting_started/step_by_step/nodes_and_scenes.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Godot's design philosophy"
+    url: "https://docs.godotengine.org/en/stable/getting_started/introduction/godot_design_philosophy.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Scripting languages"
+    url: "https://docs.godotengine.org/en/stable/getting_started/step_by_step/scripting_languages.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Optimization using Servers"
+    url: "https://docs.godotengine.org/en/stable/tutorials/performance/using_servers.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Import process"
+    url: "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/import_process.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Exporting projects"
+    url: "https://docs.godotengine.org/en/stable/tutorials/export/exporting_projects.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Running code in the editor"
+    url: "https://docs.godotengine.org/en/stable/tutorials/plugins/running_code_in_the_editor.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Node"
+    url: "https://docs.godotengine.org/en/stable/classes/class_node.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Introduction (Organization of the documentation)"
+    url: "https://docs.godotengine.org/en/stable/about/introduction.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Why isn't Godot an ECS-based game engine? (Juan Linietsky, Februari 2021)"
+    url: "https://godotengine.org/article/why-isnt-godot-ecs-based-game-engine/"
+    publisher: "Godot Engine (blog)"
+    accessed: 2026-10-30
+  - title: "ECS (Getting Started)"
+    url: "https://bevy.org/learn/quick-start/getting-started/ecs/"
+    publisher: "Bevy"
+    accessed: 2026-10-30
+  - title: "Bevy Engine"
+    url: "https://bevy.org/"
+    publisher: "Bevy"
+    accessed: 2026-10-30
+  - title: "Simple DirectMedia Layer"
+    url: "https://www.libsdl.org/"
+    publisher: "SDL"
+    accessed: 2026-10-30
+  - title: "raylib"
+    url: "https://www.raylib.com/"
+    publisher: "raylib"
+    accessed: 2026-10-30
+  - title: "MonoGame"
+    url: "https://monogame.net/"
+    publisher: "MonoGame Foundation"
+    accessed: 2026-10-30
+  - title: "LÖVE"
+    url: "https://love2d.org/"
+    publisher: "LÖVE"
+    accessed: 2026-10-30
+  - title: "Three.js"
+    url: "https://threejs.org/"
+    publisher: "three.js"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Membedakan library, framework, dan engine dari siapa yang memegang game loop dan alat apa yang ikut disediakan.
+- Menyebut komponen yang ada di hampir setiap engine, dan tahu pelajaran Fondasi Engine mana yang membahasnya.
+- Membandingkan empat cara engine menyusun isi dunia game: pohon node, GameObject dan komponen, Actor dan komponen, serta ECS.
+- Menjelaskan bagian mana yang hanya ada di editor dan bagian mana yang ikut ke build.
+- Menimbang untung rugi engine buatan sendiri.
+- Menemukan bagian-bagian tadi di dokumentasi engine yang belum pernah kamu pakai.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: gedung pertunjukan">
+Sebuah pertunjukan butuh panggung, lampu, pengeras suara, dan jadwal yang menentukan kapan setiap pemain masuk. Di belakangnya ada ruang latihan untuk menyusun adegan, gudang tempat kostum dan properti disiapkan, dan truk yang membawa pertunjukan ke kota lain. Engine game menyediakan semuanya. Kamu menulis naskahnya dan menyiapkan propertinya.
+</Aside>
+
+Engine game adalah perangkat lunak yang berisi dua hal. Yang pertama adalah **runtime**, program yang menjalankan game di perangkat pemain. Dalam analogi tadi, runtime adalah panggung beserta jadwalnya. Yang kedua adalah **alat produksi**: editor sebagai ruang latihan, pipeline aset sebagai gudang, dan pembuat build sebagai truknya.
+
+Pelajaran-pelajaran di [Fondasi Engine](/belajar/fondasi-engine/) membahas isi runtime, dari game loop sampai profiling. Pelajaran ini mundur selangkah dan melihat engine sebagai satu paket utuh. Dengan begitu, engine yang berbeda bisa dibandingkan memakai ukuran yang sama, dan dokumentasi engine yang belum pernah kamu pakai bisa dibaca dengan peta yang sudah kamu kenal.
+
+## Library, framework, dan engine
+
+Ketiga istilah ini sering dipakai bergantian. Cara tercepat membedakannya adalah bertanya: **siapa yang memegang game loop?**
+
+**Library** adalah kumpulan fungsi yang kamu panggil. Game loop kamu tulis sendiri, lalu library dipakai di dalamnya untuk pekerjaan tertentu, misalnya membuka jendela atau menggambar sprite.
+
+```text title="Pseudocode: memakai library"
+buka_jendela(1280, 720)              // fungsi dari library
+
+selama game berjalan:                // loop ini milikmu
+    tombol = baca_keyboard()         // fungsi dari library
+    update(tombol)                   // kodemu
+    gambar_sprite(pemain, posisi)    // fungsi dari library
+```
+
+**Framework** membalik arah itu. Framework yang memegang loop, lalu memanggil fungsi yang kamu isi pada saat yang tepat.
+
+```text title="Pseudocode: memakai framework"
+// kamu hanya mengisi fungsi-fungsi ini; framework yang memanggilnya
+mulai():          siapkan pemain
+update(delta):    gerakkan pemain
+gambar():         gambar pemain
+```
+
+**Engine** juga memegang loop seperti framework, ditambah alat produksi: editor untuk menyusun dunia game, pengimpor yang mengubah file dari aplikasi lain menjadi data siap pakai, dan pembuat build untuk berbagai platform. Fungsi `Update()`, `Tick()`, dan `_process()` di [Pelajaran 1 Fondasi Engine](/belajar/fondasi-engine/01-frame/) adalah fungsi yang kamu isi dan engine yang memanggil.
+
+| | Library | Framework | Engine |
+| --- | --- | --- | --- |
+| Yang memegang game loop | Kodemu | Framework | Engine |
+| Editor visual | Tidak disediakan | Umumnya tidak disediakan | Umumnya disediakan |
+| Pengimpor aset dan pembuat build | Kamu siapkan sendiri | Tergantung framework-nya | Disediakan |
+| Contoh yang menyebut dirinya begitu | SDL, raylib, Three.js | MonoGame, LÖVE | Unity, Unreal Engine, Godot |
+
+Situs SDL menyebutnya library lintas platform untuk mengakses audio, keyboard, mouse, joystick, dan hardware grafis. Situs raylib menulis terang-terangan bahwa raylib tidak menyediakan antarmuka visual, alat GUI, atau editor. Di Bab Tambahan [Web & Three.js](/belajar/web-threejs/01-frame/), [Three.js](/kamus/web/threejs/) dipakai dengan cara yang sama: game loop-nya ditulis sendiri dengan `requestAnimationFrame`.
+
+Batas ketiganya tidak selalu tegas. Halaman depan LÖVE berjudul "Free 2D Game Engine", tetapi isinya menyebut LÖVE sebagai framework untuk membuat game 2D dengan Lua. Sebutan di halaman depan tidak banyak membantu. Untuk alat yang sedang kamu nilai, periksa saja baris-baris di tabel tadi.
+
+## Komponen yang selalu ada
+
+Unity, Unreal, Godot, dan engine buatan studio terlihat berbeda di permukaan, tetapi isinya bisa dipetakan ke daftar yang hampir sama. Tabel berikut adalah peta itu, beserta tempat setiap bagian dibahas.
+
+| Komponen | Tugasnya | Dibahas di |
+| --- | --- | --- |
+| **Game loop dan runtime** | Menjalankan game frame demi frame, mengatur waktu, dan memanggil kodemu pada saat yang tepat | [Fondasi 1: Frame](/belajar/fondasi-engine/01-frame/) |
+| **[Renderer](/kamus/dasar/renderer/)** | Mengubah [scene](/kamus/dasar/scene/) dan kamera menjadi piksel | [Fondasi 3](/belajar/fondasi-engine/03-permukaan/), [4](/belajar/fondasi-engine/04-shader/), [5](/belajar/fondasi-engine/05-bayangan-gi/), dan [6](/belajar/fondasi-engine/06-post-processing/) |
+| **Physics** | Menghitung gerak, gaya, dan tabrakan dengan [langkah waktu tetap](/kamus/fisika/fixed-timestep/) | [Fondasi 1](/belajar/fondasi-engine/01-frame/#langkah-waktu-tetap-untuk-physics); pelajaran khusus direncanakan |
+| **Animasi** | Memutar dan mencampur klip, menggerakkan tulang karakter | [Fondasi 7](/belajar/fondasi-engine/07-animasi/) |
+| **Audio** | Memutar dan mencampur suara, termasuk suara yang terdengar dari arah tertentu di dunia 3D | Direncanakan |
+| **Input** | Membaca keyboard, mouse, gamepad, dan layar sentuh, lalu menerjemahkannya menjadi aksi | [Input Action](/kamus/interaksi/input-action/) di Kamus; pelajaran direncanakan |
+| **Model scene** | Cara isi dunia disusun: objek, transform, induk dan anak | [Fondasi 2](/belajar/fondasi-engine/02-ruang/) dan bagian berikutnya di pelajaran ini |
+| **Pipeline aset** | Mengimpor file dari aplikasi lain (model, tekstur, suara) dan mengubahnya menjadi data siap pakai | [Fondasi 3](/belajar/fondasi-engine/03-permukaan/), misalnya pengaturan impor normal map |
+| **Scripting** | Tempat kodemu masuk: bahasa pemrograman dan API engine | [Fondasi 1](/belajar/fondasi-engine/01-frame/#gambaran-besar) |
+| **Editor** | Jendela untuk menyusun scene, mengatur aset, dan menjalankan game untuk diuji | Bagian runtime dan editor di bawah |
+| **Profiler dan debugger** | Mengukur waktu frame dan memori, serta menghentikan kode untuk diperiksa | [Fondasi 8](/belajar/fondasi-engine/08-profiling/) |
+| **Pipeline build** | Mengemas runtime dan data game menjadi aplikasi untuk satu platform | Bagian runtime dan editor di bawah |
+
+Di dalam engine, komponen-komponen ini biasanya berupa subsistem terpisah yang saling memanggil. Dokumentasi Godot memperlihatkannya dengan jelas: rendering, physics, dan audio ditangani oleh *server* tingkat rendah (`RenderingServer`, `PhysicsServer2D`, `PhysicsServer3D`, `AudioServer`), dan sistem scene yang dipakai sehari-hari dibangun di atasnya. Engine lain menyusunnya dengan nama dan batas yang berbeda, tetapi pembagian kerjanya mirip.
+
+Di luar daftar ini, isi engine makin beragam: UI, navigasi untuk AI, networking, terrain, dan banyak lagi. Sebagian engine menyediakannya sendiri, sebagian mengandalkan plugin atau paket tambahan, dan isinya bisa berubah dari versi ke versi. Saat membandingkan engine untuk sebuah proyek, cek kebutuhan proyekmu satu per satu terhadap daftar ini.
+
+## Cara engine menyusun isi dunia
+
+Setiap engine harus menjawab pertanyaan yang sama: apa satuan terkecil sebuah benda di dunia game, di mana datanya disimpan, dan di mana logikanya ditulis. Ada empat jawaban yang paling sering ditemui.
+
+Supaya mudah dibandingkan, keempatnya dipakai untuk membuat benda yang sama: sebuah **peti** yang terlihat, bisa ditabrak, dan bisa dibuka pemain.
+
+### Pohon node
+
+Di model ini, setiap **node** punya satu jenis dan satu tugas. Node disusun menjadi pohon, dan pohon node yang disimpan sebagai file disebut **scene**. Sebuah scene bisa dipasang di dalam scene lain sebanyak yang kamu mau. Godot memakai model ini.
+
+```text title="Pohon node (Godot)"
+Peti (StaticBody3D)               ← skrip peti.gd menempel di sini
+├── Model (MeshInstance3D)        ← menggambar mesh
+├── Bentuk (CollisionShape3D)     ← bentuk untuk tabrakan
+└── Suara (AudioStreamPlayer3D)   ← sumber suara
+```
+
+Kemampuan sebuah node datang dari jenisnya, dan jenis itu diturunkan dari jenis lain. Contoh dari dokumentasi Godot: `Sprite2D` adalah sebuah `Node2D`, sebuah `CanvasItem`, sekaligus sebuah `Node`, sehingga punya semua kemampuan ketiganya. Dokumentasi yang sama menyebut bahwa node Godot tidak bekerja seperti komponen di engine lain. Sebagian besar node berdiri sendiri, dan skrip menempel pada satu node untuk memperluas perilakunya.
+
+Scene yang sudah disimpan bekerja seperti jenis node baru. Jika scene Peti dipasang di dua puluh tempat lalu scene aslinya diubah, kedua puluh peti itu ikut berubah.
+
+### GameObject dan komponen
+
+Di model ini, benda di dunia game adalah **GameObject**: wadah yang belum bisa apa-apa. Kemampuannya datang dari **komponen** yang dipasang padanya. Unity memakai model ini.
+
+```text title="GameObject dan komponen (Unity)"
+Peti (GameObject)
+  Transform              ← selalu ada dan tidak bisa dilepas
+  MeshFilter             ← data mesh yang dipakai
+  MeshRenderer           ← menggambar mesh
+  BoxCollider            ← bentuk untuk tabrakan
+  AudioSource            ← sumber suara
+  Peti (MonoBehaviour)   ← skripmu juga sebuah komponen
+```
+
+Dokumentasi Unity menyebut GameObject sebagai wadah untuk komponen, dan komponenlah yang menjalankan fungsinya. Setiap GameObject punya tepat satu komponen [Transform](/kamus/ruang/transform/). Skrip C# yang diturunkan dari `MonoBehaviour` selalu hidup sebagai komponen pada sebuah GameObject. GameObject juga bisa punya anak, jadi model ini tetap memakai [hierarki](/kamus/ruang/hierarchy/). Bedanya dengan pohon node: kemampuan peti dikumpulkan pada satu objek, tanpa harus dipecah menjadi anak-anak.
+
+### Actor dan komponen
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-30): Actor sebagai objek yang ditaruh di level; komponen bisa bertingkat di dalam satu Actor; transform Actor diambil dari root component; logika di C++ atau Blueprint. */}
+
+Unreal memakai model yang mirip. Benda yang ditaruh di sebuah level disebut **Actor**, dan kemampuannya datang dari **komponen** yang dipasang padanya. Komponen di dalam satu Actor bisa disusun bertingkat, dan posisi Actor di dunia diambil dari komponen akarnya (*root component*).
+
+```text title="Actor dan komponen (Unreal)"
+BP_Peti (Actor)                  ← logika di Blueprint atau C++
+  StaticMeshComponent (akar)     ← mesh; posisi Actor diambil dari sini
+    BoxComponent                 ← bentuk untuk tabrakan
+    AudioComponent               ← sumber suara
+```
+
+Logika gameplay ditulis di C++ atau di Blueprint, sistem pemrograman visual milik Unreal.
+
+### ECS: entitas, komponen, sistem
+
+Model keempat memisahkan data dan logika sepenuhnya. **Entitas** hanyalah nomor pengenal. **Komponen** hanya berisi data, tanpa fungsi. **Sistem** berisi logika dan berjalan atas semua entitas yang punya kombinasi komponen tertentu. ECS adalah singkatan dari *Entity Component System*.
+
+```text title="Pseudocode: ECS"
+entitas 42:  Posisi, Mesh, Collider, Peti { terbuka: salah }
+entitas 43:  Posisi, Mesh, Collider, Peti { terbuka: benar }
+
+sistem_buka_peti(pemain):
+    untuk setiap entitas yang punya (Peti, Posisi):
+        jika pemain dekat dan tombol aksi ditekan:
+            Peti.terbuka = benar
+```
+
+Karena komponen sejenis bisa disimpan berdampingan di memori, sistem bisa membacanya dengan cepat dan pekerjaannya lebih mudah dibagi ke beberapa inti CPU. Keuntungan ini paling terasa saat jumlah objeknya sangat banyak. Artikel pengembang utama Godot tahun 2021 memberi contoh game yang membutuhkannya, seperti city builder, sandbox, dan sebagian game strategi dengan puluhan ribu unit, dan berpendapat bahwa kebanyakan game hanya punya ratusan objek.
+
+Engine memakai ECS dengan cara berbeda. Bevy membangun seluruh logika engine dan game-nya di atas ECS, dengan komponen berupa struct Rust dan sistem berupa fungsi Rust. Unity menyediakan paket **Entities**, bagian dari DOTS, sebagai implementasi ECS di samping GameObject. Godot memakai pohon node untuk logika game, dan artikel tadi menjelaskan bahwa optimasi berorientasi data dipakai di dalam subsistem seperti rendering dan physics.
+
+### Membandingkan keempatnya
+
+| Model | Satuan dasar | Logika ditulis di | Cara menambah kemampuan |
+| --- | --- | --- | --- |
+| Pohon node | Node dengan satu tugas | Skrip pada node | Menambah node anak, atau memakai jenis node lain |
+| GameObject dan komponen | GameObject sebagai wadah | Komponen skrip | Memasang komponen |
+| Actor dan komponen | Actor | Kelas Actor atau komponen (Blueprint, C++) | Memasang komponen |
+| ECS | Entitas berupa nomor | Sistem | Menambah komponen data pada entitas |
+
+Ketiga model pertama sama-sama menggabungkan data dan logika dalam satu objek, dan enak dipakai untuk menyusun dunia secara visual di editor. ECS unggul saat objeknya sangat banyak, tetapi cara menulis kodenya cukup berbeda dari pemrograman berorientasi objek yang biasa diajarkan. Saat pindah engine, kenali dulu model yang dipakai engine tujuan supaya kebiasaan dari engine lama tidak ikut terbawa.
+
+## Runtime dan editor: apa yang ikut ke build
+
+Saat kamu menekan tombol Play di editor, game berjalan di dalam editor. Saat kamu membuat **build**, engine mengemas runtime dan data game-mu menjadi aplikasi terpisah untuk satu platform. Beberapa hal berubah di antara keduanya:
+
+- **Alat editor tidak ikut.** Skrip yang menambah menu atau jendela di editor dipisahkan dan tidak masuk ke build.
+- **Aset sudah diubah bentuknya.** Engine mengimpor file sumber (misalnya `.fbx` atau `.png`) menjadi data internal yang cocok untuk platform tujuan, dan data itulah yang dikemas. Kode yang membaca file sumber langsung dari folder proyek bisa berhasil di editor lalu gagal di build.
+- **Satu build untuk satu platform.** Build Windows tidak bisa dijalankan di Android. Data seperti kompresi tekstur juga bisa berbeda per platform.
+- **Cara kode dijalankan bisa berbeda.** Contohnya ada di tab Unity di bawah.
+- **Performa berbeda.** Editor ikut memakai CPU dan memori, jadi angka untuk keputusan optimasi diambil dari build ([Fondasi 8](/belajar/fondasi-engine/08-profiling/)).
+
+<EngineTabs>
+<div slot="unity">
+
+Skrip di folder bernama `Editor` hanya dipakai di editor dan tidak tersedia di build. Kode yang dibungkus `#if UNITY_EDITOR` juga dibuang saat build dikompilasi, karena directive itu diproses saat kompilasi, sebelum game berjalan.
+
+Di Play mode editor, kode C# selalu dijalankan oleh **Mono**, yang mengompilasi kode saat program berjalan (JIT). Build bisa memakai Mono atau **IL2CPP**. IL2CPP mengubah kode C# menjadi C++, lalu mengompilasinya ke kode mesin sebelum game dijalankan (AOT). IL2CPP wajib di beberapa platform yang tidak mendukung JIT, dan dokumentasinya punya halaman khusus tentang keterbatasannya.
+
+Aset hasil impor disimpan di folder `Library` proyek, yang berfungsi sebagai cache. File sumbernya di folder `Assets` tidak diubah.
+
+Build dibuat lewat **File → Build Profiles** (dulu bernama Build Settings). Setiap platform butuh build sendiri.
+
+</div>
+<div slot="unreal">
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy): istilah packaged build dan cooking; kode/modul khusus editor tidak ikut ke game yang dipaketkan. */}
+
+Unreal membedakan editor dengan game yang sudah dipaketkan (*packaged*). Saat packaging, kode dikompilasi untuk platform tujuan dan aset diolah (*cook*) ke format yang dipakai platform itu, lalu hasilnya dikemas. Kode dan modul khusus editor tidak ikut ke game yang dipaketkan.
+
+</div>
+<div slot="godot">
+
+Untuk membuat build, Godot butuh **export template**: versi Godot yang dikompilasi khusus untuk menjalankan game di satu platform, tanpa editor. **Export Project** menghasilkan program beserta data proyek, sedangkan **Export PCK/ZIP** hanya mengemas datanya.
+
+Aset yang diimpor disimpan di folder tersembunyi `res://.godot/imported/`. Dokumentasi Godot memperingatkan bahwa membaca aset hasil impor dengan `FileAccess` akan berhasil di editor tetapi gagal di proyek yang diekspor. Pakai `ResourceLoader` (atau `load()` di GDScript), yang tahu di mana data hasil impor disimpan.
+
+Skrip dengan anotasi `@tool` di baris pertamanya ikut dijalankan di dalam editor. `Engine.is_editor_hint()` memberi tahu apakah kode sedang berjalan di editor atau di game.
+
+</div>
+</EngineTabs>
+
+## Engine buatan sendiri
+
+Engine buatan sendiri (*in-house engine* atau *custom engine*) adalah runtime dan alat produksi yang dibangun sendiri oleh sebuah studio, biasanya di atas beberapa library. Misalnya, sebuah tim memakai SDL untuk jendela dan input, memakai library physics yang sudah ada, lalu menulis sendiri renderer, format level, dan editornya. Skalanya beragam, dari kerangka kecil untuk satu game 2D sampai engine besar yang dipakai bertahun-tahun untuk banyak judul.
+
+Perbandingannya dengan engine yang tersedia untuk umum, memakai kriteria yang sama:
+
+| Kriteria | Engine yang tersedia untuk umum | Engine buatan sendiri |
+| --- | --- | --- |
+| Kendali atas cara kerja | Sebatas yang disediakan engine, kecuali kode sumbernya boleh dan bisa diubah | Penuh |
+| Fitur yang tidak dipakai | Tetap ada di engine | Hanya yang dibutuhkan game |
+| Editor, pengimpor, dan pembuat build | Sudah tersedia | Harus dibuat dan dirawat sendiri |
+| Dukungan platform baru | Umumnya dikerjakan pembuat engine | Ditulis sendiri untuk setiap platform |
+| Anggota tim baru | Bisa belajar dari dokumentasi, tutorial, dan komunitas | Harus dilatih dari dalam; dokumentasi ditulis sendiri |
+| Ketergantungan | Pada keputusan pembuat engine | Pada anggota tim yang memahami engine-nya |
+
+Pilihan ini paling masuk akal saat kebutuhan teknis game-nya memang tidak terpenuhi engine yang ada, dan timnya siap membiayai pembuatan alat-alatnya dalam jangka panjang. Pertimbangan biaya dan lisensi engine komersial dibahas di pelajaran tersendiri tentang lisensi dan model biaya.
+
+Di luar keputusan produksi, menulis engine kecil sebagai latihan adalah cara yang baik untuk memahami tabel komponen tadi. Game loop dengan SDL atau raylib, ditambah satu sprite yang digerakkan dengan [delta time](/kamus/dasar/delta-time/), sudah menyentuh runtime, input, renderer, dan scripting.
+
+## Membaca dokumentasi engine
+
+Dokumentasi engine yang belum pernah kamu pakai lebih mudah dibaca kalau kamu tahu apa yang dicari. Urutan berikut bisa dipakai untuk engine apa pun:
+
+1. **Cocokkan versinya.** Nama fungsi dan menu bisa berubah antarversi. Alamat dokumentasi Unity memuat nomor versi (misalnya `6000.0`), dan dokumentasi Godot punya pilihan versi seperti `stable`. Pastikan versinya sama dengan engine yang kamu pakai.
+2. **Bedakan manual dan referensi API.** Manual menjelaskan konsep dan alur kerja. Referensi API mendaftar setiap kelas beserta properti dan fungsinya. Unity menamainya *User Manual* dan *Script Reference*. Godot membaginya menjadi *Manual* dan *Class reference*, dan referensi kelasnya juga bisa dibuka langsung dari editor skrip.
+3. **Cari dengan nama lokal.** Setiap komponen di tabel tadi punya nama sendiri di setiap engine. Tabel di bawah bisa jadi titik awal.
+4. **Baca rantai pewarisan.** Halaman sebuah kelas di referensi API mencantumkan kelas induknya. Di Godot, halaman `Node` menulis *Inherits: Object*. Di Unity, halaman `MonoBehaviour` menulis *Inherits from: Behaviour*. Properti yang tidak kamu temukan di halaman sebuah kelas sering ada di halaman induknya.
+5. **Baca bagian keterbatasan dan catatan platform.** Halaman seperti *IL2CPP limitations* di Unity atau catatan ekspor per platform di Godot menjelaskan hal yang berbeda antara editor dan build.
+
+{/* Kolom Unreal belum diverifikasi ke dokumentasi Epic (diblokir proxy). */}
+
+| Konsep | Unity | Unreal | Godot |
+| --- | --- | --- | --- |
+| Benda di dunia game | GameObject | Actor | Node (atau scene yang dipasang) |
+| Wadah satu dunia | Scene | Level | Scene |
+| Kode setiap frame | `Update()` | `Tick()` | `_process()` |
+| Daftar isi scene | Jendela Hierarchy | Panel Outliner | Dock Scene |
+| Panel properti | Inspector | Panel Details | Dock Inspector |
+
+Tabel seperti ini juga berguna saat membaca tutorial untuk engine lain. Konsepnya sering tetap bisa dipakai walaupun namanya berbeda.
+
+## Kesalahan umum
+
+Dua kesalahan pertama baru terlihat setelah build dibuat. Dua berikutnya berkaitan dengan keputusan arsitektur: pindah engine dan membangun engine sendiri.
+
+### Membaca file sumber aset langsung
+
+```text title="✗ Keliru"
+gambar = baca_file("aset/peta.png")   // file sumber, hanya ada di folder proyek
+```
+
+```text title="✓ Benar"
+gambar = muat_aset("aset/peta.png")   // lewat sistem aset engine, ikut dikemas ke build
+```
+
+Di editor, file sumber ada di folder proyek. Di build, engine mengemas data hasil impornya, dan file sumbernya biasanya tidak ikut.
+
+### Kode khusus editor tercampur dengan kode game
+
+```text title="✗ Keliru"
+// skrip gameplay
+saat_kena_damage():
+    editor.sorot_objek(diri)    // API editor untuk debug, tidak ada di build
+```
+
+```text title="✓ Benar"
+saat_kena_damage():
+    #jika EDITOR                // hanya dikompilasi saat berjalan di editor
+        editor.sorot_objek(diri)
+    #akhir
+```
+
+API editor tidak tersedia di build, sehingga build bisa gagal dikompilasi atau skripnya error saat dijalankan. Simpan kode seperti ini di tempat khusus editor, misalnya folder `Editor` atau blok `#if UNITY_EDITOR` di Unity.
+
+### Memaksakan model scene dari engine lama
+
+```text title="✗ Keliru"
+// pola GameObject ditiru di Godot
+Peti (Node3D)                  ← node kosong sebagai "wadah"
+├── KomponenModel (Node)       ← skrip yang mencari mesh di tempat lain
+└── KomponenFisika (Node)      ← skrip yang mengatur tabrakan sendiri
+```
+
+```text title="✓ Benar"
+Peti (StaticBody3D)            ← jenis node yang sudah bisa ditabrak
+├── Model (MeshInstance3D)
+└── Bentuk (CollisionShape3D)
+```
+
+Di pohon node, kemampuan datang dari jenis node itu sendiri. Meniru pola komponen hanya menambah lapisan dan kode penghubung. Hal yang sama berlaku ke arah sebaliknya: di Unity, mesh, collider, dan skrip bisa dipasang sebagai komponen pada satu GameObject tanpa harus dibuatkan anak masing-masing.
+
+### Membangun engine sebelum game-nya jelas
+
+```text title="✗ Keliru"
+bulan 1 sampai 6:  renderer, editor level, sistem aset
+bulan 7:           mulai membuat prototipe game
+```
+
+```text title="✓ Benar"
+minggu 1 sampai 4: prototipe dengan alat yang sudah ada
+lalu:              catat kebutuhan teknis yang tidak terpenuhi, baru putuskan
+```
+
+Prototipe memperlihatkan kebutuhan teknis yang sebenarnya, sehingga keputusan membangun engine sendiri punya dasar yang bisa diperiksa.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan di engine pilihanmu.
+
+1. Isi tabel komponen untuk engine itu. Untuk setiap baris, cari halaman dokumentasinya dan catat namanya. Komponen mana yang paling sulit ditemukan, dan di bagian dokumentasi mana akhirnya kamu menemukannya?
+2. Buat peti dari bagian Cara engine menyusun isi dunia: terlihat, bisa ditabrak, dan punya skrip. Tulis strukturnya dalam bentuk teks seperti contoh. Lalu, di atas kertas, susun ulang peti yang sama dengan model ECS. Entitas, komponen, dan sistem apa saja yang dibutuhkan?
+3. Buat build proyek itu untuk komputermu. Bandingkan ukuran folder proyek dengan ukuran build, lalu cari tahu apa saja yang ada di folder proyek tetapi tidak ikut ke build.
+4. Buka halaman referensi API untuk kelas yang dipakai skrip petimu (misalnya `MonoBehaviour`, `AActor`, atau `StaticBody3D`). Tulis rantai pewarisannya sampai kelas paling dasar.
