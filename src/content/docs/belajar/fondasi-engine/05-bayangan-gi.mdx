@@ -103,6 +103,14 @@ sources:
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/lighting-overview/lighting/shadows-in-urp/post-processing-ssao/ssao"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
+  - title: "Adaptive Probe Volumes (APV) in HDRP"
+    url: "https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@17.0/manual/probevolumes.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Screen space ambient occlusion (SSAO) in HDRP"
+    url: "https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@17.0/manual/Override-Ambient-Occlusion.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
   - title: "Enlighten Realtime Global Illumination"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/lighting-overview/direct-and-indirect-lighting/lightmapping/realtime-gi-using-enlighten/enlighten"
     publisher: "Unity Documentation"
@@ -394,7 +402,7 @@ Probe hanya seakurat penempatannya. Probe yang terlalu jarang di perbatasan tera
 
 Cara klasik: komponen **Light Probe Group**, dengan probe yang kamu tempatkan sendiri. Objek mengambil cahaya per objek.
 
-Di URP Unity 6 ada **Adaptive Probe Volumes** (APV). Unity menempatkan probe secara otomatis, lebih rapat di area yang geometrinya padat. Cahaya diambil **per piksel** dari delapan probe terdekat, sehingga sambungan antarobjek lebih rapi. Pertukarannya, posisi probe di dalam APV tidak bisa digeser satu per satu, dan Light Probe Group tidak bisa dikonversi ke APV.
+Di Unity 6, URP dan HDRP sama-sama punya **Adaptive Probe Volumes** (APV). Unity menempatkan probe secara otomatis, lebih rapat di area yang geometrinya padat. Cahaya diambil **per piksel** dari delapan probe terdekat, sehingga sambungan antarobjek lebih rapi. Pertukarannya, posisi probe di dalam APV tidak bisa digeser satu per satu, dan Light Probe Group tidak bisa dikonversi ke APV.
 
 Untuk pantulan: komponen **Reflection Probe**.
 
@@ -429,6 +437,8 @@ AO secara bawaan hanya meredupkan cahaya tidak langsung. Bagian yang terkena sin
 <div slot="unity">
 
 URP: SSAO ditambahkan sebagai **Renderer Feature** **Screen Space Ambient Occlusion** pada Renderer, terpisah dari efek post-processing dan Volume. Secara bawaan ia membaca normal dari pass DepthNormals. Jika **Source** diatur ke **Depth**, normal dibangun ulang dari depth texture, dengan jumlah sampel yang diatur **Normal Quality**.
+
+HDRP: SSAO adalah Volume override **Lighting → Ambient Occlusion**, yang berlaku untuk kamera di dalam Volume tersebut. Fitur ini juga harus aktif di HDRP Asset dan di Frame Settings.
 
 </div>
 <div slot="unreal">

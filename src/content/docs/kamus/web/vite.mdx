@@ -1,17 +1,32 @@
 ---
 title: "Vite"
-description: "Dev server + bundler. Saat dev, file dilayani apa adanya sebagai ES module dan halaman diperbarui otomatis saat file disimpan (HMR). npm run build menggabungkan dan mengecilkan semuanya ke folder dist/ untuk dipublikasikan."
+description: "Dev server + bundler. Saat dev, file dilayani sebagai ES module native dan perubahan diterapkan otomatis saat file disimpan (HMR). Perintah build menggabungkan dan mengecilkan semuanya ke folder dist/ untuk dipublikasikan."
 kind: term
 level: 1
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "Getting Started"
+    url: "https://vite.dev/guide/"
+    publisher: "Vite"
+    accessed: 2026-10-30
+  - title: "Build Options"
+    url: "https://vite.dev/config/build-options"
+    publisher: "Vite"
+    accessed: 2026-10-30
+  - title: "Configuration Reference (vite)"
+    url: "https://docs.astro.build/en/reference/configuration-reference/"
+    publisher: "Astro Docs"
+    accessed: 2026-10-30
 sidebar:
   order: 20
 ---
 
 import Aside from '~/components/Aside.astro'
 
-Dev server + bundler. Saat dev, file dilayani apa adanya sebagai ES module dan halaman diperbarui otomatis saat file disimpan (HMR). `npm run build` menggabungkan dan mengecilkan semuanya ke folder `dist/` untuk dipublikasikan.
+Dev server + bundler. Saat dev, file dilayani sebagai ES module native dan perubahan diterapkan otomatis saat file disimpan (HMR). Perintah build menggabungkan dan mengecilkan semuanya ke folder `dist/` untuk dipublikasikan.
 
-Proyek ini memakai [Astro](https://astro.build/), framework situs yang dibangun di atas Vite. Semua fitur Vite, seperti HMR dan import `?raw` untuk shader, tetap berlaku. Konfigurasinya ditulis di `astro.config.mjs`, bukan di `vite.config.js`.
+Proyek ini memakai [Astro](https://astro.build/), framework situs yang memakai Vite di dalamnya. Semua fitur Vite, seperti HMR dan import `?raw` untuk shader, tetap berlaku, dan `npm run build` menjalankan build Astro. Konfigurasinya ditulis di `astro.config.mjs` (opsi Vite tambahan masuk ke kunci `vite`), tanpa `vite.config.js`.
 
 **Di proyek ini:** `astro.config.mjs`
 

@@ -1,16 +1,31 @@
 ---
 title: "requestAnimationFrame"
-description: "Fungsi browser yang memanggil callback-mu tepat sebelum layar digambar ulang, mengikuti refresh rate monitor. Callback memanggil dirinya lagi sehingga membentuk loop. Otomatis berhenti saat tab tidak terlihat (hemat baterai), tidak seperti setInterval."
+description: "Fungsi browser yang memanggil callback-mu sebelum layar digambar ulang, umumnya mengikuti refresh rate monitor. Callback harus memanggil requestAnimationFrame lagi agar membentuk loop. Di kebanyakan browser rAF dijeda saat tab di latar belakang (hemat baterai), tidak seperti setInterval yang tetap berjalan walau diperlambat."
 kind: term
 level: 1
 aka: "render loop"
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "Window: requestAnimationFrame() method"
+    url: "https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame"
+    publisher: "MDN Web Docs"
+    accessed: 2026-10-30
+  - title: "Window: setTimeout() method (Timeouts in inactive tabs)"
+    url: "https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout"
+    publisher: "MDN Web Docs"
+    accessed: 2026-10-30
+  - title: "HTML Standard: Event loop processing model (update the rendering)"
+    url: "https://html.spec.whatwg.org/multipage/webappapis.html#update-the-rendering"
+    publisher: "WHATWG"
+    accessed: 2026-10-30
 sidebar:
   order: 1
 ---
 
 import Aside from '~/components/Aside.astro'
 
-Fungsi browser yang memanggil callback-mu tepat sebelum layar digambar ulang, mengikuti refresh rate monitor. Callback memanggil dirinya lagi sehingga membentuk loop. Otomatis berhenti saat tab tidak terlihat (hemat baterai), tidak seperti `setInterval`.
+Fungsi browser yang memanggil callback-mu sebelum layar digambar ulang, umumnya mengikuti refresh rate monitor. Callback harus memanggil `requestAnimationFrame` lagi agar membentuk loop. Di kebanyakan browser rAF dijeda saat tab di latar belakang (hemat baterai), tidak seperti `setInterval` yang tetap berjalan walau diperlambat.
 
 ```js
 function tick() {
@@ -23,9 +38,9 @@ requestAnimationFrame(tick)
 
 ## Pelajari lebih dalam
 
-Callback requestAnimationFrame dijalankan sekali per refresh layar, **sebelum** browser menghitung style, layout, dan paint. Karena itu perubahan DOM dan render WebGL di dalamnya muncul di frame yang sama.
+Callback requestAnimationFrame dijalankan sekali per pembaruan tampilan, **sebelum** browser menghitung ulang style dan layout lalu menggambar. Karena itu perubahan DOM dan render WebGL di dalamnya muncul di frame yang sama.
 
-Browser bebas menahan atau memperlambat rAF: berhenti total di tab yang tersembunyi, dibatasi di iframe yang tidak terlihat, dan sering dibatasi ke 30 FPS dalam mode hemat daya. Jangan pernah mengandalkan "rAF pasti dipanggil 60× per detik". Selalu gunakan waktu sebenarnya ([Delta Time](/kamus/dasar/delta-time/)).
+Browser bebas menahan rAF: dijeda di tab latar belakang dan di iframe yang tersembunyi. Refresh rate monitor juga beragam, misalnya 60, 75, 120, atau 144 Hz. Jangan pernah mengandalkan "rAF pasti dipanggil 60× per detik". Selalu gunakan waktu sebenarnya ([Delta Time](/kamus/dasar/delta-time/)).
 
 **Di proyek ini:** `src/experiment/main.js`
 

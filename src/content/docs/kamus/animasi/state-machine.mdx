@@ -5,8 +5,12 @@ kind: term
 level: 2
 aka: "Animator Controller, Animation Blueprint, AnimationTree, transition"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
+  - title: "Animation Parameters"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/animation-section/animation-mecanim/animation-animator-controller/animation-state-machines/animation-parameters"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
   - title: "Animation State Machines"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/animation-section/animation-mecanim/animation-animator-controller/animation-state-machines"
     publisher: "Unity Documentation"
@@ -36,7 +40,7 @@ Kode game tidak memilih klip secara langsung. Kode hanya mengirim **parameter** 
 <EngineTabs>
 <div slot="unity">
 
-Aset **Animator Controller**, diedit di jendela Animator dan dipasang di komponen **Animator**. Berisi state, transition dengan kondisi, dan parameter yang diatur dari skrip (misalnya `animator.SetFloat("Speed", v)`). **Layers** memungkinkan state machine terpisah per bagian tubuh, misalnya badan atas menembak sambil kaki berlari.
+Aset **Animator Controller**, diedit di jendela Animator dan dipasang di komponen **Animator**. Berisi state, transition dengan kondisi, dan parameter bertipe Float, Integer, Bool, atau Trigger yang diatur dari skrip (misalnya `animator.SetFloat("Speed", v)`). **Layers** memungkinkan state machine terpisah per bagian tubuh, misalnya badan atas menembak sambil kaki berlari.
 
 </div>
 <div slot="unreal">

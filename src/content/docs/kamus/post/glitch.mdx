@@ -5,8 +5,16 @@ kind: term
 level: 3
 aka: "RGB shift, color fringing, custom post-process"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
+  - title: "Add post-processing in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/post-processing-and-full-screen-effects/urp/add-post-processing"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Understand volumes in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/post-processing-and-full-screen-effects/urp/volumes-landing-page/volumes"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
   - title: "Post-processing effects in URP"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/post-processing-and-full-screen-effects/urp/effect-list"
     publisher: "Unity Documentation"
@@ -57,7 +65,7 @@ Chromatic aberration tersedia bawaan di Unity dan Unreal. Glitch tidak ada di en
 <EngineTabs>
 <div slot="unity">
 
-Chromatic aberration: Volume Override **Chromatic Aberration**. Efek kustom: **Full Screen Pass Renderer Feature** dengan material buatan sendiri di **Pass Material**. **Injection Point** menentukan kapan efek dijalankan, dan nilai bawaannya setelah post-processing bawaan.
+Chromatic aberration: Volume Override **Chromatic Aberration**. Cara memasangnya: aktifkan **Post Processing** di Inspector Camera, tambahkan GameObject dengan komponen **Volume** (misalnya **Global Volume**, atau volume lokal yang hanya berlaku di dekat batas collider-nya), buat Volume Profile baru dengan tombol **New**, lalu pilih **Add Override** dan tambahkan efeknya. Efek kustom: **Full Screen Pass Renderer Feature** dengan material buatan sendiri di **Pass Material**. **Injection Point** menentukan kapan efek dijalankan, dan nilai bawaannya setelah post-processing bawaan.
 
 </div>
 <div slot="unreal">

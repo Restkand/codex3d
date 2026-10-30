@@ -145,6 +145,10 @@ sources:
     url: "https://docs.godotengine.org/en/stable/tutorials/export/exporting_projects.html"
     publisher: "Godot Engine Documentation"
     accessed: 2026-10-30
+  - title: "Introduction to the buildsystem (Target, Export templates)"
+    url: "https://docs.godotengine.org/en/stable/engine_details/development/compiling/introduction_to_the_buildsystem.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
   - title: "Running code in the editor"
     url: "https://docs.godotengine.org/en/stable/tutorials/plugins/running_code_in_the_editor.html"
     publisher: "Godot Engine Documentation"
@@ -467,7 +471,7 @@ saat_kena_damage():
     #akhir
 ```
 
-API editor tidak tersedia di build, sehingga build bisa gagal dikompilasi atau skripnya error saat dijalankan. Simpan kode seperti ini di tempat khusus editor, misalnya folder `Editor` atau blok `#if UNITY_EDITOR` di Unity.
+API editor tidak ikut ke build, jadi kode game yang memanggilnya akan bermasalah begitu game dijadikan build, padahal di editor semuanya tampak lancar. Simpan kode seperti ini di tempat khusus editor, misalnya folder `Editor` atau blok `#if UNITY_EDITOR` di Unity.
 
 ### Memaksakan model scene dari engine lama
 

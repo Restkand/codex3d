@@ -5,7 +5,7 @@ kind: term
 level: 1
 aka: "smoothness, glossiness"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Lit shader material Inspector window reference for URP"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/built-in/shaders-in-universalrp/reference/lit-shader"
@@ -39,7 +39,7 @@ Seberapa kasar permukaan pada skala mikro, terlalu kecil untuk dimodelkan sebaga
 <EngineTabs>
 <div slot="unity">
 
-Disebut **Smoothness** (0 sampai 1), nilainya terbalik: smoothness = 1 − roughness. Di URP/Lit, peta smoothness tidak punya slot sendiri. **Source** menentukan dari mana nilainya dibaca: kanal alpha Metallic Map (**Metallic Alpha**, bawaan) atau kanal alpha Base Map (**Albedo Alpha**). Jadi tekstur roughness dari aplikasi lain harus dibalik dulu lalu dimasukkan ke salah satu kanal alpha itu.
+Disebut **Smoothness** (0 sampai 1) dengan arah terbalik: 0 memberi sorotan lebar dan kasar, 1 memberi sorotan kecil dan tajam seperti kaca. Untuk konversi, nilai roughness biasanya dibalik (1 − roughness). Di shader Lit URP, peta smoothness tidak punya slot sendiri. **Source** menentukan dari mana nilainya dibaca: kanal alpha Metallic Map (**Metallic Alpha**, bawaan) atau kanal alpha Base Map (**Albedo Alpha**). Jadi tekstur roughness dari aplikasi lain harus dibalik dulu lalu dimasukkan ke salah satu kanal alpha itu.
 
 </div>
 <div slot="unreal">

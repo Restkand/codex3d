@@ -5,12 +5,12 @@ kind: term
 level: 3
 aka: "pixel throughput, resolution scale"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "GPU optimization"
     url: "https://docs.godotengine.org/en/stable/tutorials/performance/gpu_optimization.html"
     publisher: "Godot Engine Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
   - title: "3D antialiasing"
     url: "https://docs.godotengine.org/en/stable/tutorials/3d/3d_antialiasing.html"
     publisher: "Godot Engine Documentation"
@@ -21,7 +21,7 @@ sidebar:
 
 import Aside from '~/components/Aside.astro'
 
-Berapa banyak piksel yang sanggup diwarnai GPU per detik. Setiap piksel menjalankan [fragment shader](/kamus/shader/fragment-shader/), dan dokumentasi Godot mencatat bahwa biaya per piksel ini naik drastis seiring material makin canggih.
+Berapa banyak piksel yang sanggup diwarnai GPU per detik. Setiap piksel menjalankan [fragment shader](/kamus/shader/fragment-shader/), dan dokumentasi Godot mencatat bahwa biaya shading per piksel naik drastis dari tahun ke tahun, karena resolusi layar makin tinggi dan shader makin rumit (misalnya *physically-based rendering*).
 
 Hitungannya cepat membengkak. Layar 1920×1080 punya 2 juta piksel. Pada 4K menjadi 8,3 juta, empat kali lipat. Kalikan dengan jumlah efek layar penuh dan berapa kali setiap piksel ditimpa ([overdraw](/kamus/performa/overdraw/)).
 

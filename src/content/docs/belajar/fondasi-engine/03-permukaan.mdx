@@ -1,6 +1,6 @@
 ---
 title: "Mesh, Material, dan Cahaya"
-description: "Segitiga dan data per titik, normal, material PBR, jenis cahaya, dan cara kerja shadow map di Unity, Unreal, dan Godot."
+description: "Segitiga dan data per titik, normal, material PBR, jenis cahaya, dan cara menyalakan bayangan di Unity, Unreal, dan Godot."
 fundamental: "Model yang diimpor kadang tampak hitam di satu sisi walaupun lampunya terang. Penyebabnya bisa di normal, di material, atau di lampu, dan pelajaran ini membantumu membedakan ketiganya."
 kind: lesson
 minutes: 30
@@ -24,7 +24,6 @@ terms:
   - directional-light
   - ambient-light
   - shadow-map
-  - shadow-acne
   - draw-call
 krekit:
   gambaran-besar: "Bentuk, cat, dan lampu. Kalau satu dari tiga ini salah, warnanya ikut salah."
@@ -33,7 +32,7 @@ krekit:
   material-dan-pbr: "Pindah dari Godot ke Unity? Roughness 0,2 berarti Smoothness 0,8. Kebalik."
   satu-material-banyak-objek: "Mau mengubah warna satu musuh, malah semua musuh ikut merah. Ini sebabnya."
   jenis-cahaya: "Matahari tidak peduli kamu taruh di mana. Yang dihitung cuma arahnya."
-  bayangan-cara-kerja-shadow-map: "Di Godot, bayangan lampu mati secara bawaan. Banyak yang mengira bayangannya rusak."
+  menyalakan-bayangan: "Di Godot, bayangan lampu mati secara bawaan. Banyak yang mengira bayangannya rusak."
   kesalahan-umum: "Model yang tampak hitam dari arah lampu hampir selalu soal normal yang terbalik."
 sidebar:
   order: 3
@@ -156,6 +155,10 @@ sources:
     url: "https://docs.godotengine.org/en/stable/classes/class_light3d.html"
     publisher: "Godot Engine Documentation"
     accessed: 2026-10-30
+  - title: "Editing Normals"
+    url: "https://docs.blender.org/manual/en/latest/modeling/meshes/editing/mesh/normals.html"
+    publisher: "Blender Manual"
+    accessed: 2026-10-30
   - title: "3D lights and shadows"
     url: "https://docs.godotengine.org/en/stable/tutorials/3d/lights_and_shadows.html"
     publisher: "Godot Engine Documentation"
@@ -167,14 +170,13 @@ import Demo from '~/components/Demo.astro'
 import Quiz from '~/components/Quiz.astro'
 import EngineTabs from '~/components/EngineTabs.astro'
 import MeshDiagram from '~/components/diagrams/MeshDiagram.astro'
-import ShadowDiagram from '~/components/diagrams/ShadowDiagram.astro'
 
 <Aside type="note" title="Setelah pelajaran ini kamu bisa">
 - Menjelaskan isi sebuah mesh: titik, segitiga, dan data yang dibawa setiap titik.
 - Menjelaskan peran normal dalam perhitungan terang dan gelap.
 - Membaca nilai material PBR (warna dasar, roughness, metalness) di Unity, Unreal, dan Godot.
 - Mengubah material satu objek tanpa ikut mengubah objek lain.
-- Memilih jenis cahaya yang tepat dan menjelaskan cara kerja shadow map.
+- Memilih jenis cahaya yang tepat dan menyalakan bayangan pada lampu dan objek.
 </Aside>
 
 ## Gambaran besar
@@ -421,13 +423,9 @@ Renderer Mobile dan Compatibility membatasi 8 OmniLight dan 8 SpotLight per mesh
 
 Setiap lampu tambahan yang mengenai sebuah objek menambah kerja di perhitungan per piksel tadi. Satu lampu directional untuk matahari, ditambah beberapa lampu kecil berjangkauan pendek, biasanya lebih murah daripada banyak lampu besar yang saling tumpang tindih.
 
-## Bayangan: cara kerja shadow map
+## Menyalakan bayangan
 
-GPU tidak punya konsep "bayangan". Hampir semua engine memakai trik dua tahap yang disebut [shadow map](/kamus/cahaya/shadow-map/):
-
-<ShadowDiagram />
-
-Ada dua jenis sakelar yang harus menyala agar bayangan muncul:
+Bayangan real-time di hampir semua engine dibuat dengan [shadow map](/kamus/cahaya/shadow-map/). Cara kerjanya dibahas di [Pelajaran 5](/belajar/fondasi-engine/05-bayangan-gi/#cara-kerja-shadow-map). Di sini cukup satu hal praktis: ada dua jenis sakelar yang harus menyala agar bayangan muncul:
 
 1. **Lampunya** harus diatur untuk memberi bayangan.
 2. **Objeknya** harus diatur untuk memberi bayangan (*cast*), dan permukaan tempat bayangan jatuh harus menerimanya (*receive*).
@@ -454,9 +452,7 @@ Saat bayangan `DirectionalLight3D` diaktifkan, mode bawaannya adalah PSSM dengan
 </div>
 </EngineTabs>
 
-Shadow map punya resolusi terbatas, sama seperti tekstur. Akibatnya bisa muncul dua masalah. Jika presisinya kurang, permukaan "membayangi dirinya sendiri" dan muncul pola garis-garis yang disebut [shadow acne](/kamus/cahaya/shadow-acne/). Engine menggeser titik perbandingan sedikit lewat nilai **bias** untuk mengatasinya. Jika bias terlalu besar, bayangan malah tampak terlepas dari kaki objek (*peter panning*). Dokumentasi Godot menyarankan menaikkan **Normal Bias** lebih dulu sebelum **Bias**.
-
-Biayanya juga perlu diingat: setiap objek pemberi bayangan digambar lagi di tahap shadow map. Dokumentasi Godot memberi contoh objek besar yang melintasi keempat split bayangan directional: objek itu digambar lima kali per frame. Mematikan cast shadow pada objek kecil yang bayangannya tidak terlihat adalah penghematan yang murah. Bayangan yang dihitung sebelumnya dan cahaya pantulan dibahas di Pelajaran 5.
+Setiap lampu yang memberi bayangan menambah render tambahan di setiap frame, jadi nyalakan bayangan hanya pada lampu yang bayangannya benar-benar terlihat. Masalah yang sering muncul, seperti bayangan bergaris atau terlepas dari kaki objek, dibahas di [Pelajaran 5](/belajar/fondasi-engine/05-bayangan-gi/#shadow-acne-bias-dan-peter-panning).
 
 ## Kesalahan umum
 
@@ -470,7 +466,7 @@ normal = (0, 0, -1)   // menunjuk ke dalam objek
 normal = (0, 0, 1)    // menunjuk ke luar
 ```
 
-Jika normal terbalik, dot product dengan arah lampu menjadi negatif di sisi yang menghadap lampu. Perbaiki di aplikasi 3D (di Blender: Recalculate Outside), lalu ekspor ulang.
+Jika normal terbalik, dot product dengan arah lampu menjadi negatif di sisi yang menghadap lampu. Perbaiki di aplikasi 3D, lalu ekspor ulang. Di Blender, masuk ke Edit Mode, pilih semua face, lalu jalankan **Mesh → Normals → Recalculate Outside** (Shift+N).
 
 ### Semua objek ikut berubah warna
 
@@ -506,7 +502,7 @@ tekstur_normal.jenis = warna     // diimpor seperti foto biasa
 tekstur_normal.jenis = normal_map
 ```
 
-Isi normal map adalah data arah, dan engine perlu tahu itu agar nilainya tidak diolah seperti warna. Di Unity, ubah **Texture Type** menjadi **Normal map** di Import Settings. Unity dan Godot memakai format Y+ (gaya OpenGL), jadi normal map gaya DirectX perlu dibalik kanal hijaunya.
+Isi normal map adalah data arah, dan engine perlu tahu itu agar nilainya tidak diolah seperti warna. Di Unity, ubah **Texture Type** menjadi **Normal map** di Import Settings. Godot memakai format Y+ (gaya OpenGL), jadi normal map gaya DirectX perlu dibalik kanal hijaunya. Engine lain bisa memakai konvensi berbeda. Kalau tonjolan di normal map tampak seperti cekungan, kemungkinan kanal hijaunya terbalik. Di Unity, Import Settings normal map punya opsi **Flip Green Channel** untuk membaliknya.
 
 ### Bayangan tidak muncul di Godot
 
@@ -520,20 +516,6 @@ var lampu := OmniLight3D.new()
 lampu.shadow_enabled = true
 add_child(lampu)
 ```
-
-### Semua lampu memberi bayangan
-
-```text title="✗ Keliru"
-untuk setiap lampu: lampu.bayangan = aktif
-```
-
-```text title="✓ Benar"
-matahari.bayangan = aktif
-lampu_dekat_pemain.bayangan = aktif
-lampu_hiasan_lain.bayangan = mati
-```
-
-Setiap lampu berbayangan membutuhkan tahap shadow map sendiri. Pilih lampu yang bayangannya benar-benar terlihat.
 
 ## Cek pemahaman
 

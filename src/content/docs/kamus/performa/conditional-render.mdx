@@ -5,8 +5,16 @@ kind: term
 level: 2
 aka: "frustum culling, occlusion culling, visibility range, render bersyarat"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
+  - title: "Occlusion culling"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/occlusion_culling.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Visibility ranges (HLOD)"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/visibility_ranges.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
   - title: "Occlusion culling"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/cameras/occlusion-culling/occlusion-culling"
     publisher: "Unity Documentation"
@@ -51,7 +59,7 @@ Occlusion culling dinamis berbasis GPU aktif secara bawaan. **Cull Distance Volu
 </div>
 <div slot="godot">
 
-Frustum culling otomatis. Occlusion culling memakai **node occluder** yang ditempatkan di scene. Untuk jarak: **visibility range** pada node 3D, plus LOD otomatis saat impor. Dokumentasi Godot mencatat frustum culling saja kurang cukup untuk level besar.
+Frustum culling otomatis. Occlusion culling memakai node **OccluderInstance3D**: tambahkan ke scene level, lalu klik **Bake Occluders** di viewport 3D. Untuk jarak: **visibility range** (properti Begin dan End, plus Begin Margin dan End Margin) pada node turunan GeometryInstance3D seperti MeshInstance3D, plus LOD otomatis saat impor. Dokumentasi Godot mencatat frustum culling saja kurang cukup untuk level besar.
 
 </div>
 </EngineTabs>

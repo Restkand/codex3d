@@ -5,9 +5,9 @@ kind: term
 level: 2
 aka: "GI, indirect lighting, baked lighting, lightmapping, light probe"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
-  - title: "Lightmapping"
+  - title: "Introduction to lightmaps and baking"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/lighting-overview/direct-and-indirect-lighting/lightmapping/baking-before-runtime/lightmappers"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
@@ -31,6 +31,22 @@ sources:
     url: "https://docs.godotengine.org/en/stable/classes/class_light3d.html"
     publisher: "Godot Engine Documentation"
     accessed: 2026-10-28
+  - title: "Place Light Probes with the Editor"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/lighting-overview/direct-and-indirect-lighting/light-probes/class-light-probe-group"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Lighting window reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/lighting-overview/lighting-reference/lighting-window"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "GeometryInstance3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_geometryinstance3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "MeshStandardMaterial"
+    url: "https://threejs.org/docs/pages/MeshStandardMaterial.html"
+    publisher: "three.js docs"
+    accessed: 2026-10-30
 sidebar:
   order: 8
 ---
@@ -79,7 +95,7 @@ Dengan **Lumen** (bawaan Unreal Engine 5), GI dihitung secara real-time. Untuk c
 
 Godot punya beberapa teknik GI:
 
-- **`LightmapGI`:** dipanggang, didukung semua renderer, dan menjadi pilihan utama untuk perangkat mobile. Mesh harus punya UV2 dan diatur ke Bake Mode Static. Lampu dengan `light_bake_mode` **Static** ikut dipanggang cahaya langsung dan bayangannya; lampu **Dynamic** (bawaan) hanya menyumbang cahaya tidak langsung. Objek bergerak mendapat cahaya tidak langsung dari light probe (otomatis atau node `LightmapProbe`).
+- **`LightmapGI`:** dipanggang, didukung semua renderer, dan menjadi pilihan utama untuk perangkat mobile. Mesh harus punya UV2 dan memakai mode GI **Static** (`gi_mode`, bawaannya memang Static); untuk scene 3D yang diimpor, atur opsi impor **Meshes → Light Baking** ke **Static Lightmaps**. Lampu dengan `light_bake_mode` **Static** ikut dipanggang cahaya langsung dan bayangannya; lampu **Dynamic** (bawaan) hanya menyumbang cahaya tidak langsung. Objek bergerak mendapat cahaya tidak langsung dari light probe (otomatis atau node `LightmapProbe`).
 - **`VoxelGI`** dan **SDFGI:** GI real-time atau semi-real-time. Tidak tersedia di renderer Mobile dan Compatibility.
 
 </div>

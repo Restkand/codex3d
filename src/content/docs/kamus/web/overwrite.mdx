@@ -1,17 +1,28 @@
 ---
 title: "Overwrite & kill"
-description: "Jika dua tween menganimasikan properti yang sama bersamaan, keduanya \"berebut\". overwrite: true mematikan tween lama, dan tl.kill() menghentikan timeline lama secara manual."
+description: "Jika dua tween menganimasikan properti yang sama bersamaan, keduanya \"berebut\". overwrite: true langsung mematikan semua tween lain pada target yang sama, apa pun propertinya; overwrite: \"auto\" hanya mematikan bagian yang bentrok. tl.kill() menghentikan timeline lama secara manual."
 kind: term
 level: 2
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "gsap.to()"
+    url: "https://gsap.com/docs/v3/GSAP/gsap.to()"
+    publisher: "GSAP Docs"
+    accessed: 2026-10-30
+  - title: "kill()"
+    url: "https://gsap.com/docs/v3/GSAP/Timeline/kill()"
+    publisher: "GSAP Docs"
+    accessed: 2026-10-30
 sidebar:
   order: 5
 ---
 
 import Aside from '~/components/Aside.astro'
 
-Jika dua tween menganimasikan properti yang sama bersamaan, keduanya "berebut". `overwrite: true` mematikan tween lama, dan `tl.kill()` menghentikan timeline lama secara manual.
+Jika dua tween menganimasikan properti yang sama bersamaan, keduanya "berebut". `overwrite: true` langsung mematikan semua tween lain pada target yang sama, apa pun propertinya; `overwrite: "auto"` hanya mematikan bagian yang bentrok. `tl.kill()` menghentikan timeline lama secara manual.
 
-**Di proyek ini:** `src/experiment/transitions.js`
+**Di proyek ini:** `src/experiment/transitions.js` (`kill`), `src/experiment/post.js` (`overwrite`)
 
 ## Terkait
 

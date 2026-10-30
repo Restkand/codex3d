@@ -5,14 +5,18 @@ kind: term
 level: 1
 aka: "position / rotation / scale"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Transform"
     url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/transform"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
-  - title: "Transform component"
+  - title: "Transforms"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/working-with-gameobjects/gameobject-fundamentals/class-transform"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Matrix4x4.TRS"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/matrix4x4/trs"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
   - title: "Node3D"
@@ -30,7 +34,7 @@ sidebar:
 import Aside from '~/components/Aside.astro'
 import EngineTabs from '~/components/EngineTabs.astro'
 
-Tiga nilai yang menentukan letak sebuah objek: **posisi** (di mana), **rotasi** (menghadap ke mana), dan **skala** (seberapa besar). Ketiganya relatif terhadap induk objek itu. Urutan penerapannya selalu skala, lalu rotasi, lalu posisi, sehingga objek membesar dan berputar di sekitar titik pusatnya sendiri.
+Tiga nilai yang menentukan letak sebuah objek: **posisi** (di mana), **rotasi** (menghadap ke mana), dan **skala** (seberapa besar). Ketiganya relatif terhadap induk objek itu. Saat ketiganya digabung menjadi satu matriks (di Unity misalnya lewat `Matrix4x4.TRS`), urutan yang lazim adalah skala, lalu rotasi, lalu posisi. Dengan urutan itu objek membesar dan berputar di sekitar titik pusatnya sendiri, baru kemudian dipindah ke posisinya.
 
 Skala 1 berarti ukuran asli. Hindari skala 0 di sumbu mana pun: perhitungan matriks menjadi tidak valid dan bisa menghasilkan nilai NaN.
 

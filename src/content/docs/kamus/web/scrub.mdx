@@ -1,15 +1,22 @@
 ---
 title: "Scrub"
-description: "Progres timeline (0..1) diikat langsung ke posisi scroll: scroll maju = animasi maju, scroll mundur = mundur. scrub: 1 memberi jeda pengejaran ±1 detik agar halus."
+description: "Progres timeline (0..1) diikat langsung ke posisi scroll: scroll maju = animasi maju, scroll mundur = mundur. scrub: 1 membuat animasi butuh 1 detik untuk mengejar posisi scroll, sehingga terasa halus."
 kind: term
 level: 2
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "ScrollTrigger (scrub)"
+    url: "https://gsap.com/docs/v3/Plugins/ScrollTrigger/"
+    publisher: "GSAP Docs"
+    accessed: 2026-10-30
 sidebar:
   order: 8
 ---
 
 import Aside from '~/components/Aside.astro'
 
-Progres timeline (0..1) diikat langsung ke posisi scroll: scroll maju = animasi maju, scroll mundur = mundur. `scrub: 1` memberi jeda pengejaran ±1 detik agar halus.
+Progres timeline (0..1) diikat langsung ke posisi scroll: scroll maju = animasi maju, scroll mundur = mundur. `scrub: true` mengikatnya tanpa jeda; `scrub: 1` membuat animasi butuh 1 detik untuk mengejar posisi scroll, sehingga terasa halus.
 
 **Di proyek ini:** `src/experiment/scroll.js`
 

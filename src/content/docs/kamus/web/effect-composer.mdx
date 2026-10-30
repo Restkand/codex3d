@@ -1,15 +1,30 @@
 ---
 title: "EffectComposer & Pass"
-description: "Pengelola rangkaian efek. Setiap Pass membaca gambar dari pass sebelumnya (tDiffuse) dan menulis hasil baru. Proyek ini: RenderPass → ShaderPass (glitch) → OutputPass. Setiap pass = satu kali menggambar layar penuh."
+description: "Pengelola rangkaian efek. Pass dijalankan sesuai urutan ditambahkan; setiap pass membaca gambar dari pass sebelumnya (di ShaderPass lewat uniform tDiffuse) dan menulis hasil baru, dan pass terakhir otomatis tampil di layar. Proyek ini: RenderPass → ShaderPass (glitch) → OutputPass."
 kind: term
 level: 3
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "EffectComposer"
+    url: "https://threejs.org/docs/pages/EffectComposer.html"
+    publisher: "three.js docs"
+    accessed: 2026-10-30
+  - title: "ShaderPass"
+    url: "https://threejs.org/docs/pages/ShaderPass.html"
+    publisher: "three.js docs"
+    accessed: 2026-10-30
+  - title: "RenderPass"
+    url: "https://threejs.org/docs/pages/RenderPass.html"
+    publisher: "three.js docs"
+    accessed: 2026-10-30
 sidebar:
   order: 14
 ---
 
 import Aside from '~/components/Aside.astro'
 
-Pengelola rangkaian efek. Setiap Pass membaca gambar dari pass sebelumnya (`tDiffuse`) dan menulis hasil baru. Proyek ini: RenderPass → ShaderPass (glitch) → OutputPass. Setiap pass = satu kali menggambar layar penuh.
+Pengelola rangkaian efek. Pass dijalankan sesuai urutan ditambahkan; setiap pass membaca gambar dari pass sebelumnya (di ShaderPass lewat uniform `tDiffuse`) dan menulis hasil baru, dan pass terakhir otomatis tampil di layar. Proyek ini: RenderPass → ShaderPass (glitch) → OutputPass. RenderPass menggambar scene; setiap pass efek sesudahnya berarti satu kali lagi menggambar layar penuh.
 
 **Di proyek ini:** `src/experiment/post.js`
 

@@ -133,28 +133,28 @@ sources:
     publisher: "Unity Documentation"
     accessed: 2026-10-30
   - title: "Introduction to 2D Animation"
-    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.1/manual/index.html"
-    publisher: "Unity Documentation (2D Animation 10.1)"
+    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.2/manual/index.html"
+    publisher: "Unity Documentation (2D Animation 10.2)"
     accessed: 2026-10-30
   - title: "Preparing and importing artwork"
-    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.1/manual/PreparingArtwork.html"
-    publisher: "Unity Documentation (2D Animation 10.1)"
+    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.2/manual/PreparingArtwork.html"
+    publisher: "Unity Documentation (2D Animation 10.2)"
     accessed: 2026-10-30
   - title: "Actor skinning and weighting workflow"
-    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.1/manual/CharacterRig.html"
-    publisher: "Unity Documentation (2D Animation 10.1)"
+    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.2/manual/CharacterRig.html"
+    publisher: "Unity Documentation (2D Animation 10.2)"
     accessed: 2026-10-30
   - title: "Sprite Skin component"
-    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.1/manual/SpriteSkin.html"
-    publisher: "Unity Documentation (2D Animation 10.1)"
+    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.2/manual/SpriteSkin.html"
+    publisher: "Unity Documentation (2D Animation 10.2)"
     accessed: 2026-10-30
   - title: "2D Inverse Kinematics (IK)"
-    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.1/manual/2DIK.html"
-    publisher: "Unity Documentation (2D Animation 10.1)"
+    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.2/manual/2DIK.html"
+    publisher: "Unity Documentation (2D Animation 10.2)"
     accessed: 2026-10-30
   - title: "Sprite Resolver component in Unity"
-    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.1/manual/SL-Resolver.html"
-    publisher: "Unity Documentation (2D Animation 10.1)"
+    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.2/manual/SL-Resolver.html"
+    publisher: "Unity Documentation (2D Animation 10.2)"
     accessed: 2026-10-30
   - title: "Introduction to 2D lighting in URP"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/2d-urp/2d-index/lights-2d-intro"
@@ -251,6 +251,14 @@ sources:
   - title: "Spine Runtimes License Agreement"
     url: "https://esotericsoftware.com/spine-runtimes-license"
     publisher: "Esoteric Software"
+    accessed: 2026-10-30
+  - title: "2D Animation (versi paket untuk Unity 6000.0)"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/packages-list/packages-all/pack-safe/com-unity-2d-animation"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "2D Tilemap Extras (versi paket untuk Unity 6000.0)"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/packages-list/packages-all/pack-safe/com-unity-2d-tilemap-extras"
+    publisher: "Unity Documentation"
     accessed: 2026-10-30
 ---
 
@@ -611,7 +619,7 @@ Komponen **Light 2D** punya empat **Light Type**:
 
 Properti penting lain: **Intensity** (bawaan 1), **Target Sorting Layers** (lapisan mana yang terkena cahaya ini), dan **Blend Style** (Multiply, Additive, Multiply with Mask (R), Additive with Mask (R)). Posisi Z cahaya tidak berpengaruh.
 
-**Normal map.** Impor normal map dengan Texture Type **Normal Map** dan matikan **sRGB (Color Texture)**. Di **Sprite Editor**, pilih tab **Secondary Textures**, tambahkan entri bernama **\_NormalMap**, lalu isi teksturnya. Di Light 2D, atur **Normal Map Quality** ke **Fast** atau **Accurate**, dan **Normal Map Distance** untuk tinggi virtual cahaya. Tekstur sekunder **\_MaskTex** dipakai untuk mask map.
+**Normal map.** Impor normal map dengan Texture Type **Normal Map** dan matikan **sRGB (Color Texture)**. Di **Sprite Editor**, pilih tab **Secondary Textures**, tambahkan entri bernama **\_NormalMap**, lalu isi teksturnya. Di Light 2D, atur **Normal Map Quality** ke **Fast** atau **Accurate** (halaman panduan normal map Unity menyebut properti ini **Use Normal Map**, sedangkan halaman referensi Light 2D menyebutnya Normal Map Quality), dan **Normal Map Distance** untuk tinggi virtual cahaya. Tekstur sekunder **\_MaskTex** dipakai untuk mask map.
 
 **Bayangan.** Nyalakan **Shadows** di Light 2D, lalu tambahkan **Shadow Caster 2D** pada objek penghalang. Bentuknya diambil dari **Custom Outline** sprite, atau digambar sendiri dengan **Casting Source: Shape Editor**. **Composite Shadow Caster 2D** di objek induk menggabungkan bayangan anak-anaknya.
 

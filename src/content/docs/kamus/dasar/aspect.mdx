@@ -4,10 +4,14 @@ description: "Rasio lebar dibagi tinggi layar atau jendela. Kamera harus tahu ni
 kind: term
 level: 1
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Camera.fieldOfView"
     url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/camera/fieldofview"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Camera.aspect"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/camera/aspect"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
   - title: "Canvas Scaler"
@@ -18,6 +22,10 @@ sources:
     url: "https://docs.godotengine.org/en/stable/classes/class_camera3d.html"
     publisher: "Godot Engine Documentation"
     accessed: 2026-10-28
+  - title: "ProjectSettings"
+    url: "https://docs.godotengine.org/en/stable/classes/class_projectsettings.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
   - title: "Multiple resolutions"
     url: "https://docs.godotengine.org/en/stable/tutorials/rendering/multiple_resolutions.html"
     publisher: "Godot Engine Documentation"
@@ -38,7 +46,7 @@ Ketiga engine memperbarui aspect ratio kamera secara otomatis saat jendela berub
 <EngineTabs>
 <div slot="unity">
 
-Dengan FOV vertikal (bawaan), layar yang lebih lebar menampilkan lebih banyak ke samping, sementara tinggi pandangan tetap. Dokumentasi `Camera.fieldOfView` menyebutnya langsung: FOV horizontal bergantung pada aspect ratio viewport. Untuk UI, komponen **Canvas Scaler** mengatur skala elemen terhadap ukuran layar lewat **UI Scale Mode**: Constant Pixel Size, Scale With Screen Size, atau Constant Physical Size.
+`Camera.aspect` secara bawaan dihitung otomatis dari aspect ratio layar, dan kembali ke sana setelah `ResetAspect()` dipanggil. Karena `fieldOfView` adalah FOV vertikal, layar yang lebih lebar menampilkan lebih banyak ke samping, sementara tinggi pandangan tetap. Dokumentasi `Camera.fieldOfView` menyebutnya langsung: FOV horizontal bergantung pada aspect ratio viewport. Untuk UI, komponen **Canvas Scaler** mengatur skala elemen terhadap ukuran layar lewat **UI Scale Mode**: Constant Pixel Size, Scale With Screen Size, atau Constant Physical Size.
 
 </div>
 <div slot="unreal">

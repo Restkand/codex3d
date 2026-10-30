@@ -194,6 +194,18 @@ sources:
     url: "https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html"
     publisher: "W3C Web Accessibility Initiative (WCAG 2.2)"
     accessed: 2026-10-30
+  - title: "Toolbar (Play Mode Controls)"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity-editor/editor-navigating-managing/toolbar"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Game view"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity-editor/editor-windows-views-reference/game-view"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "AudioSource.pitch"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/audiosource/pitch"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
 ---
 
 import Aside from '~/components/Aside.astro'
@@ -478,7 +490,7 @@ Kilatan putih singkat pada musuh yang terkena, atau pada karakter yang menerima 
 
 Satu suara jarang cukup untuk kejadian penting. Pukulan yang terasa berat biasanya terdiri dari beberapa lapis: bunyi benturan yang tajam di awal, lapisan rendah yang memberi bobot, dan sisa bunyi khusus bahan, misalnya logam atau kayu. Setiap lapis bisa diganti terpisah, sehingga satu set lapisan bisa menghasilkan banyak kombinasi.
 
-Suara yang diulang ratusan kali, seperti langkah kaki dan tembakan, cepat terdengar seperti mesin jika selalu sama persis. Dua cara umum mengatasinya: siapkan beberapa varian dan pilih acak, lalu ubah sedikit pitch dan volume setiap kali diputar. Di Godot, **AudioStreamRandomizer** menyediakan keduanya: daftar stream dengan bobot peluang, `random_pitch_semitones` untuk jarak variasi pitch dalam semitone, dan `random_volume_offset_db` untuk variasi volume. Di Unity, cara sederhananya adalah mengacak `AudioSource.pitch` dalam rentang kecil sebelum memutar suara. Variasi yang terlalu lebar membuat suara terdengar seperti benda yang berbeda, jadi mulai dari rentang kecil.
+Suara yang diulang ratusan kali, seperti langkah kaki dan tembakan, cepat terdengar seperti mesin jika selalu sama persis. Dua cara umum mengatasinya: siapkan beberapa varian dan pilih acak, lalu ubah sedikit pitch dan volume setiap kali diputar. Di Godot, **AudioStreamRandomizer** menyediakan keduanya: daftar stream dengan bobot peluang, `random_pitch_semitones` untuk jarak variasi pitch dalam semitone, dan `random_volume_offset_db` untuk variasi volume. Di Unity, cara sederhananya adalah mengacak `AudioSource.pitch` dalam rentang kecil sebelum memutar suara. Catatan: jika resource AudioSource berupa **Audio Random Container**, script reference Unity menyebut properti `pitch` diabaikan. Variasi yang terlalu lebar membuat suara terdengar seperti benda yang berbeda, jadi mulai dari rentang kecil.
 
 Celeste memilih suara mendarat berdasarkan jenis permukaan tempat karakter mendarat. Variasi seperti ini membuat suara ikut menjelaskan dunia, tidak hanya mengulang konfirmasi yang sama.
 

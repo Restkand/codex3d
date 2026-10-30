@@ -5,7 +5,7 @@ kind: term
 level: 2
 aka: "quat, rotasi, slerp"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Quaternion"
     url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/quaternion"
@@ -31,14 +31,14 @@ sources:
     url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/quaternion/slerp"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
-  - title: "Quaternion and Euler rotations in Unity"
+  - title: "Rotation and orientation in Unity"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/working-with-gameobjects/gameobject-fundamentals/rotation-orientation/quaternion-and-euler-rotations-in-unity"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
   - title: "Quaternion"
     url: "https://docs.godotengine.org/en/stable/classes/class_quaternion.html"
     publisher: "Godot Engine Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
   - title: "Using 3D transforms"
     url: "https://docs.godotengine.org/en/stable/tutorials/3d/using_transforms.html"
     publisher: "Godot Engine Documentation"
@@ -118,7 +118,7 @@ quaternion = a.slerp(b, 0.5)
 
 Setiap operasi floating point membawa sedikit galat. Jika sebuah quaternion terus dikalikan setiap frame, panjangnya pelan-pelan bergeser dari 1 dan rotasinya mulai tidak akurat. Normalisasi ulang (`normalized`) secara berkala mencegah hal ini.
 
-Satu rotasi yang sama bisa ditulis dengan dua quaternion: q dan −q. Implementasi slerp yang baik memilih jalur yang lebih pendek di antara keduanya, sehingga objek tidak berputar "jalan jauh". Godot, misalnya, menyediakan `slerpni()` sebagai versi yang sengaja melewati pengecekan ini.
+Satu rotasi yang sama bisa ditulis dengan dua quaternion: q dan −q. Implementasi slerp yang baik memilih jalur yang lebih pendek di antara keduanya, sehingga objek tidak berputar "jalan jauh". Dokumentasi Godot, misalnya, menyebut `slerpni()` sebagai versi yang tidak melakukan pengecekan jalur ini, berbeda dari `slerp()`. Dokumentasi `Quaternion.Slerp` di Unity tidak menjelaskan perilaku ini.
 
 ## Terkait
 

@@ -1,15 +1,22 @@
 ---
 title: "quickTo"
-description: "Membuat satu fungsi tween yang dipakai ulang untuk mengejar target yang sering berubah, seperti posisi mouse. Jauh lebih hemat daripada membuat tween baru di setiap event mousemove."
+description: "Membuat satu fungsi tween yang dipakai ulang untuk mengejar target yang sering berubah, seperti posisi mouse. Lebih hemat daripada memanggil gsap.to() baru di setiap event mousemove, karena quickTo melewati langkah persiapan yang biasa dikerjakan gsap.to()."
 kind: term
 level: 2
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "gsap.quickTo()"
+    url: "https://gsap.com/docs/v3/GSAP/gsap.quickTo()"
+    publisher: "GSAP Docs"
+    accessed: 2026-10-30
 sidebar:
   order: 6
 ---
 
 import Aside from '~/components/Aside.astro'
 
-Membuat satu fungsi tween yang dipakai ulang untuk mengejar target yang sering berubah, seperti posisi mouse. Jauh lebih hemat daripada membuat tween baru di setiap event mousemove.
+Membuat satu fungsi tween yang dipakai ulang untuk mengejar target yang sering berubah, seperti posisi mouse. Lebih hemat daripada memanggil `gsap.to()` baru di setiap event mousemove, karena quickTo melewati langkah persiapan yang biasa dikerjakan `gsap.to()`, seperti konversi satuan.
 
 **Di proyek ini:** `src/experiment/interaction.js`
 

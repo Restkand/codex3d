@@ -122,8 +122,16 @@ sources:
     url: "https://registry.khronos.org/OpenGL-Refpages/es3.0/html/gl_FrontFacing.xhtml"
     publisher: "Khronos Group"
     accessed: 2026-10-30
-  - title: "The OpenGL ES Shading Language, Version 3.00"
+  - title: "The OpenGL ES Shading Language, Version 3.00 (§4 tanpa konversi implisit, §4.3.5 uniform, §4.3.10 linking)"
     url: "https://registry.khronos.org/OpenGL/specs/es/3.0/GLSL_ES_Specification_3.00.pdf"
+    publisher: "Khronos Group"
+    accessed: 2026-10-30
+  - title: "The OpenGL ES Shading Language, Version 1.00 (§4, §4.3.5 Varying)"
+    url: "https://registry.khronos.org/OpenGL/specs/es/2.0/GLSL_ES_Specification_1.00.pdf"
+    publisher: "Khronos Group"
+    accessed: 2026-10-30
+  - title: "WebGL 2.0 Specification"
+    url: "https://registry.khronos.org/webgl/specs/latest/2.0/"
     publisher: "Khronos Group"
     accessed: 2026-10-30
 ---
@@ -618,7 +626,7 @@ ShaderMaterial sudah mendeklarasikannya, jadi deklarasi kedua adalah error kompi
 // fragment: varying vec3 vNormal;
 ```
 
-Nama dan tipe varying harus sama di kedua shader. Jika berbeda, atau jika fragment shader membaca varying yang tidak ada di vertex shader, program gagal digabungkan (*link*) dan objek tidak muncul.
+Varying yang dibaca fragment shader harus dideklarasikan di vertex shader dengan nama dan tipe yang sama. Jika tipenya berbeda, atau jika fragment shader membaca varying yang namanya tidak ada di vertex shader, program gagal digabungkan (*link*) dan objek tidak muncul. Precision (`highp`, `mediump`) boleh berbeda.
 
 ## Cek pemahaman
 
@@ -631,6 +639,6 @@ Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi bacalah juga p
 Kerjakan langsung di kode proyek. Simpan file, lalu lihat hasilnya di halaman Lab (dev server memuat ulang otomatis). Kembalikan kodenya setelah selesai.
 
 1. Di fragment.glsl, ganti baris 35 dengan `gl_FragColor = vec4(vec3(fresnel), 1.0);`. Di mana cangkang paling terang, dan kenapa bagian tengahnya hampir tidak terlihat? Lalu coba `pow(fresnel, 5.0)` di baris 22.
-2. Di fragment.glsl baris 22, ganti `2.0` menjadi `2`. Buka Console, temukan pesan `THREE.WebGLProgram: Shader Error`, lalu cari baris bertanda `>`. Berapa nomor barisnya, dan kenapa berbeda dari 22?
+2. Di fragment.glsl baris 22, ganti `pow(fresnel, 2.0)` menjadi `pow(fresnel, 2)`. GLSL ES tidak punya versi `pow` yang menerima `int`, jadi shader gagal dikompilasi. Buka Console, temukan pesan yang diawali `THREE.WebGLProgram: Shader Error`, lalu cari baris bertanda `>` di bagian `FRAGMENT`. Berapa nomor barisnya, dan kenapa berbeda dari 22? Three.js hanya menampilkan potongan bertanda `>` jika pesan driver memakai format `ERROR: 0:<baris>`; jika tidak ada, cari nomor baris di teks pesan driver.
 3. Di hologram.js, ganti `THREE.AdditiveBlending` menjadi `THREE.NormalBlending`. Bandingkan kesan cahayanya. Kembalikan, lalu ubah `depthWrite` menjadi `true` dan putar objeknya dengan kursor. Bagian mana yang hilang?
 4. Di main.js baris 79, beri tanda komentar pada `hologram.uniforms.uTime.value = elapsed`. Apa yang berhenti bergerak, dan apa yang tetap bergerak? (Petunjuk: rotasi dan posisi mesh diatur JavaScript, gelombang dan scanline diatur shader.)

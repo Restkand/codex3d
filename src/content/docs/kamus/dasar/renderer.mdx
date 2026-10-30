@@ -5,11 +5,19 @@ kind: term
 level: 1
 aka: "rendering pipeline, WebGLRenderer (Three.js)"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
-  - title: "Render pipelines introduction"
+  - title: "Introduction to render pipelines"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/render-pipelines/overview"
     publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Camera.opaqueSortMode"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/camera/opaquesortmode"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "3D rendering limitations"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/3d_rendering_limitations.html"
+    publisher: "Godot Engine Documentation"
     accessed: 2026-10-30
   - title: "Overview of renderers"
     url: "https://docs.godotengine.org/en/stable/tutorials/rendering/renderers.html"
@@ -56,7 +64,7 @@ Secara garis besar, satu kali render berisi langkah-langkah ini:
 
 1. Posisi dunia setiap objek dihitung dari [hierarkinya](/kamus/ruang/hierarchy/).
 2. Objek di luar pandangan kamera dibuang ([frustum culling](/kamus/dasar/frustum/)).
-3. Objek diurutkan: yang **opak** dari dekat ke jauh agar piksel yang tertutup bisa dilewati, yang **transparan** dari jauh ke dekat agar pencampurannya benar.
+3. Objek diurutkan. Yang **opak** digambar lebih dulu, kira-kira dari dekat ke jauh agar piksel yang tertutup bisa dilewati (Unity melewatkan urutan jarak ini di GPU yang tidak diuntungkan, misalnya GPU Apple). Yang **transparan** digambar sesudahnya, dari jauh ke dekat agar pencampurannya benar.
 4. Jika ada cahaya yang memberi bayangan, [shadow map](/kamus/cahaya/shadow-map/) dibuat lebih dulu.
 5. Untuk setiap objek, satu atau beberapa [draw call](/kamus/performa/draw-call/) dikirim ke GPU.
 

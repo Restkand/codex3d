@@ -5,7 +5,7 @@ kind: term
 level: 1
 aka: "metallic"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Lit shader material Inspector window reference for URP"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/built-in/shaders-in-universalrp/reference/lit-shader"
@@ -23,6 +23,14 @@ sources:
     url: "https://docs.godotengine.org/en/stable/classes/class_reflectionprobe.html"
     publisher: "Godot Engine Documentation"
     accessed: 2026-10-28
+  - title: "Lighting window reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/lighting-overview/lighting-reference/lighting-window"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Environment and post-processing"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/environment_and_post_processing.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
 sidebar:
   order: 12
 ---
@@ -43,7 +51,7 @@ Karena logam hanya memantul, ia butuh sesuatu untuk dipantulkan. Tanpa itu, loga
 <EngineTabs>
 <div slot="unity">
 
-Di URP/Lit dengan **Workflow Mode: Metallic**, atur properti **Metallic** (bisa dari Metallic Map). Workflow lainnya, **Specular**, memakai warna specular sebagai ganti nilai metallic. Sumber pantulan: Skybox dari pengaturan Lighting dan **Reflection Probe**.
+Di URP/Lit dengan **Workflow Mode: Metallic**, atur properti **Metallic** (bisa dari Metallic Map). Workflow lainnya, **Specular**, memakai warna specular sebagai ganti nilai metallic. Sumber pantulan: Skybox (bawaan **Environment Reflections → Source** di jendela Lighting) dan **Reflection Probe**.
 
 </div>
 <div slot="unreal">
@@ -53,7 +61,7 @@ Input **Metallic**. Sumber pantulan: **Sky Light**, **Reflection Capture**, atau
 </div>
 <div slot="godot">
 
-Properti `metallic` (bawaan 0). Saat memakai tekstur, `metallic_texture_channel` memilih kanal mana yang dibaca. Sumber pantulan: sky di **WorldEnvironment** dan node **ReflectionProbe**, yang merekam sekelilingnya menjadi cubemap.
+Properti `metallic` (bawaan 0). Saat memakai tekstur, `metallic_texture_channel` memilih kanal mana yang dibaca. Sumber pantulan: sky di **WorldEnvironment** (mode Reflected Light **Background** atau **Sky**) dan node **ReflectionProbe**, yang merekam sekelilingnya menjadi cubemap.
 
 </div>
 </EngineTabs>

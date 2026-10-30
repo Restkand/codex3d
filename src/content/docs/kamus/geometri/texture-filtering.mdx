@@ -5,7 +5,7 @@ kind: term
 level: 2
 aka: "point, bilinear, trilinear, anisotropic, mipmap, nearest, linear"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "FilterMode"
     url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/filtermode"
@@ -15,7 +15,7 @@ sources:
     url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/texture/anisolevel"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
-  - title: "Introduction to mipmaps"
+  - title: "Mipmaps"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/textures-getting-started/texture-mipmaps-introduction"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
@@ -31,6 +31,10 @@ sources:
     url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shading_language.html"
     publisher: "Godot Engine Documentation"
     accessed: 2026-10-28
+  - title: "Default texture Import Settings window reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/textures-reference/texture-type-default"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
 sidebar:
   order: 20
 ---
@@ -60,7 +64,7 @@ warna     = baca_tekstur(tekstur, uv, level_mip)
 <EngineTabs>
 <div slot="unity">
 
-Di pengaturan impor tekstur: **Filter Mode** berisi **Point** (kotak-kotak dari dekat), **Bilinear** (texel dirata-rata), dan **Trilinear** (dirata-rata dan dicampur antar-level mipmap). **Aniso Level** bernilai 0 sampai 16, dan lewat kode tersedia sebagai `Texture.anisoLevel`. Pembuatan mipmap juga diatur di pengaturan impor tekstur.
+Di pengaturan impor tekstur: **Filter Mode** berisi **Point** (kotak-kotak dari dekat), **Bilinear** (texel dirata-rata), dan **Trilinear** (dirata-rata dan dicampur antar-level mipmap). **Aniso Level** bernilai 0 sampai 16, dan lewat kode tersedia sebagai `Texture.anisoLevel`. Pembuatan mipmap diatur di tempat yang sama lewat opsi **Generate Mipmap**.
 
 </div>
 <div slot="unreal">

@@ -27,6 +27,14 @@ sources:
     url: "https://docs.godotengine.org/en/stable/classes/class_canvasitem.html"
     publisher: "Godot Engine Documentation"
     accessed: 2026-10-30
+  - title: "ProjectSettings (physics/2d/default_gravity)"
+    url: "https://docs.godotengine.org/en/stable/classes/class_projectsettings.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Camera2D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_camera2d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
 sidebar:
   order: 1
 ---
@@ -70,7 +78,7 @@ Plugin **Paper2D**: aset **Sprite** dibuat dari tekstur, lalu ditampilkan lewat 
 </div>
 <div slot="godot">
 
-Node **Sprite2D** dengan properti `texture`. Pengaturan lain: `centered` (bawaan `true`), `offset`, `flip_h`, dan `flip_v`. Warna diatur lewat `modulate`, properti bawaan semua node 2D (CanvasItem). Dengan `region_enabled` dan `region_rect`, Sprite2D hanya menampilkan sebagian gambar, misalnya satu sprite dari [atlas](/kamus/2d/sprite-atlas/). Godot mengukur dunia 2D dalam piksel, jadi tidak ada pengaturan pixels per unit.
+Node **Sprite2D** dengan properti `texture`. Pengaturan lain: `centered` (bawaan `true`), `offset`, `flip_h`, dan `flip_v`. Warna diatur lewat `modulate`, properti bawaan semua node 2D (CanvasItem). Dengan `region_enabled` dan `region_rect`, Sprite2D hanya menampilkan sebagian gambar, misalnya satu sprite dari [atlas](/kamus/2d/sprite-atlas/). Godot mengukur dunia 2D dalam piksel (misalnya gravitasi 2D bawaan 980 piksel per detik kuadrat, dan batas Camera2D juga dalam piksel), jadi tidak ada pengaturan pixels per unit.
 
 ```gdscript
 $Pemain.flip_h = true                   # menghadap kiri

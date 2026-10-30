@@ -5,7 +5,7 @@ kind: term
 level: 2
 aka: "Physically Based Rendering, metallic/roughness workflow"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Physically Based Materials"
     url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/physically-based-materials-in-unreal-engine"
@@ -23,8 +23,12 @@ sources:
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/built-in/shaders-in-universalrp/reference/lit-shader"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
-  - title: "Normal map (Bump mapping)"
+  - title: "Introduction to normal maps (bump mapping)"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/built-in/shader-built-in-configure-properties/standard-shader-texture-maps/material-parameter-normal-map/map"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Lit material"
+    url: "https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@17.0/manual/lit-material.html"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
 sidebar:
@@ -47,7 +51,7 @@ Hampir semua engine modern memakai **alur metallic/roughness** dengan tiga nilai
 <EngineTabs>
 <div slot="unity">
 
-Shader **URP/Lit** atau **HDRP/Lit**. Di URP/Lit, pilih **Workflow Mode: Metallic** untuk alur metallic/roughness (pilihan lainnya, Specular, memakai warna specular). Perhatikan bahwa Unity memakai **Smoothness**, kebalikan dari roughness (smoothness = 1 − roughness).
+Shader **Lit** bawaan URP (di menu Shader: **Universal Render Pipeline → Lit**) atau shader **Lit** bawaan HDRP. Di Lit URP, pilih **Workflow Mode: Metallic** untuk alur metallic/roughness (pilihan lainnya, Specular, memakai warna specular). Perhatikan bahwa Unity memakai **Smoothness**, yang arahnya terbalik dari roughness: 1 berarti licin dengan sorotan tajam. Tekstur roughness biasanya dibalik (1 − roughness) sebelum dipakai.
 
 </div>
 <div slot="unreal">
