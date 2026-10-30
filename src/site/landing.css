@@ -1352,11 +1352,12 @@ main [data-krekit-say] {
   border-radius: 8px;
 }
 
+/* Label kecil "Contoh di halaman": alpha 0.6 (kontras ±6:1), sama seperti teks kecil lain di beranda */
 .msg__example small {
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(242, 242, 245, 0.45);
+  color: rgba(242, 242, 245, 0.6);
 }
 
 .msg__chips {
