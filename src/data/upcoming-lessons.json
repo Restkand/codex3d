@@ -1,38 +1,109 @@
 {
   "fondasi-engine": [],
   "lanskap-engine": [
-    { "num": 2, "title": "Profil Engine Utama", "subtitle": "Unity, Unreal, Godot, GameMaker, framework web, dan engine buatan sendiri." },
-    { "num": 3, "title": "Lisensi dan Model Biaya", "subtitle": "Royalti, biaya per kursi, ambang pendapatan, dan perubahan ketentuan." },
-    { "num": 4, "title": "Kriteria Memilih Engine", "subtitle": "Genre, platform, tim, kebutuhan grafis, ekosistem, dan komunitas lokal." },
-    { "num": 5, "title": "Pindah Engine", "subtitle": "Biaya tersembunyi migrasi dan cara mengurangi ketergantungan." }
+    {
+      "num": 3,
+      "title": "Lisensi dan Model Biaya",
+      "subtitle": "Royalti, biaya per kursi, ambang pendapatan, dan perubahan ketentuan."
+    },
+    {
+      "num": 4,
+      "title": "Kriteria Memilih Engine",
+      "subtitle": "Genre, platform, tim, kebutuhan grafis, ekosistem, dan komunitas lokal."
+    },
+    {
+      "num": 5,
+      "title": "Pindah Engine",
+      "subtitle": "Biaya tersembunyi migrasi dan cara mengurangi ketergantungan."
+    }
   ],
   "desain-game": [
-    { "num": 2, "title": "Game Feel", "subtitle": "Respons input, animasi, kamera, suara, dan efek kecil yang membuat aksi terasa enak." },
-    { "num": 3, "title": "Mekanik, Dinamika, Estetika", "subtitle": "Kerangka untuk menganalisis game yang ada dan merancang yang baru." },
-    { "num": 4, "title": "Level Design", "subtitle": "Alur, ritme, mengajar tanpa tutorial, dan penempatan tantangan." },
-    { "num": 5, "title": "Ekonomi dan Progres", "subtitle": "Kurva kesulitan, mata uang dalam game, hadiah, dan risiko desain yang eksploitatif." },
-    { "num": 6, "title": "Playtesting", "subtitle": "Merencanakan sesi, mengamati tanpa mengarahkan, dan memilah masukan." },
-    { "num": 7, "title": "Dokumentasi Desain", "subtitle": "Dari dokumen desain panjang ke one-pager dan prototipe." }
+    {
+      "num": 3,
+      "title": "Mekanik, Dinamika, Estetika",
+      "subtitle": "Kerangka untuk menganalisis game yang ada dan merancang yang baru."
+    },
+    {
+      "num": 4,
+      "title": "Level Design",
+      "subtitle": "Alur, ritme, mengajar tanpa tutorial, dan penempatan tantangan."
+    },
+    {
+      "num": 5,
+      "title": "Ekonomi dan Progres",
+      "subtitle": "Kurva kesulitan, mata uang dalam game, hadiah, dan risiko desain yang eksploitatif."
+    },
+    {
+      "num": 6,
+      "title": "Playtesting",
+      "subtitle": "Merencanakan sesi, mengamati tanpa mengarahkan, dan memilah masukan."
+    },
+    {
+      "num": 7,
+      "title": "Dokumentasi Desain",
+      "subtitle": "Dari dokumen desain panjang ke one-pager dan prototipe."
+    }
   ],
   "produksi": [
-    { "num": 2, "title": "Fase Produksi", "subtitle": "Konsep sampai pascarilis: tujuan dan keluaran setiap fase." },
-    { "num": 3, "title": "Peran dalam Tim Kecil", "subtitle": "Siapa mengerjakan apa ketika satu orang memegang banyak peran." },
-    { "num": 4, "title": "Alat Kerja", "subtitle": "Version control untuk kode dan aset besar, pelacak tugas, build otomatis." },
-    { "num": 5, "title": "Kualitas dan Rilis", "subtitle": "Strategi QA, sertifikasi platform, dan rencana patch." },
-    { "num": 6, "title": "Postmortem", "subtitle": "Menulis evaluasi proyek yang jujur dan berguna untuk proyek berikutnya." }
+    {
+      "num": 3,
+      "title": "Peran dalam Tim Kecil",
+      "subtitle": "Siapa mengerjakan apa ketika satu orang memegang banyak peran."
+    },
+    {
+      "num": 4,
+      "title": "Alat Kerja",
+      "subtitle": "Version control untuk kode dan aset besar, pelacak tugas, build otomatis."
+    },
+    {
+      "num": 5,
+      "title": "Kualitas dan Rilis",
+      "subtitle": "Strategi QA, sertifikasi platform, dan rencana patch."
+    },
+    {
+      "num": 6,
+      "title": "Postmortem",
+      "subtitle": "Menulis evaluasi proyek yang jujur dan berguna untuk proyek berikutnya."
+    }
   ],
   "industri-karier": [
-    { "num": 2, "title": "Peta Ekosistem", "subtitle": "Developer, publisher, platform, media, dan komunitas: siapa melakukan apa." },
-    { "num": 3, "title": "Ekosistem Indonesia dan Asia Tenggara", "subtitle": "Asosiasi, komunitas, event, program inkubasi, dan tantangan pasar regional." },
-    { "num": 4, "title": "Portofolio", "subtitle": "Apa yang dicari studio dari setiap peran, dan cara menunjukkan proses berpikir." },
-    { "num": 5, "title": "Studi Kasus dan Postmortem", "subtitle": "Kisah studio dan game, ditulis atau ditinjau oleh pelakunya langsung." }
+    {
+      "num": 3,
+      "title": "Ekosistem Indonesia dan Asia Tenggara",
+      "subtitle": "Asosiasi, komunitas, event, program inkubasi, dan tantangan pasar regional."
+    },
+    {
+      "num": 4,
+      "title": "Portofolio",
+      "subtitle": "Apa yang dicari studio dari setiap peran, dan cara menunjukkan proses berpikir."
+    },
+    {
+      "num": 5,
+      "title": "Studi Kasus dan Postmortem",
+      "subtitle": "Kisah studio dan game, ditulis atau ditinjau oleh pelakunya langsung."
+    }
   ],
   "seni-visual": [
-    { "num": 2, "title": "Game 2D", "subtitle": "Sprite, atlas, tilemap, urutan gambar, rig tulang 2D, dan cahaya 2D." },
-    { "num": 3, "title": "2.5D", "subtitle": "Kamera ortografis dan perspektif, isometrik, billboard, dan sprite di dunia 3D." },
-    { "num": 4, "title": "Aset 3D untuk Game", "subtitle": "Low-poly sampai stylized, modeling, UV, tekstur, rigging, dan impor." },
-    { "num": 5, "title": "Dari Aplikasi ke Engine", "subtitle": "Aseprite, Krita, dan Blender ke Unity, Godot, dan Unreal." },
-    { "num": 6, "title": "Memilih Gaya Visual", "subtitle": "Menimbang pixel art, 2D, 2.5D, dan 3D untuk tim dan jadwalmu." }
+    {
+      "num": 3,
+      "title": "2.5D",
+      "subtitle": "Kamera ortografis dan perspektif, isometrik, billboard, dan sprite di dunia 3D."
+    },
+    {
+      "num": 4,
+      "title": "Aset 3D untuk Game",
+      "subtitle": "Low-poly sampai stylized, modeling, UV, tekstur, rigging, dan impor."
+    },
+    {
+      "num": 5,
+      "title": "Dari Aplikasi ke Engine",
+      "subtitle": "Aseprite, Krita, dan Blender ke Unity, Godot, dan Unreal."
+    },
+    {
+      "num": 6,
+      "title": "Memilih Gaya Visual",
+      "subtitle": "Menimbang pixel art, 2D, 2.5D, dan 3D untuk tim dan jadwalmu."
+    }
   ],
   "web-threejs": [
     {
