@@ -10,6 +10,7 @@ export const TRACKS = [
   { id: 'produksi', title: 'Produksi', blurb: 'Scoping, vertical slice, milestone, peran tim, dan alat kerja.', krekit: 'Banyak game berhenti di tahap ini karena cakupannya terlalu besar untuk waktu dan timnya.' },
   { id: 'bisnis-indie', title: 'Bisnis Studio Indie', blurb: 'Pendanaan, hitungan pendapatan, marketing, legal, dan platform.', krekit: 'Nanti semua angka di jalur ini wajib ada sumbernya.' },
   { id: 'industri-karier', title: 'Industri & Karier', blurb: 'Peta peran, ekosistem lokal, portofolio, dan studi kasus.', krekit: 'Rencananya banyak diisi cerita orang yang bekerja di studio.' },
+  { id: 'seni-visual', title: 'Seni & Gaya Visual', blurb: 'Pixel art, 2D, 2.5D, dan 3D: cara aset visual dibuat dan bagaimana engine menampilkannya.', krekit: 'Setiap gaya visual punya aturan sendiri saat masuk ke engine, dari ukuran piksel sampai jumlah poligon.' },
 ]
 
 /**
@@ -19,6 +20,7 @@ export const TRACKS = [
  */
 export const EXTRA_TRACKS = [
   { id: 'web-threejs', title: 'Web & Three.js', blurb: 'Konsep Fondasi Engine diterapkan di browser dengan WebGL, Three.js, dan GSAP, dibedah dari scene Lab situs ini.', krekit: 'Ini bab tambahan. Konsepnya sama dengan Fondasi Engine, tapi semuanya berjalan di browser.' },
+  { id: 'perangkat-keras', title: 'Perangkat Keras Game', blurb: 'CPU, GPU, memori, layar, serta perbedaan PC, konsol, dan HP, dari sudut pandang pembuat game.', krekit: 'Ini bab tambahan. Di sini kamu akan tahu kenapa game yang sama terasa berbeda di setiap perangkat.' },
 ]
 
 /** Semua jalur (utama + tambahan), untuk halaman yang tidak membedakan keduanya */

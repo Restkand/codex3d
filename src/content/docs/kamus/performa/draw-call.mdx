@@ -5,20 +5,24 @@ kind: term
 level: 2
 aka: "draw call, batch, static batching, SRP Batcher, state change"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Draw call batching"
-    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/DrawCallBatching.html"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/graphics-performance-profiling/reduce-draw-calls/draw-call-batching/draw-call-batching"
     publisher: "Unity Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
+  - title: "Choose a method for optimizing draw calls"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/graphics-performance-profiling/reduce-draw-calls/optimizing-draw-calls-choose-method"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
   - title: "SRP Batcher"
-    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/SRPBatcher-landing.html"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/graphics-performance-profiling/in-urp/reduce-draw-calls-urp/srpbatcher"
     publisher: "Unity Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
   - title: "Optimizing 3D performance"
     url: "https://docs.godotengine.org/en/stable/tutorials/performance/optimizing_3d_performance.html"
     publisher: "Godot Engine Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
   - title: "GPU optimization"
     url: "https://docs.godotengine.org/en/stable/tutorials/performance/gpu_optimization.html"
     publisher: "Godot Engine Documentation"
@@ -49,12 +53,14 @@ Biaya terbesar sering muncul saat **berganti keadaan** (*state change*), misalny
 <EngineTabs>
 <div slot="unity">
 
-- **Static batching:** objek yang ditandai static digabung menjadi satu buffer besar di world space.
+- **Static batching:** mesh objek yang ditandai static digabung menjadi satu vertex buffer dan satu index buffer di world space. Satu buffer menampung hingga 64.000 vertex, lebih dari itu Unity membuat beberapa batch.
 - **Dynamic batching:** penggabungan di CPU setiap frame, hanya untuk mesh kecil (maksimal 300 vertex). Dokumentasi Unity tidak menyarankannya untuk kebanyakan kasus karena biaya CPU-nya bisa melebihi penghematannya.
 - **SRP Batcher** (URP/HDRP): mengurangi pergantian keadaan antar-draw call. Diaktifkan di aset URP.
 - **[GPU Instancing](/kamus/performa/instancing/)** untuk banyak salinan mesh yang sama.
 
 Batching tidak berlaku untuk Skinned Mesh Renderer.
+
+Untuk URP dan HDRP di Unity 6, tabel rekomendasi Unity menyarankan menyalakan SRP Batcher dan **GPU Resident Drawer**, lalu mematikan static batching karena tidak kompatibel dengan GPU Resident Drawer. Static batching tetap disarankan untuk Built-In Render Pipeline.
 
 </div>
 <div slot="unreal">
@@ -64,7 +70,7 @@ Objek dengan mesh dan material yang sama digabung otomatis (*auto-instancing*). 
 </div>
 <div slot="godot">
 
-**Instancing otomatis** untuk MeshInstance3D yang memakai mesh dan material yang sama, khusus material opaque atau alpha-tested. Godot juga mengurutkan objek berdasarkan material dan shader. Untuk objek transparan dalam jumlah banyak, pakai **MultiMesh**. Dokumentasi Godot juga menyarankan menggabungkan mesh statis lebih awal, dengan catatan objek yang digabung tidak bisa di-culling satu per satu.
+**Instancing otomatis** untuk MeshInstance3D yang memakai mesh dan material yang sama, khusus material opaque atau alpha-tested. Fitur ini hanya ada di renderer Forward+, tidak di Mobile atau Compatibility. Godot juga mengurutkan objek berdasarkan material dan shader. Untuk objek transparan dalam jumlah banyak, pakai **MultiMesh**. Dokumentasi Godot juga menyarankan menggabungkan mesh statis lebih awal, dengan catatan objek yang digabung tidak bisa di-culling satu per satu.
 
 </div>
 </EngineTabs>

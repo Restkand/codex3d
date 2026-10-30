@@ -5,7 +5,7 @@ kind: term
 level: 3
 aka: "glow"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Bloom"
     url: "https://dev.epicgames.com/documentation/en-us/unreal-engine/bloom-in-unreal-engine"
@@ -15,10 +15,14 @@ sources:
     url: "https://docs.godotengine.org/en/stable/tutorials/3d/environment_and_post_processing.html"
     publisher: "Godot Engine Documentation"
     accessed: 2026-10-28
-  - title: "Post-processing effects in URP"
-    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/EffectList.html"
+  - title: "Environment"
+    url: "https://docs.godotengine.org/en/stable/classes/class_environment.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Introduction to post-processing in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/post-processing-and-full-screen-effects/urp/integration-with-post-processing"
     publisher: "Unity Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
 sidebar:
   order: 5
 ---
@@ -51,7 +55,7 @@ Bagian **Bloom** di Post Process Volume: **Intensity**, **Threshold**, serta Tin
 </div>
 <div slot="godot">
 
-Disebut **Glow**, di WorldEnvironment → Environment. Properti utama: **HDR Threshold**, **Intensity**, **Blend Mode** (bawaan Softlight), dan **Levels**. Level kecil memberi pendar di sekitar objek, level besar memberi kabut cahaya selebar layar.
+Disebut **Glow**, di WorldEnvironment → Environment. Properti utama: **HDR Threshold**, **Intensity**, **Blend Mode** (bawaan Screen), dan **Levels**. Renderer Compatibility selalu memakai Screen, apa pun pilihan Blend Mode-nya. Level kecil memberi pendar di sekitar objek, level besar memberi kabut cahaya selebar layar.
 
 </div>
 </EngineTabs>

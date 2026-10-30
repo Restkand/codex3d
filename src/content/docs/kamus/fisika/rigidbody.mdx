@@ -5,20 +5,20 @@ kind: term
 level: 1
 aka: "rigid body, static, dynamic, kinematic, physics body"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Rigidbody"
-    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Rigidbody.html"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/rigidbody"
     publisher: "Unity Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
   - title: "Collider types introduction"
-    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/collider-types-introduction.html"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/physics-section/physics-overview/collision-section/collider-types-introduction"
     publisher: "Unity Documentation"
-    accessed: 2026-10-28
-  - title: "Physics introduction"
-    url: "https://docs.godotengine.org/en/stable/tutorials/physics/physics_introduction.html"
+    accessed: 2026-10-30
+  - title: "RigidBody3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_rigidbody3d.html"
     publisher: "Godot Engine Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
 sidebar:
   order: 1
 ---
@@ -52,7 +52,7 @@ Centang **Simulate Physics** pada komponen primitif (misalnya Static Mesh Compon
 </div>
 <div slot="godot">
 
-Node terpisah untuk setiap peran: **StaticBody3D** (tidak digerakkan physics), **RigidBody3D** (disimulasikan), **CharacterBody3D** (digerakkan kode). Untuk RigidBody3D, dokumentasi Godot melarang mengubah `position` atau `linear_velocity` secara langsung. Pakai `_integrate_forces()` bila perlu mengubah keadaan physics-nya.
+Node terpisah untuk setiap peran: **StaticBody3D** (tidak digerakkan physics), **RigidBody3D** (disimulasikan), **CharacterBody3D** (digerakkan kode). RigidBody3D digerakkan dengan gaya (gravitasi, impuls), bukan dikendalikan langsung. Dokumentasi Godot memperingatkan bahwa mengubah transform atau `linear_velocity`-nya terlalu sering bisa membuat perilakunya tidak terduga. Pakai `_integrate_forces()` bila perlu mengubah keadaan physics-nya secara langsung.
 
 </div>
 </EngineTabs>

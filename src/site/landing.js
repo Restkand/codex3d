@@ -1,12 +1,8 @@
-import * as THREE from 'three'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { createSetup } from '../experiment/core/setup.js'
-import { createLights } from '../experiment/world/lights.js'
-import { createPost } from '../experiment/post.js'
-import { createKrekit } from './krekit.js'
-import { createDunia } from './dunia.js'
 import { loadProgress, RANKS } from '../lib/progress.js'
+// three.js, Krekit, dunia, dan post-processing TIDAK diimpor statis di sini: dimuat lewat import()
+// dinamis di loadScene() (akhir file), setelah teks hero tampil. Teks dan widget tidak menunggu 3D.
 
 /**
  * Halaman depan bersama Krekit.
@@ -17,7 +13,10 @@ import { loadProgress, RANKS } from '../lib/progress.js'
  * menggelinding ke panggung berikutnya, dan tidak pernah menutupi teks.
  *
  * Bagian teks (animasi masuk, penghitung, tilt kartu) berjalan terpisah dari 3D,
- * sehingga halaman tetap utuh walaupun WebGL tidak tersedia.
+ * sehingga halaman tetap utuh walaupun WebGL tidak tersedia atau chunk 3D gagal dimuat.
+ *
+ * Aksesibilitas: animasi masuk hanya mengubah opacity & transform (tidak pernah visibility/display),
+ * jadi konten yang belum dianimasikan tetap bisa difokus dengan Tab dan dibaca pembaca layar.
  */
 gsap.registerPlugin(ScrollTrigger)
 
@@ -34,11 +33,13 @@ if (touchOnly) document.querySelectorAll('[data-touch-text]').forEach((el) => (e
 
 // ---------- Animasi teks & kartu ----------
 
-gsap.fromTo(
-  '.hero__text > *',
-  { autoAlpha: 0, y: reduceMotion ? 0 : 30 },
-  { autoAlpha: 1, y: 0, duration: reduceMotion ? 0.01 : 0.9, stagger: reduceMotion ? 0 : 0.1, ease: 'power3.out', delay: 0.2 },
-)
+// Penanda untuk pengaman di index.astro: modul ini sudah berjalan, jadi kelas .js tidak perlu dilepas
+document.documentElement.classList.add('js-ready')
+
+// "Kurangi gerakan": teks langsung tampil, tanpa animasi masuk (CSS juga tidak menyembunyikannya)
+if (!reduceMotion) {
+  gsap.fromTo('.hero__text > *', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.9, stagger: 0.1, ease: 'power3.out', delay: 0.2 })
+}
 
 // ---------- Judul Pos 0: baris wireframe "menangkap sinyal", lalu ter-render ----------
 // Huruf diacak lalu tersusun dari kiri ke kanan, seperti layar yang baru menyala, ditutup getar glitch.
@@ -100,20 +101,26 @@ if (heroWire && !reduceMotion) {
   })
 }
 
-document.querySelectorAll('.reveal').forEach((section) => {
-  gsap.fromTo(
-    section.querySelectorAll('[data-reveal]'),
-    { autoAlpha: 0, y: reduceMotion ? 0 : 40 },
-    {
-      autoAlpha: 1,
-      y: 0,
-      duration: reduceMotion ? 0.01 : 0.8,
-      stagger: reduceMotion ? 0 : 0.08,
-      ease: 'power3.out',
-      scrollTrigger: { trigger: section, start: 'top 70%', toggleActions: 'play none none reverse' },
-    },
-  )
-})
+// Animasi masuk tiap section: sekali saja (tidak dibalik saat scroll naik), hanya opacity & y.
+// "Kurangi gerakan": tidak ada yang disembunyikan sama sekali.
+if (!reduceMotion) {
+  document.querySelectorAll('.reveal').forEach((section) => {
+    const reveal = gsap.fromTo(
+      section.querySelectorAll('[data-reveal]'),
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.08,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: section, start: 'top 70%', once: true },
+      },
+    )
+    // Pengaman keyboard: fokus Tab masuk ke section yang belum dianimasikan -> langsung tampil penuh
+    section.addEventListener('focusin', () => reveal.progress() < 1 && reveal.progress(1), { once: true })
+  })
+}
 
 document.querySelectorAll('[data-count]').forEach((el) => {
   const state = { value: 0 }
@@ -325,6 +332,8 @@ if (credits && !reduceMotion) {
 document.querySelector('[data-replay]')?.addEventListener('click', () => {
   sceneHooks.replay?.()
   window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' })
+  // Fokus ikut kembali ke awal (judul hero, tabindex="-1"), agar pengguna keyboard & pembaca layar tidak tertinggal di bawah
+  heroTitle?.focus({ preventScroll: true })
 })
 
 // Pos 3 · Tarik kartu istilah: semua istilah Kamus dikocok sekali, lalu ditarik berurutan (tidak ada yang
@@ -423,11 +432,21 @@ if (chat) {
     if (busy || answered.has(id)) return
     busy = true
     answered.add(id)
-    chat.querySelector(`[data-chat-ask="${id}"]`).hidden = true
-    place(log.querySelector(`[data-chat-q="${id}"]`))
+    const button = chat.querySelector(`[data-chat-ask="${id}"]`)
+    const question = log.querySelector(`[data-chat-q="${id}"]`)
+    // Tombol yang dipilih disembunyikan: fokusnya dipindah dulu agar tidak jatuh ke <body>.
+    // Ke pertanyaan berikutnya yang tersisa; jika sudah habis, ke pesan pertanyaan itu sampai "Ulangi dari awal" muncul.
+    const hadFocus = document.activeElement === button
+    const remaining = asks.filter((b) => !answered.has(b.dataset.chatAsk))
+    const nextAsk = remaining.find((b) => asks.indexOf(b) > asks.indexOf(button)) ?? remaining[0]
+    // Pesan ditampilkan dulu: elemen yang masih display:none tidak bisa difokus
+    place(question)
+    if (hadFocus) (nextAsk ?? question).focus({ preventScroll: true })
+    button.hidden = true
     const typing = document.createElement('div')
     typing.className = 'msg msg--krekit msg--typing'
-    typing.setAttribute('aria-label', 'Krekit sedang mengetik')
+    // Hiasan saja: jawabannya muncul sebentar lagi dan diumumkan lewat log (aria-live)
+    typing.setAttribute('aria-hidden', 'true')
     typing.innerHTML = '<i></i><i></i><i></i>'
     log.append(typing)
     place(typing)
@@ -440,10 +459,14 @@ if (chat) {
       if (answered.size < asks.length) return
       place(outro)
       resetButton.hidden = false
+      // Fokus menunggu di pesan pertanyaan terakhir: lanjutkan ke tombol "Ulangi dari awal"
+      if (document.activeElement === question) resetButton.focus({ preventScroll: true })
       sceneHooks.chat?.(true)
     })
   }
 
+  // Pesan pertanyaan bisa menerima fokus sementara (lihat ask), tapi tidak masuk urutan Tab
+  log.querySelectorAll('[data-chat-q]').forEach((node) => (node.tabIndex = -1))
   asks.forEach((button) => button.addEventListener('click', () => ask(button.dataset.chatAsk)))
   resetButton.addEventListener('click', () => {
     answered.clear()
@@ -451,6 +474,8 @@ if (chat) {
     log.querySelectorAll('.is-shown').forEach((node) => node.classList.remove('is-shown'))
     chips.forEach((chip) => chip.classList.remove('is-checked'))
     asks.forEach((button) => (button.hidden = false))
+    // Fokus ke pertanyaan pertama sebelum tombol ini disembunyikan
+    if (document.activeElement === resetButton) asks[0]?.focus({ preventScroll: true })
     resetButton.hidden = true
     log.scrollTop = 0
   })
@@ -491,7 +516,7 @@ const MOODS = [
       ? 'Telur di ban itu aku, waktu masih garis-garis. Geser bannya, aku dibentuk di setiap stasiun.'
       : 'Badanku masih garis-garis, begini rupaku di mata engine. Scroll pelan-pelan, aku dibentuk sepanjang ban ini.',
   },
-  { glow: '#9dff8a', aura: '#7cff6b', bg: '#08100d', line: 'Baru Fondasi Engine yang sudah ada pelajarannya. Lima jalur lain masih kerangka.' },
+  { glow: '#9dff8a', aura: '#7cff6b', bg: '#08100d', line: 'Baru Fondasi Engine yang sudah ada pelajarannya. Enam jalur lain masih kerangka.' },
   { glow: '#8ad2ff', aura: '#00b3ff', bg: '#080b14', line: touchOnly ? 'Ketuk Tarik kartu. Aku juga penasaran istilah apa yang keluar.' : 'Tarik satu kartu dari tumpukanku. Aku juga penasaran istilah apa yang keluar.' },
   { glow: '#ffe08a', aura: '#ffcc33', bg: '#0d0b08', line: 'Pilih pertanyaan di obrolan itu. Aku jawab satu per satu.' },
   { glow: '#ffa6f0', aura: '#ff5ce1', bg: '#0b0b10', line: 'Terima kasih sudah ikut sampai akhir. Slot kontributor di kredit itu masih kosong.' },
@@ -529,7 +554,8 @@ const LEVEL_LINES = [
   'Warna dan cahaya masuk. Game dibuat lapis demi lapis seperti ini.',
 ]
 
-function initScene() {
+/** Dipanggil loadScene() setelah modul 3D (three.js, Krekit, dunia, post) selesai dimuat */
+function initScene({ THREE, createSetup, createLights, createPost, createKrekit, createDunia }) {
   const canvas = document.querySelector('canvas.webgl')
   const { scene, camera, renderer } = createSetup(canvas, { alpha: true })
   // Latar scene disimpan: dilepas (transparan) saat Krekit berjaga di atas konten di layar sempit
@@ -852,11 +878,12 @@ function initScene() {
   // ke mode bertumpuk (mis. tablet diputar), dan membuatnya lagi saat kembali.
   if (!reduceMotion) {
     gsap.matchMedia().add(WIDE, () => {
-      // Teks hero memudar setelah Krekit mulai berjalan, agar dunianya terlihat utuh
+      // Teks hero memudar setelah Krekit mulai berjalan, agar dunianya terlihat utuh.
+      // Hanya opacity (bukan visibility): tautannya tetap bisa difokus, misalnya oleh "Main lagi" atau Shift+Tab.
       const heroText = gsap.timeline({ paused: true })
-      heroText.to('.hero__text', { autoAlpha: 0, y: -50, duration: 0.18, ease: 'power1.in' }, 0.24)
+      heroText.to('.hero__text', { opacity: 0, y: -50, duration: 0.18, ease: 'power1.in' }, 0.24)
       heroText.to({}, { duration: 1 }, 0)
-      ScrollTrigger.create({
+      const heroPin = ScrollTrigger.create({
         trigger: hero,
         start: 'top top',
         end: '+=220%',
@@ -870,7 +897,14 @@ function initScene() {
           setHeroRendered(self.progress > 0.06)
         },
       })
-      return () => (heroProgress = 0)
+      // Fokus Tab masuk ke teks hero yang sedang pudar: kembali ke awal pin agar teksnya terlihat lagi
+      // (smooth: tidak memotong scroll halus "Main lagi" yang menuju titik yang sama)
+      const showHeroText = () => heroPin.progress > 0.2 && window.scrollTo({ top: heroPin.start, behavior: 'smooth' })
+      heroTextBox?.addEventListener('focusin', showHeroText)
+      return () => {
+        heroProgress = 0
+        heroTextBox?.removeEventListener('focusin', showHeroText)
+      }
     })
     ScrollTrigger.refresh()
   }
@@ -1178,6 +1212,9 @@ function initScene() {
 function createBubble({ onSay } = {}) {
   const wrap = document.querySelector('[data-bubble]')
   const box = wrap.querySelector('[data-bubble-box]')
+  // Gelembung yang diketik per huruf disembunyikan dari pembaca layar (aria-hidden di index.astro).
+  // Kalimat lengkapnya diumumkan sekali lewat live region terpisah (role="status", visually hidden).
+  const announcer = document.querySelector('[data-bubble-say]')
   const CHAR_DELAY = 0.022 // detik per huruf
   let hideCall
   let typing
@@ -1192,8 +1229,8 @@ function createBubble({ onSay } = {}) {
       hideCall?.kill()
       typing?.kill()
       visibleUntil = performance.now() + ((reduceMotion ? 0 : text.length * CHAR_DELAY) + hold) * 1000
-      // Teks lengkap untuk pembaca layar; tampilan diketik bertahap
-      box.setAttribute('aria-label', text)
+      // Teks lengkap untuk pembaca layar, sekali; tampilan diketik bertahap
+      if (announcer) announcer.textContent = text
       onSay?.(reduceMotion ? 0 : text.length * CHAR_DELAY)
       gsap.to(box, { autoAlpha: 1, duration: 0.2, overwrite: true })
       const progress = { chars: reduceMotion ? text.length : 0 }
@@ -1244,14 +1281,39 @@ function getBottomNavHeight() {
   return document.querySelector('.bnav')?.offsetHeight ?? 0
 }
 
-// WebGL bisa tidak tersedia (perangkat lama, driver diblokir): halaman tetap berfungsi tanpa 3D
-try {
-  initScene()
-} catch (error) {
+/** Halaman tanpa 3D: kanvas, gelembung, dan tab tahap render dilepas; sisanya tetap berfungsi */
+function disableScene(error) {
   console.warn('Krekit tidak bisa ditampilkan (WebGL tidak tersedia). Halaman tetap berfungsi.', error)
   document.querySelector('canvas.webgl')?.remove()
   // Ban berjalan Pos 1 memakai telur 2D sebagai pengganti Krekit (landing.css: .no-3d)
   document.documentElement.classList.add('no-3d')
   document.querySelector('[data-bubble]')?.remove()
+  document.querySelector('[data-bubble-say]')?.remove()
   document.querySelector('.render-steps')?.remove()
 }
+
+/**
+ * Scene 3D dimuat terpisah (chunk three.js ±140 KB gzip), jadi teks hero dan widget di atas
+ * tidak menunggunya. Unduhan dimulai sekarang; initScene() baru dijalankan setelah frame pertama
+ * teks tergambar, agar kompilasi shader tidak menahan tampilan teks.
+ * WebGL tidak tersedia (perangkat lama, driver diblokir) atau chunk gagal dimuat: halaman tetap berfungsi tanpa 3D.
+ */
+async function loadScene() {
+  try {
+    const [THREE, { createSetup }, { createLights }, { createPost }, { createKrekit }, { createDunia }] = await Promise.all([
+      // Hanya kelas yang dipakai initScene, didestrukturisasi langsung: namespace utuh dari import('three')
+      // membuat seluruh three.js ikut di-bundle (tree-shaking tidak jalan) di chunk yang juga dipakai halaman pelajaran
+      import('three').then(({ Color, MathUtils, Raycaster, Timer, Vector2, Vector3 }) => ({ Color, MathUtils, Raycaster, Timer, Vector2, Vector3 })),
+      import('../experiment/core/setup.js'),
+      import('../experiment/world/lights.js'),
+      import('../experiment/post.js'),
+      import('./krekit.js'),
+      import('./dunia.js'),
+    ])
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))
+    initScene({ THREE, createSetup, createLights, createPost, createKrekit, createDunia })
+  } catch (error) {
+    disableScene(error)
+  }
+}
+loadScene()

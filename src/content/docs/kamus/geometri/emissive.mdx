@@ -5,16 +5,16 @@ kind: term
 level: 2
 aka: "emission, self-illumination"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Lit shader material Inspector window reference for URP"
-    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/lit-shader.html"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/built-in/shaders-in-universalrp/reference/lit-shader"
     publisher: "Unity Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
   - title: "BaseMaterial3D"
     url: "https://docs.godotengine.org/en/stable/classes/class_basematerial3d.html"
     publisher: "Godot Engine Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
   - title: "Standard Material 3D and ORM Material 3D"
     url: "https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html"
     publisher: "Godot Engine Documentation"
@@ -45,7 +45,7 @@ Input **Emissive Color**. Nilai di atas 1 memicu bloom. Dengan **Lumen**, permuk
 </div>
 <div slot="godot">
 
-Aktifkan `emission_enabled`, lalu atur `emission` (warna, bawaannya hitam) dan `emission_energy_multiplier` (bawaan 1,0). Menurut dokumentasi Godot, emission tidak menerangi geometri di sekitarnya kecuali kamu memakai VoxelGI atau SDFGI.
+Aktifkan `emission_enabled`, lalu atur `emission` (warna, bawaannya hitam) dan `emission_energy_multiplier` (bawaan 1,0). Menurut dokumentasi Godot, emission tidak menerangi geometri di sekitarnya kecuali kamu memakai VoxelGI, SDFGI, atau LightmapGI (objeknya harus ikut dalam baked lighting).
 
 </div>
 </EngineTabs>

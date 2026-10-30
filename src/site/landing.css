@@ -44,10 +44,55 @@ a {
   pointer-events: none;
 }
 
-/* Sembunyikan teks animasi sampai GSAP mengambil alih (mencegah kedipan) */
-.js .hero__text > *,
-.js [data-reveal] {
-  visibility: hidden;
+/* Teks animasi transparan sampai GSAP mengambil alih (mencegah kedipan). Hanya opacity, bukan
+   visibility: elemennya tetap bisa difokus dengan Tab dan dibaca pembaca layar sebelum dianimasikan.
+   "Kurangi gerakan": tidak ada animasi masuk, jadi tidak ada yang disembunyikan. */
+@media (prefers-reduced-motion: no-preference) {
+  .js .hero__text > *,
+  .js [data-reveal] {
+    opacity: 0;
+  }
+}
+
+/* Teks khusus pembaca layar (mis. kalimat Krekit yang diumumkan sekali) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Tautan lewati navigasi: tersembunyi di luar layar, muncul di pojok kiri atas saat difokus */
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 10px 16px;
+  font: 700 14px/1.2 var(--mono);
+  color: #07070b;
+  background: var(--accent);
+  border-radius: 6px;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+/* Tujuan fokus program (skip link, "Main lagi"): bukan kontrol, jadi tanpa cincin fokus */
+main:focus,
+[data-hero-title]:focus {
+  outline: none;
 }
 
 /* ---------- Navigasi atas ---------- */
@@ -283,6 +328,12 @@ main [data-krekit-say] {
   inset: -3px;
 }
 
+/* Di luar hero, tombol wire sudah ter-render saat diam, jadi fokus butuh penanda sendiri: garis kuning di luar siku */
+.btn--wire:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+}
+
 /* Glitch hanya pada LABEL di dalam tombol, bukan tombolnya. clip-path dan geseran pada tombol itu
    sendiri ikut memotong area kursor: kursor dianggap keluar, hover hilang, lalu masuk lagi, sehingga
    glitch berulang tanpa henti. Bingkai tombol tetap diam; efek "naik" .btn:hover juga dimatikan. */
@@ -476,7 +527,8 @@ main [data-krekit-say] {
   font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.15em;
-  color: rgba(242, 242, 245, 0.45);
+  /* Alfa 0,6: kontras ±6:1 di atas latar gelap (0,45 hanya ±4,1:1) */
+  color: rgba(242, 242, 245, 0.6);
 }
 
 /* ---------- Pos 1 · Ajakan mulai ---------- */
@@ -766,7 +818,7 @@ main [data-krekit-say] {
 .skill-tree {
   --top: 104px;
   --row: 150px;
-  --node-w: 27%;
+  --node-w: 25%;
   grid-area: tree;
   position: relative;
   height: calc(var(--top) + 2 * var(--row) + 72px);
@@ -966,6 +1018,11 @@ main [data-krekit-say] {
   background: rgba(255, 204, 51, 0.12);
   border-color: var(--accent);
   outline: none;
+}
+
+.skill-panel__nav button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .skill-panel__meta {
@@ -1400,6 +1457,12 @@ main [data-krekit-say] {
   outline: none;
 }
 
+/* Penanda fokus keyboard yang jelas, bukan hanya perubahan warna latar */
+.chat__replies button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .chat__replies button[hidden] {
   display: none;
 }
@@ -1705,12 +1768,18 @@ main [data-krekit-say] {
   outline: none;
 }
 
+.credits__slot:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
 /* ---------- Footer ---------- */
 
 .site-foot {
   margin-top: 64px;
   font-size: 13px;
-  color: rgba(242, 242, 245, 0.45);
+  /* Alfa 0,6: kontras ±6:1 (0,45 hanya ±4,15:1) */
+  color: rgba(242, 242, 245, 0.6);
 }
 
 .site-foot a {
@@ -1879,7 +1948,7 @@ main [data-krekit-say] {
   .skill-tree {
     --top: 6px;
     --row: 104px;
-    --node-w: 28%;
+    --node-w: 25%;
     margin: 22px 0 18px;
   }
 

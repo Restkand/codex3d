@@ -5,20 +5,24 @@ kind: term
 level: 2
 aka: "bump map, tangent-space normal map, baking"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Normal map (Bump mapping)"
-    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/StandardShaderMaterialParameterNormalMap.html"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/built-in/shader-built-in-configure-properties/standard-shader-texture-maps/material-parameter-normal-map/map"
     publisher: "Unity Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
   - title: "Texture type and shape settings reference"
-    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-TextureImporter-type-and-shape.html"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/textures-reference/class-texture-importer/type-and-shape"
     publisher: "Unity Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
+  - title: "Normal Map texture Import Settings window reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/textures-reference/texture-type-normal-map"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
   - title: "Lit shader material Inspector window reference for URP"
-    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/urp/lit-shader.html"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/built-in/shaders-in-universalrp/reference/lit-shader"
     publisher: "Unity Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
   - title: "Standard Material 3D and ORM Material 3D"
     url: "https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html"
     publisher: "Godot Engine Documentation"
@@ -58,7 +62,7 @@ Lukisan trompe-l'œil di dinding datar: dari depan tampak ada relief, tetapi din
 <EngineTabs>
 <div slot="unity">
 
-Di pengaturan impor tekstur, set **Texture Type: Normal map**, lalu pasang di slot **Normal Map** material URP/Lit (ada slider untuk kekuatannya). Unity memakai format **Y+** (gaya OpenGL). Unity juga bisa mengubah height map hitam-putih menjadi normal map saat impor.
+Di pengaturan impor tekstur, set **Texture Type: Normal map**, lalu pasang di slot **Normal Map** material URP/Lit (ada slider untuk kekuatannya). Unity memakai format **Y+** (gaya OpenGL). Unity juga bisa mengubah height map hitam-putih menjadi normal map saat impor lewat opsi **Create from Grayscale**. Jika normal map kamu memakai format gaya DirectX, centang **Flip Green Channel**.
 
 </div>
 <div slot="unreal">
