@@ -8,7 +8,7 @@ export const TRACKS = [
   { id: 'lanskap-engine', title: 'Lanskap Engine', blurb: 'Unity, Unreal, Godot, dan lainnya: arsitektur, lisensi, dan kapan memilih yang mana.', krekit: 'Mulai dari isi sebuah engine. Kalau kamu pernah pindah engine, ceritamu dibutuhkan di sini.' },
   { id: 'desain-game', title: 'Desain Game', blurb: 'Core loop, game feel, level design, dan playtesting.', krekit: 'Mulai dari core loop: aksi yang diulang pemain setiap beberapa detik.' },
   { id: 'produksi', title: 'Produksi', blurb: 'Scoping, vertical slice, milestone, peran tim, dan alat kerja.', krekit: 'Banyak game berhenti di tahap ini karena cakupannya terlalu besar untuk waktu dan timnya.' },
-  { id: 'bisnis-indie', title: 'Bisnis Studio Indie', blurb: 'Pendanaan, hitungan pendapatan, marketing, legal, dan platform.', krekit: 'Nanti semua angka di jalur ini wajib ada sumbernya.' },
+  { id: 'bisnis-indie', title: 'Bisnis Studio Indie', blurb: 'Pendanaan, hitungan pendapatan, marketing, legal, dan platform.', krekit: 'Semua angka di jalur ini wajib ada sumbernya, lengkap dengan tanggal aksesnya.' },
   { id: 'industri-karier', title: 'Industri & Karier', blurb: 'Peta peran, ekosistem lokal, portofolio, dan studi kasus.', krekit: 'Rencananya banyak diisi cerita orang yang bekerja di studio.' },
   { id: 'seni-visual', title: 'Seni & Gaya Visual', blurb: 'Pixel art, 2D, 2.5D, dan 3D: cara aset visual dibuat dan bagaimana engine menampilkannya.', krekit: 'Setiap gaya visual punya aturan sendiri saat masuk ke engine, dari ukuran piksel sampai jumlah poligon.' },
 ]
