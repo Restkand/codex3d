@@ -1,0 +1,589 @@
+---
+title: "Bayangan & Pencahayaan Global"
+description: "Shadow map, cascade, bias, bayangan lembut, cahaya tidak langsung, lightmap, light probe, ambient occlusion, dan GI real-time beserta biayanya."
+fundamental: "Lampu dan bayangan bawaan engine sudah terlihat bagus di scene contoh. Masalah muncul di level sungguhan: bayangan matahari pecah menjadi kotak-kotak, karakter tampak melayang, ruangan yang sudah dipanggang tetap terang setelah lampunya dimatikan, atau frame rate jatuh begitu GI dinyalakan. Semua itu baru bisa diperbaiki kalau kamu tahu dari mana bayangan dan cahaya pantulan itu dihitung."
+kind: lesson
+minutes: 35
+status: draf
+lastReviewed: 2026-10-30
+terms:
+  - shadow-map
+  - shadow-acne
+  - directional-light
+  - depth-buffer
+  - global-illumination
+  - ambient-light
+  - reflection-probe
+  - ao-map
+  - uv
+  - draw-call
+krekit:
+  gambaran-besar: "Dua pertanyaan saja: siapa yang menghalangi lampu, dan dari mana cahaya pantulan datang."
+  cara-kerja-shadow-map: "Lampu punya kamera sendiri. Bayangan adalah hasil membandingkan dua foto jarak."
+  cascade-bayangan-matahari-di-dunia-yang-luas: "Bayangan buram di dekat kamera? Cek Max Distance dulu sebelum menaikkan resolusi."
+  shadow-acne-bias-dan-peter-panning: "Bias itu tarik-ulur. Terlalu kecil muncul garis, terlalu besar objek melayang."
+  bayangan-lembut: "Tepi bayangan yang lembut terlihat mahal karena memang mahal. Coba bandingkan di ponsel."
+  cahaya-langsung-dan-tidak-langsung: "Sudut ruangan yang tidak hitam pekat itu hasil cahaya pantulan."
+  memanggang-cahaya-lightmap: "Lightmap seperti foto yang ditempel di dinding. Matikan lampunya, fotonya tetap terang."
+  light-probe-dan-reflection-probe: "Karakter yang bergerak tidak punya lightmap. Ia meminjam cahaya dari probe di sekitarnya."
+  ambient-occlusion: "AO membuat objek terasa menapak. Tanpa itu, kursi di lantai kelihatan mengambang."
+  gi-real-time: "GI real-time memberi kebebasan, tapi tagihannya dibayar di setiap frame."
+  memilih-teknik-berdasarkan-anggaran: "Tidak ada pilihan yang benar untuk semua game. Mulai dari platform targetmu."
+  kesalahan-umum: "Kesalahan nomor empat sering baru ketahuan saat karakter masuk ke ruangan gelap."
+sidebar:
+  order: 5
+  label: "5 · Bayangan & Pencahayaan Global"
+quiz:
+  - q: "Di level terbuka, Max Distance bayangan matahari diatur 500 meter dan bayangan karakter di dekat kamera terlihat buram dan kotak-kotak. Langkah mana yang paling masuk akal dicoba lebih dulu?"
+    options:
+      - "Menaikkan bias"
+      - "Menurunkan Max Distance ke jarak yang benar-benar perlu, atau menambah jumlah cascade"
+      - "Mematikan Receive Shadows di lantai"
+      - "Mengganti lampu matahari menjadi point light"
+    answer: 1
+    explain: "Satu shadow map yang menutupi 500 meter berarti sangat sedikit piksel untuk setiap meter. Memperkecil jangkauan atau membaginya menjadi beberapa cascade menambah kepadatan piksel di dekat kamera."
+  - q: "Setelah bias bayangan dinaikkan banyak untuk menghilangkan garis-garis di permukaan, bayangan sebuah kursi terlepas dari kakinya sehingga kursi tampak melayang. Apa nama artefak ini?"
+    options:
+      - "Shadow acne"
+      - "Light leaking"
+      - "Peter panning"
+      - "Aliasing"
+    answer: 2
+    explain: "Bias yang terlalu besar menggeser perbandingan jarak terlalu jauh, sehingga bagian bayangan yang dekat dengan objek ikut hilang. Garis-garis yang tadinya ingin dihilangkan disebut shadow acne."
+  - q: "Lampu di sebuah ruangan diatur ke mode Baked, lalu lightmap dipanggang. Saat game berjalan, skrip mematikan lampu itu. Apa yang terlihat?"
+    options:
+      - "Ruangan langsung gelap"
+      - "Ruangan tetap terang, karena cahayanya sudah tersimpan di tekstur lightmap"
+      - "Engine memanggang ulang lightmap secara otomatis"
+      - "Hanya bayangannya yang hilang"
+    answer: 1
+    explain: "Lightmap adalah tekstur yang dihitung sebelum game berjalan. Mematikan lampu tidak mengubah tekstur itu. Untuk lampu yang perlu dinyalakan dan dimatikan, pakai mode Mixed atau Realtime, atau siapkan beberapa versi bake."
+  - q: "Level sudah memakai lightmap dan terlihat bagus. Tetapi karakter yang masuk ke lorong gelap tetap terang seperti di halaman. Apa yang paling mungkin kurang?"
+    options:
+      - "Light probe di area yang dilewati karakter"
+      - "Resolusi lightmap yang lebih tinggi"
+      - "Shadow map yang lebih besar"
+      - "Tone mapping"
+    answer: 0
+    explain: "Lightmap hanya berlaku untuk objek statis. Objek yang bergerak mengambil cahaya tidak langsung dari light probe. Tanpa probe di lorong itu, karakter memakai cahaya dari tempat lain."
+  - q: "Kenapa point light berbayangan biasanya jauh lebih mahal daripada spot light berbayangan?"
+    options:
+      - "Point light selalu lebih terang"
+      - "Point light memancar ke segala arah, sehingga shadow map-nya butuh enam render (satu per sisi kubus), sedangkan spot cukup satu"
+      - "Spot light tidak memakai shadow map"
+      - "Point light tidak bisa dipanggang"
+    answer: 1
+    explain: "Spot light hanya melihat satu kerucut, jadi satu render dari sudut pandangnya cukup. Point light harus melihat ke enam arah. Mode dual paraboloid memangkasnya menjadi dua render dengan hasil yang sedikit terdistorsi."
+  - q: "Kamu membuat game untuk ponsel kelas menengah dengan level yang lampunya tidak bergerak. Kombinasi mana yang paling masuk akal?"
+    options:
+      - "GI real-time penuh dan soft shadows kualitas tinggi"
+      - "Lightmap untuk objek statis, light probe untuk objek bergerak, dan reflection probe yang dipotret sekali"
+      - "Tanpa cahaya tidak langsung sama sekali"
+      - "Point light berbayangan di setiap ruangan"
+    answer: 1
+    explain: "Lightmap dan probe memindahkan hampir semua biaya ke waktu bake, sehingga biaya per frame-nya kecil. Dokumentasi Godot juga merekomendasikan LightmapGI dan ReflectionProbe untuk game mobile."
+sources:
+  - title: "Universal Render Pipeline Asset reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/render-pipelines/universal-render-pipeline/urp-reference/universalrp-asset"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Choose a Light Mode"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/lighting-overview/lighting-light-sources/components/configuring/light-modes/choose"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Progressive Lightmapper"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/lighting-overview/direct-and-indirect-lighting/lightmapping/baking-before-runtime/configure/progressive-lightmapper"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Adaptive Probe Volumes (APV) in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/lighting-overview/lighting/probevolumes/concept"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Screen Space Ambient Occlusion (SSAO) in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/lighting-overview/lighting/shadows-in-urp/post-processing-ssao/ssao"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Enlighten Realtime Global Illumination"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/lighting-overview/direct-and-indirect-lighting/lightmapping/realtime-gi-using-enlighten/enlighten"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "3D lights and shadows"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/lights_and_shadows.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Introduction to global illumination"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/global_illumination/introduction_to_global_illumination.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Using Lightmap global illumination"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/global_illumination/using_lightmap_gi.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Environment and post-processing"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/environment_and_post_processing.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+import ShadowDiagram from '~/components/diagrams/ShadowDiagram.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menjelaskan cara shadow map dibuat dan kenapa bayangan bisa buram, bergaris, atau terlepas dari objek.
+- Menyetel jangkauan bayangan, cascade, dan bias dengan tahu apa yang sedang ditukar.
+- Membedakan cahaya langsung dan cahaya tidak langsung.
+- Memilih antara lightmap, light probe, reflection probe, ambient occlusion, dan GI real-time.
+- Memperkirakan biaya setiap teknik, baik per frame maupun saat bake.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: lampu panggung dan dinding putih">
+Nyalakan satu lampu sorot di ruangan berdinding putih. Ada dua hal yang kamu lihat. Pertama, benda yang menghalangi lampu meninggalkan bayangan tajam di lantai. Kedua, bagian ruangan yang tidak terkena lampu sama sekali tetap tidak gelap total, karena cahaya memantul dari lantai dan dinding ke mana-mana.
+</Aside>
+
+Di [Pelajaran 3](/belajar/fondasi-engine/03-permukaan/), kamu sudah mengenal material dan jenis lampu: directional, point, dan spot. Di [Pelajaran 4](/belajar/fondasi-engine/04-shader/), kamu melihat bahwa warna setiap piksel dihitung oleh shader. Pelajaran ini menambahkan dua pertanyaan yang tidak bisa dijawab shader dari satu piksel saja:
+
+1. **Apakah ada yang menghalangi lampu?** Shader hanya tahu titik yang sedang ia warnai. Ia tidak tahu ada pohon di antara titik itu dan matahari. Jawabannya adalah [shadow map](/kamus/cahaya/shadow-map/).
+2. **Berapa banyak cahaya pantulan yang sampai ke sini?** Cahaya yang sudah memantul dari permukaan lain disebut cahaya tidak langsung. Gabungan cahaya langsung dan tidak langsung disebut [global illumination](/kamus/cahaya/global-illumination/) (GI).
+
+Secara kasar, warna akhir sebuah piksel tersusun seperti ini:
+
+```text title="Pseudocode: susunan cahaya satu piksel"
+warna = material * (cahaya_langsung * faktor_bayangan
+                  + cahaya_tidak_langsung * faktor_ao)
+      + pantulan_lingkungan
+```
+
+`faktor_bayangan` bernilai 0 (tertutup penuh) sampai 1 (terkena lampu). `faktor_ao` meredupkan celah dan sudut. Sisa pelajaran ini membahas dari mana setiap bagian itu datang, dan berapa harganya di [anggaran 16,7 ms](/belajar/fondasi-engine/01-frame/) satu frame.
+
+## Cara kerja shadow map
+
+GPU menggambar segitiga satu per satu, jadi ia tidak bisa langsung "melihat" apakah sinar dari lampu terhalang. Shadow map memecahkan ini dalam dua langkah:
+
+<ShadowDiagram />
+
+```text title="Pseudocode: dua langkah shadow map"
+// Langkah 1: render dari sudut pandang lampu, hanya kedalamannya
+untuk setiap piksel p di peta_bayangan:
+    peta_bayangan[p] = jarak permukaan terdekat ke lampu
+
+// Langkah 2: render biasa dari kamera
+untuk setiap piksel layar:
+    p, jarak_ke_lampu = proyeksikan(titik_dunia, lampu)
+    if jarak_ke_lampu > peta_bayangan[p]:
+        faktor_bayangan = 0     // ada yang lebih dekat ke lampu
+    else:
+        faktor_bayangan = 1
+```
+
+Langkah 1 adalah render tambahan yang hanya mengisi [depth buffer](/kamus/geometri/depth-buffer/). Setiap objek yang memberi bayangan digambar sekali lagi di sana, sehingga jumlah [draw call](/kamus/performa/draw-call/) ikut naik. Berapa kali render tambahan itu terjadi bergantung pada jenis lampu:
+
+| Jenis lampu | Render shadow map per frame | Catatan |
+| --- | --- | --- |
+| Spot | 1 | Lampu melihat satu kerucut |
+| Directional | 1 per cascade | Dibahas di bagian berikutnya |
+| Point | 6 | Satu untuk setiap sisi kubus. Mode *dual paraboloid* cukup 2, dengan hasil sedikit terdistorsi |
+
+Karena itu aturan pertama hemat bayangan adalah **membatasi lampu yang memberi bayangan**. Lilin kecil di pojok jarang perlu bayangan. Objek kecil yang tidak penting juga bisa dimatikan sakelar *cast shadows*-nya.
+
+Kualitas bayangan ditentukan oleh **kepadatan**: berapa piksel shadow map yang tersedia untuk setiap meter dunia. Shadow map 2048 piksel yang menutupi area 20 meter memberi sekitar 100 piksel per meter, jadi satu piksel bayangan selebar 1 cm. Shadow map yang sama untuk area 200 meter hanya memberi 10 piksel per meter: satu piksel bayangan selebar 10 cm, dan tepinya terlihat bergerigi.
+
+## Cascade: bayangan matahari di dunia yang luas
+
+Lampu [directional](/kamus/cahaya/directional-light/) seperti matahari menyinari seluruh dunia. Kalau satu shadow map harus menutupi semua yang terlihat sampai cakrawala, kepadatannya terlalu rendah untuk bayangan di dekat kamera, padahal justru bagian itu yang paling diperhatikan pemain.
+
+Solusinya adalah **cascaded shadow maps**: area pandang kamera dipotong menjadi beberapa irisan berdasarkan jarak, dan setiap irisan mendapat shadow map sendiri. Irisan terdekat kecil sehingga padat dan tajam. Irisan terjauh besar dan kasar, tetapi di sana bayangan hanya terlihat beberapa piksel di layar.
+
+```text title="Contoh: 4 cascade, masing-masing 2048 piksel, jangkauan 150 m"
+cascade 1:   0 sampai  10 m   → ±205 piksel per meter
+cascade 2:  10 sampai  30 m   → ±100 piksel per meter
+cascade 3:  30 sampai  70 m   → ±50 piksel per meter
+cascade 4:  70 sampai 150 m   → ±25 piksel per meter
+```
+
+Angkanya ilustrasi, tetapi polanya berlaku umum. Dua pengaturan paling berpengaruh:
+
+- **Jangkauan maksimum** (*max distance*): di luar jarak ini tidak ada bayangan real-time. Makin kecil jangkauannya, makin padat semua cascade.
+- **Jumlah cascade**: makin banyak, makin tajam di semua jarak, tetapi setiap cascade adalah render tambahan. Objek besar yang masuk ke semua irisan digambar di setiap irisan.
+
+<EngineTabs>
+<div slot="unity">
+
+Di URP, pengaturannya ada di aset URP:
+
+- **Lighting → Main Light → Shadow Resolution**: ukuran shadow map lampu utama.
+- **Shadows → Max Distance**: jarak terjauh bayangan dirender, selalu dalam meter.
+- **Shadows → Cascade Count**: jumlah cascade, sampai 4, dengan batas irisan di **Split 1** sampai **Split 3**. Pengaturan cascade hanya berlaku untuk lampu utama, dan dokumentasi Unity mencatat bahwa menambah cascade menurunkan performa.
+- **Last Border**: lebar area tempat bayangan memudar sebelum Max Distance, supaya batasnya tidak terlihat sebagai garis.
+
+</div>
+<div slot="unreal">
+
+Unreal Engine 5 secara bawaan memakai **Virtual Shadow Maps**: shadow map beresolusi sangat tinggi yang dipecah menjadi halaman-halaman kecil, dan hanya halaman yang terlihat kamera yang diisi. Cara ini menggantikan peran cascade klasik, walaupun cascaded shadow maps masih tersedia jika fitur itu dimatikan.
+
+</div>
+<div slot="godot">
+
+`DirectionalLight3D` → `directional_shadow_mode`: **Orthogonal** (tanpa cascade), **PSSM 2 Splits**, atau **PSSM 4 Splits** (bawaan saat bayangan diaktifkan). PSSM adalah nama lain cascade.
+
+Atur **Max Distance** sesuai kebutuhan scene. Dokumentasi Godot menyebut jarak maksimum yang lebih kecil menghasilkan bayangan yang lebih bagus sekaligus performa yang lebih baik. Godot juga mencatat bahwa objek besar yang muncul di keempat irisan menambah draw call.
+
+</div>
+</EngineTabs>
+
+## Shadow acne, bias, dan peter panning
+
+Setiap piksel shadow map mewakili satu kotak kecil di dunia, dan jarak yang disimpannya hanya satu angka untuk seluruh kotak itu. Pada permukaan yang miring terhadap lampu, sebagian titik di kotak itu sedikit lebih jauh dari angka yang tersimpan. Hasilnya, permukaan menganggap dirinya menghalangi dirinya sendiri, dan muncul pola garis atau bintik yang disebut [shadow acne](/kamus/cahaya/shadow-acne/).
+
+Obatnya adalah **bias**, yaitu sedikit kelonggaran pada perbandingan:
+
+```text title="Pseudocode: perbandingan dengan bias"
+titik_uji = titik_dunia + normal * normal_bias     // geser keluar searah normal
+if jarak(titik_uji, lampu) > peta_bayangan[p] + depth_bias:
+    faktor_bayangan = 0
+```
+
+- **Depth bias** menambah toleransi jarak.
+- **Normal bias** menggeser titik uji keluar dari permukaan, searah [normal](/kamus/geometri/normal/). Biasanya lebih efektif untuk permukaan miring.
+
+Bias yang terlalu besar menimbulkan masalah sebaliknya. Bagian bayangan yang dekat dengan objek ikut hilang, sehingga bayangan terlepas dari kaki karakter dan objek tampak melayang. Artefak ini disebut **peter panning**, dari tokoh dongeng yang bayangannya bisa lepas. Normal bias yang besar juga bisa membuat bayangan objek tipis tampak menyusut.
+
+Menyetel bias selalu mencari titik tengah di antara keduanya, dan titik tengah itu bergeser kalau kepadatan shadow map berubah. Karena itu, perbaiki dulu jangkauan dan cascade, baru setel bias.
+
+<EngineTabs>
+<div slot="unity">
+
+URP: **Shadows → Depth Bias** dan **Normal Bias** di aset URP berlaku untuk semua lampu. Di komponen Light, bagian **Realtime Shadows → Bias** bisa diganti dari **Use Pipeline Settings** ke **Custom** untuk menyetel satu lampu saja.
+
+</div>
+<div slot="unreal">
+
+Pada komponen lampu: **Shadow Bias** dan **Shadow Slope Bias**.
+
+</div>
+<div slot="godot">
+
+Pada lampu (`Light3D`): **Bias** dan **Normal Bias**. Dokumentasi Godot menyarankan menaikkan Normal Bias lebih dulu, dan mengingatkan bahwa nilai yang tepat bisa berbeda untuk setiap lampu.
+
+</div>
+</EngineTabs>
+
+## Bayangan lembut
+
+Shadow map hanya memberi jawaban ya atau tidak untuk setiap piksel, jadi tepinya keras dan bergerigi. Di dunia nyata, tepi bayangan berubah bertahap karena sumber cahaya punya ukuran. Daerah peralihan ini disebut **penumbra**.
+
+Ada dua tingkat teknik untuk melembutkannya:
+
+- **Filtering** (sering disebut PCF, *percentage-closer filtering*): shadow map dibaca beberapa kali di sekitar titik, lalu hasilnya dirata-rata. Hasilnya tepi yang lembut dengan lebar yang sama di mana-mana. Biayanya naik sebanding dengan jumlah sampel.
+- **Penumbra berdasarkan jarak** (misalnya PCSS, *percentage-closer soft shadows*): lebar tepi lembut dihitung dari jarak antara penghalang dan permukaan. Bayangan tiang tajam di pangkalnya dan melebar di ujungnya, seperti bayangan matahari sungguhan. Hasilnya paling meyakinkan, dan biayanya paling tinggi.
+
+```text title="Pseudocode: filtering sederhana"
+total = 0
+untuk setiap offset di pola_sampel:          // misalnya 4, 25, atau 49 titik
+    total += uji_bayangan(p + offset)
+faktor_bayangan = total / jumlah_sampel
+```
+
+<EngineTabs>
+<div slot="unity">
+
+URP: centang **Shadows → Soft Shadows** di aset URP. **Soft Shadows Quality** punya tiga pilihan: **Low** (4 sampel PCF, untuk mobile), **Medium** (filter 5×5, bawaan, untuk desktop), dan **High** (filter 7×7). Dokumentasi Unity menandai fitur ini berdampak tinggi di platform *tile-based* seperti ponsel dan perangkat XR mandiri.
+
+</div>
+<div slot="unreal">
+
+Dengan Virtual Shadow Maps, kelembutan bayangan ikut dipengaruhi ukuran sumber cahaya pada komponen lampu.
+
+</div>
+<div slot="godot">
+
+Kualitas filter bayangan diatur di Project Settings. Bawaannya **Soft Low**, yang menurut dokumentasi Godot seimbang antara performa dan kualitas.
+
+Penumbra berdasarkan jarak (PCSS) aktif jika **Angular Distance** pada `DirectionalLight3D` atau **Size** pada lampu omni dan spot dinaikkan di atas 0. Matahari kira-kira 0,5°. Dokumentasi Godot mengingatkan PCSS punya biaya performa tinggi, terutama untuk lampu directional.
+
+</div>
+</EngineTabs>
+
+## Cahaya langsung dan tidak langsung
+
+Sampai di sini, semua yang dihitung adalah **cahaya langsung** (*direct light*): sinar dari lampu yang langsung mengenai permukaan, dikurangi bagian yang terhalang. Kalau hanya itu yang dihitung, sisi objek yang membelakangi lampu akan hitam pekat, dan ruangan yang hanya diterangi jendela kecil terlihat seperti gua.
+
+**Cahaya tidak langsung** (*indirect light*) adalah cahaya yang sudah memantul dari permukaan lain sebelum sampai ke titik ini. Ia membawa warna permukaan pantulnya: lantai karpet merah membuat dinding putih di dekatnya agak kemerahan. Efek ini disebut *color bleeding*.
+
+Menghitung pantulan dengan benar berarti, untuk setiap titik, bertanya "cahaya apa yang datang dari semua arah?", lalu mengulang pertanyaan yang sama untuk setiap permukaan yang terlihat dari titik itu. Pekerjaan ini jauh lebih berat daripada cahaya langsung. Karena itu engine menyediakan beberapa cara murah dan mahal untuk menirunya:
+
+1. **[Ambient light](/kamus/cahaya/ambient-light/)**: satu warna atau warna langit yang ditambahkan ke semua permukaan. Paling murah, dan tidak tahu bentuk ruangan.
+2. **Dipanggang sebelum game berjalan**: lightmap untuk objek statis, light probe untuk objek bergerak.
+3. **Dihitung saat game berjalan**: GI real-time, dengan berbagai tingkat penyederhanaan.
+
+## Memanggang cahaya: lightmap
+
+**Lightmap** adalah tekstur yang menyimpan hasil perhitungan cahaya untuk setiap permukaan statis. Engine menghitungnya di editor (proses ini disebut *bake*, memanggang), boleh memakan waktu menit atau jam, dengan banyak pantulan dan bayangan yang sangat lembut. Saat game berjalan, shader hanya membaca tekstur itu.
+
+```text title="Pseudocode: lightmap saat game berjalan"
+// di editor, sekali
+untuk setiap texel di lightmap:
+    lightmap[texel] = hitung_cahaya_dengan_banyak_pantulan(titik_dunia(texel))
+
+// saat game berjalan, setiap piksel
+cahaya_tidak_langsung = baca_tekstur(lightmap, uv2)
+```
+
+Pertukarannya jelas:
+
+- **Murah per frame**: satu pembacaan tekstur, berapa pun jumlah pantulan dan lampunya.
+- **Tidak bisa berubah**: lampu yang dipanggang tidak bisa digeser, diredupkan, atau dimatikan saat game berjalan. Pintu yang dibuka tidak mengubah terang ruangan.
+- **Hanya untuk objek statis**: objek yang bergerak butuh cara lain.
+- **Butuh UV kedua**: setiap permukaan perlu tempat sendiri di tekstur lightmap, tanpa saling tumpuk. Set [UV](/kamus/geometri/uv/) ini biasanya terpisah dari UV tekstur warna, dan sering disebut UV2.
+- **Memakan memori dan waktu bake**: makin tinggi resolusi lightmap (makin kecil ukuran *texel*, satu piksel lightmap di dunia), makin halus hasilnya, makin besar filenya, dan makin lama bake-nya. Bake yang lama memperlambat setiap iterasi desain level.
+
+Kebanyakan engine juga punya jalan tengah: cahaya tidak langsung dipanggang, cahaya langsung dan bayangannya tetap real-time. Lampu masih bisa memberi bayangan pada objek bergerak, dengan biaya per frame yang lebih tinggi.
+
+<EngineTabs>
+<div slot="unity">
+
+Setiap Light punya **Mode**:
+
+| Mode | Cahaya langsung | Cahaya tidak langsung | Biaya saat berjalan |
+| --- | --- | --- | --- |
+| Baked | dipanggang | dipanggang | tidak ada |
+| Mixed | real-time | dipanggang | tinggi |
+| Realtime | real-time | dipanggang, kecuali memakai Enlighten Realtime GI | paling tinggi |
+
+Dokumentasi Unity menyarankan Baked untuk lampu latar, Mixed untuk lampu yang diam tetapi perlu bayangan real-time, dan Realtime untuk lampu yang bergerak, berkedip, atau bisa dihancurkan. Waktu iterasinya berkebalikan: Baked paling lambat karena paling banyak yang perlu dipanggang.
+
+Lightmap dipanggang oleh **Progressive Lightmapper** dari **Window → Rendering → Lighting → Lightmapping Settings → Lightmapper**. Varian **Progressive GPU** (bawaan) memakai GPU dan VRAM, sedangkan **Progressive CPU** memakai CPU dan RAM. Jika scene butuh VRAM lebih banyak dari yang tersedia, bake bisa jauh lebih lama.
+
+</div>
+<div slot="unreal">
+
+Dengan Lumen, yang aktif secara bawaan di proyek Unreal Engine 5, GI dihitung real-time dan lightmap tidak dipakai. Untuk pencahayaan yang dipanggang, matikan Lumen lalu bake dengan **Lightmass**, memakai lampu ber-**Mobility** Static (dipanggang penuh) atau Stationary (sebagian dipanggang). Lampu Movable sepenuhnya real-time.
+
+</div>
+<div slot="godot">
+
+Node `LightmapGI` didukung semua renderer, walaupun proses bake-nya butuh dukungan RenderingDevice.
+
+- **UV2**: cara yang disarankan adalah mengatur **Meshes → Light Baking** ke **Static Lightmaps** saat impor. **Lightmap Texel Size** bawaan 0,2. Dokumentasi Godot menyarankan 0,5 atau lebih untuk scene besar.
+- **Bake Mode lampu**: **Static** memanggang cahaya langsung dan tidak langsung (performa terbaik, lampu tidak lagi memengaruhi permukaan statis saat berjalan). **Dynamic** (bawaan) hanya memanggang cahaya tidak langsung, cahaya langsung dan bayangannya tetap real-time. **Disabled** mengecualikan lampu dari bake. Menyembunyikan node lampu tidak mengeluarkannya dari bake.
+- Untuk ruangan tertutup, aktifkan **Interior** atau matikan kontribusi Environment agar cahaya langit tidak bocor masuk.
+
+</div>
+</EngineTabs>
+
+## Light probe dan reflection probe
+
+Lightmap menempel di permukaan, jadi karakter, kendaraan, dan pintu yang bergerak tidak bisa memakainya. Tanpa pengganti, karakter yang masuk ke lorong gelap tetap terang seperti di halaman.
+
+**Light probe** adalah titik-titik sampel di ruang kosong. Saat bake, setiap probe mencatat cahaya tidak langsung yang datang dari semua arah ke titik itu, dalam bentuk ringkas. Saat game berjalan, objek yang bergerak mencampur nilai dari probe-probe terdekat.
+
+```text title="Pseudocode: objek bergerak membaca probe"
+probe_terdekat = cari_probe_di_sekitar(posisi_objek)
+cahaya_tidak_langsung = campur(probe_terdekat, bobot_berdasarkan_jarak)
+```
+
+Probe hanya seakurat penempatannya. Probe yang terlalu jarang di perbatasan terang dan gelap membuat karakter berubah warna terlambat. Probe yang tertanam di dalam dinding bisa mencatat gelap dan "meracuni" sekitarnya.
+
+**[Reflection probe](/kamus/cahaya/reflection-probe/)** mengurus bagian lain: pantulan untuk permukaan mengilap dan logam. Probe ini memotret sekelilingnya ke enam arah dan menyimpannya sebagai *cubemap* (gambar 360°). Lightmap dan light probe tidak menyimpan pantulan seperti cermin, jadi tanpa reflection probe, bola logam di dalam gua tetap memantulkan langit. Memotret sekali itu murah. Memotret ulang setiap frame berarti merender scene enam kali lagi.
+
+<EngineTabs>
+<div slot="unity">
+
+Cara klasik: komponen **Light Probe Group**, dengan probe yang kamu tempatkan sendiri. Objek mengambil cahaya per objek.
+
+Di URP Unity 6 ada **Adaptive Probe Volumes** (APV). Unity menempatkan probe secara otomatis, lebih rapat di area yang geometrinya padat. Cahaya diambil **per piksel** dari delapan probe terdekat, sehingga sambungan antarobjek lebih rapi. Pertukarannya, posisi probe di dalam APV tidak bisa digeser satu per satu, dan Light Probe Group tidak bisa dikonversi ke APV.
+
+Untuk pantulan: komponen **Reflection Probe**.
+
+</div>
+<div slot="unreal">
+
+Dengan lightmap dari Lightmass, objek bergerak mendapat cahaya tidak langsung dari sampel yang dihasilkan saat bake. Untuk pantulan tersedia aktor **Sphere Reflection Capture** dan **Box Reflection Capture**. Dengan Lumen, pantulan sebagian besar dihitung real-time.
+
+</div>
+<div slot="godot">
+
+`LightmapGI` membuat probe otomatis jika **Gen Probes → Subdiv** tidak Disabled (bawaannya 8). Probe tambahan bisa ditaruh manual dengan node `LightmapProbe`, lalu lightmap harus dipanggang ulang. Probe hanya menyimpan cahaya tidak langsung. Cahaya langsung untuk objek bergerak tetap dihitung real-time.
+
+Node `ReflectionProbe` didukung semua renderer. Mode **Once** (bawaan) murah, mode **Always** memotret setiap frame dan mahal.
+
+</div>
+</EngineTabs>
+
+## Ambient occlusion
+
+Cahaya tidak langsung datang dari banyak arah. Di celah sempit, sudut ruangan, atau tempat kursi menyentuh lantai, sebagian besar arah itu tertutup. **Ambient occlusion** (AO) meniru efek ini dengan meredupkan cahaya tidak langsung di tempat-tempat yang tertutup. Hasilnya, objek terasa menapak di lantai dan detail kecil terlihat lebih dalam.
+
+AO bisa datang dari tiga sumber, dan sering dipakai bersamaan:
+
+- **[AO map](/kamus/geometri/ao-map/) di material**: dipanggang dari bentuk satu model di aplikasi 3D. Tahu lekukan model itu sendiri, tidak tahu objek lain di sekitarnya.
+- **AO di lightmap**: perhitungan cahaya saat bake sudah mencakup bagian yang tertutup antarobjek statis.
+- **SSAO** (*screen-space ambient occlusion*): dihitung setiap frame dari depth buffer dan normal di layar. Bekerja untuk objek bergerak, tetapi hanya tahu apa yang terlihat di layar, sehingga efeknya bisa berubah saat objek penghalang keluar dari layar. Biayanya bergantung pada resolusi layar, dan banyak engine menyediakan opsi setengah resolusi.
+
+AO secara bawaan hanya meredupkan cahaya tidak langsung. Bagian yang terkena sinar matahari langsung tetap terang, sesuai kenyataan.
+
+<EngineTabs>
+<div slot="unity">
+
+URP: SSAO ditambahkan sebagai **Renderer Feature** **Screen Space Ambient Occlusion** pada Renderer, terpisah dari efek post-processing dan Volume. Secara bawaan ia membaca normal dari pass DepthNormals. Jika **Source** diatur ke **Depth**, normal dibangun ulang dari depth texture, dengan jumlah sampel yang diatur **Normal Quality**.
+
+</div>
+<div slot="unreal">
+
+Ambient occlusion layar diatur di **Post Process Volume**. Material juga punya input **Ambient Occlusion** untuk AO map.
+
+</div>
+<div slot="godot">
+
+Resource **Environment** → **SSAO**. Tersedia di Forward+ dan, dalam versi yang lebih sederhana, di Compatibility. Tidak tersedia di Mobile. **Half Size** membuatnya jauh lebih cepat dengan risiko detail kecil hilang. **Light Affect** di atas 0 membuat SSAO juga terlihat di cahaya langsung, yang menurut dokumentasi Godot tidak akurat secara fisika.
+
+</div>
+</EngineTabs>
+
+## GI real-time
+
+Lightmap tidak bisa mengikuti matahari yang terbenam, dinding yang dihancurkan, atau level yang dibuat secara prosedural. Untuk kasus itu, cahaya tidak langsung perlu dihitung saat game berjalan. Tidak ada engine yang menghitungnya secara penuh setiap frame. Semua teknik GI real-time menyederhanakan dunia lebih dulu, lalu menghitung pantulan pada versi sederhana itu:
+
+- **Screen space**: memakai apa yang sudah ada di layar (warna dan depth buffer). Murah, tetapi buta terhadap apa pun di luar layar. Cocok sebagai pelengkap.
+- **Voxel**: dunia diubah menjadi kisi kotak-kotak kecil (*voxel*), lalu cahaya dipantulkan di kisi itu. Dinding yang lebih tipis dari satu voxel bisa membocorkan cahaya.
+- **Distance field**: dunia disimpan sebagai jarak ke permukaan terdekat, sehingga sinar bisa "dilacak" dengan cepat tanpa menyentuh segitiga aslinya.
+- **Probe yang diperbarui**: probe tetap ada, tetapi isinya dihitung ulang sedikit demi sedikit saat game berjalan.
+- **Ray tracing**: GPU yang mendukungnya bisa melacak sinar langsung ke geometri. Paling akurat, paling mahal, dan bergantung pada hardware.
+
+Semua pendekatan ini membayar biayanya **setiap frame**, dan biasanya menyebar pekerjaannya ke beberapa frame. Akibatnya, pencahayaan bisa tertinggal sesaat ketika lampu berubah cepat.
+
+<EngineTabs>
+<div slot="unity">
+
+**Enlighten Realtime Global Illumination** membuat lampu Realtime juga menyumbang cahaya tidak langsung. Dokumentasi Unity menyebutnya cocok untuk lampu yang berubah pelan dan berpengaruh besar, seperti matahari yang bergerak di langit, dan tidak ditujukan untuk efek atau lampu yang berubah cepat. Targetnya PC dan konsol kelas menengah ke atas. Cek tabel perbandingan render pipeline di dokumentasi Unity untuk dukungan per pipeline.
+
+</div>
+<div slot="unreal">
+
+**Lumen** adalah sistem GI dan pantulan real-time bawaan Unreal Engine 5. Lampu, langit, dan objek yang berubah langsung memengaruhi cahaya tidak langsung tanpa bake.
+
+</div>
+<div slot="godot">
+
+| Teknik | Renderer | Sifat | Catatan dari dokumentasi Godot |
+| --- | --- | --- | --- |
+| `VoxelGI` | Forward+ saja | real-time, perlu bake awal untuk menyiapkan voxel | biaya sedang, dinding tipis bisa bocor |
+| SDFGI | Forward+ saja | semi-real-time, tanpa bake | paling lambat, objek bergerak menerima GI tetapi tidak menyumbang |
+| SSIL | Forward+ saja | real-time, screen space | pelengkap teknik lain, bukan GI penuh |
+
+Untuk game desktop, dokumentasi Godot menyarankan mulai dari SDFGI. Untuk game mobile, pakai `LightmapGI` dan `ReflectionProbe`.
+
+</div>
+</EngineTabs>
+
+## Memilih teknik berdasarkan anggaran
+
+Setiap teknik memindahkan biaya ke tempat yang berbeda: ke waktu bake, ke memori, atau ke setiap frame.
+
+| Teknik | Biaya per frame | Biaya lain | Bereaksi pada perubahan saat berjalan |
+| --- | --- | --- | --- |
+| Ambient dari langit | sangat kecil | tidak ada | ya, tetapi tidak tahu bentuk ruangan |
+| Lightmap | sangat kecil | waktu bake, memori tekstur, UV2 | tidak |
+| Light probe | kecil | waktu bake, penempatan probe | tidak (isi probe tetap) |
+| Reflection probe sekali potret | kecil | memori cubemap | tidak |
+| Shadow map per lampu | sedang, naik per lampu dan per cascade | memori shadow map | ya |
+| Soft shadows dan PCSS | sedang sampai tinggi | tidak ada | ya |
+| SSAO | sedang, sebanding dengan resolusi | tidak ada | ya, terbatas pada isi layar |
+| GI real-time | tinggi | memori struktur data | ya |
+
+Untuk game mobile atau perangkat lemah, kombinasi yang umum adalah lightmap, light probe, reflection probe sekali potret, dan sedikit lampu real-time berbayangan. Untuk game PC dan konsol dengan siang-malam yang berubah atau dunia yang bisa dihancurkan, GI real-time lebih masuk akal, asalkan profiler menunjukkan GPU masih punya ruang.
+
+Efek layar penuh lain seperti bloom dan tone mapping dibahas di [Pelajaran 6](/belajar/fondasi-engine/06-post-processing/) (Post-processing).
+
+## Kesalahan umum
+
+Sebagian besar kesalahan berikut tidak memunculkan error. Scene tetap tampil, hanya terlihat salah atau berjalan lambat.
+
+### Semua lampu memberi bayangan
+
+```text title="✗ Keliru"
+setiap lampu di level: cast_shadows = true    // 20 point light = 120 render shadow map
+```
+
+```text title="✓ Benar"
+matahari + 2 lampu utama: cast_shadows = true
+lampu dekorasi: cast_shadows = false, atau dipanggang
+```
+
+Lampu berbayangan dikalikan jumlah render shadow map per lampu. Point light adalah yang paling mahal.
+
+### Jangkauan bayangan sejauh mata memandang
+
+```text title="✗ Keliru"
+max_distance = 1000    // shadow map tersebar ke 1 km, bayangan dekat jadi kotak-kotak
+```
+
+```text title="✓ Benar"
+max_distance = 80      // cukup untuk area permainan, sisanya dipanggang atau dipudarkan
+```
+
+Menaikkan resolusi shadow map memperbaiki gejalanya dengan harga memori. Memperkecil jangkauan memperbaiki penyebabnya.
+
+### Bias dinaikkan sampai acne hilang
+
+```text title="✗ Keliru"
+depth_bias = 5         // garis hilang, tapi semua objek melayang
+```
+
+```text title="✓ Benar"
+perbaiki jangkauan dan cascade dulu
+naikkan normal_bias sedikit demi sedikit
+cek kaki karakter dan kaki meja setelah setiap perubahan
+```
+
+### Lightmap tanpa probe untuk objek bergerak
+
+```text title="✗ Keliru"
+level: lightmap dipanggang
+karakter: tidak ada light probe di level   // terang sama di halaman dan di gua
+```
+
+```text title="✓ Benar"
+level: lightmap dipanggang
+light probe: lebih rapat di perbatasan terang-gelap, di pintu, di bawah tangga
+```
+
+### Mesh tanpa UV2 ikut dipanggang
+
+```text title="✗ Keliru"
+mesh dipanggang dengan UV tekstur yang saling tumpuk  // noda dan bayangan di tempat salah
+```
+
+```text title="✓ Benar"
+buat UV2 saat impor (atau di aplikasi 3D), tanpa tumpukan, lalu bake ulang
+```
+
+### Lampu dipanggang lalu diubah lewat skrip
+
+```text title="✗ Keliru"
+lampu_ruang: mode Baked
+saat_saklar_ditekan: lampu_ruang.matikan()   // ruangan tetap terang
+```
+
+```text title="✓ Benar"
+lampu_ruang: mode Mixed atau Realtime
+// atau: panggang dua versi lightmap (nyala dan mati) lalu tukar
+```
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan di engine pilihanmu. Buat scene dengan lantai luas, sebuah tiang tinggi, sebuah kubus di lantai, dan satu lampu directional berbayangan.
+
+1. Atur jangkauan maksimum bayangan ke 20, lalu ke 500. Bandingkan tepi bayangan kubus di dekat kamera. Lalu ubah jumlah cascade dari 1 ke 4 dengan jangkauan 500.
+2. Atur bias ke 0, lalu naikkan perlahan sampai garis di permukaan hilang. Teruskan menaikkannya sampai bayangan kubus terlepas dari alasnya. Catat kedua angka itu.
+3. Buat ruangan tertutup dengan satu jendela. Panggang lightmap dan catat waktu bake-nya. Lalu bandingkan dengan GI real-time (Enlighten di Unity, Lumen di Unreal, SDFGI di Godot) dan catat waktu frame di profiler.
+4. Gerakkan sebuah bola dari luar ruangan ke dalam ruangan yang sudah dipanggang, dengan dan tanpa light probe. Perhatikan kapan warna bola berubah.

@@ -1,0 +1,560 @@
+---
+title: "Shader: Program Kecil di GPU"
+description: "Pipa grafis dari titik ke piksel, vertex dan fragment shader, uniform dan varying, bahasa shader di tiap engine, dan biaya yang perlu diwaspadai."
+fundamental: "Material bawaan engine cukup untuk sebagian besar objek, dan grafik node bisa menghasilkan efek tanpa satu baris kode. Tapi saat efek buatanmu tampil magenta di build, rumput yang bergoyang tetap ditabrak di posisi lamanya, atau game tersendat setiap kali ledakan pertama muncul, perbaikannya baru terlihat kalau kamu tahu apa yang dijalankan GPU untuk setiap titik dan setiap piksel."
+kind: lesson
+minutes: 30
+status: draf
+lastReviewed: 2026-10-30
+terms:
+  - shader
+  - pipeline-raster
+  - vertex-shader
+  - fragment-shader
+  - uniform
+  - attribute
+  - varying
+  - glsl
+  - glsl-functions
+  - fresnel
+  - shader-variant
+krekit:
+  gambaran-besar: "Tiga contoh kode ini mengerjakan hal yang sama. Bedanya cuma cara menulisnya."
+  pipa-grafis-dari-titik-ke-piksel: "Dua tahap bisa kamu program, satu tahap di tengahnya dikerjakan perangkat keras."
+  berpikir-seperti-gpu-satu-rumus-jutaan-salinan: "Kalau terasa aneh, wajar. Shader memang ditulis dengan cara berpikir yang berbeda dari kode game."
+  vertex-shader-menggeser-titik: "Yang digeser cuma gambarnya. Collision tetap memakai bentuk asli."
+  fragment-shader-mewarnai-piksel: "Coba demo Fresnel-nya. Rumus sependek itu sudah cukup untuk efek perisai energi."
+  data-yang-masuk-ke-shader-uniform-attribute-varying: "Uniform dari kode game, attribute dari mesh, varying dari vertex shader. Kalau lupa, lihat kolom Dari mana di tabelnya."
+  node-atau-kode-bahasa-shader-di-tiap-engine: "Grafik node juga menjadi kode shader di belakang layar. Godot bahkan bisa menunjukkan kodenya."
+  biaya-shader: "Hitung dulu berapa kali shader-mu dijalankan per frame. Angkanya sering mengejutkan."
+  kesalahan-umum: "Kesalahan nomor tiga sering baru ketahuan setelah semua musuh berubah warna bersamaan."
+sidebar:
+  order: 4
+  label: "4 · Shader: Program Kecil di GPU"
+quiz:
+  - q: "Sebuah segitiga menutupi 400 piksel di layar. Berapa kali vertex shader dan fragment shader dijalankan untuk segitiga itu (anggap semua fragment lolos dan tidak ada yang bertumpuk)?"
+    options:
+      - "Vertex 400 kali, fragment 3 kali"
+      - "Vertex 3 kali, fragment sekitar 400 kali"
+      - "Keduanya 400 kali"
+      - "Keduanya 3 kali"
+    answer: 1
+    explain: "Vertex shader dijalankan sekali per titik, jadi 3 kali. Rasterization lalu membuat satu fragment untuk setiap piksel yang tertutup, dan fragment shader dijalankan sekali untuk masing-masing."
+  - q: "Kamu membuat rumput bergoyang dengan menggeser titik di vertex shader. Pemain menembak ujung rumput yang sedang condong ke kanan. Apa yang terjadi?"
+    options:
+      - "Peluru mengenai rumput di posisi yang terlihat"
+      - "Physics memakai bentuk asli mesh, jadi tabrakan dihitung di posisi rumput sebelum digeser"
+      - "Engine otomatis memperbarui collider setiap frame"
+      - "Rumput tidak bisa punya collider sama sekali"
+    answer: 1
+    explain: "Pergeseran di vertex shader terjadi di GPU dan hanya mengubah gambar. Physics dan culling tetap memakai data mesh asli di CPU."
+  - q: "Di Unity, kode mengubah warna satu musuh lewat renderer.sharedMaterial.SetColor(...). Semua musuh ikut berubah warna. Kenapa?"
+    options:
+      - "SetColor selalu mengubah semua material di scene"
+      - "sharedMaterial adalah material yang dipakai bersama, jadi semua pemakainya ikut berubah"
+      - "Unity tidak mendukung warna per objek"
+      - "Warna adalah uniform global"
+    answer: 1
+    explain: "Parameter material adalah uniform milik material itu. Semua objek yang memakai material yang sama membaca nilai yang sama. Untuk satu objek saja, pakai renderer.material (membuat salinan) atau sistem parameter per objek."
+  - q: "Shader Godot berisi baris float kekuatan = 2; dan gagal dikompilasi. Apa perbaikannya?"
+    options:
+      - "Ganti float menjadi double"
+      - "Tulis 2.0, karena bahasa shader Godot tidak mengubah int menjadi float secara otomatis"
+      - "Pindahkan baris itu ke GDScript"
+      - "Tambahkan render_mode unshaded"
+    answer: 1
+    explain: "Seperti GLSL ES 3.0, bahasa shader Godot tidak melakukan konversi tipe otomatis. 2 adalah int, 2.0 adalah float."
+  - q: "Game lancar, tetapi tersendat sekali tepat saat efek ledakan pertama kali muncul, lalu lancar lagi untuk ledakan berikutnya. Penyebab yang paling mungkin?"
+    options:
+      - "Fragment shader ledakan terlalu berat"
+      - "Variant shader ledakan baru disiapkan driver GPU saat pertama kali dipakai"
+      - "Delta time tidak dipakai"
+      - "Uniform waktu kembali ke nol"
+    answer: 1
+    explain: "Shader yang terlalu berat akan memperlambat setiap ledakan, bukan hanya yang pertama. Sentakan sekali di awal adalah ciri kompilasi pipeline atau variant yang belum ada di cache."
+sources:
+  - title: "Write an unlit basic shader in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/shaders/writing-custom-shaders-urp/writing-shaders-urp/basic-unlit-structure"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Write an unlit shader with color input in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/shaders/writing-custom-shaders-urp/writing-shaders-urp/unlit-color"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Built-in shader variables reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/shaders/reference/sl-unity-shader-variables"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Error and loading shaders"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/shaders/shader-troubleshooting/shader-error"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Master Stack"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Master-Stack.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Built In Blocks"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Built-In-Blocks.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Material.SetFloat"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/material/setfloat"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Renderer.material"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/renderer/material"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Introduction to shaders"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/introduction_to_shaders.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Shading language"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shading_language.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Spatial shaders"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/spatial_shader.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Using VisualShaders"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/visual_shaders.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Demo from '~/components/Demo.astro'
+import Quiz from '~/components/Quiz.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menjelaskan urutan kerja GPU dari titik mesh sampai warna piksel.
+- Membedakan tugas vertex shader dan fragment shader, dan tahu berapa kali masing-masing dijalankan.
+- Mengirim nilai dari kode game ke shader lewat parameter material.
+- Menemukan tempat menulis shader di Unity, Unreal, dan Godot, baik dengan node maupun kode.
+- Mengenali biaya shader yang paling sering membuat game lambat atau tersendat.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: satu resep, ribuan juru masak">
+Bayangkan dapur dengan ribuan juru masak yang masing-masing hanya mengurus satu piring. Semua memegang resep yang sama dan bekerja serentak. Mereka tidak bisa melirik piring tetangga, dan setelah piringnya selesai mereka langsung lupa. Resep itu adalah shader, dan setiap piring adalah satu titik atau satu piksel.
+</Aside>
+
+Di [Pelajaran 1](/belajar/fondasi-engine/01-frame/), kamu melihat CPU mengirim [draw call](/kamus/performa/draw-call/) dan GPU yang menggambar. Di [Pelajaran 3](/belajar/fondasi-engine/03-permukaan/), kamu melihat material PBR menghitung warna dari normal, roughness, dan arah cahaya. Pelajaran ini membuka bagian di antaranya: program apa yang sebenarnya dijalankan GPU saat menggambar.
+
+Program itu disebut [shader](/kamus/shader/shader/): program kecil yang dijalankan GPU untuk setiap titik dan setiap piksel. Setiap material, termasuk material standar engine, sebenarnya menjalankan shader. Kamu baru perlu menulis shader sendiri untuk efek yang tidak disediakan material bawaan, seperti hologram, air, angin, atau gaya kartun.
+
+Contoh pertama: objek berwarna rata yang terangnya berdenyut pelan. Warnanya diatur dari Inspector, waktunya diberikan engine.
+
+<EngineTabs>
+<div slot="unity">
+
+Shader kode di URP ditulis dalam HLSL yang dibungkus format ShaderLab (file `.shader`). Kerangka ini mengikuti contoh unlit di dokumentasi Unity.
+
+```hlsl title="Denyut.shader"
+Shader "Krekit/Denyut"
+{
+    Properties
+    {
+        [MainColor] _BaseColor("Warna", Color) = (1, 0.8, 0.2, 1)
+    }
+    SubShader
+    {
+        Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
+        Pass
+        {
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+            struct Attributes { float4 positionOS : POSITION; };
+            struct Varyings   { float4 positionHCS : SV_POSITION; };
+
+            CBUFFER_START(UnityPerMaterial)
+                half4 _BaseColor;
+            CBUFFER_END
+
+            // Dijalankan sekali untuk setiap titik
+            Varyings vert(Attributes IN)
+            {
+                Varyings OUT;
+                OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
+                return OUT;
+            }
+
+            // Dijalankan sekali untuk setiap piksel yang tertutup objek
+            half4 frag() : SV_Target
+            {
+                half denyut = 0.75 + 0.25 * sin(_Time.y * 3.0); // _Time.y = waktu dalam detik
+                return half4(_BaseColor.rgb * denyut, 1.0);
+            }
+            ENDHLSL
+        }
+    }
+}
+```
+
+Blok `CBUFFER_START(UnityPerMaterial)` berisi semua property material. Unity meminta bentuk ini agar shader kompatibel dengan SRP Batcher.
+
+</div>
+<div slot="unreal">
+
+Unreal tidak memakai file shader teks untuk material biasa. Efek yang sama disusun di **Material Editor** dengan node:
+
+1. Di panel Details material, atur **Shading Model** menjadi **Unlit**.
+2. Buat node **Vector Parameter** bernama `Warna`.
+3. Sambungkan node **Time** ke node **Sine**, lalu kalikan dan tambahkan hasilnya agar bergerak di sekitar 0,75 sampai 1.
+4. Kalikan `Warna` dengan hasil itu, lalu sambungkan ke input **Emissive Color**.
+
+Unreal mengompilasi grafik ini menjadi shader HLSL di belakang layar.
+
+</div>
+<div slot="godot">
+
+Shader Godot ditulis dalam Godot Shading Language (file `.gdshader`), yang mirip GLSL.
+
+```glsl title="denyut.gdshader"
+shader_type spatial;
+render_mode unshaded;
+
+uniform vec4 warna : source_color = vec4(1.0, 0.8, 0.2, 1.0);
+
+// Dijalankan sekali untuk setiap piksel yang tertutup objek
+void fragment() {
+    float denyut = 0.75 + 0.25 * sin(TIME * 3.0); // TIME = waktu dalam detik
+    ALBEDO = warna.rgb * denyut;
+}
+```
+
+`render_mode unshaded` membuat hasilnya hanya warna albedo, tanpa perhitungan cahaya. Fungsi `vertex()` tidak ditulis, jadi Godot memakai perilaku bawaannya.
+
+</div>
+</EngineTabs>
+
+Ketiganya punya bagian yang sama: nilai yang diatur dari luar (warna), nilai yang diberikan engine (waktu), dan rumus yang menghitung warna satu piksel. Sisa pelajaran ini membahas setiap bagian itu.
+
+## Pipa grafis: dari titik ke piksel
+
+Setiap draw call melewati urutan tahap yang sama di GPU. Urutan ini disebut **pipa grafis** (*graphics pipeline*):
+
+```text title="Pseudocode: satu draw call di GPU"
+untuk setiap titik di mesh:                         // VERTEX SHADER (bisa diprogram)
+    posisi_layar = proyeksikan(posisi_titik)
+
+untuk setiap segitiga:                              // RASTERIZATION (perangkat keras)
+    untuk setiap piksel yang tertutup segitiga:
+        buat fragment, campur data dari ketiga titik
+
+untuk setiap fragment:                              // FRAGMENT SHADER (bisa diprogram)
+    warna = hitung_warna(data_fragment)
+    jika lolos depth test: tulis warna ke layar
+```
+
+1. **[Vertex shader](/kamus/shader/vertex-shader/)** dijalankan sekali untuk setiap titik. Tugas wajibnya menghitung posisi titik itu di layar dari transform objek (Pelajaran 2) dan kamera (Pelajaran 1), yang digabung menjadi [matriks model, view, dan projection](/kamus/ruang/matrices/).
+2. **[Rasterization](/kamus/shader/pipeline-raster/)** menentukan piksel mana saja yang tertutup setiap segitiga, lalu membuat satu **fragment** (calon piksel) untuk masing-masing. Tahap ini dijalankan perangkat keras dan tidak bisa diprogram.
+3. **[Fragment shader](/kamus/shader/fragment-shader/)** dijalankan sekali untuk setiap fragment, untuk menentukan warnanya. Fragment yang tertutup objek lain dibuang oleh [depth test](/kamus/geometri/depth-buffer/).
+
+Perbandingan jumlahnya penting. Kubus punya puluhan titik, tetapi jika kubus itu memenuhi layar 1920×1080, fragment shader-nya dijalankan sekitar dua juta kali per frame.
+
+## Berpikir seperti GPU: satu rumus, jutaan salinan
+
+GPU punya ribuan inti kecil yang menjalankan shader yang sama secara serentak. Dokumentasi Godot merangkum akibatnya: kode shader berjalan untuk setiap titik atau piksel **secara terpisah**, dan tidak bisa menyimpan data dari satu frame ke frame berikutnya. Dari situ muncul tiga aturan:
+
+- **Tidak bisa melihat tetangga.** Fragment shader satu piksel tidak tahu warna piksel di sebelahnya. Efek yang butuh tetangga, seperti blur, harus membaca gambar yang sudah selesai digambar sebelumnya (dibahas di [Pelajaran 6](/belajar/fondasi-engine/06-post-processing/)).
+- **Tidak punya memori.** Tidak ada variabel yang bertahan antar-frame. Semua yang berubah seiring waktu harus dihitung ulang dari nilai yang dikirim engine, misalnya waktu.
+- **Rumus lebih disukai daripada percabangan.** GPU menjalankan sekelompok piksel dengan instruksi yang sama. Jika sebagian piksel masuk cabang `if` dan sebagian lagi masuk `else`, kelompok itu bisa harus menjalankan keduanya. Karena itu shader sering memakai [fungsi kecil](/kamus/shader/glsl-functions/) seperti `step`, `smoothstep`, dan `mix` (`lerp` di HLSL) untuk menggantikan `if`.
+
+<Demo name="glslfn" caption="Fungsi-fungsi kecil yang dipakai hampir semua shader. Bandingkan bentuk kurva step dan smoothstep." />
+
+Cara menulisnya pun berbeda dari kode game. Di kode game kamu menulis langkah untuk seluruh objek. Di fragment shader kamu menulis rumus untuk **satu** piksel, lalu GPU yang mengulangnya untuk semua piksel.
+
+## Vertex shader: menggeser titik
+
+Bagian wajib vertex shader, yaitu mengubah posisi titik menjadi posisi layar, sudah dikerjakan engine. Yang biasanya kamu tambahkan adalah **pergeseran** sebelum langkah itu. Karena pergeseran dihitung di GPU, data mesh tidak berubah dan CPU tidak terbebani. Rumput bergoyang, bendera berkibar, dan ombak air biasanya dibuat dengan cara ini.
+
+```text title="Pseudocode: rumput bergoyang"
+goyang  = sin(waktu * 2.0 + posisi.x) * 0.1 * tinggi_titik   // pangkal diam, ujung bergoyang
+posisi.x = posisi.x + goyang
+```
+
+`posisi.x` ikut dimasukkan ke `sin` agar rumput di tempat berbeda tidak bergoyang serempak seperti barisan tentara.
+
+<EngineTabs>
+<div slot="unity">
+
+Shader Graph: konteks **Vertex** di Master Stack berisi blok **Position**, **Normal**, dan **Tangent**, semuanya di object space (ruang lokal objek). Ambil posisi asli dengan node **Position** (Space: Object), tambahkan pergeseran, lalu sambungkan ke blok Position.
+
+Di HLSL, pergeseran ditambahkan ke `IN.positionOS` sebelum `TransformObjectToHClip`.
+
+</div>
+<div slot="unreal">
+
+Input **World Position Offset** pada Material: seberapa jauh setiap titik digeser, dalam ruang dunia dan satuan sentimeter.
+
+</div>
+<div slot="godot">
+
+Ubah `VERTEX` di fungsi `vertex()`. Secara bawaan `VERTEX` berada di ruang model (lokal objek), lalu Godot mengubahnya ke layar sesudahnya.
+
+```glsl title="rumput.gdshader"
+shader_type spatial;
+
+void vertex() {
+    VERTEX.x += sin(TIME * 2.0 + VERTEX.y) * 0.1 * VERTEX.y;
+}
+```
+
+</div>
+</EngineTabs>
+
+Pergeseran ini hanya mengubah **gambar**. Physics, raycast, dan collision tetap memakai bentuk asli mesh di CPU. Engine juga memutuskan apakah objek terlihat kamera ([frustum culling](/kamus/dasar/frustum/)) berdasarkan kotak batas (*bounds*) mesh asli, jadi objek yang digeser terlalu jauh bisa hilang tiba-tiba di tepi layar.
+
+## Fragment shader: mewarnai piksel
+
+Di engine, kamu jarang menulis warna akhir piksel secara langsung. Pada material yang bereaksi terhadap cahaya (*lit*), fragment shader mengisi **sifat permukaan** yang kamu kenal dari Pelajaran 3: warna dasar, roughness atau smoothness, metalness, normal, dan emission. Engine lalu menghitung cahaya, bayangan, dan kabut dari sifat-sifat itu. Dengan cara ini shader buatanmu tetap mengikuti lampu di scene.
+
+Jika ingin menentukan warna akhir sendiri, pilih mode **unlit**. Hasilnya lebih murah, tetapi tidak terkena cahaya sama sekali. Contoh denyut di Gambaran besar memakai mode ini.
+
+<EngineTabs>
+<div slot="unity">
+
+Shader Graph: konteks **Fragment** di Master Stack. Blok yang tersedia antara lain Base Color, Normal (Tangent Space), Metallic, Smoothness, Emission, Ambient Occlusion, Alpha, dan Alpha Clip Threshold. Blok mana yang aktif bergantung pada pengaturan di Graph Settings, termasuk pilihan Lit atau Unlit.
+
+</div>
+<div slot="unreal">
+
+Input Material seperti **Base Color**, **Metallic**, **Roughness**, **Normal**, dan **Emissive Color**. Shading Model **Unlit** hanya memakai Emissive Color.
+
+</div>
+<div slot="godot">
+
+Fungsi `fragment()` mengisi `ALBEDO`, `ROUGHNESS`, `METALLIC`, `EMISSION`, `NORMAL_MAP`, `ALPHA`, dan lainnya. `render_mode unshaded` membuat hasilnya hanya albedo tanpa cahaya. Untuk mengatur cara cahaya dihitung, misalnya gaya [toon](/kamus/shader/toon-shading/), tersedia fungsi opsional `light()` yang dijalankan untuk setiap lampu di setiap piksel.
+
+</div>
+</EngineTabs>
+
+Contoh efek fragment yang sering dipakai adalah [efek Fresnel](/kamus/shader/fresnel/): tepi siluet objek dibuat bercahaya, untuk hologram, perisai energi, atau penanda objek yang bisa diambil. Rumusnya hanya satu baris, memakai [dot product](/kamus/ruang/dot/) antara normal dan arah ke kamera:
+
+```text title="Pseudocode: Fresnel"
+fresnel = pow(1.0 - clamp(dot(normal, arah_ke_kamera), 0.0, 1.0), ketajaman)
+emission = warna_tepi * fresnel     // 0 di tengah, mendekati 1 di tepi
+```
+
+<Demo name="fresnel" caption="Bagian yang menghadap kamera bernilai 0, tepi siluet mendekati 1. Ubah ketajamannya untuk menipiskan pinggiran." />
+
+Unity Shader Graph punya node **Fresnel Effect**, Unreal punya node **Fresnel**, dan di Godot rumusnya bisa ditulis langsung karena `NORMAL` dan `VIEW` di `fragment()` sama-sama berada di ruang view.
+
+## Data yang masuk ke shader: uniform, attribute, varying
+
+Shader butuh data dari luar. Ada tiga jalur, dan masing-masing berbeda sumber serta frekuensinya:
+
+| Jenis | Dari mana | Berubah per | Contoh |
+| --- | --- | --- | --- |
+| [Uniform](/kamus/shader/uniform/) | Kode game atau engine | Material, per draw call | warna tim, kekuatan efek, waktu |
+| [Attribute](/kamus/shader/attribute/) | Data mesh | Titik | posisi, normal, UV, warna vertex |
+| [Varying](/kamus/shader/varying/) | Vertex shader | Fragment (dicampur halus) | UV atau tinggi yang diteruskan ke fragment |
+
+**Uniform** adalah jembatan antara logika game dan shader. Nilainya sama untuk semua titik dan piksel selama satu objek digambar. Engine menyebutnya **parameter** atau **property** material. Kode game mengubah angkanya, dan shader memakainya pada frame berikutnya.
+
+**Varying** lahir di rasterization. Vertex shader menulis nilai untuk tiga titik sebuah segitiga, lalu GPU mencampurnya sesuai jarak setiap fragment ke ketiga titik itu. Menghitung sesuatu per titik lalu meneruskannya lewat varying lebih murah daripada menghitungnya per piksel, dan untuk nilai yang berubah perlahan hasilnya sering tidak terlihat bedanya.
+
+Cara mengubah uniform dari kode game:
+
+<EngineTabs>
+<div slot="unity">
+
+```csharp title="Darah.cs"
+using UnityEngine;
+
+public class Darah : MonoBehaviour
+{
+    static readonly int KekuatanID = Shader.PropertyToID("_Kekuatan");
+    Material mat;
+
+    void Start()
+    {
+        // renderer.material membuat salinan khusus untuk objek ini
+        mat = GetComponent<Renderer>().material;
+    }
+
+    public void Kena(float persen)
+    {
+        mat.SetFloat(KekuatanID, persen);
+    }
+
+    void OnDestroy()
+    {
+        Destroy(mat); // salinan tidak terhapus sendiri
+    }
+}
+```
+
+`Shader.PropertyToID` menyimpan nama property sebagai angka, agar Unity tidak mencari nama berupa teks setiap kali nilainya diubah. Waktu tersedia otomatis di shader sebagai `_Time`, dengan `_Time.y` berisi waktu dalam detik.
+
+</div>
+<div slot="unreal">
+
+Di Material, buat node **Scalar Parameter** atau **Vector Parameter**. Untuk mengubahnya saat game berjalan, buat **Dynamic Material Instance** dari material itu, lalu panggil `SetScalarParameterValue` atau `SetVectorParameterValue`. Waktu tersedia lewat node **Time**.
+
+</div>
+<div slot="godot">
+
+```glsl title="darah.gdshader"
+shader_type spatial;
+
+uniform float kekuatan : hint_range(0.0, 1.0) = 0.0;
+uniform vec4 warna_luka : source_color = vec4(1.0, 0.0, 0.0, 1.0);
+
+void fragment() {
+    ALBEDO = mix(vec3(0.8), warna_luka.rgb, kekuatan);
+}
+```
+
+```gdscript title="darah.gd"
+material.set_shader_parameter("kekuatan", 0.8)
+```
+
+Nama di `set_shader_parameter` harus sama persis dengan nama uniform di shader. `hint_range` membuat Inspector menampilkan slider, dan `source_color` menandai nilai sebagai warna. Waktu tersedia otomatis sebagai `TIME`.
+
+</div>
+</EngineTabs>
+
+Perhatikan bahwa uniform milik **material**, bukan milik objek. Semua objek yang memakai material yang sama membaca nilai yang sama. Bagian Kesalahan umum membahas akibatnya.
+
+## Node atau kode: bahasa shader di tiap engine
+
+Setiap engine menyediakan dua cara menulis shader: **grafik node**, yaitu menyambung kotak-kotak tanpa mengetik kode, dan **kode teks**. Keduanya berakhir sebagai kode shader yang sama, karena setiap node pada dasarnya satu fungsi shader.
+
+| | Grafik node | Kode teks | Bahasa |
+| --- | --- | --- | --- |
+| Unity | Shader Graph (URP, HDRP) | file `.shader` (ShaderLab + HLSL) | HLSL |
+| Unreal | Material Editor | node **Custom** di dalam material | HLSL |
+| Godot | Visual Shader | file `.gdshader` | Godot Shading Language (mirip GLSL) |
+
+[HLSL dan GLSL](/kamus/shader/glsl/) hampir sama. Perbedaan yang paling sering terlihat ada pada nama tipe dan fungsi: `float3` lawan `vec3`, `lerp` lawan `mix`, `frac` lawan `fract`, `saturate(x)` lawan `clamp(x, 0.0, 1.0)`. Tutorial GLSL tetap berguna untuk Unity dan Unreal setelah nama-nama itu diganti.
+
+<EngineTabs>
+<div slot="unity">
+
+File `.shader` terdiri dari blok `Properties` (parameter yang tampil di Inspector), `SubShader`, dan `Pass` yang berisi kode HLSL di antara `HLSLPROGRAM` dan `ENDHLSL`. Baris `#pragma vertex vert` dan `#pragma fragment frag` memberi tahu Unity nama fungsi vertex dan fragment.
+
+Jika shader gagal dikompilasi atau tidak didukung, Unity menampilkan objek dengan **error shader berwarna magenta**. Warna **cyan** berarti shader masih dikompilasi, dan muncul di editor saat kompilasi asinkron aktif.
+
+</div>
+<div slot="unreal">
+
+Material Editor adalah cara utama. Node **Custom** memungkinkan potongan kode HLSL disisipkan di tengah grafik untuk perhitungan yang terlalu rumit jika disusun dengan node.
+
+</div>
+<div slot="godot">
+
+Setiap file `.gdshader` diawali `shader_type`, misalnya `spatial` untuk 3D atau `canvas_item` untuk 2D dan UI. Jenis ini menentukan fungsi dan variabel bawaan yang tersedia. Baris `render_mode` mengubah cara Godot menerapkan shader, misalnya `unshaded`.
+
+Visual Shader diubah menjadi kode shader teks di belakang layar. Tombol di ujung toolbar editornya menampilkan kode hasil konversi itu, sehingga bisa dipakai untuk belajar apa yang dikerjakan sebuah node.
+
+</div>
+</EngineTabs>
+
+Error shader tidak muncul di tempat error kode game biasa. Shader dikompilasi oleh compiler terpisah, dan pesannya muncul di console atau panel shader editor saat shader disimpan atau dimuat.
+
+## Biaya shader
+
+Biaya shader adalah biaya per eksekusi dikali jumlah eksekusinya. Jumlah eksekusi itulah yang sering terlupa.
+
+- **Fragment shader biasanya yang termahal.** Jumlahnya mengikuti jumlah piksel yang ditutupi objek. Objek transparan yang bertumpuk, seperti asap dan partikel, membuat piksel yang sama diwarnai berkali-kali ([overdraw](/kamus/performa/overdraw/)). Resolusi layar yang lebih tinggi juga langsung menambah jumlahnya ([fill rate](/kamus/performa/fill-rate/)).
+- **Vertex shader** dijalankan per titik, jadi biayanya mengikuti jumlah titik mesh. Untuk kebanyakan objek jumlahnya jauh lebih kecil daripada jumlah piksel.
+- **Membaca tekstur** di fragment shader butuh akses memori, dan beberapa kali membaca tekstur per piksel cepat terasa di GPU yang lemah.
+- **Shader variant.** Satu shader sering dikompilasi menjadi banyak versi untuk kombinasi fitur yang berbeda, misalnya dengan atau tanpa normal map. Versi yang dipakai pertama kali harus disiapkan driver GPU, dan proses itu bisa membuat frame terlambat. Gejalanya game tersendat saat efek baru pertama kali muncul, lalu lancar setelahnya. Penjelasan dan cara mencegahnya ada di [Shader Variant & Stutter Kompilasi](/kamus/shader/shader-variant/).
+
+Jika profiler menunjukkan game [GPU-bound](/kamus/performa/cpu-gpu-bound/), periksa dulu shader objek yang paling banyak menutupi layar. Bayangan dan pencahayaan global dibahas di [Pelajaran 5](/belajar/fondasi-engine/05-bayangan-gi/), efek layar penuh di Pelajaran 6, dan cara membaca profiler secara lengkap di Pelajaran 8.
+
+## Kesalahan umum
+
+Beberapa kesalahan berikut memunculkan error kompilasi. Sisanya tidak, dan hasilnya baru terlihat salah saat game berjalan.
+
+### Menulis angka bulat untuk float
+
+```glsl title="✗ Keliru (Godot)"
+float kekuatan = 2;
+```
+
+```glsl title="✓ Benar"
+float kekuatan = 2.0;
+```
+
+Bahasa shader Godot, seperti GLSL ES 3.0, tidak mengubah int menjadi float secara otomatis. Biasakan selalu menulis titik desimal, di engine apa pun.
+
+### Mengandalkan vertex shader untuk bentuk yang ditabrak
+
+```text title="✗ Keliru"
+vertex shader: geser titik dinding ke atas 2 meter   // dinding terlihat lebih tinggi
+// pemain tetap bisa melompatinya
+```
+
+```text title="✓ Benar"
+ubah mesh atau collider di CPU untuk bentuk yang memengaruhi gameplay
+pakai vertex shader hanya untuk gerakan visual (angin, ombak, napas)
+```
+
+Physics dan culling memakai bentuk asli mesh. Jika pergeseran visualnya besar, perbesar juga bounds objek agar tidak hilang di tepi layar.
+
+### Mengubah material yang dipakai bersama
+
+```csharp title="✗ Keliru (Unity)"
+renderer.sharedMaterial.SetColor("_BaseColor", Color.red); // semua musuh jadi merah
+```
+
+```csharp title="✓ Benar"
+renderer.material.SetColor("_BaseColor", Color.red);       // salinan khusus objek ini
+// ...dan Destroy(salinan) saat objek dihancurkan
+```
+
+Uniform milik material. Untuk nilai per objek, buat salinan material (Unity: `renderer.material`, Unreal: Dynamic Material Instance). Ingat bahwa salinan material bisa mencegah objek digabung saat batching, sehingga [draw call](/kamus/performa/draw-call/) bertambah.
+
+### Menyentuh ALPHA tanpa perlu
+
+```glsl title="✗ Keliru (Godot)"
+void fragment() {
+    ALBEDO = warna.rgb;
+    ALPHA = 1.0;   // tidak transparan, tetapi tetap ditulis
+}
+```
+
+```glsl title="✓ Benar"
+void fragment() {
+    ALBEDO = warna.rgb;
+}
+```
+
+Begitu `ALPHA` dibaca atau ditulis, Godot memindahkan material ke jalur transparan. Material transparan lebih mahal, bisa salah urutan, dan tidak memberi bayangan.
+
+### Menyalakan fitur shader baru di tengah gameplay
+
+```text title="✗ Keliru"
+saat bos muncul: nyalakan keyword "EFEK_API" di material   // variant baru, sentakan
+```
+
+```text title="✓ Benar"
+saat loading: tampilkan sekali material dengan EFEK_API menyala (boleh di luar layar)
+saat bos muncul: tinggal pakai
+```
+
+Variant yang belum pernah dipakai harus disiapkan dulu. Di Unity, keyword `shader_feature` yang tidak dipakai material mana pun saat build bahkan bisa tidak ikut ter-build sama sekali.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan di engine pilihanmu. Buat scene dengan satu bola dan satu objek tinggi seperti silinder atau balok tegak.
+
+1. Buat shader denyut dari bagian Gambaran besar dan pasang di bola. Ubah angka `3.0` menjadi `10.0`, lalu ganti `sin` dengan `step(0.0, sin(...))` (Unity Shader Graph: node **Step**). Apa beda hasilnya, dan kenapa?
+2. Pasang shader rumput bergoyang dari bagian Vertex shader pada objek tinggi. Bandingkan hasilnya pada versi yang punya banyak segmen ke atas dengan versi yang hanya punya titik di bawah dan di atas (Godot: atur `rings` pada `CylinderMesh`). Kenapa versi pertama melengkung, sedangkan versi kedua hanya miring lurus?
+3. Tambahkan parameter `kekuatan` seperti contoh `darah` dan ubah nilainya dari kode saat tombol ditekan. Duplikasi bola menjadi tiga. Pastikan hanya bola yang ditekan yang berubah warna.
+4. Buat efek Fresnel di bola memakai node atau rumus dari bagian Fragment shader. Coba ketajaman 1, 3, dan 8, lalu bandingkan tebal pinggirannya.
