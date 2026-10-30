@@ -1,0 +1,97 @@
+---
+title: "Sprite"
+description: "Gambar 2D yang tampil di dunia game sebagai satu objek, misalnya karakter, koin, atau peluru. Di balik layar, sprite adalah tekstur yang ditempel pada bidang datar, jadi bisa digeser, diputar, dibalik, dan diwarnai tanpa mengubah file gambarnya."
+kind: term
+level: 1
+aka: "Sprite Renderer, Sprite2D, Paper Sprite"
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "Sprite Renderer component reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/sprite-renderer-reference"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Import a sprite or spritesheet texture"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/import-images-sprites"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Sprite (2D and UI) texture Import Settings window reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/textures-reference/texture-type-sprite"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Sprite2D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_sprite2d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "CanvasItem"
+    url: "https://docs.godotengine.org/en/stable/classes/class_canvasitem.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+sidebar:
+  order: 1
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Gambar 2D yang tampil di dunia game sebagai satu objek: karakter, koin, peluru, pohon. Di balik layar, sprite adalah [tekstur](/kamus/geometri/texture/) yang ditempel pada bidang datar, biasanya persegi panjang dari dua [segitiga](/kamus/geometri/triangle/), lalu digambar GPU seperti objek lain. Karena itu sprite bisa digeser, diputar, diperbesar, dibalik, dan diwarnai tanpa mengubah file gambarnya.
+
+Pengaturan yang hampir selalu kamu temui:
+
+- **Pivot:** titik acuan sprite. Posisi dan rotasi dihitung dari titik ini. Untuk karakter, pivot di telapak kaki memudahkan menaruhnya tepat di atas tanah.
+- **Skala piksel ke dunia:** berapa piksel gambar yang setara satu satuan jarak di scene. Nilai ini menentukan seberapa besar sprite tampil.
+- **Flip:** membalik gambar secara horizontal atau vertikal. Karakter yang digambar menghadap kanan cukup dibalik untuk menghadap kiri.
+- **Warna (tint):** pengali warna. Putih berarti gambar tampil apa adanya.
+
+<Aside type="note" title="Analogi">
+Stiker di kaca jendela. Stikernya bisa kamu geser, putar, atau balik, tetapi gambar di stiker tetap sama. Kalau ada stiker bertumpuk, yang ditempel terakhir menutupi yang di bawahnya.
+</Aside>
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Gambar menjadi sprite jika **Texture Type** di pengaturan impornya **Sprite (2D and UI)**. Di proyek 2D, Unity mengaturnya otomatis. Menyeret aset sprite ke jendela Scene membuat GameObject dengan komponen **Sprite Renderer**. Properti pentingnya: **Sprite**, **Color** (putih berarti tanpa tint), **Flip**, **Draw Mode**, serta **Sorting Layer** dan **Order in Layer** untuk [urutan gambar](/kamus/2d/sorting-layer/). Material bawaannya **Sprite-Lit-Default**. Skala piksel ke dunia diatur lewat **Pixels Per Unit** di pengaturan impor, dan pivot lewat **Pivot**.
+
+```csharp
+var sr = GetComponent<SpriteRenderer>();
+sr.flipX = true;                        // menghadap kiri
+sr.color = new Color(1f, 0.5f, 0.5f);   // sedikit kemerahan
+```
+
+</div>
+<div slot="unreal">
+
+Plugin **Paper2D**: aset **Sprite** dibuat dari tekstur, lalu ditampilkan lewat **Paper Sprite Component**.
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-30). */}
+
+</div>
+<div slot="godot">
+
+Node **Sprite2D** dengan properti `texture`. Pengaturan lain: `centered` (bawaan `true`), `offset`, `flip_h`, dan `flip_v`. Warna diatur lewat `modulate`, properti bawaan semua node 2D (CanvasItem). Dengan `region_enabled` dan `region_rect`, Sprite2D hanya menampilkan sebagian gambar, misalnya satu sprite dari [atlas](/kamus/2d/sprite-atlas/). Godot mengukur dunia 2D dalam piksel, jadi tidak ada pengaturan pixels per unit.
+
+```gdscript
+$Pemain.flip_h = true                   # menghadap kiri
+$Pemain.modulate = Color(1, 0.5, 0.5)   # sedikit kemerahan
+```
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Piksel transparan di sekeliling gambar tetap diproses GPU. Sprite besar yang sebagian besar kosong membuang kerja ([Overdraw](/kamus/performa/overdraw/)). Unity menyediakan **Mesh Type: Tight** yang membuat mesh sprite mengikuti bentuk gambar. Sprite yang lebih kecil dari 32×32 piksel otomatis memakai Full Rect.
+
+Flip hanya membalik gambar. Dokumentasi Unity menegaskan Flip tidak memindahkan atau mencerminkan GameObject-nya, jadi collider dan objek anak, misalnya titik keluarnya peluru, tetap di sisi semula. Jika semuanya harus ikut berbalik, balik skala X pada objek induknya.
+
+Untuk pixel art, ada jebakan kecil di Godot: sprite dengan `centered = true` bisa jatuh di antara dua piksel sehingga tampak cacat. Solusinya dibahas di [Pixel Perfect](/kamus/2d/pixel-perfect/).
+
+## Terkait
+
+- [Sprite Sheet](/kamus/2d/sprite-sheet/)
+- [Sprite Atlas](/kamus/2d/sprite-atlas/)
+- [Sorting Layer & Urutan Gambar](/kamus/2d/sorting-layer/)
+- [Texture](/kamus/geometri/texture/)
+- [Kamera Ortografis](/kamus/dasar/ortho/)

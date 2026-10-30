@@ -1,0 +1,447 @@
+---
+title: "Peta Peran di Studio Game"
+description: "Disiplin dan peran di studio game, dari pemrograman, art, desain, audio, produksi, dan QA sampai peran pendukung: apa yang dikerjakan masing-masing, siapa menyerahkan apa ke siapa, dan bagaimana peran digabung di tim kecil."
+fundamental: "Hampir tidak ada pekerjaan di studio game yang selesai di tangan satu peran. Model 3D yang bagus bisa ditolak karena melebihi anggaran engine, dan fitur yang sudah selesai dikodekan bisa kembali sebagai laporan bug. Kalau kamu tahu apa yang dihasilkan setiap peran dan kepada siapa hasil itu diserahkan, kamu bisa memilih keterampilan yang ingin didalami dan tahu siapa yang perlu diajak bicara saat pekerjaanmu tersendat."
+kind: lesson
+minutes: 25
+status: draf
+lastReviewed: 2026-10-30
+krekit:
+  gambaran-besar: "Nama jabatan di studio game banyak sekali. Pegang dua pertanyaan ini saja: kamu membuat apa, dan diserahkan ke siapa?"
+  pemrograman: "Kalau sudah membaca Fondasi Engine, kamu sudah melihat sebagian pekerjaan engine programmer dari dekat."
+  art-dan-animasi: "Turnaround itu seperti denah rumah untuk 3D artist. Tanpa itu, punggung karakter harus ditebak."
+  desain: "Blockout memang kelihatan jelek. Kotak abu-abu murah untuk diubah, jadi sengaja dibuat begitu."
+  audio: "Coba mainkan game favoritmu tanpa suara sebentar. Rasanya langsung lain."
+  produksi: "Hasil kerja producer jarang muncul di layar. Jejaknya ada di jadwal dan daftar prioritas."
+  qa: "Laporan bug yang bagus bisa diulang orang lain tanpa harus bertanya ke penulisnya."
+  peran-pendukung: "Game yang sudah jadi tetap perlu ditemukan pemain, dan perlu bisa dibaca dalam bahasa mereka."
+  siapa-menyerahkan-apa-ke-siapa: "Ikuti satu kelelawar dari sketsa sampai laporan bug. Hampir semua peran ikut menyentuhnya."
+  tim-kecil-dan-studio-besar: "Di tim kecil, satu orang bisa memegang tiga judul sekaligus. Coba hitung berapa judul yang kamu pegang di proyekmu sendiri."
+  dari-peran-ke-jalur-belajar: "Belum yakin mau jadi apa? Wajar. Coba satu jalur dulu, lalu intip jalur di sebelahnya."
+  kesalahan-umum: "Anggapan kedua paling sering bikin bingung saat membaca lowongan."
+sidebar:
+  order: 1
+  label: "1 · Peta Peran"
+quiz:
+  - q: "Concept artist sudah menyelesaikan desain karakter yang disetujui art director. Apa yang biasanya ia siapkan agar 3D artist bisa memodelkannya dengan tepat?"
+    options:
+      - "Turnaround: gambar karakter dari beberapa sudut, dengan catatan bahan dan sambungan antarbagian"
+      - "Model 3D yang sudah diberi kerangka tulang"
+      - "Kode perilaku karakter di engine"
+      - "Laporan bug dari build terakhir"
+    answer: 0
+    explain: "Turnaround memperlihatkan desain dari beberapa sudut, sehingga 3D artist tidak perlu menebak bagian yang tertutup di gambar utama. Model dan rig dibuat sesudahnya oleh peran lain."
+  - q: "Model dari environment artist terlalu berat sehingga frame rate turun, dan para artist tidak tahu batas yang aman. Peran mana yang biasanya menetapkan anggaran aset dan membangun pipeline impornya?"
+    options:
+      - "Producer"
+      - "Technical artist"
+      - "Community manager"
+      - "Composer"
+    answer: 1
+    explain: "Technical artist menjembatani art dan pemrograman: menetapkan anggaran dan pedoman teknis aset bersama rendering programmer, lalu membangun alat dan pipeline yang membawa aset ke engine."
+  - q: "QA menemukan bug: kelelawar bisa terbang menembus dinding. Programmer sudah memperbaikinya. Apa langkah berikutnya yang lazim?"
+    options:
+      - "Programmer langsung menutup laporan itu"
+      - "Community manager mengumumkan perbaikannya ke pemain"
+      - "Laporan dikembalikan ke QA untuk dicek ulang di build berikutnya"
+      - "Level designer menghapus dinding itu"
+    answer: 2
+    explain: "Setelah diperbaiki, laporan bug dikembalikan ke QA. QA mengulangi langkah reproduksinya di build baru dan baru menutup laporan kalau bug benar-benar hilang."
+  - q: "Kenapa level designer membuat blockout dari bentuk-bentuk sederhana sebelum environment artist mengisi level dengan aset?"
+    options:
+      - "Karena engine tidak bisa menampilkan aset detail saat level masih dibuat"
+      - "Agar tata letak bisa dimainkan, diuji, dan diubah dengan murah sebelum art yang mahal dibuat"
+      - "Agar ukuran file game lebih kecil saat rilis"
+      - "Karena environment artist biasanya baru direkrut setelah blockout selesai"
+    answer: 1
+    explain: "Blockout bisa dimainkan dan diubah berkali-kali dengan cepat. Kalau art dibuat terlalu awal, setiap perubahan tata letak membuat aset yang sudah jadi harus dikerjakan ulang."
+  - q: "Tim tiga orang tidak punya anggota berjudul QA tester. Apa artinya bagi pekerjaan pengujian?"
+    options:
+      - "Game kecil tidak perlu diuji"
+      - "Pengujian cukup diserahkan ke pemain setelah rilis"
+      - "Pengujian tetap harus dikerjakan, oleh anggota tim sendiri atau penguji dari luar"
+      - "Bug hanya muncul di game besar"
+    answer: 2
+    explain: "Pekerjaan sebuah peran tetap ada walau tidak ada orang yang memegang judulnya. Di tim kecil, pekerjaan itu dibagi ke anggota yang sudah memegang peran lain, atau diserahkan ke pihak luar."
+  - q: "Menurut para narrative designer yang diwawancarai Ubisoft News, apa beda utama narrative designer dan writer?"
+    options:
+      - "Tidak ada bedanya sama sekali di studio mana pun"
+      - "Writer bekerja di engine, narrative designer hanya menulis sinopsis"
+      - "Narrative designer menghubungkan cerita dengan mekanik dan sistem game, writer lebih fokus pada naskah dan dialog"
+      - "Narrative designer hanya dibutuhkan di game tanpa cerita"
+    answer: 2
+    explain: "Narrative designer memikirkan bagaimana cerita disampaikan lewat sistem game, misalnya kapan percakapan dimulai dan apa yang terjadi kalau musuh menyerang di tengahnya. Di studio kecil, kedua peran ini sering dipegang satu orang."
+sources:
+  - title: "Programming"
+    url: "https://intogames.org/careers/programming"
+    publisher: "Into Games"
+    accessed: 2026-10-30
+  - title: "Art"
+    url: "https://intogames.org/careers/art"
+    publisher: "Into Games"
+    accessed: 2026-10-30
+  - title: "Animation"
+    url: "https://intogames.org/careers/animation"
+    publisher: "Into Games"
+    accessed: 2026-10-30
+  - title: "Design"
+    url: "https://intogames.org/careers/design"
+    publisher: "Into Games"
+    accessed: 2026-10-30
+  - title: "Audio"
+    url: "https://intogames.org/careers/audio"
+    publisher: "Into Games"
+    accessed: 2026-10-30
+  - title: "Production and Operations"
+    url: "https://intogames.org/careers/production-and-operations"
+    publisher: "Into Games"
+    accessed: 2026-10-30
+  - title: "Quality Assurance"
+    url: "https://intogames.org/careers/quality-assurance"
+    publisher: "Into Games"
+    accessed: 2026-10-30
+  - title: "Community and Marketing"
+    url: "https://intogames.org/careers/community-and-marketing"
+    publisher: "Into Games"
+    accessed: 2026-10-30
+  - title: "Roles and careers for real-time creators"
+    url: "https://learn.unity.com/tutorial/roles-and-careers-for-real-time-creators"
+    publisher: "Unity Learn"
+    accessed: 2026-10-30
+  - title: "Game developer"
+    url: "https://www.prospects.ac.uk/job-profiles/game-developer"
+    publisher: "Prospects"
+    accessed: 2026-10-30
+  - title: "Game artist"
+    url: "https://www.prospects.ac.uk/job-profiles/game-artist"
+    publisher: "Prospects"
+    accessed: 2026-10-30
+  - title: "Sound designer"
+    url: "https://www.prospects.ac.uk/job-profiles/sound-designer"
+    publisher: "Prospects"
+    accessed: 2026-10-30
+  - title: "The Code/Art Divide: How Technical Artists Bridge The Gap (Jason Hayes, Volition)"
+    url: "https://www.gamedeveloper.com/programming/the-code-art-divide-how-technical-artists-bridge-the-gap"
+    publisher: "Game Developer"
+    accessed: 2026-10-30
+  - title: "From Sketching to Rendering: A Look at How Concept Artists Work at Resolution Games"
+    url: "https://www.resolutiongames.com/blog/from-sketching-to-rendering-a-look-at-how-concept-artists-work-at-resolution-games"
+    publisher: "Resolution Games"
+    accessed: 2026-10-30
+  - title: "How to make a level"
+    url: "https://book.leveldesignbook.com/process/overview"
+    publisher: "The Level Design Book"
+    accessed: 2026-10-30
+  - title: "What is Narrative Design?"
+    url: "https://news.ubisoft.com/en-us/article/7m412GLSbfkaT0YheRYLVG/what-is-narrative-design"
+    publisher: "Ubisoft News"
+    accessed: 2026-10-30
+  - title: "Just What Does A Game Producer Do?"
+    url: "https://davidmullich.com/2014/08/11/just-what-does-a-game-producer-do/"
+    publisher: "David Mullich"
+    accessed: 2026-10-30
+  - title: "Bugs and Bug Reporting (CMS.611J Creating Video Games, Fall 2014)"
+    url: "https://ocw.mit.edu/courses/cms-611j-creating-video-games-fall-2014/77735532cada1b978e3545dbe5b57da0_MITCMS_611JF14_BugReportng.pdf"
+    publisher: "MIT OpenCourseWare"
+    accessed: 2026-10-30
+  - title: "How 2 Be Come a Games Tester"
+    url: "https://coatsink.com/blog/how-to-become-a-games-tester"
+    publisher: "Coatsink"
+    accessed: 2026-10-30
+  - title: "Community Managers: Building a Bridge Between Players and Developers"
+    url: "https://www.resolutiongames.com/blog/community-managers-building-a-bridge-between-players-and-developers"
+    publisher: "Resolution Games"
+    accessed: 2026-10-30
+  - title: "Best Practices for Game Localization (v2.2)"
+    url: "https://igda-website.s3.us-east-2.amazonaws.com/wp-content/uploads/2021/04/09142137/Best-Practices-for-Game-Localization-v22.pdf"
+    publisher: "IGDA Game Localization SIG"
+    accessed: 2026-10-30
+  - title: "IGDA Game Crediting Guide 10.1"
+    url: "https://igda.org/wp-content/uploads/2021/11/IGDA-Game-Crediting-Guidelines-10.1-March-2023.pdf"
+    publisher: "International Game Developers Association"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menyebut disiplin utama di studio game dan peran-peran di dalamnya.
+- Menjelaskan apa yang dikerjakan setiap peran sehari-hari dan apa hasil kerjanya.
+- Menelusuri alur serah terima: siapa menyerahkan apa kepada siapa.
+- Menjelaskan kenapa peran dipecah di studio besar dan digabung di tim kecil.
+- Memilih jalur belajar Krekit yang paling dekat dengan peran yang kamu minati.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: warung dan dapur restoran">
+Di warung kecil, satu orang menyusun menu, berbelanja, memasak, mencicipi, melayani pembeli, dan menghitung uang. Di dapur restoran besar, pekerjaan yang sama dibagi ke banyak orang: ada yang khusus menyiapkan bahan, ada yang khusus membuat saus, ada yang mengatur urutan pesanan, ada yang mencicipi sebelum piring keluar. Daftar pekerjaannya sama di kedua tempat. Perbedaannya ada pada jumlah orang yang membaginya dan seberapa sering hasil kerja berpindah tangan.
+</Aside>
+
+Studio game bekerja dengan cara yang mirip. Pekerjaannya biasanya dikelompokkan ke beberapa **disiplin**: pemrograman, art (termasuk animasi), desain, audio, produksi, dan QA (*quality assurance*, pengujian kualitas). Di sekitarnya ada peran yang tidak membuat isi game secara langsung, tetapi menentukan apakah game itu sampai ke pemain: komunitas, pemasaran, lokalisasi, dan bisnis.
+
+Setiap peran menghasilkan sesuatu yang dipakai peran lain. Desainer menghasilkan aturan, lalu programmer mengubah aturan itu menjadi kode. Concept artist menghasilkan gambar, lalu 3D artist mengubahnya menjadi model. QA menghasilkan laporan bug, lalu programmer memperbaikinya. Karena itu, cara paling berguna untuk memahami sebuah peran adalah dengan dua pertanyaan: **apa yang dihasilkannya, dan kepada siapa hasil itu diserahkan?**
+
+| Disiplin | Pertanyaan yang dijawab | Contoh hasil kerja |
+| --- | --- | --- |
+| Desain | Apa yang dilakukan pemain, dan kenapa itu menarik? | aturan, angka keseimbangan, dokumen desain, blockout level |
+| Pemrograman | Bagaimana aturan itu berjalan di perangkat pemain? | kode gameplay, sistem engine, alat bantu tim, build |
+| Art dan animasi | Seperti apa dunia dan karakternya terlihat dan bergerak? | konsep, model, tekstur, animasi, efek visual, UI |
+| Audio | Seperti apa bunyinya? | musik, efek suara, suara karakter |
+| Produksi | Apakah semua ini selesai dengan waktu dan orang yang tersedia? | jadwal, prioritas, keputusan cakupan |
+| QA | Apakah game berjalan seperti yang dirancang? | laporan bug, hasil cek ulang perbaikan |
+| Peran pendukung | Apakah pemain tahu game ini ada dan bisa memainkannya? | pengumuman, kampanye, terjemahan, kesepakatan bisnis |
+
+Satu catatan sebelum masuk ke rincian: **judul jabatan tidak seragam.** Dalam panduan pencantuman kredit game, IGDA (asosiasi pengembang game internasional) menulis bahwa penamaan jabatan di industri ini tidak standar, dan hal itu menyulitkan developer yang pindah studio untuk menunjukkan apa yang pernah mereka kerjakan. Pakai deskripsi di pelajaran ini sebagai peta kasar, lalu selalu baca rincian tugas di lowongan atau profil seseorang.
+
+Pelajaran ini hanya membahas isi pekerjaan. Gaji, kondisi lowongan, dan ekosistem studio di Indonesia direncanakan untuk pelajaran lain di jalur ini, karena topik itu butuh data bersumber dan masukan praktisi.
+
+## Pemrograman
+
+Programmer menulis kode yang membuat game berjalan. Karena hasil kerjanya bisa langsung dimainkan, kode menjadi tempat bertemunya hasil kerja disiplin lain: aturan dari desainer, aset dari artist, suara dari tim audio. Di studio yang cukup besar, pemrograman dipecah menjadi beberapa spesialisasi:
+
+- **Gameplay programmer** menulis mekanik dan logika permainan: aksi pemain, perilaku musuh, elemen game, dan progres. Unity menggambarkan tugasnya dimulai dari membaca dan memahami dokumen desain, lalu membangun sistem gameplay berdasarkan dokumen itu.
+- **Engine programmer** dan **graphics programmer** mengerjakan sistem inti: rendering, cahaya, [shader](/kamus/shader/shader/), physics, dan performa di berbagai platform.
+- **Tools programmer** membuat alat untuk anggota tim lain, misalnya importer aset, editor level, skrip build, atau pemeriksa data. Yang memakai hasil kerjanya adalah rekan satu studio.
+- **Network programmer** membangun sistem multipemain: koneksi antarpemain, pertukaran data, dan sinkronisasi agar semua pemain melihat dunia yang sama.
+- **UI programmer** menyambungkan menu dan HUD ke sistem game sesuai rancangan alur dari desainer.
+- **AI programmer**, **physics programmer**, dan **audio programmer** muncul di studio yang butuh spesialisasi itu.
+
+Sehari-hari, programmer menulis dan merevisi kode, membaca kode rekan (*code review*), merapikan kode lama, mencari penyebab bug dari laporan QA, dan rapat dengan desainer atau programmer lain untuk menyamakan rencana. Profil game developer di Prospects, layanan informasi karier lulusan perguruan tinggi di Inggris, mendaftar tugas-tugas ini sebagai inti pekerjaan programmer game.
+
+**Menerima:** aturan dan angka dari desainer, aset dari artist dan tim audio, laporan bug dari QA.
+
+**Menyerahkan:** build yang bisa dimainkan kepada desainer dan QA, serta alat dan pipeline kepada artist dan desainer.
+
+Jalur terdekat: [Fondasi Engine](/belajar/fondasi-engine/). Hampir semua pelajarannya membahas sistem yang dikerjakan engine programmer dan graphics programmer.
+
+## Art dan animasi
+
+Art menentukan seperti apa game terlihat. Hampir semua aset visual melewati beberapa tangan sebelum muncul di layar.
+
+- **Concept artist** merancang tampilan awal karakter, lingkungan, dan benda. Resolution Games, studio game VR, menjelaskan alur kerja concept artist mereka: mengumpulkan referensi yang sesuai dengan *art bible* proyek (dokumen acuan gaya visual), membuat banyak sketsa cepat, memilih bersama art director, lalu menyempurnakan desain yang terpilih. Untuk desain final, mereka membuat *turnaround*, yaitu gambar dari beberapa sudut, supaya 3D artist tidak perlu menebak bagian yang tertutup.
+- **2D artist** membuat sprite, ilustrasi, latar, dan gambar UI untuk game 2D, juga gambar konsep dan storyboard.
+- **3D artist** memodelkan karakter, lingkungan, dan properti. Di studio besar, perannya dipecah lagi: character artist, environment artist, prop artist, texture artist yang membuat [tekstur](/kamus/geometri/texture/) permukaan, dan lighting artist.
+- **Technical artist** (TA) menjembatani art dan pemrograman. Jason Hayes, technical art director di Volition, menulis bahwa TA merancang pipeline yang membawa aset dari aplikasi pembuatnya ke dalam game, menetapkan anggaran dan pedoman teknis untuk aset bersama rendering programmer, membuat alat untuk artist, dan menjadi tempat bertanya saat artist menemui masalah teknis.
+- **Animator** membuat gerak karakter dan objek. Sebelum animator bekerja, model karakter perlu diberi kerangka tulang ([skeletal animation](/kamus/animasi/skeletal/)) dan kontrol untuk menggerakkannya. Pekerjaan ini disebut *rigging*, dan dipegang technical animator, character technical director, atau animator sendiri, tergantung studionya. Technical animator juga bekerja dengan programmer agar animasi berjalan benar di engine.
+- **VFX artist** membuat efek visual seperti ledakan, sihir, cuaca, dan asap, biasanya dengan sistem partikel dan shader.
+- **UI artist** atau **UI designer** membuat tampilan menu, HUD, dan tombol agar jelas dan mudah dibaca.
+- **Art director** menjaga agar aset dari banyak artist terlihat seperti bagian dari satu dunia yang sama.
+
+Sehari-hari, artist bekerja di aplikasi pembuat konten seperti Photoshop, Blender, atau Maya, menerima masukan dari lead artist atau art director, merevisi, lalu memasukkan hasilnya ke engine untuk dicek di dalam game. Unity mencatat bahwa semua peran art diharapkan bekerja erat dengan tim lain, menyeimbangkan kualitas dengan performa, dan memastikan aset yang mereka buat benar-benar berfungsi.
+
+**Menerima:** kebutuhan dari desainer, arahan gaya dari art director, anggaran teknis dari technical artist.
+
+**Menyerahkan:** aset final di engine, untuk dipakai programmer, level designer, dan animator.
+
+Jalur terdekat: [Seni & Gaya Visual](/belajar/seni-visual/). Technical artist juga perlu [Fondasi Engine](/belajar/fondasi-engine/), terutama pelajaran [shader](/belajar/fondasi-engine/04-shader/) dan [profiling](/belajar/fondasi-engine/08-profiling/). Animator bisa mulai dari [pelajaran animasi](/belajar/fondasi-engine/07-animasi/) di jalur yang sama.
+
+## Desain
+
+Desainer menentukan aturan permainan dan pengalaman yang ingin dirasakan pemain. Hasil kerjanya jarang berupa gambar. Lebih sering wujudnya dokumen, tabel angka, prototipe kasar, dan catatan dari sesi playtest.
+
+- **Game designer** merancang aturan, mekanik, dan sistem yang membentuk cara game dimainkan. Di tim kecil, satu game designer memegang semua aspek desain.
+- **Level designer** merancang ruang yang dilalui pemain. *The Level Design Book* menggambarkan alurnya: rencana tata letak (sering berupa denah 2D), lalu **blockout**, yaitu versi level yang sudah bisa dimainkan tetapi dibangun dari bentuk balok sederhana. Blockout dimainkan dan diubah berkali-kali. Setelah bentuk dan alurnya cukup pasti, environment artist mengisi level dengan aset dan dekorasi.
+- **Systems designer** merancang sistem yang saling terhubung, misalnya pertarungan, progres, dan ekonomi dalam game. Pekerjaannya sering melibatkan angka di spreadsheet: berapa damage sebuah senjata, berapa lama pemain perlu bermain untuk naik level. Studio besar kadang memecahnya lagi menjadi economy designer atau balance designer.
+- **Narrative designer** dan **writer** mengurus cerita. Dalam wawancara Ubisoft News, beberapa narrative designer menjelaskan bahwa narrative designer menghubungkan cerita dengan mekanik dan sistem game, misalnya kapan sebuah percakapan dimulai dan apa yang terjadi kalau musuh tiba-tiba menyerang di tengahnya. Writer lebih fokus pada naskah dan dialog. Mereka juga menyebut bahwa banyak teks game ditulis di spreadsheet, dan studio kecil sering menggabungkan kedua peran ini.
+- **UX designer** memastikan antarmuka, kontrol, dan alur game mudah dipahami dan dipakai. Salah satu alat utamanya adalah playtest: mengamati orang memainkan game tanpa dibantu, lalu mencatat di mana mereka bingung.
+- **Technical designer** berada di antara desain dan pemrograman. Ia mengimplementasikan mekanik sendiri di engine, sering dengan scripting atau visual scripting.
+
+Unity merangkum pekerjaan harian game designer dan level designer sebagai membangun dan memasang gameplay, menjalankan playtest dan menindaklanjuti masukannya, lalu memastikan game bisa dimainkan bersama tester, level artist, dan gameplay programmer.
+
+**Menerima:** arah kreatif dari game director atau creative director, batasan teknis dari programmer, masukan dari playtest dan QA.
+
+**Menyerahkan:** aturan, angka, dan dokumen kepada programmer; kebutuhan aset kepada artist dan tim audio; blockout yang sudah teruji kepada environment artist.
+
+Jalur terdekat: [Desain Game](/belajar/desain-game/).
+
+## Audio
+
+- **Composer** membuat musik yang menentukan suasana game.
+- **Sound designer** membuat efek suara dan suara lingkungan (*ambience*), kadang juga mengurus integrasi voice over. Profil sound designer di Prospects menyebut bahwa untuk game, pekerjaannya termasuk memasang suara ke dalam game, baik lewat middleware audio seperti Wwise atau FMOD maupun langsung di Unity dan Unreal.
+- **Voice actor** mengisi suara karakter, dan **voice director** mengarahkan rekamannya.
+- **Audio programmer** membangun sistem audio di engine, di studio yang cukup besar untuk punya peran ini.
+
+Audio bergantung pada hasil kerja peran lain. Suara langkah perlu tahu kapan kaki menyentuh tanah di animasi, suara ledakan perlu tahu durasi efek visualnya, dan musik perlu tahu suasana setiap area. Karena itu sound designer sering bekerja langsung di engine, memasang suara pada momen tertentu di animasi (lihat [animation event](/belajar/fondasi-engine/07-animasi/#animation-event)) atau di area tertentu di level.
+
+**Menerima:** animasi, efek visual, level, dan naskah dialog.
+
+**Menyerahkan:** file suara dan *event* audio yang dipanggil oleh kode atau animasi.
+
+Jalur terdekat: Krekit belum punya jalur khusus audio. Bagian engine yang paling sering bersinggungan dengan audio dibahas di [pelajaran animasi](/belajar/fondasi-engine/07-animasi/) Fondasi Engine.
+
+## Produksi
+
+Producer menjaga agar game selesai dengan waktu, anggaran, dan orang yang tersedia. Into Games, organisasi nirlaba di Inggris yang membantu orang masuk ke industri game, menggambarkan associate producer sebagai orang yang menjaga proyek tetap sesuai waktu dan anggaran sambil membuka jalan agar developer bisa bekerja.
+
+David Mullich, producer yang pernah bekerja di Activision dan Disney, membedakan dua tempat producer bekerja:
+
+- **Producer di studio** menyusun jadwal dan pembagian tugas bersama tim, memantau kemajuan, mengenali masalah lebih awal dan membantu menyelesaikannya, menyediakan alat dan perangkat yang dibutuhkan tim, serta memastikan komunikasi dan pipeline berjalan lancar.
+- **Producer di publisher** menjadi penghubung dengan studio pengembang: memeriksa hasil setiap milestone, melaporkan status proyek ke manajemen, dan bersama QA serta tim pemasaran memutuskan bug mana yang wajib diperbaiki sebelum rilis.
+
+Mullich juga mencatat bahwa orang yang mengelola tim pengembang bisa disebut producer, director, team lead, atau project manager, tergantung perusahaannya. Into Games menggambarkan **project manager** sebagai orang yang menetapkan dan mengejar target serta tenggat untuk beberapa proyek di satu studio, dan **game director** sebagai orang yang mengawasi seluruh proses kreatif dan produksi agar game mencapai visinya.
+
+Hasil kerja producer jarang terlihat di layar. Wujudnya jadwal, daftar prioritas, keputusan memotong fitur, dan rapat yang membuat setiap disiplin tahu apa yang sedang dikerjakan disiplin lain.
+
+**Menerima:** perkiraan waktu dari setiap disiplin, status build dan laporan bug dari QA, target dari pimpinan studio atau publisher.
+
+**Menyerahkan:** jadwal, prioritas, dan keputusan cakupan kepada seluruh tim.
+
+Jalur terdekat: [Produksi](/belajar/produksi/).
+
+## QA
+
+Catatan mata kuliah *Creating Video Games* di MIT merangkum tugas utama QA tester: memainkan game, membandingkan apa yang terjadi dengan apa yang seharusnya terjadi menurut desain, lalu melaporkan setiap perbedaan sebagai bug. Laporan yang baik berisi semua yang dibutuhkan developer untuk menemukan bug itu, mengulanginya, lalu memperbaikinya.
+
+Seorang narrative designer di studio Coatsink, yang memulai kariernya di QA, menjelaskan alurnya. Setiap bug dicatat di database (*bug tracker*) bersama langkah reproduksi yang ditulis serinci mungkin. Manajemen memakai database itu untuk menentukan prioritas dan beban kerja tim. Setelah developer memperbaiki sebuah bug, laporannya dikembalikan ke QA untuk dicek ulang di versi game berikutnya.
+
+```text title="Contoh laporan bug"
+Judul       : Kelelawar menembus dinding gua di area 2-3
+Build       : 0.14.2 (PC)
+Langkah     : 1. Masuk area 2-3 dari pintu timur
+              2. Tunggu sampai kelelawar mengejar
+              3. Mundur ke dinding utara
+Hasil       : Kelelawar terbang menembus dinding lalu hilang
+Seharusnya  : Kelelawar berbelok mengikuti dinding
+Frekuensi   : 7 dari 10 percobaan
+Tingkat     : Sedang (permainan tetap bisa dilanjutkan)
+```
+
+Peran lain di disiplin ini antara lain **QA lead** atau **QA manager** yang mengatur rencana pengujian, **localization tester** yang memeriksa kesalahan terjemahan, masalah budaya, dan teks yang tidak sesuai konteksnya di game, serta **playtester** yang fokus pada pengalaman bermain dan keseimbangan.
+
+QA berbeda dengan uji pengguna (*user testing*). Penulis dari Coatsink menjelaskan bahwa QA menguji game di semua tahap pengembangan untuk menemukan cacat, sedangkan uji pengguna meminta pendapat orang setelah mereka mencoba game sebentar.
+
+**Menerima:** build dari programmer, desain dan daftar cek dari desainer.
+
+**Menyerahkan:** laporan bug kepada programmer, artist, atau desainer yang bertanggung jawab, dan status kualitas build kepada producer.
+
+Jalur terdekat: [Produksi](/belajar/produksi/), karena QA terhubung erat dengan jadwal dan keputusan rilis.
+
+## Peran pendukung
+
+Peran berikut tidak membuat isi game secara langsung, tetapi menentukan apakah game sampai ke pemain dan bertahan setelah rilis.
+
+- **Community manager** menjadi penghubung antara studio dan pemain. Community manager di Resolution Games menjelaskan pekerjaannya: membuat konten untuk kanal komunitas, menjawab pertanyaan, mendengarkan apa yang dipikirkan pemain, lalu membawa kepentingan pemain ke diskusi dengan developer dan tim pemasaran. Menurutnya, salah satu bagian tersulit adalah saat tidak semua informasi boleh dibagikan, misalnya fitur yang belum diputuskan.
+- **Pemasaran dan PR** merencanakan kampanye sebelum dan sesudah rilis, mengurus hubungan dengan media, dan bersama tim pengembang menyiapkan materi promosi seperti screenshot, trailer, dan gambar konsep.
+- **Lokalisasi** menyesuaikan game untuk bahasa dan wilayah lain. Panduan praktik terbaik dari kelompok lokalisasi IGDA menekankan bahwa penerjemah perlu memainkan game atau membaca dokumennya dulu untuk memahami konteks, dan tim pengembang perlu menyediakan glosarium serta panduan gaya, lalu siap menjawab pertanyaan. Panduan itu juga meminta semua teks game disimpan di file terpisah untuk setiap bahasa. Teks yang ditulis langsung di dalam kode (*hard-coded*) harus dibongkar tangan oleh programmer setiap kali diterjemahkan atau diubah.
+- **Business development** mencari peluang dan kesepakatan baru, misalnya dengan publisher, pemilik platform, atau mitra lain.
+- **Live operations** (*live ops*) dan **data analyst** muncul di game yang terus diperbarui setelah rilis. Live ops merencanakan event dan pembaruan, sedangkan data analyst membaca data pemain sebagai bahan keputusan desain.
+
+Di tim kecil, pekerjaan ini tetap ada. Pekerjaannya dibagi ke anggota tim yang juga membuat game, atau diserahkan ke publisher dan mitra.
+
+**Menerima:** build, aset, dan rencana dari tim pengembang, serta umpan balik dari pemain.
+
+**Menyerahkan:** umpan balik pemain kepada tim, materi promosi kepada publik, dan terjemahan kepada QA lokalisasi.
+
+Jalur terdekat: [Bisnis Studio Indie](/belajar/bisnis-indie/).
+
+## Siapa menyerahkan apa ke siapa
+
+Sekarang ikuti satu fitur kecil melewati studio: **musuh baru, seekor kelelawar penjaga gua.** Urutan di setiap studio berbeda, dan banyak langkah berjalan bersamaan. Contoh ini sengaja disederhanakan.
+
+```text title="Alur serah terima: satu musuh baru"
+game designer        → aturan dan angka: HP, kecepatan, pola serangan
+concept artist       → desain terpilih + turnaround dari beberapa sudut
+technical artist     → anggaran poligon dan tekstur, pipeline impor
+3D artist            → model bertekstur sesuai anggaran, masuk ke engine
+animator             → animasi terbang, menyerang, mati (setelah model diberi rig)
+gameplay programmer  → perilaku kelelawar memakai angka dari desainer
+VFX artist, sound    → efek serangan, suara kepak sayap di momen animasi
+level designer       → posisi kelelawar di level gua, uji ulang alurnya
+QA                   → laporan bug → programmer → perbaikan → QA cek ulang
+```
+
+Ada beberapa hal yang bisa dilihat dari alur ini.
+
+1. **Hasil kerja satu peran adalah bahan kerja peran berikutnya.** Turnaround yang tidak jelas membuat 3D artist menebak. Angka desain yang berubah setelah kode selesai membuat programmer menulis ulang. Karena itu, kejelasan serah terima ikut menentukan kecepatan seluruh tim.
+2. **Alurnya tidak lurus.** Playtest bisa menunjukkan bahwa kelelawar terlalu sulit dihindari. Desainer mengubah angka, dan animator mungkin perlu membuat animasi serangan yang lebih mudah dibaca. Di wawancara Ubisoft News tadi, seorang narrative advisor menjelaskan bahwa desain game terus diiterasi sampai tahap akhir, dan tim UI, sound design, serta narasi harus menyesuaikan diri dengan setiap perubahan itu.
+3. **Ada peran yang tugas utamanya menjaga serah terima.** Technical artist menjaga jalur dari aplikasi art ke engine. Producer menjaga agar setiap peran tahu kapan bahan kerjanya datang dan mana yang dikerjakan lebih dulu.
+
+Ringkasan serah terima yang paling sering terjadi:
+
+| Dari | Kepada | Yang diserahkan |
+| --- | --- | --- |
+| Game designer | Programmer, artist, tim audio | aturan, angka, kebutuhan aset |
+| Concept artist | 3D artist, 2D artist | desain terpilih, turnaround |
+| Technical artist | Artist | anggaran aset, alat, pipeline impor |
+| 3D artist | Animator, level designer | model bertekstur yang sudah di engine |
+| Animator | Programmer, sound designer | animasi beserta momen pentingnya |
+| Level designer | Environment artist | blockout yang sudah teruji |
+| Programmer | QA, desainer | build yang bisa dimainkan |
+| QA | Programmer, artist, desainer, producer | laporan bug, status kualitas build |
+| Community manager | Desainer, producer | umpan balik pemain |
+| Tim pengembang | Penerjemah | teks dalam file terpisah, glosarium, konteks |
+
+## Tim kecil dan studio besar
+
+Di studio besar, pekerjaan dipecah menjadi peran yang sempit. Profil game artist di Prospects menyebut bahwa di perusahaan game yang lebih besar, artist bisa berspesialisasi pada satu area seperti karakter, tekstur, lingkungan, atau pencahayaan. Di studio indie, batas peran tidak sejelas itu, dan artist bisa ikut mengerjakan desain atau pemrograman.
+
+Peran yang sempit berarti lebih banyak serah terima, dan serah terima perlu diatur. Jason Hayes membuka artikelnya tentang technical artist dengan alasan serupa: anggaran dan ukuran tim yang makin besar membuat jarak antara art dan pemrograman makin perlu dijembatani. Ia juga mencatat bahwa setiap perusahaan punya gambaran berbeda tentang tugas technical artist.
+
+Di tim kecil, satu orang memegang beberapa peran. Unity menyebut orang seperti ini *generalist*: menguasai art, desain, dan pemrograman, mampu membawa proyek dari prototipe sampai rilis, dan lebih sering ditemukan di studio kecil atau tim kecil. Dalam wawancara Ubisoft News, CEO sebuah studio kecil juga menyebut bahwa timnya tidak memisahkan narrative design, game design, dan penulisan naskah secara struktural.
+
+Contoh pembagian peran berikut adalah ilustrasi, tidak diambil dari studio tertentu:
+
+| Ukuran tim | Contoh pembagian peran |
+| --- | --- |
+| 1 orang | Semua peran: desain, kode, art, audio (bisa dibantu aset atau musik berlisensi), pengujian, pemasaran, bisnis |
+| 3 orang | A: pemrograman dan desain sistem. B: art, animasi, dan UI. C: desain level, produksi, komunitas, dan pemasaran. Audio dan lokalisasi dikerjakan freelancer, dan semua orang ikut menguji. |
+| Studio besar | Setiap bagian di pelajaran ini bisa menjadi satu tim berisi beberapa orang, masing-masing dengan lead-nya |
+
+Yang perlu diingat dari tabel ini: **pekerjaan sebuah peran tetap ada walau tidak ada orang yang memegang judulnya.** Tim tiga orang tanpa QA tester tetap harus menguji game, dan tim tanpa community manager tetap harus menjawab pertanyaan pemain. Kalau tidak ada yang ditugaskan, pekerjaan seperti ini mudah terlewat sampai menjadi masalah.
+
+Spesialis dan generalis sama-sama punya tempat. Generalis bisa membuat game sendiri dan sangat berguna di tim kecil. Spesialis dibutuhkan saat satu bidang butuh kedalaman, misalnya rendering, animasi karakter, atau ekonomi game online. Kombinasi yang sering berguna adalah satu keahlian utama yang kamu dalami, ditambah cukup pemahaman tentang disiplin di sekitarnya, supaya kamu bisa menerima dan menyerahkan pekerjaan dengan baik.
+
+## Dari peran ke jalur belajar
+
+| Kalau kamu tertarik pada | Mulai dari |
+| --- | --- |
+| Gameplay, engine, graphics, tools, atau network programming | [Fondasi Engine](/belajar/fondasi-engine/) |
+| Technical art | [Fondasi Engine](/belajar/fondasi-engine/), lalu [Seni & Gaya Visual](/belajar/seni-visual/) |
+| Concept art, 2D, 3D, tekstur, animasi, VFX, UI art | [Seni & Gaya Visual](/belajar/seni-visual/) |
+| Game design, level design, systems design, narasi, UX | [Desain Game](/belajar/desain-game/) |
+| Producer, project management, QA | [Produksi](/belajar/produksi/) |
+| Komunitas, pemasaran, lokalisasi, bisnis | [Bisnis Studio Indie](/belajar/bisnis-indie/) |
+| Komposisi musik dan sound design | Belum ada jalur khusus di Krekit |
+
+Membaca jalur di sebelah peranmu juga membantu. Programmer yang paham kebutuhan artist bisa membuat alat yang lebih berguna, dan artist yang paham cara engine menggambar bisa membuat aset yang lebih ringan.
+
+## Kesalahan umum
+
+Anggapan berikut sering muncul saat seseorang pertama kali melihat cara kerja studio game dari dekat.
+
+### "Membuat game berarti memprogram"
+
+Pemrograman adalah satu disiplin di antara banyak disiplin. Sebagian besar yang dilihat dan didengar pemain dibuat oleh artist, desainer, dan tim audio, lalu diuji QA. Kalau kamu tidak ingin menulis kode setiap hari, masih banyak peran lain di studio.
+
+### Judul jabatan yang sama berarti pekerjaan yang sama
+
+IGDA menyebut penamaan jabatan di industri game tidak standar. Hayes menulis bahwa setiap perusahaan punya gambaran berbeda tentang tugas technical artist, dan salah satu narasumber Ubisoft News mengatakan bahwa sepuluh narrative designer akan memberi sepuluh jawaban berbeda tentang pekerjaan mereka. Baca rincian tugasnya, jangan berhenti di judul.
+
+### Game designer adalah orang yang punya ide
+
+Ide game mudah muncul. Sebagian besar pekerjaan desainer adalah mengubah ide menjadi aturan yang jelas, menuliskannya agar bisa dikerjakan peran lain, mengujinya lewat playtest, lalu mengubahnya lagi. Hasilnya lebih sering berupa dokumen dan spreadsheet daripada gambar konsep.
+
+### QA berarti main game seharian
+
+QA memang memainkan game, tetapi dengan tujuan mencari cara membuatnya gagal. Penulis dari Coatsink memberi contoh pertanyaan yang diuji satu per satu: apakah batu ini mengeluarkan suara yang benar saat ditembak, lalu dengan senjata lain, lalu di setiap permukaan dengan setiap senjata. Setiap temuan kemudian harus ditulis cukup rinci agar orang lain bisa mengulanginya.
+
+### Tim kecil tidak butuh peran tertentu
+
+Pekerjaannya tetap ada, hanya dipegang oleh orang yang sama. Jadwal tetap perlu disusun dan build tetap perlu diuji, walau tidak ada producer atau QA tester di tim.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Latihan ini tidak butuh engine.
+
+1. Pilih satu game yang pernah kamu mainkan, lalu buka daftar kreditnya, dari menu game atau dari video kredit penutupnya. Kelompokkan nama berdasarkan disiplin. Disiplin mana yang paling banyak orangnya? Pilih dua judul jabatan yang belum kamu kenal, lalu cari tahu tugasnya.
+2. Ambil satu fitur kecil, misalnya peti harta yang bisa dibuka. Tulis alur serah terimanya seperti contoh kelelawar: siapa membuat apa, lalu diserahkan kepada siapa.
+3. Bayangkan fitur dari langkah 2 dikerjakan tim tiga orang. Bagi semua peran ke tiga orang itu. Peran mana yang paling mudah terlupakan?
+4. Cari tiga lowongan dengan judul yang sama dari studio berbeda, misalnya technical artist atau game designer. Tandai tugas yang muncul di ketiganya dan tugas yang hanya muncul di satu lowongan.

@@ -1,0 +1,125 @@
+---
+title: "Tilemap & Tileset"
+description: "Level 2D yang dilukis dari potongan gambar berukuran sama di atas grid. Tileset adalah kumpulan potongannya, tilemap adalah peta yang mencatat potongan mana dipasang di sel mana."
+kind: term
+level: 1
+aka: "tile, tile palette, TileSet, TileMapLayer, Tile Map"
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "Introduction to tilemaps"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/tilemaps/tilemaps"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Paint tiles into the scene"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/tilemaps/create-tilemap/create-tilemap"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Create a tile palette"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/tilemaps/create-tile-palette/assets"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Tilemap Renderer component reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/tilemaps/reference/tilemap-renderer"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Collision detection for tiles"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/tilemaps/tilemap-collider-2d"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Tilemap.SetTile"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/tilemaps/tilemap/settile"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "TileMapLayer"
+    url: "https://docs.godotengine.org/en/stable/classes/class_tilemaplayer.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "TileSet"
+    url: "https://docs.godotengine.org/en/stable/classes/class_tileset.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Godot 4.3, a shared effort"
+    url: "https://godotengine.org/releases/4.3/"
+    publisher: "Godot Engine"
+    accessed: 2026-10-30
+sidebar:
+  order: 4
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Cara membangun level 2D dengan "melukis" potongan gambar berukuran sama (*tile*) di atas grid. Ada dua bagian:
+
+- **Tileset:** kumpulan tile yang tersedia, biasanya diambil dari satu gambar berpola grid. Tile bisa membawa data tambahan, misalnya bentuk [collider](/kamus/fisika/collider/) untuk tanah yang bisa dipijak.
+- **Tilemap:** peta sel. Setiap sel hanya mencatat tile mana yang dipasang di sana.
+
+```text title="Isi tilemap pada dasarnya hanya tabel"
+sel (0, 0) → tile 3 (rumput)
+sel (1, 0) → tile 3 (rumput)
+sel (2, 0) → tile 7 (tanah berbatu)
+sel (2, 1) → kosong
+```
+
+Karena yang disimpan hanya nomor, peta ribuan sel tetap ringan, dan mengganti gambar satu tile langsung mengubah semua sel yang memakainya. Engine juga menggambar tile secara berkelompok, sehingga ribuan tile tidak berarti ribuan [draw call](/kamus/performa/draw-call/).
+
+Grid tidak harus persegi. Unity dan Godot sama-sama mendukung grid isometrik dan heksagonal, yang sering dipakai untuk game strategi.
+
+<Aside type="note" title="Analogi">
+Lantai keramik. Toko hanya menjual beberapa motif (tileset), lalu denah rumah mencatat motif mana dipasang di petak mana (tilemap). Untuk mengganti motif di seluruh rumah, cukup ganti satu motif di katalog.
+</Aside>
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Butuh paket **2D Tilemap Editor**, yang sudah terpasang di template 2D. Buat palet lewat **Assets → Create → 2D → Tile Palette**, buka **Window → 2D → Tile Palette**, lalu seret sprite ke jendela itu. Unity mengubah setiap sprite menjadi aset tile. Untuk tempat melukis, klik kanan di Hierarchy, lalu **2D Object → Tilemap → Rectangular**. Unity membuat GameObject **Grid** dengan anak **Tilemap**.
+
+Komponen **Tilemap Renderer** punya **Mode**:
+
+- **Chunk:** tile digambar berkelompok. Cepat, tetapi objek lain tidak bisa terselip di antara tile.
+- **Individual:** tile diurutkan bersama sprite lain, sehingga karakter bisa berjalan di belakang pohon dari tilemap. Lebih lambat.
+- **SRP Batch:** tile dikelompokkan lewat SRP Batcher.
+
+Collision dibuat dengan komponen **Tilemap Collider 2D**, dan bentuknya bisa digabung dengan **Composite Collider 2D** agar lebih ringan. Dari skrip:
+
+```csharp
+tilemap.SetTile(new Vector3Int(3, 5, 0), tileRumput);
+```
+
+</div>
+<div slot="unreal">
+
+Paper2D punya aset **Tile Set** yang dibuat dari tekstur dan aset **Tile Map** yang dilukis di editornya, lalu ditampilkan lewat **Paper Tile Map Component**.
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-30). */}
+
+</div>
+<div slot="godot">
+
+Node **TileMapLayer** dengan resource **TileSet** (ukuran tile bawaan 16×16 piksel). Sejak Godot 4.3, satu TileMapLayer hanya berisi satu lapisan. Untuk beberapa lapisan, misalnya tanah, dekorasi, dan atap, pakai beberapa node TileMapLayer. Node lama **TileMap** kini berstatus deprecated, dan editor menyediakan perintah untuk mengekstrak lapisannya menjadi node-node TileMapLayer.
+
+Physics, navigasi, dan terrain (penyambungan tile otomatis) ditambahkan sebagai lapisan di TileSet. Untuk menghemat, tile digambar per kelompok berukuran `rendering_quadrant_size` (bawaan 16, jadi 16 × 16 = 256 tile per kelompok). Dari kode:
+
+```gdscript
+# koordinat sel, id sumber di TileSet, koordinat tile di atlas
+$Tanah.set_cell(Vector2i(3, 5), 0, Vector2i(1, 0))
+```
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Garis tipis yang berkedip di sela tile saat kamera bergerak (*seams*) biasanya muncul karena tile jatuh di posisi setengah piksel dan filter linear ikut mengambil warna tile tetangga di tekstur. Solusinya: filter nearest untuk pixel art, posisi kamera yang dibulatkan ([Pixel Perfect](/kamus/2d/pixel-perfect/)), atau jarak kosong antar-tile di gambar tileset.
+
+Jika karakter harus bisa berada di depan dan di belakang objek dari tilemap, misalnya pohon atau tembok, tile perlu diurutkan bersama sprite. Di Unity, pakai mode Individual. Di Godot, nyalakan `y_sort_enabled` pada TileMapLayer. Penjelasannya ada di [Sorting Layer & Urutan Gambar](/kamus/2d/sorting-layer/).
+
+## Terkait
+
+- [Sprite Sheet](/kamus/2d/sprite-sheet/)
+- [Sorting Layer & Urutan Gambar](/kamus/2d/sorting-layer/)
+- [Collider](/kamus/fisika/collider/)
+- [Draw Call & Batching](/kamus/performa/draw-call/)

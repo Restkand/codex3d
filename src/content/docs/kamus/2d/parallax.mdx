@@ -1,0 +1,117 @@
+---
+title: "Parallax Scrolling"
+description: "Lapisan latar yang bergeser lebih lambat dari kamera dan lapisan depan yang bergeser lebih cepat. Selisih kecepatan ini membuat dunia 2D terasa punya kedalaman."
+kind: term
+level: 1
+aka: "parallax, parallax background, Parallax2D, scroll scale"
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "2D Parallax"
+    url: "https://docs.godotengine.org/en/stable/tutorials/2d/2d_parallax.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Parallax2D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_parallax2d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "ParallaxBackground"
+    url: "https://docs.godotengine.org/en/stable/classes/class_parallaxbackground.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Godot 4.3, a shared effort"
+    url: "https://godotengine.org/releases/4.3/"
+    publisher: "Godot Engine"
+    accessed: 2026-10-30
+sidebar:
+  order: 6
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Beberapa lapisan gambar yang bergeser dengan kecepatan berbeda saat kamera bergerak. Lapisan yang bergeser lambat terasa jauh, lapisan yang bergeser cepat terasa dekat. Game 2D butuh trik ini karena [kamera ortografis](/kamus/dasar/ortho/) tidak mengecilkan objek yang jauh, jadi kedalaman harus dipalsukan lewat gerakan.
+
+Setiap lapisan punya **skala gulir**: pengali pergeseran kamera.
+
+```text title="Pseudocode: pergeseran tiap lapisan di layar"
+geser_kamera = posisi_kamera - posisi_kamera_awal
+untuk setiap lapisan:
+    geser_di_layar = geser_kamera * skala_gulir
+```
+
+| Lapisan | Skala gulir | Kesan |
+| --- | --- | --- |
+| Langit | 0 | Sangat jauh, diam di layar |
+| Gunung | 0,2 | Jauh |
+| Pepohonan | 0,5 | Sedang |
+| Tanah tempat pemain berdiri | 1 | Bergerak bersama dunia |
+| Semak di depan | 1,3 | Lebih dekat dari pemain |
+
+Lapisan latar biasanya juga diulang tanpa batas. Saat satu salinan gambar keluar dari layar, posisinya dilompatkan ke sisi seberang, jadi gambar sepanjang satu layar cukup untuk level yang sangat panjang.
+
+<Aside type="note" title="Analogi">
+Pemandangan dari jendela kereta. Tiang listrik di pinggir rel melintas cepat, sawah bergerak lebih pelan, dan gunung di kejauhan nyaris diam. Otak membaca selisih kecepatan itu sebagai jarak.
+</Aside>
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Unity tidak punya komponen parallax bawaan. Cara umum adalah skrip kecil yang menggeser lapisan sebanding dengan pergeseran kamera:
+
+```csharp
+using UnityEngine;
+
+public class LapisanParallax : MonoBehaviour
+{
+    public Transform kamera;
+    // 1 = bergerak seperti dunia biasa, 0.5 = setengah kecepatan, 0 = diam di layar
+    public float skalaGulir = 0.5f;
+
+    Vector3 posisiAwal, kameraAwal;
+
+    void Start()
+    {
+        posisiAwal = transform.position;
+        kameraAwal = kamera.position;
+    }
+
+    void LateUpdate()
+    {
+        Vector3 geser = kamera.position - kameraAwal;
+        // lapisan ikut kamera sebesar (1 - skalaGulir), sehingga di layar tampak bergeser sebesar skalaGulir
+        transform.position = posisiAwal + new Vector3(geser.x, geser.y, 0f) * (1f - skalaGulir);
+    }
+}
+```
+
+`LateUpdate` dipakai agar lapisan digeser setelah kamera selesai bergerak di frame itu.
+
+</div>
+<div slot="godot">
+
+Node **Parallax2D**, tersedia sejak Godot 4.3. Node ini menggantikan **ParallaxBackground** dan **ParallaxLayer**, yang kini berstatus deprecated. Taruh sprite setiap lapisan sebagai anak Parallax2D-nya sendiri, lalu atur:
+
+- `scroll_scale` (bawaan `(1, 1)`): 1 bergerak sama dengan kamera, di bawah 1 lebih lambat dan terasa jauh, 0 diam, di atas 1 lebih cepat dan terasa dekat.
+- `repeat_size`: jarak pengulangan tekstur anak untuk latar tanpa batas. Nilai 0 berarti tidak diulang.
+- `autoscroll`: pergeseran terus-menerus dalam piksel per detik, misalnya untuk awan.
+
+Dokumentasi Godot menyarankan sudut kiri atas tekstur diletakkan di titik (0, 0) agar pengulangan bekerja benar.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Pengulangan tanpa batas paling mudah jika gambarnya menyambung mulus di kedua sisi dan setidaknya selebar layar. Dokumentasi Godot membahas kasus tekstur yang lebih kecil dari layar: jika jarak pengulangan disamakan dengan ukuran gambar, gambar tidak menutupi layar, dan jika disamakan dengan ukuran layar, muncul celah. Solusinya memperkecil resolusi dasar game atau memperbesar gambar lapisannya. Saat kamera di-zoom keluar, satu salinan tambahan mungkin tidak cukup. Untuk itu ada `repeat_times`.
+
+Di game pixel art, skala gulir pecahan sering menaruh lapisan di posisi setengah piksel. Contohnya, kamera bergeser 3 piksel dan lapisan berskala 0,5 bergeser 1,5 piksel. Akibatnya lapisan bisa tampak bergetar. Lihat [Pixel Perfect](/kamus/2d/pixel-perfect/).
+
+## Terkait
+
+- [Kamera Ortografis](/kamus/dasar/ortho/)
+- [Sorting Layer & Urutan Gambar](/kamus/2d/sorting-layer/)
+- [Sprite](/kamus/2d/sprite/)
+- [Pixel Perfect](/kamus/2d/pixel-perfect/)

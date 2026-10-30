@@ -1,0 +1,95 @@
+---
+title: "Sprite Sheet"
+description: "Satu gambar berisi banyak frame atau banyak objek yang disusun dalam grid. Engine memotongnya menjadi sprite-sprite terpisah, lalu menampilkan frame bergantian untuk animasi frame-by-frame."
+kind: term
+level: 1
+aka: "spritesheet, sprite strip, flipbook, animasi frame-by-frame"
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "Cut out sprites from a texture"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/use-editor"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Sprite (2D and UI) texture Import Settings window reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/textures-reference/texture-type-sprite"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "2D sprite animation"
+    url: "https://docs.godotengine.org/en/stable/tutorials/2d/2d_sprite_animation.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "AnimatedSprite2D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_animatedsprite2d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Sprite2D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_sprite2d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+sidebar:
+  order: 2
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Satu file gambar berisi banyak frame, biasanya disusun dalam grid berukuran sama. Contohnya, animasi lari 8 frame berukuran 32×32 piksel disimpan sebagai satu gambar 256×32. Engine memotong gambar itu menjadi [sprite](/kamus/2d/sprite/) terpisah, lalu menampilkannya bergantian. Hasilnya animasi *frame-by-frame*, teknik yang sama dengan film kartun gambar tangan.
+
+Kecepatan animasi tidak harus sama dengan frame rate game. Animasi 10 fps di game 60 fps berarti setiap gambar tampil selama 6 [frame](/kamus/dasar/frame/) game. Karena itu frame animasi dihitung dari waktu yang berjalan, tidak dari jumlah frame game:
+
+```text title="Pseudocode: memutar animasi dari sprite sheet"
+fps_animasi = 10
+setiap frame game:
+    waktu += delta_time
+    indeks = floor(waktu * fps_animasi) mod jumlah_frame
+    kolom  = indeks mod jumlah_kolom
+    baris  = floor(indeks / jumlah_kolom)
+    tampilkan potongan di (kolom * lebar_frame, baris * tinggi_frame)
+```
+
+`delta_time` di sini adalah [delta time](/kamus/dasar/delta-time/), jadi animasi berjalan sama cepat di komputer lambat maupun cepat.
+
+Sprite sheet disusun oleh artist dengan grid yang teratur. Kumpulan sprite yang dikemas otomatis oleh engine demi performa disebut [Sprite Atlas](/kamus/2d/sprite-atlas/).
+
+<Aside type="note" title="Analogi">
+Buku gambar yang dibalik cepat (*flipbook*). Setiap halaman berisi satu pose, dan saat dibalik cepat, gambarnya tampak bergerak. Sprite sheet adalah semua halaman itu yang dijajarkan di satu lembar.
+</Aside>
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Atur **Sprite Mode: Multiple** di pengaturan impor, lalu buka **Sprite Editor** (bagian dari paket 2D Sprite). Menu **Slice** menyediakan **Grid By Cell Size** (potongan berukuran sama), **Grid By Cell Count** (jumlah baris dan kolom), **Automatic** (dipisah berdasarkan piksel transparan), dan **Isometric Grid**. Setiap potongan menjadi aset sprite tersendiri di bawah teksturnya. Potongan ini bisa dipakai sebagai frame animasi, atau diseret ke Tile Palette untuk dijadikan [tile](/kamus/2d/tilemap/).
+
+</div>
+<div slot="unreal">
+
+Paper2D memotong tekstur menjadi beberapa aset **Sprite**, lalu menyusunnya menjadi aset **Flipbook** yang diputar oleh **Paper Flipbook Component**.
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-30). */}
+
+</div>
+<div slot="godot">
+
+Ada dua cara yang dibahas dokumentasi Godot:
+
+- **AnimatedSprite2D** dengan resource **SpriteFrames**. Di panel SpriteFrames, pilih "Add frames from a Sprite Sheet", isi jumlah gambar horizontal dan vertikal, lalu pilih frame yang dipakai. Kecepatannya diatur di **Speed (FPS)**. Dari kode: `$Pemain.play("lari")`.
+- **Sprite2D** dengan `hframes` dan `vframes` (jumlah kolom dan baris), lalu properti `frame` dianimasikan dengan AnimationPlayer.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Masalah paling umum adalah karakter yang tampak bergetar di tempat. Penyebabnya biasanya salah satu dari dua hal: ukuran sel dan jarak antar-sel saat memotong tidak sama dengan gambar aslinya, atau pivot tiap frame tidak berada di titik yang sama, misalnya di telapak kaki.
+
+Garis tipis dari frame tetangga yang muncul di tepi sprite berasal dari filter linear yang ikut mengambil warna di luar potongan. Untuk pixel art, pakai filter nearest ([Texture Filtering & Mipmap](/kamus/geometri/texture-filtering/)). Untuk gambar biasa, beri jarak kosong antar-frame di sprite sheet.
+
+## Terkait
+
+- [Sprite](/kamus/2d/sprite/)
+- [Sprite Atlas](/kamus/2d/sprite-atlas/)
+- [Animation State Machine](/kamus/animasi/state-machine/)
+- [Delta Time](/kamus/dasar/delta-time/)

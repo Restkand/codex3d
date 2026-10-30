@@ -1,0 +1,374 @@
+---
+title: "Core Loop"
+description: "Aksi yang diulang pemain, umpan balik, dan hadiah yang membuatnya kembali, loop di berbagai skala waktu, cara menulis dan menguji loop dengan greybox, serta hubungannya dengan game feel dan cakupan produksi."
+fundamental: "Banyak proyek game pertama tumbuh dari daftar fitur: dunia yang luas, cerita, crafting, puluhan level. Setelah berbulan-bulan, playtest menunjukkan bahwa aksi yang diulang pemain setiap beberapa detik terasa hambar, dan konten tambahan tidak memperbaikinya. Masalah ini bisa ditemukan jauh lebih awal kalau kamu bisa menuliskan core loop-nya dan mengujinya dalam bentuk paling kasar."
+kind: lesson
+minutes: 25
+status: draf
+lastReviewed: 2026-10-30
+terms:
+  - input-action
+  - delta-time
+  - tween
+  - easing
+krekit:
+  gambaran-besar: "Game loop di Fondasi Engine itu urusan engine, setiap frame. Core loop itu urusan pemain, setiap beberapa detik. Namanya mirip, isinya beda."
+  bagian-bagian-sebuah-loop: "Ingat game terakhir yang kamu mainkan. Apa yang paling sering dilakukan tanganmu di sana?"
+  loop-di-berbagai-skala-waktu: "Putaran kecil memberi makan putaran besar. Kalau yang kecil macet, yang besar ikut tersendat."
+  menulis-loop-secara-konkret: "Kalau kata kerjanya tidak bisa dipasangkan ke tombol, biasanya masih terlalu umum."
+  mengenali-loop-yang-lemah: "Tes favoritku: matikan semua hadiah, lalu main lima menit. Masih seru?"
+  prototipe-greybox-sebelum-konten: "Kotak abu-abu itu murah dibuang. Justru itu gunanya."
+  loop-dan-game-feel: "Lompatan yang sama diulang ratusan kali. Selisih sepersekian detik jadi terasa sekali."
+  loop-dan-cakupan-produksi: "Hitung dulu berapa konten yang dimakan satu putaran loop. Angkanya sering mengejutkan."
+  kesalahan-umum: "Kesalahan nomor dua paling mahal, karena biasanya baru ketahuan setelah banyak aset jadi."
+sidebar:
+  order: 1
+  label: "1 · Core Loop"
+quiz:
+  - q: "Mana deskripsi core loop yang paling bisa langsung diuji dengan prototipe?"
+    options:
+      - "Pemain menjelajahi dunia fantasi yang luas dan penuh rahasia"
+      - "Pemain menembakkan tali ke titik di langit-langit, berayun, lalu melepas tali untuk mendarat di pijakan berikutnya"
+      - "Game ini terasa seru dan menantang untuk semua umur"
+      - "Pemain bisa bertarung, berdagang, membangun, dan bertani"
+    answer: 1
+    explain: "Deskripsi kedua punya kata kerja yang bisa dipasangkan ke input, umpan balik yang bisa dibayangkan, dan tujuan yang bisa diperiksa. Pilihan lainnya menjelaskan suasana atau daftar fitur, dan belum menunjukkan apa yang dilakukan pemain."
+  - q: "Di sebuah platformer, pemain membuka dunia baru setelah mengalahkan bos di akhir setiap dunia. Ini termasuk loop skala apa?"
+    options:
+      - "Momen ke momen"
+      - "Sesi"
+      - "Jangka panjang (meta)"
+      - "Game loop milik engine"
+    answer: 2
+    explain: "Membuka dunia baru terjadi setelah banyak level dan biasanya lintas sesi, jadi termasuk loop jangka panjang. Hasilnya memberi konteks baru (rintangan, musuh, kemampuan) untuk loop lari dan lompat yang tetap sama. Game loop milik engine berputar setiap frame dan tidak berhubungan dengan skala desain ini."
+  - q: "Saat playtest, pemain bertahan lama selama level dan item terus terbuka. Ketika semua hadiah itu dimatikan, mereka berhenti setelah dua menit. Apa yang paling mungkin terjadi?"
+    options:
+      - "Hadiahnya kurang banyak dan perlu ditambah"
+      - "Loop momen ke momen lemah, dan selama ini ditopang oleh hadiah jangka panjang"
+      - "Pemain tidak menyukai genre ini"
+      - "Durasi playtest terlalu pendek"
+    answer: 1
+    explain: "Jika aksi inti tidak menarik tanpa angka yang naik, hadiah hanya menunda kebosanan. Perbaikannya ada di loop dalam: keputusan di setiap putaran, umpan balik yang jelas, dan konteks yang berubah."
+  - q: "Kamu ingin tahu apakah ide game ayunan tali-mu menyenangkan. Apa yang sebaiknya dibuat lebih dulu?"
+    options:
+      - "Dokumen desain 40 halaman berisi cerita dan daftar fitur"
+      - "Satu level lengkap dengan aset final supaya playtester terkesan"
+      - "Greybox: kapsul, beberapa kotak sebagai titik ayun, angka yang mudah disetel, dan satu tujuan sederhana"
+      - "Sistem simpan data dan menu utama"
+    answer: 2
+    explain: "Greybox menguji loop dengan biaya paling kecil dan murah untuk dibuang jika gagal. Aset final tidak bisa menyelamatkan loop yang lemah, dan dokumen tidak bisa dimainkan."
+  - q: "Pemain memanen sekitar 40 petak setiap hari di dalam game, dan setiap panen memutar animasi 1,5 detik. Apa yang sebaiknya dilakukan?"
+    options:
+      - "Persingkat umpan balik panen biasa, dan simpan animasi panjang untuk momen yang jarang"
+      - "Biarkan, karena animasi panjang terasa lebih memuaskan"
+      - "Hapus semua umpan balik panen"
+      - "Kurangi jumlah petak menjadi 5"
+    answer: 0
+    explain: "40 × 1,5 detik berarti 60 detik menunggu setiap hari di dalam game. Umpan balik untuk aksi yang sering diulang perlu singkat dan tetap jelas. Perayaan besar terasa lebih berarti jika jarang muncul."
+  - q: "Pemain melaporkan bahwa di laptop dengan frame rate rendah, karakternya tidak bisa mencapai pijakan yang di PC-mu bisa dicapai. Apa yang paling mungkin memperbaikinya?"
+    options:
+      - "Kurva easing yang lebih halus pada animasi lompat"
+      - "Menghitung gerak dengan delta time, dan menjalankan physics karakter dengan langkah waktu tetap"
+      - "Menambah jumlah level"
+      - "Menurunkan resolusi tekstur"
+    answer: 1
+    explain: "Jika gerak dihitung per frame, atau delta time hanya dipakai di sebagian rumus, lintasan lompatan berubah mengikuti frame rate. Dengan langkah waktu tetap, setiap langkah simulasi sama panjangnya, sehingga ukuran lompatan yang kamu setel di greybox berlaku di semua perangkat."
+sources:
+  - title: "The Chemistry of Game Design"
+    url: "https://www.gamedeveloper.com/design/the-chemistry-of-game-design"
+    publisher: "Daniel Cook, Game Developer (2007)"
+    accessed: 2026-10-30
+  - title: "Loops and Arcs"
+    url: "https://lostgarden.com/2012/04/30/loops-and-arcs/"
+    publisher: "Daniel Cook, Lostgarden (2012)"
+    accessed: 2026-10-30
+  - title: "Fear, Love and Great Big Ideas"
+    url: "https://www.gdcvault.com/play/1022828/Fear-Love-and-Great-Big"
+    publisher: "Jonathan Evans, GDC Europe 2015 (GDC Vault)"
+    accessed: 2026-10-30
+  - title: "Unwinding Core Loops: Detecting These Patterns Early Can Avert a Failed Launch"
+    url: "https://gdcvault.com/play/1028883/Free-to-Play-Summit-Unwinding"
+    publisher: "Dave Cross, GDC 2023 Free-to-Play Summit (GDC Vault)"
+    accessed: 2026-10-30
+  - title: "The Four One-Page Design Docs You Need (And How to Use Them)"
+    url: "https://gdcvault.com/play/1035120/The-Four-One-Page-Design"
+    publisher: "Ian Schreiber, GDC 2025 (GDC Vault)"
+    accessed: 2026-10-30
+  - title: "The Compulsion Loop Explained"
+    url: "https://www.gamedeveloper.com/business/the-compulsion-loop-explained"
+    publisher: "Joseph Kim, blog di Game Developer (2014)"
+    accessed: 2026-10-30
+  - title: "How to Prototype a Game in Under 7 Days"
+    url: "https://www.gamedeveloper.com/game-platforms/how-to-prototype-a-game-in-under-7-days"
+    publisher: "Experimental Gameplay Project (Carnegie Mellon), Game Developer (2005)"
+    accessed: 2026-10-30
+  - title: "Blockout"
+    url: "https://book.leveldesignbook.com/process/blockout"
+    publisher: "The Level Design Book"
+    accessed: 2026-10-30
+  - title: "Metrics"
+    url: "https://book.leveldesignbook.com/process/blockout/metrics"
+    publisher: "The Level Design Book"
+    accessed: 2026-10-30
+  - title: "Game Feel: The Secret Ingredient"
+    url: "https://www.gamedeveloper.com/design/game-feel-the-secret-ingredient"
+    publisher: "Steve Swink, Game Developer (2007)"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menjelaskan core loop sebuah game: aksi yang diulang, umpan balik dari game, dan hadiah atau progres yang membuat pemain mengulanginya.
+- Membedakan loop momen ke momen, loop sesi, dan loop jangka panjang, dan menjelaskan bagaimana loop-loop itu saling bergantung.
+- Menuliskan sebuah loop secara konkret dengan kata kerja, input, umpan balik, dan tujuan.
+- Mengenali tanda-tanda loop yang lemah sebelum konten dibuat.
+- Menguji loop dengan prototipe greybox, lalu menghubungkannya dengan game feel dan cakupan produksi.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: jarum jam">
+Jarum detik berputar paling cepat. Setiap kali jarum detik menyelesaikan satu putaran, jarum menit maju satu langkah, dan setelah cukup banyak langkah, jarum jam ikut bergeser. Sebuah game punya susunan yang mirip: aksi kecil yang diulang setiap beberapa detik menggerakkan tujuan yang lebih besar, dan tujuan itu menggerakkan progres yang berlangsung berhari-hari.
+</Aside>
+
+Hampir setiap game meminta pemain melakukan sesuatu berulang kali: melompat, menembak, mencocokkan tiga permen, menanam benih. **Core loop** adalah rangkaian kecil yang diulang itu, dilihat dari sisi pemain.
+
+```text title="Bentuk umum core loop"
+aksi ──▶ umpan balik ──▶ hadiah atau progres ──┐
+ ▲                                             │
+ └──────────── alasan untuk mengulang ◀────────┘
+```
+
+Daniel Cook menggambarkan struktur serupa dalam esainya tentang *skill atom*: pemain melakukan aksi, simulasi di dalam game berubah, game memberi umpan balik, lalu pemain memperbarui model mentalnya tentang cara kerja game itu. Langkah terakhir terjadi di kepala pemain. Setiap putaran loop adalah kesempatan untuk belajar sedikit, dan rasa makin mahir adalah salah satu alasan terkuat orang mengulang sebuah aksi.
+
+Core loop berbeda dengan **game loop** di [Pelajaran 1 Fondasi Engine](/belajar/fondasi-engine/01-frame/). Game loop adalah perulangan milik engine: membaca input, update, render, sekali setiap [frame](/kamus/dasar/frame/). Core loop adalah perulangan milik pemain. Satu putarannya bisa berlangsung beberapa detik sampai beberapa menit dan melewati ratusan frame. Keduanya bertemu di satu titik: setiap aksi pemain dibaca, diproses, dan dijawab oleh game loop. Pertemuan itu dibahas di bagian game feel.
+
+## Bagian-bagian sebuah loop
+
+Ambil dua contoh yang mudah dibayangkan. Di platformer, pemain berlari dan melompat dari satu pijakan ke pijakan lain. Di game bertani, pemain menanam, menunggu, lalu memanen.
+
+| Bagian | Platformer | Game bertani |
+| --- | --- | --- |
+| **Aksi** | Lari, lompat, mendarat | Mencangkul, menanam, menyiram, memanen |
+| **Umpan balik** | Karakter melengkung di udara, suara saat lepas landas dan mendarat, debu di kaki | Tunas muncul, tanah menggelap setelah disiram, angka hasil panen |
+| **Hadiah atau progres** | Sampai di pijakan berikutnya, koin, checkpoint | Hasil panen yang bisa dijual, uang untuk benih dan alat baru |
+
+**Aksi** adalah apa yang dilakukan pemain. Aksi yang menarik biasanya mengandung keputusan: kapan melompat, seberapa jauh, petak mana yang ditanami lebih dulu. Aksi tanpa keputusan, misalnya menekan tombol yang sama terus-menerus tanpa perlu memilih, cepat terasa seperti pekerjaan.
+
+**Umpan balik** adalah cara game memberi tahu pemain apa yang baru saja terjadi: gerakan, suara, getaran, angka, perubahan warna. Tanpa umpan balik yang jelas, pemain tidak bisa belajar dari aksinya, karena ia tidak tahu apakah aksinya berhasil.
+
+**Hadiah atau progres** adalah sesuatu yang berubah sehingga putaran berikutnya punya alasan untuk dimulai. Di platformer, hadiahnya bisa sesederhana posisi baru dengan rintangan baru di depan. Di game bertani, uang hasil panen dipakai membeli benih, dan benih itu memulai putaran berikutnya. Hadiah yang paling kuat terhubung kembali ke aksi, karena ia membuka pilihan baru atau membuat aksi berikutnya sedikit berbeda.
+
+Tim Experimental Gameplay Project di Carnegie Mellon, yang membuat puluhan prototipe dalam satu semester, menyarankan mulai dari mekanik inti sebagai *toy*: sesuatu yang asyik diutak-atik, tanpa menang atau kalah. Setelah itu baru ditambahkan tujuan. Menurut mereka, prototipe tanpa tujuan hanyalah mainan dan belum menjadi game. Tujuan dan hadiah yang membuat sebuah mainan menjadi loop.
+
+## Loop di berbagai skala waktu
+
+Satu game jarang hanya punya satu loop. Cook menulis bahwa loop di dalam game bersifat fraktal, muncul di banyak tingkat dan frekuensi. Sesi Jonathan Evans di GDC Europe 2015 membahas pembagian serupa menjadi loop jangka pendek, menengah, dan panjang, dengan perhatian khusus pada loop jangka panjang yang sering disebut *meta-game loop*. Pembagian yang umum dipakai:
+
+| Skala | Lama satu putaran | Platformer | Game bertani |
+| --- | --- | --- | --- |
+| **Momen ke momen** | Detik | Lari, lompat, mendarat di pijakan | Pilih petak, tanam atau siram, lihat hasilnya |
+| **Sesi** | Menit | Menyelesaikan satu level | Satu hari di dalam game: mengurus ladang sampai malam |
+| **Jangka panjang (meta)** | Lintas sesi, hari sampai minggu | Membuka dunia dan kemampuan baru | Memperluas ladang, membeli alat yang lebih cepat, membuka tanaman musim berikutnya |
+
+Loop-loop ini bersarang, seperti loop di dalam loop pada kode. Dalam contoh game bertani:
+
+```text title="Pseudocode: loop bersarang di game bertani"
+selama pemain masih ingin bermain:          // jangka panjang: lintas banyak hari
+    mulai_hari()
+    selama hari belum berakhir:              // sesi: satu hari di dalam game
+        petak = pilih_petak()                // momen ke momen:
+        tanam_siram_atau_panen(petak)        //   satu aksi,
+        tampilkan_umpan_balik(petak)         //   satu umpan balik
+    uang = uang + hitung_hasil_hari()
+    buka_pilihan_baru(uang)                  // lahan lebih luas, alat lebih cepat
+```
+
+Hubungan antarloop berjalan dua arah. Loop dalam memberi bahan bakar untuk loop luar: setiap panen menambah uang yang dipakai di loop jangka panjang. Loop luar memberi **konteks baru** untuk loop dalam: alat baru, petak yang lebih luas, tanaman yang tumbuh dengan cara berbeda. Konteks baru membuat aksi yang sama tetap menuntut keputusan baru, sehingga pemain tidak cepat bosan.
+
+Tidak semua isi game berupa loop. Di tulisan lain, Cook membedakan loop dari **arc**: bagian yang dialami sekali lalu selesai, seperti cutscene, dialog cerita, atau teka-teki yang jawabannya sudah diketahui. Arc berguna untuk memberi makna dan suasana, tetapi nilainya hampir habis setelah dialami. Untuk memisahkan keduanya, ia menyarankan pertanyaan sederhana: bagian mana yang berulang, dan mana yang tidak?
+
+## Menulis loop secara konkret
+
+Deskripsi seperti "pemain menjelajah dunia, bertarung, dan membangun markas" belum bisa diuji. Kata kerjanya terlalu luas, dan setiap kata kerja itu menyimpan puluhan aksi yang berbeda. Cara yang lebih berguna adalah menulis **kartu loop**: satu loop, satu kartu, dengan isian yang konkret.
+
+```text title="Kartu loop: platformer, momen ke momen"
+kata kerja    : lari, lompat
+input         : arah kiri/kanan, tombol lompat (ditahan lebih lama = lompatan lebih tinggi)
+umpan balik   : animasi lepas landas, suara lompat, debu dan suara saat mendarat
+tujuan        : sampai di pijakan berikutnya tanpa jatuh
+hadiah        : posisi baru, koin di jalur yang lebih sulit
+yang berubah  : jarak dan tinggi pijakan, rintangan yang bergerak
+```
+
+Beberapa pedoman saat mengisinya:
+
+- **Kata kerja adalah aksi pemain.** "Musuh muncul" atau "level dimuat" adalah kejadian di dalam game. Kata kerja menjelaskan apa yang dilakukan pemain.
+- **Setiap kata kerja bisa dipasangkan ke input.** Jika sebuah kata kerja tidak bisa dihubungkan ke tombol, gerakan stik, atau sentuhan tertentu, kata kerja itu masih terlalu umum. Di engine, kata kerja yang sudah konkret biasanya menjadi satu [input action](/kamus/interaksi/input-action/) bernama, seperti `lompat` atau `siram`.
+- **Umpan balik ditulis per indera.** Apa yang terlihat, terdengar, dan terasa lewat getaran saat aksi berhasil, dan apa bedanya saat aksi gagal.
+- **Tujuan bisa diperiksa.** "Sampai di pijakan berikutnya" bisa dijawab ya atau tidak. "Merasa seru" tidak bisa.
+- **Tulis apa yang berubah dari putaran ke putaran.** Baris inilah yang menjaga loop tetap menarik setelah diulang puluhan kali.
+
+Kartu loop juga berguna sebagai dokumen tim. Dalam sesinya di GDC 2025 tentang dokumen desain satu halaman, Ian Schreiber memasukkan dokumen loop sebagai salah satu dari empat dokumen yang menurutnya berguna di sebagian besar proyek. Bentuk dokumen desain dibahas lebih jauh di pelajaran Dokumentasi desain pada jalur ini.
+
+## Mengenali loop yang lemah
+
+Loop yang lemah jarang terlihat di dokumen. Kelemahannya muncul saat dimainkan, terutama setelah diulang berkali-kali. Ringkasan sesi Dave Cross di GDC 2023 berangkat dari pengamatan ini: saat sebuah game gagal di *soft launch* (rilis terbatas sebelum peluncuran penuh) dan timnya menelusuri ke belakang, penyebabnya biasanya masalah mendasar di core loop yang tidak terlihat, atau tidak ingin diakui.
+
+Tanda-tanda yang bisa kamu periksa sendiri:
+
+- **Tidak bisa ditulis dalam satu kalimat dengan kata kerja yang jelas.** Biasanya ini berarti belum ada aksi inti, hanya kumpulan fitur.
+- **Tidak ada keputusan.** Jika cara terbaik selalu sama di setiap putaran, pemain berhenti berpikir dan mulai menjalankan rutinitas.
+- **Umpan balik lambat atau samar.** Pemain tidak tahu apakah aksinya berhasil, sehingga ia tidak bisa memperbaiki caranya bermain.
+- **Hadiah tidak dipakai di putaran berikutnya.** Koin yang tidak bisa dibelanjakan, atau poin yang tidak mengubah apa pun, tidak memberi alasan untuk mengulang.
+- **Pemain bertahan hanya karena angka naik.** Jika loop jangka panjang yang menahan pemain sementara aksi intinya membosankan, bermain terasa seperti *grinding*: mengulang hal yang sama demi angka.
+- **Penguasaan selesai terlalu cepat.** Cook menyebut kondisi ini *burnout*: pemain sudah menguasai sebuah keterampilan tetapi tidak menemukan kegunaan yang menarik untuknya, lalu berhenti memakainya.
+
+Ada satu tes sederhana untuk tanda kelima. Matikan sementara semua hadiah jangka panjang (level, mata uang, item yang terbuka bertahap), lalu mainkan loop momen ke momen selama lima menit. Jika aksinya masih menarik tanpa angka yang naik, loop dalamnya kuat. Jika tidak, menambah hadiah hanya menunda masalahnya.
+
+<Aside type="caution" title="Core loop dan compulsion loop">
+Istilah core loop kadang tertukar dengan *compulsion loop*. Joseph Kim, dalam tulisan blognya di Game Developer, membedakan keduanya. Core loop adalah rangkaian aktivitas utama yang dilakukan pemain berulang kali. Compulsion loop adalah rangkaian aktivitas yang sengaja dirancang untuk diulang demi hadiah berupa rasa senang atau lega, dengan tujuan membentuk kebiasaan. Jadwal hadiah, mata uang, dan risiko desain yang eksploitatif dibahas di pelajaran Ekonomi dan progres pada jalur ini. Untuk sekarang, pegang satu ukuran: loop yang kuat tetap menarik saat hadiahnya dikurangi.
+</Aside>
+
+## Prototipe greybox sebelum konten
+
+Cara paling murah untuk menguji loop adalah membuatnya dalam bentuk paling kasar. Bentuk kasar ini disebut **greybox** atau *blockout*: versi game atau level yang dibangun dari bentuk sederhana seperti kotak dan kapsul, tanpa detail dan tanpa aset seni final. The Level Design Book menjelaskan alasannya dari sisi biaya. Geometri blockout murah untuk dihapus dan dibangun ulang, sedangkan aset seni yang sudah jadi mahal untuk dibuang. Selama kamu belum yakin dengan desainnya, pertahankan semuanya tetap murah.
+
+Untuk menguji core loop, greybox biasanya berisi:
+
+- Karakter berupa kapsul atau kotak, dengan gerak yang sudah bisa disetel.
+- Lingkungan dari kotak polos: pijakan, dinding, petak ladang.
+- Angka penting yang mudah diubah saat game berjalan: kecepatan lari, tinggi lompat, gravitasi, lama tanaman tumbuh, harga jual.
+- Umpan balik paling dasar: satu suara, perubahan warna, atau angka yang muncul.
+- Satu tujuan yang bisa dicapai, supaya prototipe tidak berhenti sebagai mainan.
+
+Yang sengaja tidak dimasukkan adalah aset final, cerita, menu, dan banyak level. Tim Experimental Gameplay Project mencatat bahwa polesan seni dan musik tidak bisa menyelamatkan gameplay yang buruk, walaupun polesan yang baik membuat game yang sudah bagus terasa lebih enak dimainkan. Mereka juga bercerita tentang prototipe yang mekanik dasarnya selesai dalam beberapa jam, lalu menghabiskan satu minggu tambahan karena dipaksa menjadi game yang menyenangkan, tanpa hasil. Setiap prototipe mereka dibuat satu orang dalam waktu kurang dari tujuh hari, dan mereka tidak menemukan hubungan antara lama pengerjaan dan seberapa berhasil hasil akhirnya. Karena itu, tentukan batas waktu sebelum mulai.
+
+Untuk loop yang lambat, seperti siklus tanam dan panen atau ekonomi toko, **prototipe kertas** sering lebih cepat daripada engine. Petak ladang digambar di kertas, uang diganti kancing, waktu tumbuh dihitung dengan giliran. Angka bisa diubah dalam hitungan detik, dan kamu langsung melihat apakah pemain punya keputusan yang menarik. Rasa gerak tidak bisa diuji dengan cara ini. Lompatan, tembakan, dan aksi lain yang bergantung pada waktu nyata perlu dicoba di engine. The Level Design Book juga menyebut bahwa ukuran seperti tinggi lompat tidak bisa diuji di sketsa kertas dan perlu dicoba di blockout.
+
+Sebuah prototipe loop sebaiknya menjawab pertanyaan berikut:
+
+1. Apakah aksi intinya masih menarik setelah diulang 50 kali?
+2. Apakah orang yang baru pertama mencoba tahu apa yang terjadi setelah setiap aksi, tanpa dijelaskan?
+3. Apakah ada keputusan di setiap putaran, atau hanya satu cara yang selalu benar?
+4. Ketika pemain berhenti, apa sebabnya: bosan, bingung, atau memang sudah selesai?
+
+Untuk menjawabnya, kamu perlu **playtest**: sesi saat orang lain mencoba game-mu sementara kamu mengamati. Cara merencanakan dan mengamati playtest dibahas di pelajaran Playtesting pada jalur ini.
+
+## Loop dan game feel
+
+Loop momen ke momen diulang paling sering, sehingga di sinilah **game feel** paling terasa: rasa yang muncul dari respons input, gerak, suara, dan efek kecil. Dalam artikelnya di Game Developer tahun 2007, Steve Swink menyebut game feel sebagian besar bekerja di bawah sadar. Ia juga mengingatkan bahwa rasa ini sering ditunda sampai tahap poles di akhir produksi, padahal itulah yang paling lama dialami pemain. Karena itu, menurutnya, game feel perlu ikut diprototipekan sejak praproduksi.
+
+Swink memecah game feel menjadi enam bagian: input, respons, konteks, polesan, metafora, dan aturan. Tiga yang pertama langsung berhubungan dengan kartu loop:
+
+- **Input**: cara pemain menyampaikan niatnya ke game. Ini baris input di kartu loop.
+- **Respons**: cara game memproses dan menjawab input secara real-time, misalnya lompatan yang lebih tinggi jika tombol ditahan lebih lama.
+- **Konteks**: batasan ruang yang memberi arti pada gerak. Tanpa pijakan dan dinding, kemampuan melompat tinggi tidak berarti apa-apa. Swink menyarankan mencari ukuran standar dari gerak karakter, misalnya berapa petak tinggi dan lebar satu lompatan yang terasa enak, lalu menyusun level dari ukuran itu.
+
+Di titik ini, konsep dari Fondasi Engine menjadi bagian dari desain:
+
+- **Respons yang sama di semua perangkat.** Susunan level bergantung pada ukuran lompatan. Jika gerak karakter dihitung per frame, atau [delta time](/kamus/dasar/delta-time/) hanya dipakai di sebagian rumus, tinggi dan jauh lompatan berubah mengikuti frame rate. Pijakan yang disetel di PC-mu bisa tidak terjangkau di laptop yang lebih lambat. Bahkan dengan delta time, langkah yang panjangnya berubah-ubah membuat puncak lompatan sedikit bergeser. Itu salah satu alasan physics karakter sering dijalankan dengan [langkah waktu tetap](/kamus/fisika/fixed-timestep/). Keduanya dibahas di [Pelajaran 1 Fondasi Engine](/belajar/fondasi-engine/01-frame/).
+- **Umpan balik yang bergerak dengan kurva.** Debu saat mendarat, angka panen yang melayang naik, tombol yang membesar saat ditekan: semuanya biasanya [tween](/kamus/animasi/tween/) pendek dengan [easing](/kamus/animasi/easing/). Ease out cocok untuk sesuatu yang datang lalu berhenti, seperti karakter yang mendarat. Cara memilih kurva dan durasinya ada di [Pelajaran 7 Fondasi Engine](/belajar/fondasi-engine/07-animasi/).
+- **Jeda antara tombol dan reaksi.** Pemain menilai kontrol dari jeda ini. Transisi animasi yang menunggu klip selesai bisa menambah jeda yang tidak pernah diminta desainer. Contohnya ada di bagian Kesalahan umum Pelajaran 7.
+
+Ada juga hitungan yang khas untuk loop: **durasi umpan balik dikalikan jumlah pengulangan**. Animasi panen 1,5 detik terasa memuaskan saat pertama kali dilihat. Jika pemain memanen 40 petak setiap hari di dalam game, itu berarti 60 detik menunggu animasi setiap hari. Umpan balik untuk aksi yang sering diulang perlu singkat. Perayaan yang besar lebih cocok untuk momen yang jarang, seperti panen tanaman langka atau ladang yang selesai diperluas.
+
+Game feel dibahas lebih dalam di pelajaran berikutnya pada jalur ini.
+
+## Loop dan cakupan produksi
+
+Loop juga menentukan berapa banyak yang harus dibuat. Agar setiap putaran terasa baru, game butuh sesuatu yang baru: pijakan dengan susunan berbeda, musuh baru, tanaman baru. Hitung kasar sebelum memutuskan isi game:
+
+```text title="Ilustrasi: menghitung konten dari loop sesi"
+1 putaran loop sesi    = 1 level
+target durasi game     = 5 jam = 300 menit
+jika 1 level ≈ 6 menit   → butuh ≈ 50 level
+jika 1 level ≈ 3 hari kerja (greybox, uji, aset, poles)
+                         → ≈ 150 hari kerja, hanya untuk level
+```
+
+Angka di atas hanya ilustrasi. Ganti dengan angka dari prototipemu sendiri, karena lama satu level dan lama pengerjaannya sangat berbeda antar-game dan antar-tim.
+
+Arc membuat hitungan ini lebih berat karena nilainya habis setelah dialami sekali. Cook menulis bahwa bisnis yang mengandalkan rangkaian arc untuk pendapatan yang terus masuk harus terus memproduksi konten, dan jika produksi berhenti, bisnisnya ikut berhenti. Ia menyebut kondisi ini *content treadmill*. Loop yang menghasilkan variasi dari sistemnya sendiri, misalnya kombinasi tanaman, cuaca, dan tata letak ladang yang dipilih pemain, bisa diulang lebih lama dengan konten yang lebih sedikit. Sistem seperti itu punya biayanya sendiri: lebih banyak angka yang perlu diseimbangkan dan lebih banyak kasus yang perlu diuji.
+
+Untuk tim kecil, urutan yang aman adalah membuktikan loop momen ke momen di greybox, menambahkan loop sesi yang sederhana, lalu baru membangun loop jangka panjang. Loop jangka panjang biasanya paling mahal karena melibatkan banyak sistem sekaligus: penyimpanan data, mata uang, hal-hal yang terbuka bertahap, dan penyeimbangan selama berjam-jam permainan. Perencanaan cakupan, vertical slice, dan milestone dibahas di jalur [Produksi](/belajar/produksi/).
+
+## Kesalahan umum
+
+Kesalahan berikut jarang terlihat di dokumen desain. Biasanya baru ketahuan saat playtest, kadang setelah banyak aset dibuat.
+
+### Kata kerja yang terlalu umum
+
+```text title="✗ Keliru"
+Pemain menjelajah dunia, bertarung, dan membangun markas.
+```
+
+```text title="✓ Benar"
+Pemain menembakkan tali ke titik di langit-langit, berayun,
+lalu melepas tali di puncak ayunan untuk mendarat di pijakan berikutnya.
+```
+
+Kalimat kedua bisa langsung dibuat greybox-nya dan diuji. Kalimat pertama berisi beberapa game yang berbeda.
+
+### Konten dibuat sebelum loop terbukti
+
+```text title="✗ Keliru"
+cerita → 20 level → aset final → playtest pertama
+```
+
+```text title="✓ Benar"
+greybox loop → playtest → perbaiki → konteks dan level → aset final
+```
+
+Setiap perubahan pada loop setelah aset jadi berarti membuang pekerjaan yang mahal.
+
+### Level disusun sebelum gerak karakter dikunci
+
+```text title="✗ Keliru"
+susun 10 level greybox, lalu tinggi lompat diubah dari 3 menjadi 2,5 unit
+```
+
+```text title="✓ Benar"
+setel tinggi dan jarak lompat dulu, catat sebagai ukuran standar,
+lalu susun level berdasarkan ukuran itu
+```
+
+The Level Design Book menyebut ukuran seperti tinggi lompat sebagai *player metrics* dan menyarankan menetapkannya di tahap blockout. Jika baru diubah setelah level dipoles, perubahannya makan banyak waktu, bahkan bisa memaksa seluruh level dirancang ulang.
+
+### Hadiah yang tidak kembali ke loop
+
+```text title="✗ Keliru"
+kumpulkan koin → angka koin naik → (tidak ada yang bisa dibeli)
+```
+
+```text title="✓ Benar"
+kumpulkan koin → beli sepatu lompat ganda → rute baru terbuka di level lama
+```
+
+### Umpan balik panjang untuk aksi yang sering diulang
+
+```text title="✗ Keliru"
+setiap panen: animasi 1,5 s + jendela "Panen berhasil!" yang harus ditutup
+```
+
+```text title="✓ Benar"
+panen biasa:          animasi 0,2 s + angka hasil melayang naik
+panen tanaman langka: animasi panjang + suara khusus
+```
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Latihan 1 dan 2 cukup dikerjakan di kertas. Latihan 3 dan 4 dikerjakan di engine pilihanmu.
+
+1. Pilih satu game yang sering kamu mainkan. Tulis kartu loop untuk loop momen ke momen, loop sesi, dan loop jangka panjangnya. Lalu tandai: jika dua loop lainnya dihapus, loop mana yang masih membuatmu ingin bermain?
+2. Buat prototipe kertas game bertani: 6 petak, kancing sebagai uang, dan satu dadu untuk cuaca (angka 1 berarti kemarau, tanaman tidak tumbuh hari itu). Satu giliran adalah satu hari. Benih seharga 1 kancing tumbuh dalam 2 hari dan dijual 3 kancing. Mulai dengan 3 kancing dan mainkan 10 hari. Lalu ubah satu angka saja, misalnya waktu tumbuh, harga, atau efek cuaca, dan catat kapan pilihanmu terasa menarik dan kapan tidak ada pilihan sama sekali.
+3. Buat greybox platformer: satu kapsul dan sepuluh kotak sebagai pijakan. Setel kecepatan, tinggi lompat, dan gravitasi sampai lompatan terasa enak, lalu catat tinggi dan jarak lompat maksimumnya. Susun ulang kotak berdasarkan angka itu: beberapa mudah dijangkau, beberapa hampir tidak terjangkau. Lakukan 50 lompatan dan catat kapan kamu mulai bosan.
+4. Tambahkan dua umpan balik ke greybox dari latihan 3: suara saat mendarat, dan efek squash singkat saat mendarat (skala tinggi karakter mengecil sedikit lalu kembali dalam sekitar 0,15 detik dengan ease out). Bandingkan rasanya dengan versi tanpa umpan balik. Lalu batasi frame rate ke 30 dan ke 144 (caranya ada di Latihan [Pelajaran 1 Fondasi Engine](/belajar/fondasi-engine/01-frame/)), dan periksa apakah tinggi lompatan tetap sama.

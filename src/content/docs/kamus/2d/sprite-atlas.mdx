@@ -1,0 +1,95 @@
+---
+title: "Sprite Atlas"
+description: "Satu tekstur besar berisi banyak sprite yang dikemas otomatis. Sprite dari atlas yang sama bisa digambar bersama dalam lebih sedikit draw call, sehingga beban CPU berkurang."
+kind: term
+level: 2
+aka: "texture atlas, texture packing, AtlasTexture, TextureAtlas"
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "Sprite atlases"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/atlas/atlas-introduction"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Create a sprite atlas"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/atlas/create-sprite-atlas"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Sprite Atlas Inspector window reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/atlas/sprite-atlas-reference"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "ResourceImporterTextureAtlas"
+    url: "https://docs.godotengine.org/en/stable/classes/class_resourceimportertextureatlas.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "AtlasTexture"
+    url: "https://docs.godotengine.org/en/stable/classes/class_atlastexture.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Importing images"
+    url: "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_images.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+sidebar:
+  order: 3
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Satu [tekstur](/kamus/geometri/texture/) besar berisi banyak sprite kecil yang dikemas rapat oleh engine. Setiap sprite cukup mengingat letak potongannya ([UV](/kamus/geometri/uv/)) di dalam tekstur besar itu.
+
+Alasannya adalah [draw call](/kamus/performa/draw-call/). Sprite yang memakai tekstur berbeda harus digambar dengan perintah terpisah, dan setiap perintah punya ongkos persiapan di CPU. Jika koin, musuh, dan peluru ada di satu atlas dan memakai material yang sama, engine bisa menggabungkannya:
+
+```text title="Tanpa atlas dan dengan atlas"
+tanpa atlas:  koin.png, musuh.png, peluru.png  → 3 tekstur → minimal 3 draw call
+dengan atlas: atlas_level1.png                 → 1 tekstur → bisa digabung jadi 1 draw call
+```
+
+Bedanya dengan [sprite sheet](/kamus/2d/sprite-sheet/): sprite sheet disusun artist dalam grid teratur, terutama untuk frame animasi. Atlas biasanya dibuat otomatis dari gambar-gambar terpisah. Susunannya tidak perlu kamu atur, dan tujuannya performa.
+
+<Aside type="note" title="Analogi">
+Mengirim satu kardus berisi 50 barang lebih cepat daripada mengirim 50 paket kecil, walau isinya sama. Kurir membayar ongkos per paket, tidak per barang. CPU juga membayar ongkos per draw call.
+</Aside>
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Buat aset lewat **Assets → Create → 2D → Sprite Atlas** (berkas `.spriteatlasv2`), lalu seret sprite, tekstur, atau folder ke **Objects for Packing**. Setelah itu sprite otomatis memakai tekstur atlas di Scene view, Game view, dan build. Pengaturan penting:
+
+- **Padding:** jarak antar-sprite dalam piksel agar warna sprite tetangga tidak ikut terambil. Bawaannya 4.
+- **Allow Rotation:** memutar sprite agar muat lebih rapat. Matikan untuk elemen UI Canvas.
+- **Tight Packing:** mengemas mengikuti bentuk sprite, tidak sekadar kotak.
+- **Filter Mode** dan **Max Texture Size** untuk tekstur hasil atlas.
+
+Dokumentasi Unity menyarankan atlas terpisah untuk sprite yang dipakai bersamaan (misalnya per scene), untuk sprite yang butuh kompresi berbeda, dan untuk sprite yang jarang dipakai. Jika satu sprite masuk ke dua atlas, Unity memilih salah satunya secara acak saat runtime.
+
+</div>
+<div slot="godot">
+
+Godot menyediakan mode impor **TextureAtlas**. Pilih beberapa gambar di dock FileSystem, ubah tipe impornya menjadi TextureAtlas di dock Import, isi **Atlas File** dengan path PNG tujuan, lalu impor ulang. Setiap gambar menjadi resource **AtlasTexture** yang menunjuk ke potongan atlas. Dokumentasi Godot menyebut mode ini berguna untuk menghemat memori animasi 2D dari sprite sheet, dan hanya didukung di rendering 2D.
+
+**Import Mode: Mesh** membuat bentuk mengikuti bagian gambar yang tidak transparan, untuk mengurangi [fill rate](/kamus/performa/fill-rate/) pada sprite besar yang banyak ruang kosongnya.
+
+AtlasTexture juga bisa dibuat manual dengan memilih `region` dari satu tekstur. Catatannya, AtlasTexture tidak bisa diulang (*tile*) dengan benar di Sprite2D atau TextureRect.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Atlas hanya mengurangi draw call jika urutan gambar mendukung. Jika sprite dari atlas A dan atlas B tampil berselang-seling dalam [urutan gambar](/kamus/2d/sorting-layer/) (A, B, A, B), engine tetap berganti tekstur bolak-balik. Kelompokkan sprite yang tampil bersama ke atlas yang sama.
+
+Saat mengukur hasilnya di Unity, perhatikan catatan ini: dengan SRP Batcher aktif, jumlah draw call mungkin tidak turun, tetapi menurut dokumentasi Unity performanya tetap membaik dengan kadar yang mirip.
+
+Atlas yang terlalu besar juga punya ongkos. Seluruh teksturnya dimuat ke memori GPU walau hanya satu sprite di dalamnya yang dipakai. Karena itu atlas biasanya dipisah per level atau per kelompok objek.
+
+## Terkait
+
+- [Draw Call & Batching](/kamus/performa/draw-call/)
+- [Sprite Sheet](/kamus/2d/sprite-sheet/)
+- [Texture](/kamus/geometri/texture/)
+- [UV](/kamus/geometri/uv/)

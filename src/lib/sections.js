@@ -4,9 +4,9 @@
  * Kunci = nama folder di src/content/docs/.
  */
 export const TRACKS = [
-  { id: 'fondasi-engine', title: 'Fondasi Engine', blurb: 'Cara engine membangun dunia game: game loop, ruang, material dan cahaya, shader, bayangan, animasi, sampai profiling. Contoh untuk Unity, Unreal, dan Godot.', krekit: 'Ini satu-satunya jalur yang sudah ada pelajarannya. Cocok untuk mulai.' },
-  { id: 'lanskap-engine', title: 'Lanskap Engine', blurb: 'Unity, Unreal, Godot, dan lainnya: arsitektur, lisensi, dan kapan memilih yang mana.', krekit: 'Kalau kamu pernah pindah engine, pengalamanmu dibutuhkan di sini.' },
-  { id: 'desain-game', title: 'Desain Game', blurb: 'Core loop, game feel, level design, dan playtesting.', krekit: 'Bagian game feel nanti nyambung ke easing dan delta time di Fondasi Engine.' },
+  { id: 'fondasi-engine', title: 'Fondasi Engine', blurb: 'Cara engine membangun dunia game: game loop, ruang, material dan cahaya, shader, bayangan, animasi, sampai profiling. Contoh untuk Unity, Unreal, dan Godot.', krekit: 'Jalur ini yang paling lengkap sejauh ini. Cocok untuk mulai.' },
+  { id: 'lanskap-engine', title: 'Lanskap Engine', blurb: 'Unity, Unreal, Godot, dan lainnya: arsitektur, lisensi, dan kapan memilih yang mana.', krekit: 'Mulai dari isi sebuah engine. Kalau kamu pernah pindah engine, ceritamu dibutuhkan di sini.' },
+  { id: 'desain-game', title: 'Desain Game', blurb: 'Core loop, game feel, level design, dan playtesting.', krekit: 'Mulai dari core loop: aksi yang diulang pemain setiap beberapa detik.' },
   { id: 'produksi', title: 'Produksi', blurb: 'Scoping, vertical slice, milestone, peran tim, dan alat kerja.', krekit: 'Banyak game berhenti di tahap ini karena cakupannya terlalu besar untuk waktu dan timnya.' },
   { id: 'bisnis-indie', title: 'Bisnis Studio Indie', blurb: 'Pendanaan, hitungan pendapatan, marketing, legal, dan platform.', krekit: 'Nanti semua angka di jalur ini wajib ada sumbernya.' },
   { id: 'industri-karier', title: 'Industri & Karier', blurb: 'Peta peran, ekosistem lokal, portofolio, dan studi kasus.', krekit: 'Rencananya banyak diisi cerita orang yang bekerja di studio.' },
@@ -38,6 +38,7 @@ export const KAMUS_CHAPTERS = [
   { id: 'fisika', title: 'Physics', blurb: 'Rigidbody, collider, trigger, fixed timestep, character controller.' },
   { id: 'interaksi', title: 'Interaksi', blurb: 'Raycast, input action, dead zone, dan reaksi atas input pemain.' },
   { id: 'performa', title: 'Performa', blurb: 'Profiler, draw call, instancing, fill rate, culling, memori.' },
+  { id: '2d', title: 'Game 2D & Pixel', blurb: 'Sprite, sprite sheet, atlas, tilemap, urutan gambar, parallax, pixel perfect, 9-slice.' },
   { id: 'web', title: 'Web & Three.js', blurb: 'Istilah khusus browser, Three.js, GSAP, dan perkakas web.', extra: true },
 ]
 

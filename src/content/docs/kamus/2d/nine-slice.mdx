@@ -1,0 +1,90 @@
+---
+title: "9-Slice"
+description: "Teknik membagi gambar panel menjadi 3×3 bagian agar bisa diubah ukurannya tanpa merusak sudut. Sudut tetap, sisi memanjang ke satu arah, bagian tengah mengisi sisanya."
+kind: term
+level: 2
+aka: "nine-slice, 9-slicing, nine-patch, NinePatchRect, sliced sprite"
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "9-slicing"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/9-slice/9-slicing"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "9-slice a sprite"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/9-slice/set-sprite-9slicing"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Visual Components"
+    url: "https://docs.unity3d.com/Packages/com.unity.ugui@2.0/manual/UIVisualComponents.html"
+    publisher: "Unity Documentation (uGUI 2.0)"
+    accessed: 2026-10-30
+  - title: "NinePatchRect"
+    url: "https://docs.godotengine.org/en/stable/classes/class_ninepatchrect.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "StyleBoxTexture"
+    url: "https://docs.godotengine.org/en/stable/classes/class_styleboxtexture.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+sidebar:
+  order: 8
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+Tombol, kotak dialog, dan bingkai jendela perlu tampil dalam banyak ukuran. Jika satu gambar panel diperbesar begitu saja, sudut yang melengkung ikut melar dan garis tepinya menebal. 9-slice membagi gambar dengan empat garis batas (kiri, kanan, atas, bawah) menjadi 3×3 bagian:
+
+```text title="Pembagian 9-slice"
+┌───┬─────────┬───┐
+│ A │    B    │ C │   A, C, G, I : sudut, ukurannya tetap
+├───┼─────────┼───┤   B, H       : hanya memanjang ke samping
+│ D │    E    │ F │   D, F       : hanya memanjang ke atas dan bawah
+├───┼─────────┼───┤   E          : mengisi sisa ruang
+│ G │    H    │ I │
+└───┴─────────┴───┘
+```
+
+Sisi dan bagian tengah bisa direntangkan (*stretch*) atau diulang (*tile*). Mode ulang cocok untuk pola seperti dinding bata, tetapi gambarnya harus menyambung mulus di tepinya. Dengan cara ini, satu gambar 48×48 piksel bisa dipakai untuk tombol kecil sampai panel inventaris selebar layar.
+
+<Aside type="note" title="Analogi">
+Bingkai foto yang dirakit dari potongan. Empat sudut berukir dipakai apa adanya, sedangkan bilah sisinya dipotong sepanjang yang dibutuhkan.
+</Aside>
+
+## Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Garis batas diatur di **Sprite Editor**: tarik garis hijau ke dalam, atau isi **L**, **R**, **T**, **B** (dalam piksel) di overlay Sprite. Dokumentasi Unity menyarankan **Mesh Type: Full Rect** di pengaturan impor, karena Tight bisa membuat 9-slice tidak bekerja benar.
+
+- **Di dunia game:** Sprite Renderer dengan **Draw Mode: Sliced** (direntangkan) atau **Tiled** (diulang, dengan **Tile Mode** Continuous atau Adaptive). Ubah ukurannya lewat properti **Size**.
+- **Di UI (uGUI):** komponen **Image** dengan **Image Type: Sliced** atau **Tiled**.
+
+</div>
+<div slot="godot">
+
+Node UI **NinePatchRect**. Isi `texture`, lalu `patch_margin_left`, `patch_margin_right`, `patch_margin_top`, dan `patch_margin_bottom` (dalam piksel, bawaan 0). `axis_stretch_horizontal` dan `axis_stretch_vertical` memilih **Stretch** (bawaan), **Tile**, atau **Tile Fit**. Dengan `draw_center = false`, hanya bingkainya yang digambar.
+
+Untuk gaya tombol dan panel lewat Theme, **StyleBoxTexture** memakai pembagian 3×3 yang sama.
+
+</div>
+</EngineTabs>
+
+## Pelajari lebih dalam
+
+Kesalahan umum di Unity: mengubah ukuran sprite Sliced lewat **Scale** di Transform atau lewat transform tool di Scene view. Unity lalu memakai skala biasa, sehingga sudut ikut melar. Ubah ukurannya lewat **Size** di Sprite Renderer.
+
+Panel dengan margin kiri dan kanan masing-masing 16 piksel perlu lebar minimal 32 piksel agar kedua sudutnya tampil utuh.
+
+Untuk collision, Unity hanya mendukung **Box Collider 2D** dan **Polygon Collider 2D** pada sprite 9-slice. Nyalakan **Auto Tiling** agar bentuk collider ikut berubah saat ukuran sprite berubah.
+
+Pada pixel art, garis batas harus jatuh tepat di batas piksel, dan panel sebaiknya berukuran kelipatan piksel gambar agar mode Tile tidak memotong pola di tengah piksel.
+
+## Terkait
+
+- [Sprite](/kamus/2d/sprite/)
+- [Pixel Perfect](/kamus/2d/pixel-perfect/)
+- [Texture](/kamus/geometri/texture/)
+- [UV](/kamus/geometri/uv/)
