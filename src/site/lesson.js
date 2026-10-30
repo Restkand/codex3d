@@ -1,6 +1,3 @@
-import * as THREE from 'three'
-import gsap from 'gsap'
-import { createKrekit } from './krekit.js'
 import { loadProgress } from '../lib/progress.js'
 
 /**
@@ -8,8 +5,12 @@ import { loadProgress } from '../lib/progress.js'
  *   1. Bilah progres membaca (halaman pelajaran)
  *   2. Log misi: centang pelajaran yang sudah selesai + bagian yang sudah dibaca
  *   3. Krekit sebagai pendamping kecil yang menemani sepanjang halaman
+ *
+ * Bagian 1 dan 2 sengaja tanpa three.js dan gsap. Pendamping 3D (three.js ±140 KB gzip) dimuat
+ * belakangan lewat import() dinamis, jadi teks, kuis, demo, dan navigasi tidak menunggu chunk itu.
  */
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+const clamp = (min, max, value) => Math.min(max, Math.max(min, value))
 
 // ---------- 1. Progres membaca ----------
 
@@ -21,7 +22,7 @@ function updateReadProgress() {
   if (!progressBar || !article) return
   const rect = article.getBoundingClientRect()
   const total = rect.height - window.innerHeight * 0.6
-  readRatio = gsap.utils.clamp(0, 1, -rect.top / Math.max(total, 1))
+  readRatio = clamp(0, 1, -rect.top / Math.max(total, 1))
   progressBar.style.transform = `scaleX(${readRatio})`
 }
 window.addEventListener('scroll', updateReadProgress, { passive: true })
@@ -107,12 +108,15 @@ const pick = (list) => list[Math.floor(Math.random() * list.length)]
 
 const companion = document.querySelector('[data-companion]')
 const restore = document.querySelector('[data-companion-restore]')
+// Live region terpisah untuk pembaca layar: kalimat lengkap diumumkan sekali, bukan per huruf
+const statusEl = document.querySelector('[data-companion-status]')
 const STORAGE_KEY = 'krekit-companion-hidden'
-const readHidden = () => {
+/** '1' = disembunyikan pengunjung, '0' = dipanggil sendiri lewat "Panggil Krekit", null = belum pernah memilih */
+const readChoice = () => {
   try {
-    return localStorage.getItem(STORAGE_KEY) === '1'
+    return localStorage.getItem(STORAGE_KEY)
   } catch {
-    return false
+    return null
   }
 }
 const writeHidden = (value) => {
@@ -123,7 +127,8 @@ const writeHidden = (value) => {
   }
 }
 
-function initCompanion() {
+/** Dipanggil setelah three.js, gsap, dan krekit.js selesai dimuat (lihat loadCompanion di bawah) */
+function initCompanion({ THREE, gsap, createKrekit }) {
   const canvas = companion.querySelector('canvas')
   const bubbleEl = companion.querySelector('[data-companion-bubble]')
   const lines = { ...SECTION_LINES, ...JSON.parse(companion.dataset.lines || '{}') }
@@ -162,21 +167,40 @@ function initCompanion() {
 
   let typing
   let hideCall
+  let announceCall
   let visibleUntil = 0
   const isBusy = () => performance.now() < visibleUntil
-  function say(text, hold = 3.5) {
+
+  /**
+   * Gelembung yang diketik per huruf disembunyikan dari pembaca layar (aria-hidden di LearnLayout).
+   * Kalimat lengkap masuk ke live region role="status" sekali saja. Dikosongkan dulu sebentar
+   * supaya kalimat yang sama ("Benar.") tetap diumumkan ulang.
+   */
+  function announce(text) {
+    if (!statusEl) return
+    clearTimeout(announceCall)
+    statusEl.textContent = ''
+    announceCall = setTimeout(() => (statusEl.textContent = text), 60)
+  }
+
+  /** quiet: tampil di gelembung tanpa diumumkan (komentar ringan seperti "Seperempat jalan.") */
+  function say(text, hold = 3.5, { quiet = false } = {}) {
     typing?.kill()
     hideCall?.kill()
     const typeTime = reduceMotion ? 0 : text.length * 0.022
     visibleUntil = performance.now() + (typeTime + hold) * 1000
-    bubbleEl.setAttribute('aria-label', text)
+    if (!quiet) announce(text)
     krekit.talk(typeTime)
     const state = { chars: reduceMotion ? text.length : 0 }
     const render = () => (bubbleEl.textContent = text.slice(0, Math.round(state.chars)))
     gsap.to(bubbleEl, { autoAlpha: 1, y: 0, duration: 0.2, overwrite: true })
     render()
     typing = gsap.to(state, { chars: text.length, duration: typeTime, ease: 'none', onUpdate: render })
-    hideCall = gsap.delayedCall(typeTime + hold, () => gsap.to(bubbleEl, { autoAlpha: 0, y: 6, duration: 0.3 }))
+    hideCall = gsap.delayedCall(typeTime + hold, () => {
+      gsap.to(bubbleEl, { autoAlpha: 0, y: 6, duration: 0.3 })
+      clearTimeout(announceCall)
+      if (statusEl) statusEl.textContent = ''
+    })
   }
   gsap.set(bubbleEl, { autoAlpha: 0, y: 6 })
 
@@ -206,7 +230,7 @@ function initCompanion() {
         return
       }
       lastAmbient = performance.now()
-      say(text, hold)
+      say(text, hold, { quiet: minor })
       onSpoken?.()
     }
     attempt()
@@ -360,7 +384,7 @@ function initCompanion() {
     const rect = canvas.getBoundingClientRect()
     const x = (event.clientX - (rect.left + rect.width / 2)) / (window.innerWidth / 2)
     const y = -(event.clientY - (rect.top + rect.height * 0.4)) / (window.innerHeight / 2)
-    krekit.lookAt(gsap.utils.clamp(-1, 1, x * 1.5), gsap.utils.clamp(-1, 1, y))
+    krekit.lookAt(clamp(-1, 1, x * 1.5), clamp(-1, 1, y))
   })
 
   // ---------- Sembunyikan / panggil ----------
@@ -407,25 +431,94 @@ function initCompanion() {
     restore.hidden = false
   }
 
-  companion.querySelector('[data-companion-toggle]').addEventListener('click', () => {
+  const toggle = companion.querySelector('[data-companion-toggle]')
+  toggle.addEventListener('click', () => {
     writeHidden(true)
     hide()
-  })
-  restore.addEventListener('click', () => {
-    writeHidden(false)
-    show(true)
+    // Fokus tidak hilang ke <body> saat tombolnya ikut tersembunyi
+    restore.focus()
   })
   window.addEventListener('resize', () => running && resize())
 
-  if (readHidden()) hide()
-  else show(true)
+  return { show, toggle }
 }
 
-try {
-  initCompanion()
-} catch (error) {
-  // WebGL tidak tersedia: halaman pelajaran tetap utuh, tanpa pendamping
-  console.warn('Krekit tidak bisa ditampilkan (WebGL tidak tersedia).', error)
-  companion.remove()
-  restore.remove()
+// ---------- Memuat pendamping 3D ----------
+
+/**
+ * Kelas three.js yang dipakai di sini disebut satu per satu (destructuring langsung pada import()),
+ * supaya bundler tetap bisa membuang bagian three.js yang tidak dipakai. Mengambil seluruh namespace
+ * lewat import('three') membuat chunk three.js membengkak ±170 KB (juga untuk beranda).
+ */
+const importThree = () =>
+  import('three').then(
+    ({ WebGLRenderer, ACESFilmicToneMapping, Scene, PerspectiveCamera, AmbientLight, DirectionalLight, Raycaster, Vector2, Timer }) => ({
+      WebGLRenderer,
+      ACESFilmicToneMapping,
+      Scene,
+      PerspectiveCamera,
+      AmbientLight,
+      DirectionalLight,
+      Raycaster,
+      Vector2,
+      Timer,
+    }),
+  )
+
+let loading = null
+/** Satu kali muat: three.js + gsap + krekit.js sebagai chunk terpisah, hanya saat dibutuhkan */
+function loadCompanion() {
+  if (!loading) {
+    loading = Promise.all([importThree(), import('gsap'), import('./krekit.js')])
+      .then(([THREE, { default: gsap }, { createKrekit }]) => initCompanion({ THREE, gsap, createKrekit }))
+      .catch((error) => {
+        // WebGL tidak tersedia atau chunk gagal dimuat: halaman tetap utuh, tanpa pendamping
+        console.warn('Krekit tidak bisa ditampilkan (WebGL atau modul 3D tidak tersedia).', error)
+        companion.remove()
+        restore.remove()
+        statusEl?.remove()
+        return null
+      })
+  }
+  return loading
+}
+
+/** Tunggu halaman selesai dimuat, lalu tunggu browser senggang (setTimeout jika requestIdleCallback tidak ada) */
+function whenIdle(callback) {
+  const idle = () =>
+    'requestIdleCallback' in window ? requestIdleCallback(callback, { timeout: 4000 }) : setTimeout(callback, 1500)
+  if (document.readyState === 'complete') idle()
+  else window.addEventListener('load', idle, { once: true })
+}
+
+/** Layar kecil / layar sentuh: tunggu interaksi pertama (scroll, sentuh, tombol) sebelum memuat 3D */
+function afterFirstInteraction(callback) {
+  const events = ['scroll', 'pointerdown', 'keydown', 'touchstart']
+  const start = () => {
+    events.forEach((type) => window.removeEventListener(type, start))
+    callback()
+  }
+  events.forEach((type) => window.addEventListener(type, start, { passive: true }))
+}
+
+if (companion && restore) {
+  restore.addEventListener('click', () => {
+    writeHidden(false)
+    restore.hidden = true
+    loadCompanion().then((api) => {
+      if (!api) return
+      api.show(true)
+      api.toggle.focus()
+    })
+  })
+
+  const choice = readChoice()
+  // Hemat data atau gerak dikurangi: 3D tidak dimuat otomatis, kecuali pengunjung pernah memanggilnya sendiri
+  const lite = reduceMotion || navigator.connection?.saveData === true
+  const smallScreen = window.matchMedia('(max-width: 767px), (pointer: coarse)').matches
+  const start = () => loadCompanion().then((api) => api?.show(true))
+
+  if (choice === '1' || (lite && choice !== '0')) restore.hidden = false
+  else if (smallScreen) afterFirstInteraction(() => whenIdle(start))
+  else whenIdle(start)
 }

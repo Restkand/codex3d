@@ -62,6 +62,46 @@ a {
   display: none !important;
 }
 
+/* Hanya untuk pembaca layar (mis. live region kalimat Krekit) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip link: tersembunyi di luar layar, muncul di pojok kiri atas saat difokus dengan keyboard */
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 8px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--sl-color-black);
+  background: var(--accent, #ffcc33);
+  border-radius: 8px;
+  text-decoration: none;
+  transform: translateY(calc(-100% - 16px));
+}
+
+.skip-link:focus {
+  transform: none;
+  outline: 2px solid var(--sl-color-white);
+  outline-offset: 2px;
+}
+
+/* Target skip link: difokus lewat tabindex="-1", tanpa cincin fokus di seluruh kolom isi */
+.lmain:focus {
+  outline: none;
+}
+
 /* ---------- Bilah atas ---------- */
 
 .lbar {
@@ -196,8 +236,15 @@ a {
   box-shadow: inset 2px 0 0 var(--accent);
 }
 
-.quests__item.is-locked {
-  opacity: 0.4;
+/* Pelajaran yang belum terbit: diredupkan lewat warna, bukan opacity, supaya kontrasnya tetap
+   di atas 4,5:1 (±5,4:1 di latar #0b0b10 maupun latar kartu #14141c di HP) */
+.quests__item.is-locked .quests__row {
+  color: #8a8a9a;
+  cursor: default;
+}
+
+.quests__item.is-locked .quests__num {
+  color: #a68b3c;
 }
 
 .quests__num {
@@ -669,6 +716,14 @@ a.track-tile:hover {
   transition: opacity 0.2s;
 }
 
+/* Area sentuh diperluas 5px ke segala arah (24px terlihat -> 34px bisa diketuk) tanpa mengubah tampilan */
+.companion__toggle::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+}
+
 .companion:hover .companion__toggle,
 .companion__toggle:focus-visible {
   opacity: 1;
@@ -784,12 +839,13 @@ a.track-tile:hover {
     font-size: 12.5px;
   }
 
+  /* Minimal 24px (WCAG 2.5.8); ::before menambah area sentuh menjadi 34px */
   .companion__toggle {
     top: 0;
     right: 0;
-    width: 22px;
-    height: 22px;
-    font-size: 14px;
+    width: 24px;
+    height: 24px;
+    font-size: 15px;
   }
 
   .companion-restore {

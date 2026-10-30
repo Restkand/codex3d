@@ -5,12 +5,20 @@ kind: term
 level: 3
 aka: "instancing, MultiMesh, Instanced Static Mesh, foliage"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "GPU instancing"
-    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/GPUInstancing.html"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/graphics-performance-profiling/reduce-draw-calls/gpuinstancing/gpuinstancing"
     publisher: "Unity Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
+  - title: "Choose a method for optimizing draw calls"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/graphics-performance-profiling/reduce-draw-calls/optimizing-draw-calls-choose-method"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Enable the GPU Resident Drawer in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/graphics-performance-profiling/in-urp/reduce-draw-calls-urp/reduce-rendering-work-on-cpu/gpu-resident-drawer"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
   - title: "Optimization using MultiMeshes"
     url: "https://docs.godotengine.org/en/stable/tutorials/performance/using_multimesh.html"
     publisher: "Godot Engine Documentation"
@@ -18,7 +26,7 @@ sources:
   - title: "Optimizing 3D performance"
     url: "https://docs.godotengine.org/en/stable/tutorials/performance/optimizing_3d_performance.html"
     publisher: "Godot Engine Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
 sidebar:
   order: 7
 ---
@@ -37,7 +45,11 @@ Syaratnya: **mesh yang sama dan material yang sama**.
 <EngineTabs>
 <div slot="unity">
 
-Centang **Enable GPU Instancing** pada material yang shader-nya mendukung. Dari kode: `Graphics.RenderMeshInstanced` untuk menggambar banyak salinan tanpa GameObject per salinan. Di URP/HDRP, instancing untuk shader kustom hanya berlaku jika SRP Batcher dimatikan atau shader-nya tidak kompatibel dengan SRP Batcher. Tidak berlaku untuk Skinned Mesh Renderer.
+Di URP dan HDRP (Unity 6), dokumentasi Unity menyarankan **GPU Resident Drawer** bersama SRP Batcher. GPU Resident Drawer memakai GPU instancing secara otomatis untuk GameObject dengan Mesh Renderer. Di URP, pastikan SRP Batcher menyala lalu atur **GPU Resident Drawer** ke **Instanced Drawing** di aset URP. Syaratnya rendering path Forward+ dan platform yang mendukung compute shader (bukan OpenGL ES). Kalau syarat tidak terpenuhi, objek digambar tanpa instancing.
+
+Kotak **Enable GPU Instancing** di material adalah cara lama. Untuk URP/HDRP, Unity menyarankan kotak ini dimatikan agar tidak menambah varian shader. Kotak ini masih disarankan di Built-In Render Pipeline jika instansnya banyak.
+
+Dari kode: `Graphics.RenderMeshInstanced` untuk menggambar banyak salinan tanpa GameObject per salinan. Instancing tidak berlaku untuk Skinned Mesh Renderer.
 
 </div>
 <div slot="unreal">
@@ -47,7 +59,7 @@ Komponen **Instanced Static Mesh** dan **Hierarchical Instanced Static Mesh** (H
 </div>
 <div slot="godot">
 
-Instancing otomatis untuk MeshInstance3D dengan mesh dan material yang sama (khusus opaque/alpha-tested). Untuk jumlah sangat besar atau material transparan: **MultiMeshInstance3D** dengan resource `MultiMesh`, yang bisa menggambar hingga jutaan salinan sekaligus.
+Instancing otomatis untuk MeshInstance3D dengan mesh dan material yang sama (khusus opaque/alpha-tested). Fitur ini hanya ada di renderer Forward+, tidak di Mobile atau Compatibility. Untuk jumlah sangat besar atau material transparan: **MultiMeshInstance3D** dengan resource `MultiMesh`, yang bisa menggambar hingga jutaan salinan sekaligus.
 
 </div>
 </EngineTabs>

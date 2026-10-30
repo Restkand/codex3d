@@ -85,7 +85,10 @@ function tick(timestamp) {
   hover.update()
 
   // Render bersyarat: post-processing hanya saat glitch aktif, selebihnya langsung ke layar.
-  // Hasil keduanya sama-sama melalui tone mapping + sRGB, jadi warnanya konsisten.
+  // Material bawaan melalui tone mapping + sRGB di kedua jalur, jadi warnanya konsisten. Pengecualian:
+  // shader hologram (ShaderMaterial tanpa chunk <tonemapping_fragment>/<colorspace_fragment>) hanya
+  // dikonversi lewat OutputPass, sehingga warnanya sedikit bergeser selama glitch. Disengaja: memuat
+  // kedua chunk itu membuat aura pucat, padahal warna terang di atas 1.0 dibutuhkan bloom.
   const usePost = post.isActive()
   if (usePost) post.composer.render(delta)
   else renderer.render(scene, camera)

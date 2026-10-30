@@ -493,6 +493,10 @@ Baris 24 sampai 32 menambahkan scanline dan mencampur dua warna (Pelajaran 5). B
 
 - **L35** · Warna dikali 1,2 sehingga bisa melebihi 1,0. Alpha diisi kekuatan efek hologram dikali `uOpacity`. Bagian berikutnya menjelaskan kenapa alpha di sini bekerja sebagai pengatur terang.
 
+<Aside type="note" title="Tone mapping tidak ikut otomatis">
+Material bawaan seperti `MeshStandardMaterial` menutup fragment shader-nya dengan dua chunk Three.js, `#include <tonemapping_fragment>` dan `#include <colorspace_fragment>`, yang menjalankan tone mapping renderer lalu mengubah warna linear menjadi sRGB. ShaderMaterial tidak menambahkannya untukmu. Shader hologram di proyek ini sengaja tidak memuat keduanya: dengan tone mapping ACES, warna di atas 1,0 yang dibutuhkan Bloom ikut diredam sehingga aura tampak pucat. Akibatnya, saat glitch menyala dan gambar lewat composer (OutputPass menjalankan tone mapping untuk seluruh layar), warna hologram sedikit bergeser. Kalau shader buatanmu harus tampil sama persis dengan material bawaan, tambahkan kedua chunk itu di akhir `main()`.
+</Aside>
+
 ## Transparansi, blending, dan depthWrite
 
 Tiga pengaturan di hologram.js baris 36 sampai 41 menentukan cara hasil fragment shader digabung dengan gambar yang sudah ada.

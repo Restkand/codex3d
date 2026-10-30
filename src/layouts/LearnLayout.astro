@@ -46,6 +46,8 @@ const { title, description = SITE.tagline, crumbs = [], greeting, readingProgres
     <SocialMeta title={`${title} · ${SITE.name}`} description={description} type={lessonId ? 'article' : 'website'} />
   </head>
   <body class="lesson-page">
+    <!-- Elemen pertama yang bisa difokus: pengguna keyboard langsung melompati bilah atas dan navigasi kiri -->
+    <a class="skip-link" href="#isi">Langsung ke isi</a>
     <header class="lbar">
       <a class="lbar__brand" href={withBase('/')}>
         <img src={withBase('/favicon.svg')} alt="" width="22" height="22" />
@@ -76,7 +78,7 @@ const { title, description = SITE.tagline, crumbs = [], greeting, readingProgres
       <aside class="lside" aria-label="Navigasi">
         <slot name="side" />
       </aside>
-      <main class="lmain">
+      <main class="lmain" id="isi" tabindex="-1">
         <slot />
         {
           editPath && (
@@ -90,13 +92,16 @@ const { title, description = SITE.tagline, crumbs = [], greeting, readingProgres
       </main>
     </div>
 
-    <!-- Krekit sebagai pendamping (src/site/lesson.js) -->
+    <!-- Krekit sebagai pendamping (src/site/lesson.js). Model 3D-nya dimuat belakangan, setelah halaman senggang. -->
     <div class="companion" data-companion data-greeting={greeting} data-lines={JSON.stringify(krekitLines)} data-lesson-id={lessonId} hidden>
-      <div class="companion__bubble" data-companion-bubble aria-live="polite"></div>
+      <!-- Teks yang diketik per huruf hanya untuk mata; pembaca layar mendapat kalimat lengkap dari status di bawah -->
+      <div class="companion__bubble" data-companion-bubble aria-hidden="true"></div>
       <canvas class="companion__canvas" aria-label="Krekit, pendamping belajar" role="img"></canvas>
       <button type="button" class="companion__toggle" data-companion-toggle aria-label="Sembunyikan Krekit">–</button>
     </div>
     <button type="button" class="companion-restore" data-companion-restore hidden>Panggil Krekit</button>
+    <!-- Di luar .companion agar live region sudah ada (tidak hidden) sebelum Krekit pertama kali bicara -->
+    <p class="sr-only" role="status" data-companion-status></p>
 
     <script>
       import '../site/lesson.js'

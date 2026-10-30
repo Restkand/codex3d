@@ -108,6 +108,12 @@ const { title, text, path = '/', label = 'Bagikan' } = Astro.props
     document.addEventListener('click', (event) => {
       if (!menu.hidden && !root.contains(event.target as Node)) setOpen(false)
     })
+    // Tutup juga saat fokus Tab keluar dari tombol dan menunya. relatedTarget kosong (jendela kehilangan fokus,
+    // mis. tab WhatsApp/Discord baru terbuka, atau klik di area kosong) diabaikan: klik di luar sudah ditangani di atas
+    root.addEventListener('focusout', (event) => {
+      const next = event.relatedTarget as Node | null
+      if (!menu.hidden && next && !root.contains(next)) setOpen(false)
+    })
     root.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && !menu.hidden) {
         setOpen(false)

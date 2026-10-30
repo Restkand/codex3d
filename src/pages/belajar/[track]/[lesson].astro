@@ -90,9 +90,11 @@ const dateFmt = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long'
             <span class="quests__row">
               <span class="quests__num">{pad2(l.num)}</span>
               <span class="quests__title">{l.title}</span>
-              <span class="quests__lock" aria-label="segera">
+              {/* aria-label tidak berlaku pada span tanpa role: titiknya disembunyikan, statusnya dibacakan sebagai teks */}
+              <span class="quests__lock" aria-hidden="true">
                 ·
               </span>
+              <span class="sr-only">(segera)</span>
             </span>
           </li>
         ))

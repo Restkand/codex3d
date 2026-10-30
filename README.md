@@ -8,7 +8,7 @@ Krekit menjelaskan dasar-dasar pembuatan game dalam bahasa Indonesia: materinya 
 
 ## Isi
 
-- **Jalur Belajar**: enam jalur, yaitu Fondasi Engine, Lanskap Engine, Desain Game, Produksi, Bisnis Studio Indie, serta Industri & Karier. Pelajaran berisi model mental, pseudocode, contoh per engine, demo interaktif, kuis, dan latihan.
+- **Jalur Belajar**: tujuh jalur, yaitu Fondasi Engine, Lanskap Engine, Desain Game, Produksi, Bisnis Studio Indie, Industri & Karier, serta Seni & Gaya Visual. Pelajaran berisi model mental, pseudocode, contoh per engine, demo interaktif, kuis, dan latihan.
 - **Kamus**: 120 istilah teknis dengan analogi, demo, contoh per engine, dan tautan antar-konsep.
 - **Lab 3D**: scene WebGL (Three.js + GSAP) yang dibedah baris demi baris di Bab Tambahan Web & Three.js.
 

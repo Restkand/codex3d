@@ -5,20 +5,20 @@ kind: term
 level: 3
 aka: "hash function, noise, Perlin, value noise, Voronoi"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Simple Noise Node"
     url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Simple-Noise-Node.html"
     publisher: "Unity Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
   - title: "Gradient Noise Node"
     url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Gradient-Noise-Node.html"
     publisher: "Unity Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
   - title: "Voronoi Node"
     url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Voronoi-Node.html"
     publisher: "Unity Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
   - title: "Random Range Node"
     url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Random-Range-Node.html"
     publisher: "Unity Documentation"
@@ -58,7 +58,7 @@ Shader Graph menyediakan:
 - **Voronoi**: noise sel (Worley), dengan output nilai noise dan data sel.
 - **Random Range**: angka acak semu dari input Seed, dipetakan antara Min dan Max. Seed yang sama selalu menghasilkan angka yang sama.
 
-Node noise punya pilihan **Hash Type**. Bawaannya **Deterministic**, yang hasilnya sama di semua platform. **Legacy Sine** memakai hash berbasis `sin` seperti rumus di atas.
+Node noise punya pilihan **Hash Type**. Bawaannya **Deterministic**, yang hasilnya sama di semua platform. Pilihan lainnya adalah hash lama: **Legacy Sine** di Simple Noise dan Voronoi, yang memakai hash berbasis `sin` seperti rumus di atas, dan **LegacyMod** di Gradient Noise.
 
 </div>
 <div slot="unreal">

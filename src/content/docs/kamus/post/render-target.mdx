@@ -5,20 +5,24 @@ kind: term
 level: 3
 aka: "render texture, offscreen buffer, SubViewport"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Camera.targetTexture"
-    url: "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Camera-targetTexture.html"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/camera/targettexture"
     publisher: "Unity Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
   - title: "Render Texture Inspector reference"
-    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-RenderTexture.html"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/textures-reference/class-render-texture"
     publisher: "Unity Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
   - title: "Using Viewports"
     url: "https://docs.godotengine.org/en/stable/tutorials/rendering/viewports.html"
     publisher: "Godot Engine Documentation"
     accessed: 2026-10-28
+  - title: "SubViewport"
+    url: "https://docs.godotengine.org/en/stable/classes/class_subviewport.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
 sidebar:
   order: 1
 ---
@@ -46,7 +50,7 @@ Aset **Texture Render Target 2D**, diisi oleh komponen **Scene Capture 2D** yang
 </div>
 <div slot="godot">
 
-Node **SubViewport**. Isinya tidak tampil langsung. Ambil teksturnya dengan `get_texture()` (berupa `ViewportTexture`), lalu pasang di material atau sprite. **Update Mode** mengatur kapan ia digambar ulang: Once, Always, When Parent Visible, atau Never.
+Node **SubViewport**. Isinya tidak tampil langsung. Ambil teksturnya dengan `get_texture()` (berupa `ViewportTexture`), lalu pasang di material atau sprite. **Update Mode** mengatur kapan ia digambar ulang: Disabled, Once, When Visible (bawaan), When Parent Visible, atau Always. Setelah sekali digambar, mode Once beralih sendiri ke Disabled.
 
 </div>
 </EngineTabs>

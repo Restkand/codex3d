@@ -80,8 +80,9 @@ const SKILL_TREE = {
   'lanskap-engine': { parent: 'fondasi-engine', x: 16, row: 1, branch: 'teknis' },
   'desain-game': { parent: 'fondasi-engine', x: 50, row: 1, branch: 'kreatif' },
   produksi: { parent: 'fondasi-engine', x: 84, row: 1, branch: 'tim & studio' },
-  'bisnis-indie': { parent: 'produksi', x: 57, row: 2 },
-  'industri-karier': { parent: 'produksi', x: 86, row: 2 },
+  'bisnis-indie': { parent: 'produksi', x: 60, row: 2 },
+  'industri-karier': { parent: 'produksi', x: 87, row: 2 },
+  'seni-visual': { parent: 'desain-game', x: 26, row: 2 },
 }
 
 // Pos 1 · Jalur produksi: stasiun yang dilewati sebuah game, dari engine sampai ke pemain
@@ -111,10 +112,18 @@ const progressItems = docs
       title={`${SITE.name} · Belajar cara game dibuat`}
       description="Pahami fundamental di balik sebuah game: engine dan shader, desain, produksi, sampai bisnis studio indie."
     />
-    <!-- Kelas "js" menyembunyikan teks sampai animasi masuk siap (mencegah kedipan) -->
-    <script is:inline>document.documentElement.classList.add('js')</script>
+    <!--
+      Kelas "js" membuat teks transparan (opacity, bukan visibility) sampai animasi masuk siap (mencegah kedipan).
+      Pengaman: jika landing.js belum berjalan dalam 4 detik (jaringan lambat, chunk gagal dimuat), kelas dilepas
+      agar teks tetap terlihat. landing.js menandai dirinya dengan kelas "js-ready".
+    -->
+    <script is:inline>
+      document.documentElement.classList.add('js')
+      setTimeout(() => document.documentElement.classList.contains('js-ready') || document.documentElement.classList.remove('js'), 4000)
+    </script>
   </head>
   <body>
+    <a class="skip-link" href="#konten">Langsung ke isi</a>
     <canvas class="webgl" aria-hidden="true"></canvas>
     <script type="application/json" id="progress-items" set:html={JSON.stringify(progressItems)} />
 
@@ -139,16 +148,21 @@ const progressItems = docs
       <span class="waypoint" data-waypoint="0.9">Bisnis studio indie</span>
     </div>
 
-    <!-- Gelembung bicara Krekit: posisinya mengikuti kepala Krekit (landing.js) -->
-    <div class="bubble" data-bubble aria-live="polite">
+    <!--
+      Gelembung bicara Krekit: posisinya mengikuti kepala Krekit (landing.js). Teksnya diketik per huruf,
+      jadi disembunyikan dari pembaca layar; kalimat lengkapnya diumumkan sekali lewat [data-bubble-say].
+    -->
+    <div class="bubble" data-bubble aria-hidden="true">
       <div class="bubble__box" data-bubble-box></div>
     </div>
+    <p class="sr-only" role="status" data-bubble-say></p>
 
-    <main>
+    <main id="konten" tabindex="-1">
       <!-- Pos 0 · Dunia belum di-render (landing.js + dunia.js). Desktop: hero di-pin, Krekit menggelinding. Layar sempit: diorama, ketuk untuk me-render -->
       <section id="mulai" class="section section--split hero" data-section>
         <div class="hero__text">
-          <h1 class="display display--hero" aria-label="Lewat celah ini, kelihatan cara game dibuat." data-hero-title>Lewat celah ini, <span class="accent" data-hero-wire>kelihatan cara game dibuat.</span></h1>
+          <!-- tabindex="-1": tujuan fokus tombol "Main lagi" di Pos 5 (landing.js), tidak masuk urutan Tab -->
+          <h1 class="display display--hero" aria-label="Lewat celah ini, kelihatan cara game dibuat." data-hero-title tabindex="-1">Lewat celah ini, <span class="accent" data-hero-wire>kelihatan cara game dibuat.</span></h1>
           <p class="lead">Pelajari apa yang ada di balik sebuah game: engine dan shader, desain, produksi, sampai bisnis studio indie.</p>
           <div class="actions">
             <a class="btn btn--primary" href={withBase('/belajar/')} data-krekit-say="Pelajaran 1 tidak butuh pengetahuan 3D sebelumnya."><span class="btn__label">Mulai belajar →</span></a>
@@ -226,7 +240,7 @@ const progressItems = docs
       <section id="jalur" class="section section--tree reveal" data-section>
         <div class="tree-head">
           <p class="eyebrow" data-reveal>02 · Jalur belajar</p>
-          <h2 class="display display--md" data-reveal>Enam jalur belajar, <span class="accent">mulai dari Fondasi Engine.</span></h2>
+          <h2 class="display display--md" data-reveal>Tujuh jalur belajar, <span class="accent">mulai dari Fondasi Engine.</span></h2>
           <p class="lead" data-reveal>Mulai dari akarnya, lalu pilih cabang sesuai peran yang kamu minati. Urutan cabang hanya saran, jadi kamu boleh melompat.</p>
         </div>
         <div class="skill-tree" data-skill-tree data-reveal>
