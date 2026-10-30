@@ -112,6 +112,15 @@ const dateFmt = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long'
     </ul>
   </header>
 
+  {
+    entry.data.fundamental && (
+      <aside class="lfund" aria-label="Kenapa tetap perlu dipahami">
+        <p class="lfund__title">Kenapa tetap perlu dipahami</p>
+        <p class="lfund__text">{entry.data.fundamental}</p>
+      </aside>
+    )
+  }
+
   <article class="lcontent">
     <Content />
   </article>

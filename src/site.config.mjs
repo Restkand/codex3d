@@ -11,7 +11,7 @@ const env = typeof process === 'undefined' ? {} : process.env
 
 export const SITE = {
   name: 'Krekit',
-  tagline: 'Wadah belajar terbuka tentang dunia developer game: dari teori engine sampai bisnis studio indie.',
+  tagline: 'Wadah belajar fundamental pembuatan game: dari cara engine menggambar satu frame sampai bisnis studio indie.',
   repo: 'https://github.com/Restkand/krekit',
   site: env.SITE_URL ?? env.CF_PAGES_URL,
   base: env.BASE_PATH ?? '/',

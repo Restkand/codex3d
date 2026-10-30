@@ -1,6 +1,7 @@
 ---
 title: "Ruang, Posisi, dan Hierarki"
 description: "Koordinat 3D, transform, radian, hubungan induk-anak, dan matematika gerak."
+fundamental: "Gerakan yang terasa halus jarang terjadi kebetulan. Radian, hierarki, dan lerp menentukan apakah sebuah gerakan terasa hidup atau kaku, dan pemahaman itulah yang membuatmu bisa mengatur rasanya."
 kind: lesson
 minutes: 25
 status: draf
@@ -71,7 +72,7 @@ import Quiz from '~/components/Quiz.astro'
 import AxesDiagram from '~/components/diagrams/AxesDiagram.astro'
 import HierarchyTree from '~/components/diagrams/HierarchyTree.astro'
 
-<Aside type="note" title="Setelah pelajaran ini Anda bisa">
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
 - Membayangkan arah X, Y, Z di Three.js tanpa melihat catatan.
 - Memakai position, rotation (radian), dan scale dengan benar.
 - Memahami hierarki induk-anak serta perbedaan local dan world space.
@@ -89,10 +90,10 @@ import HierarchyTree from '~/components/diagrams/HierarchyTree.astro'
 
 <AxesDiagram />
 
-Three.js memakai [sistem tangan kanan](/kamus/ruang/coords/): **X ke kanan, Y ke atas, Z ke arah Anda** (keluar dari layar). Kamera bawaan menatap ke arah −Z. Karena itu kamera proyek ini diletakkan di `z = 6`: ia mundur ke arah Anda agar objek di `z = 0` berada di depannya.
+Three.js memakai [sistem tangan kanan](/kamus/ruang/coords/): **X ke kanan, Y ke atas, Z ke arahmu** (keluar dari layar). Kamera bawaan menatap ke arah −Z. Karena itu kamera proyek ini diletakkan di `z = 6`: ia mundur ke arahmu agar objek di `z = 0` berada di depannya.
 
 <Aside type="tip">
-Cara mengingat: angkat tangan kanan. Ibu jari ke kanan (X), telunjuk ke atas (Y), lalu jari tengah otomatis menunjuk ke arah Anda (Z).
+Cara mengingat: angkat tangan kanan. Ibu jari ke kanan (X), telunjuk ke atas (Y), lalu jari tengah otomatis menunjuk ke arahmu (Z).
 </Aside>
 
 Satuannya bebas, yang penting konsisten. Di proyek ini objek berjari-jari 1, lantai berukuran 30 × 30, dan kamera berjarak 6. Jika semua angka dikali 100, hasil di layar sama, tetapi nilai near/far, fog, dan bayangan juga harus ikut disesuaikan.
@@ -125,7 +126,7 @@ Contoh di proyek: lantai direbahkan dengan `floor.rotation.x = -Math.PI / 2` (ob
 
 ## Hierarki: induk dan anak
 
-Dengan `induk.add(anak)`, anak menjadi bagian dari induk ([Hierarki & Group](/kamus/ruang/hierarchy/)). Semua transform induk otomatis diterapkan ke anak. Inilah struktur objek di proyek Anda:
+Dengan `induk.add(anak)`, anak menjadi bagian dari induk ([Hierarki & Group](/kamus/ruang/hierarchy/)). Semua transform induk otomatis diterapkan ke anak. Inilah struktur objek di proyekmu:
 
 <HierarchyTree />
 
@@ -261,7 +262,7 @@ Dua sistem menulis properti yang sama, sehingga saling menimpa setiap frame.
 
 ## Cek pemahaman
 
-Pilih satu jawaban. Penjelasan muncul setelah Anda menjawab, jadi bacalah juga penjelasan untuk jawaban yang benar.
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi bacalah juga penjelasan untuk jawaban yang benar.
 
 <Quiz />
 

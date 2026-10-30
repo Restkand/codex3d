@@ -1,6 +1,7 @@
 ---
 title: "Bentuk, Permukaan, dan Cahaya"
 description: "Geometri, normal, material PBR, dua jenis cahaya, dan cara kerja bayangan."
+fundamental: "Material dan lampu siap pakai bisa membuat scene langsung tampak bagus. Saat warnanya pucat, bayangannya bergerigi, atau permukaannya terlihat seperti plastik, kamu perlu tahu bagian mana yang harus diubah: normal, material, cahaya, atau ruang warna."
 kind: lesson
 minutes: 30
 status: draf
@@ -77,7 +78,7 @@ import Quiz from '~/components/Quiz.astro'
 import MeshDiagram from '~/components/diagrams/MeshDiagram.astro'
 import ShadowDiagram from '~/components/diagrams/ShadowDiagram.astro'
 
-<Aside type="note" title="Setelah pelajaran ini Anda bisa">
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
 - Memahami bahwa semua bentuk 3D tersusun dari titik dan segitiga.
 - Menjelaskan apa itu normal, dan kenapa cahaya membutuhkannya.
 - Menghitung terang-gelap permukaan dengan dot product (model Lambert).
@@ -125,7 +126,7 @@ Pada [flat shading](/kamus/geometri/flat-shading/), setiap segitiga memakai satu
 | --- | --- | --- | --- |
 | MeshBasicMaterial | Tidak, warna rata | Paling murah | UI, objek bercahaya, debug |
 | MeshStandardMaterial | Ya, model fisika (PBR) | Sedang | Hampir semua objek realistis |
-| ShaderMaterial | Terserah Anda | Terserah shadernya | Efek khusus seperti hologram (pelajaran shader) |
+| ShaderMaterial | Terserah kamu | Terserah shadernya | Efek khusus seperti hologram (pelajaran shader) |
 
 [PBR](/kamus/geometri/pbr/) (Physically Based Rendering) meniru cara cahaya bekerja di dunia nyata, sehingga satu material tampak meyakinkan di kondisi cahaya apa pun. Dua kenop utamanya:
 
@@ -213,7 +214,7 @@ Biayanya: setiap objek pemberi bayangan digambar **dua kali** per frame. Itu seb
 
 Hasil perhitungan cahaya bisa melebihi 1,0, misalnya 2,5 × warna terang. Layar hanya bisa menampilkan 0..1. Tanpa penanganan, semua nilai di atas 1 dipotong menjadi putih datar. [Tone mapping](/kamus/cahaya/tone-mapping/) (proyek ini memakai ACES Filmic) "melipat" rentang terang itu dengan halus, seperti mata atau kamera yang beradaptasi.
 
-Selain itu, perhitungan cahaya dilakukan di ruang warna **linear** (akurat secara fisika), sedangkan warna hex yang Anda tulis dan warna yang ditampilkan layar berada di ruang **sRGB** ([Color Space (sRGB vs Linear)](/kamus/cahaya/color-space/)). Three.js mengurus konversinya otomatis: hex → linear → hitung → sRGB.
+Selain itu, perhitungan cahaya dilakukan di ruang warna **linear** (akurat secara fisika), sedangkan warna hex yang kamu tulis dan warna yang ditampilkan layar berada di ruang **sRGB** ([Color Space (sRGB vs Linear)](/kamus/cahaya/color-space/)). Three.js mengurus konversinya otomatis: hex → linear → hitung → sRGB.
 
 ## Kesalahan umum
 
@@ -291,7 +292,7 @@ Beberapa opsi mengubah kode shader, dan shader harus dikompilasi ulang (lihat de
 
 ## Cek pemahaman
 
-Pilih satu jawaban. Penjelasan muncul setelah Anda menjawab, jadi bacalah juga penjelasan untuk jawaban yang benar.
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi bacalah juga penjelasan untuk jawaban yang benar.
 
 <Quiz />
 

@@ -29,6 +29,8 @@ const WIDE = '(min-width: 768px) and (orientation: landscape), (min-width: 1025p
 // Layar sentuh tanpa kursor: kalimat Krekit memakai 'ketuk', bukan 'arahkan kursor'
 const touchOnly = window.matchMedia('(hover: none)').matches
 const sections = [...document.querySelectorAll('main > [data-section]')]
+// Teks ajakan untuk layar sentuh: HTML hanya berisi versi kursor, agar tidak terbaca dua kali
+if (touchOnly) document.querySelectorAll('[data-touch-text]').forEach((el) => (el.textContent = el.dataset.touchText))
 
 // ---------- Animasi teks & kartu ----------
 
@@ -308,8 +310,16 @@ if (skillTree) {
 }
 
 // Pos 5 · Layar akhir: kredit hanya bergulir saat terlihat (animasi CSS, landing.css). "Main lagi" kembali ke awal.
+// Putaran tanpa sambungan butuh daftar kedua; salinan itu dibuat di sini (bukan di HTML) dan ditandai
+// aria-hidden + inert, agar pembaca layar dan mesin pencari hanya membaca satu daftar.
 const credits = document.querySelector('[data-credits]')
 if (credits && !reduceMotion) {
+  const list = credits.querySelector('.credits__list')
+  const copy = list.cloneNode(true)
+  copy.setAttribute('aria-hidden', 'true')
+  copy.inert = true
+  list.after(copy)
+  credits.classList.add('is-looping')
   ScrollTrigger.create({ trigger: credits, start: 'top bottom', end: 'bottom top', toggleClass: 'is-rolling' })
 }
 document.querySelector('[data-replay]')?.addEventListener('click', () => {
@@ -804,8 +814,17 @@ function initScene() {
   /** Desktop: spawn di dasar panggung hero, ujung jalan di kiri bawah. Layar sempit: diorama di tengah panggung. */
   function layoutDunia() {
     poseCamera()
-    const rect = spots[0].getBoundingClientRect()
-    layoutTop = hero.getBoundingClientRect().top
+    // Selalu diukur seolah halaman di paling atas. Refresh ScrollTrigger juga terjadi saat hero jauh di luar
+    // layar (jendela diubah ukurannya, atau bilah alamat HP muncul/hilang saat scroll). Diukur dari posisi
+    // itu, skala & posisi dunia meleset (unitsPerPixel memakai jarak ke kamera), sehingga Krekit dan
+    // dunianya hilang saat pengunjung kembali ke atas. heroShift tetap menggeser semuanya mengikuti scroll.
+    // Desktop: hero di-pin, jadi posisi istirahatnya mengikuti pin-spacer pembungkusnya.
+    const anchor = hero.parentElement?.classList.contains('pin-spacer') ? hero.parentElement : hero
+    const restTop = anchor.getBoundingClientRect().top + window.scrollY
+    const dy = restTop - hero.getBoundingClientRect().top
+    const spot = spots[0].getBoundingClientRect()
+    const rect = { left: spot.left, width: spot.width, height: spot.height, top: spot.top + dy, bottom: spot.bottom + dy }
+    layoutTop = restTop
     if (compact) {
       // Krekit ±58% tinggi panggung; sisanya untuk bangunan di belakangnya dan tombol tahap di bawah
       screenToWorld(rect.left + rect.width / 2, rect.bottom - rect.height * 0.14, heroStart)

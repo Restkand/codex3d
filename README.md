@@ -1,6 +1,8 @@
 # Krekit
 
-Wadah belajar tentang dunia developer game, dari teori di dalam engine sampai bisnis studio indie. Materinya disusun sebagai jalur belajar, setiap klaim ada sumbernya, dan komunitas bisa ikut mengoreksi.
+Wadah belajar fundamental pembuatan game, dari cara engine menggambar satu frame sampai bisnis studio indie.
+
+Teknologi membuat game makin cepat jadi, tapi rasa yang membuat sebuah game hidup tetap lahir dari pemahaman. Krekit menjelaskan fundamental itu sampai benar-benar dipahami: materinya disusun sebagai jalur belajar, setiap klaim ada sumbernya, dan komunitas bisa ikut mengoreksi. Visi lengkapnya ada di halaman [Tentang](src/content/docs/tentang.mdx).
 
 > Krekit adalah nama situs sekaligus nama maskotnya: telur yang mengintip dari celah cangkang. Namanya dari bunyi "krek" saat cangkang retak, dan terbaca seperti *crack it*.
 
