@@ -1,0 +1,656 @@
+---
+title: "Profiling & Optimasi"
+description: "Mengukur sebelum mengoptimasi, membaca profiler dan timeline frame, CPU-bound dan GPU-bound, draw call dan batching, instancing, culling, LOD, overdraw, lonjakan garbage collection, anggaran frame di perangkat target, dan alur kerja optimasi yang bisa diulang."
+fundamental: "Game yang lancar di PC kerja sering patah-patah di laptop atau ponsel pemain, dan tebakan seperti \"shader-nya terlalu berat\" sering salah sasaran. Berjam-jam bisa habis untuk mempercepat bagian yang sebenarnya sudah cepat. Perbaikan yang tepat baru bisa ditemukan kalau kamu bisa membaca profiler dan tahu apakah CPU, GPU, atau memori yang menahan frame."
+kind: lesson
+minutes: 35
+status: draf
+lastReviewed: 2026-10-30
+terms:
+  - cpu-gpu-bound
+  - draw-call
+  - instancing
+  - conditional-render
+  - frustum
+  - fill-rate
+  - overdraw
+  - dispose
+  - frame
+krekit:
+  gambaran-besar: "Optimasi tanpa profiler itu seperti mencari kunci hilang di bawah lampu jalan. Terang, tapi belum tentu kuncinya di situ."
+  ukur-dulu-baru-optimasi: "Catat angkanya sebelum mengubah apa pun. Tanpa angka awal, kamu tidak tahu perubahanmu membantu atau malah memperburuk."
+  membaca-profiler-dan-timeline-frame: "Grafik profiler kelihatan ramai. Mulai dari satu frame yang lambat, lalu cari balok yang paling panjang."
+  cpu-bound-atau-gpu-bound: "Kalau CPU sibuk menunggu GPU, mempercepat skrip tidak akan menolong. Lihat dulu siapa yang menunggu siapa."
+  draw-call-dan-batching: "Seribu objek kecil bisa lebih berat daripada satu objek besar. Yang dihitung jumlah perintahnya."
+  instancing-ribuan-salinan-dalam-satu-perintah: "Hutan berisi sepuluh ribu pohon tidak berarti sepuluh ribu perintah gambar. Asal pohonnya kembar."
+  culling-jangan-gambar-yang-tidak-terlihat: "Pekerjaan paling murah adalah pekerjaan yang tidak dikerjakan sama sekali."
+  lod-dan-impostor: "Dari jauh, pohon dengan lima ribu segitiga dan pohon dengan lima ratus segitiga terlihat sama. GPU-nya yang merasakan bedanya."
+  overdraw-dan-fill-rate: "Asap tebal di depan kamera bisa lebih mahal daripada seluruh kota di belakangnya."
+  memori-dan-lonjakan-garbage-collection: "Patah-patah yang muncul setiap beberapa detik sering bukan soal grafis. Cek alokasi memori dulu."
+  perangkat-target-dan-anggaran-frame: "PC kerjamu bukan perangkat pemainmu. Ukur di perangkat yang paling lemah yang ingin kamu dukung."
+  alur-kerja-optimasi-yang-bisa-diulang: "Satu perubahan, satu pengukuran. Membosankan, tapi hasilnya bisa dipercaya."
+  kesalahan-umum: "Kesalahan pertama paling mahal: mengoptimasi bagian yang tidak pernah jadi masalah."
+  setelah-jalur-ini: "Kamu sudah sampai di akhir jalur ini. Sisanya adalah latihan di proyekmu sendiri."
+sidebar:
+  order: 8
+  label: "8 · Profiling & Optimasi"
+quiz:
+  - q: "Di Unity Profiler, thread utama menghabiskan sebagian besar frame di marker Gfx.WaitForPresentOnGfxThread, dan render thread banyak berada di Gfx.PresentFrame. Apa artinya?"
+    options:
+      - "Skrip game terlalu berat"
+      - "Kemungkinan besar game GPU-bound: CPU sudah siap, tetapi menunggu GPU menyelesaikan frame"
+      - "Terjadi garbage collection"
+      - "Jumlah draw call terlalu sedikit"
+    answer: 1
+    explain: "Dokumentasi Unity menjelaskan marker ini muncul saat thread utama sudah siap memulai frame berikutnya, tetapi render thread masih menunggu GPU. Jika render thread banyak di Gfx.PresentFrame, game kemungkinan GPU-bound (atau sedang menunggu vsync). Mempercepat skrip tidak akan membantu."
+  - q: "Scene berisi 3.000 batu dengan mesh dan material yang sama. Profiler menunjukkan waktu CPU untuk menyiapkan render sangat tinggi, sementara GPU masih punya waktu luang. Langkah mana yang paling tepat?"
+    options:
+      - "Menurunkan resolusi layar"
+      - "Menyederhanakan fragment shader batu"
+      - "Menggambar batu dengan instancing (atau batching) agar jumlah draw call turun"
+      - "Menambah jumlah lampu"
+    answer: 2
+    explain: "Masalahnya ada di CPU yang menyiapkan ribuan perintah gambar. Karena semua batu memakai mesh dan material yang sama, instancing bisa menggambarnya dalam jauh lebih sedikit draw call. Menurunkan resolusi atau menyederhanakan shader mengurangi kerja GPU, padahal GPU tidak sedang kewalahan."
+  - q: "Game berjalan stabil di 60 FPS, tetapi setiap beberapa detik ada satu frame yang melonjak ke 40 ms. Di profiler, lonjakan itu berisi GC.Collect. Apa penyebab yang paling mungkin?"
+    options:
+      - "Shader dikompilasi ulang setiap beberapa detik"
+      - "Kode membuat objek atau data baru di setiap frame, sehingga garbage collector sesekali harus membersihkan semuanya"
+      - "Occlusion culling belum dipanggang"
+      - "Vsync aktif"
+    answer: 1
+    explain: "GC.Collect berarti garbage collector sedang bekerja, dan selama itu kode game berhenti. Pemicunya adalah alokasi memori yang terus terjadi, misalnya membuat list, string, atau objek baru di update setiap frame. Solusinya mengurangi alokasi: simpan dan pakai ulang objek, misalnya dengan object pooling."
+  - q: "Untuk mengurangi draw call, seluruh bangunan di sebuah kota terbuka digabung menjadi satu mesh besar. Jumlah draw call memang turun, tetapi waktu GPU naik saat kamera menghadap ke luar kota. Kenapa?"
+    options:
+      - "Mesh besar tidak bisa memakai tekstur"
+      - "Objek gabungan dianggap satu, jadi culling tidak bisa lagi membuang bangunan yang tidak terlihat. Selama sebagian kecil kota terlihat, seluruh kota ikut digambar"
+      - "Mesh gabungan selalu memakai shader yang lebih berat"
+      - "Draw call yang lebih sedikit selalu memperlambat GPU"
+    answer: 1
+    explain: "Frustum dan occlusion culling bekerja per objek. Setelah digabung, engine hanya bisa memilih menggambar seluruh kota atau tidak sama sekali. Gabungkan objek yang memang berdekatan, misalnya satu blok bangunan, bukan seluruh level."
+  - q: "Kamu menyiapkan occlusion culling di Unity untuk padang rumput terbuka yang hampir tidak punya dinding atau bukit. Waktu frame malah sedikit naik. Kenapa ini bisa terjadi?"
+    options:
+      - "Occlusion culling hanya bekerja di Unreal"
+      - "Occlusion culling bawaan Unity berjalan di CPU. Jika hampir tidak ada yang tertutup, biaya pengecekannya tidak dibayar kembali oleh objek yang dibuang"
+      - "Occlusion culling mematikan frustum culling"
+      - "Rumput tidak bisa di-culling"
+    answer: 1
+    explain: "Dokumentasi Unity mencatat perhitungan occlusion culling bawaan berjalan di CPU dan bisa menghabiskan waktu yang dihematnya. Teknik ini paling berguna di level dengan area tertutup yang jelas, seperti ruangan yang dihubungkan koridor."
+sources:
+  - title: "Profiler"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/profiler"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Navigating the Profiler window"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/profiler/window-navigating"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "CPU Usage Profiler module"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/profiler/visualizing-data/cpu/cpu"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Profiler markers reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/profiler/markers"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Instrument all function calls (Deep Profiling)"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/profiler/deep-profiling"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Profile Analyzer"
+    url: "https://docs.unity3d.com/Packages/com.unity.performance.profile-analyzer@1.2/manual/index.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Frame Debugger window reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/graphics-performance-profiling/profiling/frame-debugger-window"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Introduction to batching meshes"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/graphics-performance-profiling/reduce-draw-calls/draw-call-batching/draw-call-batching"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Choose a method for optimizing draw calls"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/graphics-performance-profiling/reduce-draw-calls/optimizing-draw-calls-choose-method"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "SRP Batcher in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/graphics-performance-profiling/in-urp/reduce-draw-calls-urp/srpbatcher"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Occlusion culling"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/cameras/occlusion-culling/occlusion-culling"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Introduction to level of detail"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/graphics-performance-profiling/simplifying-distant-meshes-with-level-of-detail-lod/level-of-detail"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "LOD Group component reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/graphics-performance-profiling/simplifying-distant-meshes-with-level-of-detail-lod/class-lodgroup"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Incremental garbage collection"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/performance-memory/managed-memory/incremental-garbage-collection"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "General optimization tips"
+    url: "https://docs.godotengine.org/en/stable/tutorials/performance/general_optimization.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "The Profiler"
+    url: "https://docs.godotengine.org/en/stable/tutorials/scripting/debug/the_profiler.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Debugger panel"
+    url: "https://docs.godotengine.org/en/stable/tutorials/scripting/debug/debugger_panel.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Performance"
+    url: "https://docs.godotengine.org/en/stable/classes/class_performance.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Optimizing 3D performance"
+    url: "https://docs.godotengine.org/en/stable/tutorials/performance/optimizing_3d_performance.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Optimization using MultiMeshes"
+    url: "https://docs.godotengine.org/en/stable/tutorials/performance/using_multimesh.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Occlusion culling"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/occlusion_culling.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Mesh level of detail (LOD)"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/mesh_lod.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Visibility ranges (HLOD)"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/visibility_ranges.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Mengukur waktu frame sebelum mengubah apa pun, dan mencatat angka awalnya.
+- Membaca profiler dan timeline satu frame untuk menemukan bagian yang paling lama.
+- Menentukan apakah game CPU-bound atau GPU-bound, lalu memilih perbaikan yang sesuai.
+- Mengurangi draw call dengan batching dan instancing, dan mengurangi kerja GPU dengan culling, LOD, dan overdraw yang lebih sedikit.
+- Mengenali lonjakan frame akibat garbage collection.
+- Menjalankan alur optimasi yang bisa diulang di perangkat target.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: periksa dulu, baru beri obat">
+Pasien datang dengan keluhan pusing. Dokter tidak langsung memberi obat sakit kepala. Ia memeriksa tekanan darah dan suhu, menanyakan riwayatnya, lalu memberi obat yang cocok dengan penyebabnya. Profiler adalah alat periksa itu. Batching, culling, dan LOD adalah obatnya, dan setiap obat hanya menolong penyakit tertentu.
+</Aside>
+
+Di [Pelajaran 1](/belajar/fondasi-engine/01-frame/#anggaran-167-milidetik), kamu belajar bahwa satu [frame](/kamus/dasar/frame/) di layar 60 Hz punya anggaran sekitar 16,7 ms. Pelajaran 3 sampai 6 menambahkan hal-hal yang memakan anggaran itu: material, shader, bayangan, dan efek layar penuh. Pelajaran ini menjawab pertanyaan terakhir: saat frame melewati anggarannya, **bagian mana yang harus diperbaiki, dan bagaimana caranya?**
+
+Jawabannya selalu dimulai dari pengukuran. Optimasi tanpa pengukuran sering menghabiskan waktu untuk bagian yang sudah cepat, dan kadang malah membuat game lebih lambat.
+
+```text title="Pseudocode: siklus optimasi"
+ulangi:
+    ukur(skenario_yang_sama, perangkat_target)
+    bottleneck = bagian_terlama(frame)
+    if total_waktu_frame <= anggaran:
+        selesai
+    perbaiki(bottleneck)        // SATU perubahan
+    // kembali ke langkah ukur
+```
+
+Seluruh pelajaran ini mengisi dua baris di tengah: cara menemukan `bottleneck`, dan pilihan `perbaiki` untuk setiap jenisnya.
+
+## Ukur dulu, baru optimasi
+
+Dokumentasi Godot merangkum aturannya dalam satu kalimat: gunakan profiling dan pengukuran waktu untuk mengarahkan usahamu. Pengukuran yang baik punya beberapa syarat:
+
+- **Skenario yang sama.** Pilih satu tempat di level yang terasa berat, misalnya posisi kamera tertentu di tengah kota, dan selalu ukur di situ. Angka dari tempat yang berbeda tidak bisa dibandingkan.
+- **Milidetik, bukan FPS.** Turun dari 60 ke 50 FPS berarti tambahan 3,3 ms. Turun dari 30 ke 20 FPS berarti tambahan 16,7 ms. Dalam FPS keduanya tampak "turun 10", padahal bebannya sangat berbeda ([CPU-bound vs GPU-bound](/kamus/performa/cpu-gpu-bound/)).
+- **Rata-rata dan lonjakan.** Rata-rata 12 ms bisa terlihat aman, tetapi satu frame 50 ms setiap dua detik tetap terasa sebagai patah-patah. Lihat juga frame terburuknya.
+- **Build, bukan hanya editor.** Editor ikut memakai CPU dan memori. Angka yang dipakai untuk keputusan sebaiknya diambil dari build yang berjalan di perangkat target.
+
+Catat angka awal (*baseline*) sebelum mengubah apa pun. Tanpa angka awal, kamu tidak bisa membuktikan bahwa perubahanmu membantu.
+
+## Membaca profiler dan timeline frame
+
+**Profiler** mencatat berapa lama setiap bagian pekerjaan berjalan, frame demi frame. Tampilannya hampir selalu terdiri dari dua bagian:
+
+1. **Grafik di atas:** satu titik atau batang per frame. Gunanya untuk menemukan frame yang lambat, terutama lonjakan.
+2. **Rincian di bawah:** isi satu frame yang kamu pilih, dalam bentuk daftar bertingkat (fungsi mana memanggil fungsi mana, berapa milidetik masing-masing) atau dalam bentuk **timeline**.
+
+Timeline menggambar setiap pekerjaan sebagai balok di sepanjang sumbu waktu, satu baris per thread. Balok yang panjang adalah pekerjaan yang lama. Celah kosong atau balok bertuliskan "wait" berarti thread itu sedang menunggu thread lain atau menunggu GPU.
+
+```text title="Ilustrasi: timeline satu frame 22 ms"
+0 ms                              16,7 ms     22 ms
+|---------------------------------|-----------|
+Main     [update][animasi][kirim ][ tunggu GPU ......]
+Render          [   siapkan draw call   ][tunggu      ]
+GPU             [ bayangan ][ scene opaque ][ partikel ][post]
+```
+
+Cara membacanya: cari baris yang **tidak pernah menunggu**. Di ilustrasi ini, thread utama dan render thread sama-sama menunggu, sementara GPU terus bekerja sampai akhir frame. GPU-lah yang menentukan panjang frame.
+
+<EngineTabs>
+<div slot="unity">
+
+Buka **Window → Analysis → Profiler** (Ctrl+7). Klik grafik untuk memilih satu frame. Secara bawaan Profiler menyimpan 300 frame terakhir.
+
+- Modul **CPU Usage** punya tampilan **Timeline** (semua thread di sepanjang sumbu waktu) dan **Hierarchy** (daftar bertingkat, bisa diurutkan berdasarkan waktu atau kolom **GC Alloc**).
+- Profiler bisa terhubung ke build yang berjalan di perangkat lain, misalnya ponsel, sehingga kamu bisa mengukur di platform tujuan.
+- **Deep Profile** mencatat setiap pemanggilan fungsi skrip. Dokumentasi Unity mengingatkan bahwa mode ini membuat aplikasi berjalan jauh lebih lambat dan memakan banyak memori, jadi pakai hanya untuk mempersempit masalah yang sudah ditemukan.
+- **Frame Debugger** (**Window → Analysis → Frame Debugger**) menghentikan satu frame dan menampilkan daftar semua kejadian render di dalamnya, termasuk setiap draw call.
+- Paket **Profile Analyzer** menggabungkan data dari banyak frame dan bisa membandingkan dua rekaman berdampingan. Berguna untuk membandingkan sebelum dan sesudah optimasi.
+
+</div>
+<div slot="unreal">
+
+- `stat unit` menampilkan waktu **Game** (logika di CPU), **Draw** (menyusun perintah gambar), dan **GPU** per frame, seperti di Pelajaran 1.
+- `stat gpu` merinci waktu GPU per tahap render.
+- **Unreal Insights** merekam timeline lengkap semua thread untuk dianalisis setelah game berjalan.
+
+</div>
+<div slot="godot">
+
+- **Debugger → Profiler:** mati secara bawaan karena profiling sendiri memakan biaya. Tekan **Start** saat game berjalan. Ukurannya: frame time (sudah termasuk rendering), physics frame, idle time (kode `_process`), dan physics time (kode `_physics_process`).
+- **Debugger → Visual Profiler:** waktu CPU dan GPU untuk pekerjaan render per frame, dalam dua grafik berdampingan. Alat ini hanya mengukur pekerjaan render, tidak termasuk skrip dan physics.
+- **Debugger → Monitors:** grafik FPS, waktu proses, memori, jumlah objek, jumlah draw call, dan lainnya. Monitor merekam terus, jadi kamu bisa membukanya setelah kejadian.
+
+</div>
+</EngineTabs>
+
+## CPU-bound atau GPU-bound
+
+[CPU dan GPU](/kamus/dasar/gpu-cpu/) bekerja bersamaan, jadi frame baru selesai setelah yang paling lambat selesai. Itulah [bottleneck](/kamus/performa/cpu-gpu-bound/)-nya, dan jenis perbaikannya sangat berbeda:
+
+| | CPU-bound | GPU-bound |
+| --- | --- | --- |
+| Tanda di profiler | CPU sibuk sampai akhir frame, GPU menunggu | CPU menunggu GPU (marker "wait" atau "present") |
+| Penyebab umum | skrip, physics, animasi, terlalu banyak draw call | resolusi, shader berat, bayangan, overdraw, efek layar penuh |
+| Tes cepat | turunkan resolusi: hampir tidak berubah | turunkan resolusi: waktu frame turun jelas |
+| Perbaikan | kurangi kerja per frame, batching, instancing, culling | kurangi piksel dan kerja per piksel, LOD, culling |
+
+Tes resolusi ini dianjurkan juga oleh dokumentasi Godot: matikan vsync, lalu bandingkan FPS di jendela besar dan jendela sangat kecil. Jika FPS naik jauh di jendela kecil, game dibatasi [fill rate](/kamus/performa/fill-rate/).
+
+Perhatikan bahwa culling muncul di dua kolom. Objek yang tidak digambar menghemat CPU (tidak ada draw call yang disiapkan) sekaligus GPU (tidak ada titik dan piksel yang dihitung).
+
+<EngineTabs>
+<div slot="unity">
+
+Dokumentasi Unity menjelaskan marker **Gfx.WaitForPresentOnGfxThread** di thread utama: thread utama sudah siap memulai frame berikutnya, tetapi render thread masih menunggu GPU. Lalu lihat render thread. Jika banyak di **Camera.Render**, game CPU-bound (terlalu lama mengirim draw call). Jika banyak di **Gfx.PresentFrame**, game GPU-bound atau sedang menunggu vsync.
+
+Marker **Gfx.WaitForCommands** di render thread berarti kebalikannya: render thread siap menerima perintah, tetapi thread utama belum selesai.
+
+</div>
+<div slot="unreal">
+
+Bandingkan tiga angka di `stat unit`. Jika **GPU** paling besar, game GPU-bound. Jika **Game** atau **Draw** paling besar, masalahnya ada di CPU: logika game atau penyusunan perintah gambar.
+
+</div>
+<div slot="godot">
+
+Bandingkan grafik CPU dan GPU di **Visual Profiler**. Untuk skrip dan physics, lihat **Profiler**. Jika frame time jauh di atas idle time dan physics time, waktu sisanya biasanya habis di rendering.
+
+</div>
+</EngineTabs>
+
+## Draw call dan batching
+
+Setiap [draw call](/kamus/performa/draw-call/) adalah satu perintah "gambar mesh ini dengan material ini". Sebelum setiap perintah, CPU dan driver grafis harus menyiapkan shader, tekstur, dan data lain. Ongkos ini dibayar per perintah, bukan per segitiga. Lima ribu objek kecil bisa membuat CPU kewalahan walau GPU masih santai.
+
+Draw call bertambah karena:
+
+- Setiap objek yang terlihat, dan setiap material di objek itu.
+- Setiap lampu yang memberi bayangan, karena objek digambar lagi ke [shadow map](/kamus/cahaya/shadow-map/) ([Pelajaran 5](/belajar/fondasi-engine/05-bayangan-gi/)).
+- Salinan material per objek, seperti contoh musuh yang menyala merah di [Pelajaran 3](/belajar/fondasi-engine/03-permukaan/).
+
+**Batching** menggabungkan banyak objek menjadi lebih sedikit draw call, atau membuat pergantian antar-draw call lebih murah. Syarat utamanya hampir selalu sama: **material yang sama**. Karena itu cara murah yang berlaku di semua engine adalah mengurangi jumlah material, misalnya dengan menggabungkan tekstur beberapa objek ke satu gambar besar (*texture atlas*).
+
+<EngineTabs>
+<div slot="unity">
+
+- **Static batching:** objek static digabung menjadi buffer besar di world space (maksimal 64.000 vertex per buffer). Cocok untuk geometri yang tidak bergerak.
+- **Dynamic batching:** mengubah vertex mesh kecil ke world space di CPU setiap frame (maksimal 300 vertex per mesh). Dokumentasi Unity menulis bahwa untuk kebanyakan kasus fitur ini tidak lagi disarankan, karena biaya CPU-nya bisa melebihi biaya draw call yang dihemat.
+- **SRP Batcher** (URP dan HDRP): mengurangi pergantian keadaan render antar-draw call. Jumlah draw call bisa tetap sama, tetapi setiap draw call lebih murah disiapkan. Diaktifkan di aset URP.
+- Halaman "Choose a method for optimizing draw calls" di Unity 6 menyarankan **SRP Batcher** dan **GPU Resident Drawer** untuk URP/HDRP, dan static batching serta GPU instancing untuk Built-In Render Pipeline.
+
+Batching tidak berlaku untuk Skinned Mesh Renderer. Pakai **Frame Debugger** untuk melihat apakah objek benar-benar tergabung.
+
+</div>
+<div slot="unreal">
+
+Objek dengan mesh dan material yang sama digabung otomatis. Mesh **Nanite** dirender lewat jalur khusus yang jauh lebih sedikit bergantung pada jumlah draw call.
+
+</div>
+<div slot="godot">
+
+Godot mengurutkan objek opaque berdasarkan material dan shader untuk mengurangi pergantian keadaan. Objek transparan tidak bisa diurutkan dengan cara ini karena harus digambar dari belakang ke depan. Jumlah draw call per frame terlihat di **Debugger → Monitors**.
+
+</div>
+</EngineTabs>
+
+Menggabungkan objek ada harganya: objek gabungan dianggap satu, sehingga culling tidak bisa membuang bagiannya yang tidak terlihat. Gabungkan objek yang berdekatan, misalnya satu ruangan atau satu blok bangunan.
+
+## Instancing: ribuan salinan dalam satu perintah
+
+Hutan, padang rumput, tumpukan batu, ribuan peluru. Semuanya salinan dari beberapa mesh yang sama. [GPU instancing](/kamus/performa/instancing/) mengirim mesh dan material sekali, ditambah daftar transform untuk setiap salinan, lalu GPU menggambar semuanya dalam satu perintah.
+
+```text title="Pseudocode: tanpa dan dengan instancing"
+// tanpa instancing: 3000 draw call
+untuk setiap batu:
+    gambar(mesh_batu, material_batu, batu.transform)
+
+// dengan instancing: 1 draw call
+gambar_banyak(mesh_batu, material_batu, daftar_transform[3000])
+```
+
+Syaratnya: mesh yang sama dan material yang sama.
+
+<EngineTabs>
+<div slot="unity">
+
+Di Built-In Render Pipeline, centang **Enable GPU Instancing** pada material. Di URP/HDRP, objek yang kompatibel dengan SRP Batcher memakai SRP Batcher, dan dokumentasi Unity 6 menyarankan **GPU Resident Drawer** untuk menggambar banyak objek dengan efisien. Dari kode, `Graphics.RenderMeshInstanced` menggambar banyak salinan tanpa GameObject per salinan.
+
+</div>
+<div slot="unreal">
+
+Komponen **Instanced Static Mesh** dan **Hierarchical Instanced Static Mesh** (HISM). **Foliage Tool** memakai instancing secara otomatis.
+
+</div>
+<div slot="godot">
+
+Renderer Forward+ melakukan instancing otomatis untuk MeshInstance3D dengan mesh dan material yang sama, khusus material opaque atau alpha-tested. Untuk jumlah sangat besar atau material transparan, pakai **MultiMeshInstance3D**: satu perintah gambar yang bisa memuat sampai jutaan salinan.
+
+</div>
+</EngineTabs>
+
+Satu MultiMesh di Godot tidak di-culling per salinan: semuanya tampil atau tidak sama sekali. Dokumentasi Godot menyarankan memecahnya menjadi beberapa MultiMesh per wilayah dunia, agar wilayah yang tidak terlihat bisa dibuang.
+
+## Culling: jangan gambar yang tidak terlihat
+
+[Culling](/kamus/performa/conditional-render/) membuang objek yang pasti tidak terlihat sebelum draw call-nya disiapkan.
+
+- **Frustum culling:** membuang objek di luar area pandang kamera ([Frustum & Clipping](/kamus/dasar/frustum/)). Aktif otomatis di semua engine.
+- **Occlusion culling:** membuang objek yang ada di dalam area pandang tetapi tertutup sepenuhnya oleh objek lain, misalnya isi ruangan di balik dinding. Harus disiapkan sendiri.
+- **Culling jarak:** objek kecil berhenti digambar setelah cukup jauh.
+
+```text title="Urutan umum"
+semua objek → frustum culling → occlusion culling → jarak / LOD → draw call
+```
+
+Occlusion culling sendiri punya biaya, karena engine harus mengecek apa yang menutupi apa. Teknik ini paling menguntungkan di level dengan banyak dinding, seperti ruangan yang dihubungkan koridor. Di padang terbuka, hampir tidak ada yang tertutup, sehingga biayanya bisa lebih besar daripada hasilnya.
+
+<EngineTabs>
+<div slot="unity">
+
+Occlusion culling bawaan dipanggang (*bake*) di Editor: scene dibagi menjadi sel, lalu visibilitas antar-sel disimpan. Saat game berjalan, setiap kamera yang mengaktifkan **Occlusion Culling** memeriksa data itu. Dokumentasi Unity mencatat:
+
+- Perhitungannya berjalan di CPU dan bisa menghabiskan waktu CPU yang dihematnya, jadi paling berguna saat game GPU-bound karena overdraw.
+- Objek dinamis tidak bisa menutupi objek lain, sehingga cara ini tidak cocok untuk level yang dibuat saat game berjalan.
+- Untuk URP dan HDRP, tersedia juga GPU occlusion culling.
+
+</div>
+<div slot="unreal">
+
+Occlusion culling dinamis berbasis GPU aktif secara bawaan. **Cull Distance Volume** membuang objek berdasarkan ukuran dan jarak.
+
+</div>
+<div slot="godot">
+
+Aktifkan **Project Settings → Rendering → Occlusion Culling → Use Occlusion Culling** (mungkin perlu menyalakan tampilan Advanced). Tambahkan node **OccluderInstance3D** lalu tekan **Bake Occluders**. Godot menggambar occluder ke buffer beresolusi rendah di CPU, lalu mengecek kotak pembatas setiap objek terhadap buffer itu.
+
+Menurut dokumentasi Godot, hasilnya paling besar dengan renderer Mobile, yang tidak punya depth prepass. Occluder yang bergerak mahal, karena struktur datanya harus dibangun ulang.
+
+</div>
+</EngineTabs>
+
+## LOD dan impostor
+
+Pohon dengan 5.000 segitiga yang tampak setinggi 20 piksel di layar tidak terlihat lebih bagus daripada versi 500 segitiga. **Level of detail (LOD)** mengganti mesh dengan versi yang lebih sederhana saat objek makin kecil di layar.
+
+```text title="Pseudocode: memilih LOD"
+tinggi_di_layar = tinggi_objek_di_layar() / tinggi_layar   // 0..1
+if   tinggi_di_layar > 0.5:  gambar(lod0)    // detail penuh
+elif tinggi_di_layar > 0.15: gambar(lod1)
+elif tinggi_di_layar > 0.03: gambar(lod2)
+else:                         jangan_gambar()  // terlalu kecil untuk terlihat
+```
+
+Perpindahan antar-LOD bisa terlihat sebagai "lompatan" bentuk (*popping*). Engine menyediakan transisi halus (*cross-fade*) yang menggambar dua LOD bersamaan selama sesaat. Hasilnya lebih halus, tetapi selama transisi kedua versi dibayar.
+
+Di jarak paling jauh, objek 3D bisa diganti **impostor**: satu bidang datar bertekstur gambar objek itu, yang sudah dirender sebelumnya dari beberapa sudut. Satu bidang jauh lebih murah daripada mesh. Impostor biasanya transparan di tepinya, jadi banyak impostor yang bertumpuk tetap bisa membebani fill rate.
+
+<EngineTabs>
+<div slot="unity">
+
+Komponen **LOD Group** menampung beberapa level. Setiap level adalah GameObject anak dengan Mesh Renderer sendiri. Persentase di setiap kotak level adalah ambang tinggi objek di layar dibanding tinggi layar. Misalnya LOD 1 dengan ambang 50% aktif saat objek setinggi setengah layar. **Fade Mode → Cross Fade** mengaktifkan transisi halus. Untuk level paling rendah, Unity bisa memakai **Billboard Asset** sebagai pengganti mesh 3D.
+
+</div>
+<div slot="unreal">
+
+Static Mesh bisa punya beberapa LOD, dan editor bisa membuatnya otomatis. **HLOD** (*Hierarchical LOD*) menggabungkan sekelompok objek yang jauh menjadi satu mesh sederhana. Mesh **Nanite** mengatur detailnya sendiri secara otomatis.
+
+</div>
+<div slot="godot">
+
+- **Mesh LOD otomatis:** dibuat saat impor untuk scene glTF, .blend, Collada, dan FBX. Ambangnya diatur di **Rendering → Mesh LOD → LOD Change → Threshold Pixels** (bawaannya 1 piksel), dan per node dengan **LOD Bias**.
+- **Visibility range:** pada setiap node turunan GeometryInstance3D, atur jarak **Begin** dan **End** untuk LOD manual. **Fade Mode → Disabled** paling murah karena tidak memakai transparansi. Fitur ini juga dipakai untuk HLOD dan impostor, misalnya Sprite3D yang menggantikan MeshInstance3D detail di jarak jauh.
+
+</div>
+</EngineTabs>
+
+## Overdraw dan fill rate
+
+[Fill rate](/kamus/performa/fill-rate/) adalah berapa banyak piksel yang sanggup diwarnai GPU. Layar 1080p punya sekitar 2 juta piksel, dan 4K empat kali lipatnya. [Overdraw](/kamus/performa/overdraw/) terjadi saat piksel yang sama diwarnai berkali-kali dalam satu frame karena objek bertumpuk.
+
+Untuk objek padat, [depth buffer](/kamus/geometri/depth-buffer/) membuang piksel yang tertutup sebelum shader-nya dijalankan, sehingga overdraw bisa ditekan. Objek transparan tidak bisa memakai trik ini. Asap dari 30 partikel yang bertumpuk di depan kamera berarti 30 kali kerja pada piksel yang sama.
+
+Cara menghemat:
+
+- Kecilkan dan kurangi partikel transparan, terutama yang dekat kamera.
+- Potong bentuk quad partikel mengikuti bentuk teksturnya, agar sudut kosong tidak ikut dihitung.
+- Pakai alpha clip sebagai pengganti alpha blend jika tepi tegas masih bisa diterima ([Transparansi & Blending](/kamus/geometri/blending/)).
+- Turunkan resolusi efek layar penuh, seperti di [Pelajaran 6](/belajar/fondasi-engine/06-post-processing/).
+
+Setiap engine punya mode tampilan yang mewarnai layar sesuai jumlah tumpukan: Rendering Debugger di Unity URP, view mode Quad Overdraw dan Shader Complexity di Unreal, dan mode **Overdraw** di menu viewport Godot. Detailnya ada di halaman [Overdraw](/kamus/performa/overdraw/).
+
+## Memori dan lonjakan garbage collection
+
+Tidak semua patah-patah berasal dari grafis. Pola yang sering muncul: frame rata-rata lancar, tetapi setiap beberapa detik satu frame melonjak jauh di atas anggaran.
+
+Penyebab yang umum adalah **garbage collection** (GC). Bahasa seperti C# membersihkan memori yang tidak lagi dipakai secara otomatis. Selama pembersihan itu, kode game bisa berhenti sejenak. Makin sering kode membuat data baru (list, string, objek), makin sering pembersihan ini terjadi.
+
+```text title="✗ Membuat data baru setiap frame"
+update(delta):
+    musuh_dekat = list_baru()            // alokasi, 60 kali per detik
+    label.teks = "Skor: " + skor          // string baru setiap frame
+```
+
+```text title="✓ Pakai ulang"
+mulai():
+    musuh_dekat = list_baru()            // sekali saja
+
+update(delta):
+    musuh_dekat.kosongkan()
+    if skor berubah:
+        label.teks = "Skor: " + skor      // hanya saat perlu
+```
+
+Untuk objek yang sering muncul dan hilang, seperti peluru dan percikan, pakai **object pooling**: siapkan sejumlah objek di awal, lalu pakai ulang. Pola ini dibahas di [Memori & Membebaskan Aset](/kamus/performa/dispose/), bersama kebocoran memori yang membuat memori terus naik setiap kali pemain berpindah level.
+
+Lonjakan lain yang sering tertukar dengan GC adalah kompilasi shader saat efek baru pertama kali muncul ([Shader Variant & Stutter Kompilasi](/kamus/shader/shader-variant/)). Profiler membedakan keduanya dari nama pekerjaan di frame yang melonjak.
+
+<EngineTabs>
+<div slot="unity">
+
+Di modul CPU Usage, kolom **GC Alloc** menunjukkan memori skrip yang dialokasikan di setiap frame, dan marker **GC.Alloc** menandai alokasinya. Marker **GC.Collect** berarti garbage collector sedang bekerja dan kode program berhenti sampai selesai. Unity memakai **incremental GC** secara bawaan, yang menyebar pekerjaan GC ke beberapa frame. Ini mengurangi lonjakan tetapi tidak membuat GC lebih cepat, jadi alokasi per frame tetap perlu dikurangi.
+
+</div>
+<div slot="unreal">
+
+Objek turunan `UObject` dibersihkan oleh garbage collector Unreal saat tidak lagi direferensikan. Referensi di C++ perlu ditandai `UPROPERTY()` agar dikenali GC.
+
+</div>
+<div slot="godot">
+
+Resource seperti mesh dan material bersifat reference-counted: dibebaskan saat tidak ada lagi yang mereferensikannya. Node di scene harus dihapus sendiri dengan `queue_free()`. Pantau memori di **Debugger → Monitors**, dan pemakaian memori video per resource di tab **Video RAM**.
+
+</div>
+</EngineTabs>
+
+## Perangkat target dan anggaran frame
+
+Anggaran frame ditentukan oleh frame rate yang kamu targetkan, dan target itu ditentukan oleh perangkat pemain:
+
+| Target | Anggaran per frame |
+| --- | --- |
+| 30 FPS | 33,3 ms |
+| 60 FPS | 16,7 ms |
+| 120 FPS | 8,3 ms |
+| 144 FPS | 6,9 ms |
+
+Tentukan **perangkat paling lemah** yang ingin kamu dukung, lalu ukur di sana. PC kerja seorang developer biasanya jauh lebih kuat daripada laptop atau ponsel pemain. Efek yang memakan 0,5 ms di PC kerja bisa memakan beberapa milidetik di perangkat lain.
+
+Beberapa hal yang membuat angka di perangkat target berbeda:
+
+- **Resolusi.** Laptop dan ponsel dengan layar HiDPI punya lebih banyak piksel daripada yang terlihat dari ukurannya.
+- **Panas.** Ponsel dan laptop tipis bisa menurunkan kecepatan prosesornya setelah bermain beberapa menit. Ukur juga setelah game berjalan cukup lama, tidak hanya di menit pertama.
+- **Memori.** Perangkat dengan memori kecil lebih cepat kehabisan ruang untuk tekstur dan mesh.
+
+Jangan memakai seluruh anggaran. Frame yang selalu tepat 16,5 ms akan melewati 16,7 ms setiap kali ada ledakan atau musuh tambahan. Sisakan ruang untuk momen yang paling ramai di game-mu, dan ukur di momen itu.
+
+Banyak game menyediakan **pengaturan kualitas** (resolusi render, jarak pandang, kualitas bayangan, efek layar penuh) agar pemain bisa menyesuaikan beban dengan perangkatnya. Setiap preset adalah anggaran yang berbeda untuk konten yang sama.
+
+## Alur kerja optimasi yang bisa diulang
+
+Gabungkan semua bagian di atas menjadi satu alur:
+
+1. **Tentukan target.** Perangkat paling lemah dan frame rate yang ingin dicapai, misalnya 60 FPS di laptop kelas menengah, berarti 16,7 ms.
+2. **Siapkan skenario uji.** Satu posisi kamera atau satu rekaman gameplay yang bisa diulang persis sama.
+3. **Ukur angka awal** di build, di perangkat target. Catat waktu frame rata-rata dan frame terburuk.
+4. **Temukan bottleneck.** CPU atau GPU? Jika CPU: skrip, physics, atau draw call? Jika GPU: piksel, geometri, atau bayangan?
+5. **Lakukan satu perubahan** yang menyasar bottleneck itu.
+6. **Ukur lagi** dengan skenario yang sama. Jika tidak membantu, kembalikan perubahannya.
+7. **Ulangi** dari langkah 4 sampai target tercapai.
+
+Setelah satu bottleneck diatasi, bottleneck berikutnya muncul. Game yang tadinya GPU-bound bisa menjadi CPU-bound setelah resolusi diturunkan. Karena itu langkah 4 selalu diulang setelah setiap perubahan.
+
+Pilihan perbaikan berdasarkan bottleneck:
+
+| Bottleneck | Pilihan perbaikan |
+| --- | --- |
+| CPU, skrip | pindahkan kerja berat keluar dari update, kurangi frekuensi update objek jauh, kurangi alokasi |
+| CPU, draw call | batching, instancing, kurangi material, culling, LOD |
+| GPU, piksel | turunkan resolusi atau resolusi efek, kurangi overdraw, sederhanakan fragment shader |
+| GPU, geometri | LOD, impostor, culling |
+| GPU, bayangan | kurangi lampu berbayangan, perpendek jarak bayangan, panggang cahaya ([Pelajaran 5](/belajar/fondasi-engine/05-bayangan-gi/)) |
+| Lonjakan sesaat | kurangi alokasi per frame, object pooling, siapkan shader lebih awal |
+
+## Kesalahan umum
+
+Sebagian besar kesalahan berikut tidak memunculkan error. Game tetap berjalan, hanya waktu yang dihabiskan untuk optimasi tidak menghasilkan apa-apa.
+
+### Mengoptimasi tanpa mengukur
+
+```text title="✗ Keliru"
+"Game lambat, pasti shader-nya." → tiga hari menyederhanakan shader
+```
+
+```text title="✓ Benar"
+profiler: CPU 22 ms (skrip AI 14 ms), GPU 9 ms → perbaiki AI dulu
+```
+
+Jika game CPU-bound, shader yang lebih sederhana tidak mengubah waktu frame sama sekali.
+
+### Mengukur hanya di editor atau di PC kerja
+
+```text title="✗ Keliru"
+Editor di PC kerja: 4 ms → "aman"
+```
+
+```text title="✓ Benar"
+build di laptop target, setelah 10 menit bermain: 19 ms → masih perlu kerja
+```
+
+Editor ikut memakai CPU, dan PC kerja jauh lebih kuat daripada perangkat pemain.
+
+### Menggabungkan seluruh level
+
+```text title="✗ Keliru"
+gabungkan(semua_bangunan_di_kota)    // 1 draw call, tetapi tidak bisa di-culling
+```
+
+```text title="✓ Benar"
+untuk setiap blok:
+    gabungkan(bangunan_di_blok)      // sedikit draw call, culling tetap per blok
+```
+
+Draw call turun, tetapi seluruh kota ikut digambar selama sebagian kecilnya terlihat.
+
+### Mengubah banyak hal sekaligus
+
+```text title="✗ Keliru"
+ubah LOD + bayangan + resolusi + jumlah partikel → ukur
+```
+
+```text title="✓ Benar"
+ubah LOD → ukur → ubah bayangan → ukur → ...
+```
+
+Jika hasilnya membaik, kamu tidak tahu perubahan mana yang membantu. Jika memburuk, kamu tidak tahu mana yang harus dikembalikan.
+
+### Hanya melihat FPS rata-rata
+
+```text title="✗ Keliru"
+rata-rata 58 FPS → "lancar"
+```
+
+```text title="✓ Benar"
+rata-rata 14 ms, frame terburuk 48 ms setiap 3 detik → cari penyebab lonjakan
+```
+
+Pemain merasakan setiap frame yang lambat, walau rata-ratanya terlihat bagus.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan di engine pilihanmu. Buat scene dengan lantai luas, satu kamera, dan satu lampu berbayangan.
+
+1. Buka profiler dan catat waktu frame scene kosong ini sebagai angka awal. Ingat untuk menekan Start di Godot.
+2. Tambahkan 2.000 kubus dengan mesh dan material yang sama, tersebar di lantai. Catat jumlah draw call dan waktu CPU. Lalu aktifkan instancing atau batching sesuai engine-mu, dan bandingkan.
+3. Beri setiap kubus material dengan warna berbeda (salinan material per objek). Apa yang terjadi pada jumlah draw call?
+4. Tambahkan sistem partikel transparan besar tepat di depan kamera. Buka mode tampilan overdraw, lalu bandingkan waktu GPU saat partikel dekat dan jauh dari kamera.
+5. Tulis skrip yang membuat list atau string baru di setiap frame. Cari lonjakan GC di profiler (Unity: kolom GC Alloc), lalu ubah skripnya agar memakai ulang data yang sama.
+6. Ulangi pengukuran langkah 2 di perangkat yang paling lemah yang kamu punya. Seberapa besar bedanya dengan PC kerjamu?
+
+## Setelah jalur ini
+
+Ini pelajaran terakhir jalur Fondasi Engine. Ringkasnya, delapan pelajaran ini mengikuti perjalanan satu frame:
+
+- [Pelajaran 1](/belajar/fondasi-engine/01-frame/): game loop, CPU dan GPU, anggaran 16,7 ms, delta time, dan langkah waktu tetap.
+- [Pelajaran 2](/belajar/fondasi-engine/02-ruang/): koordinat, transform, hierarki, dan matematika gerak.
+- [Pelajaran 3](/belajar/fondasi-engine/03-permukaan/): mesh, material, dan cahaya.
+- [Pelajaran 4](/belajar/fondasi-engine/04-shader/): vertex dan fragment shader.
+- [Pelajaran 5](/belajar/fondasi-engine/05-bayangan-gi/): bayangan dan pencahayaan global.
+- [Pelajaran 6](/belajar/fondasi-engine/06-post-processing/): efek layar penuh dan biayanya.
+- Pelajaran 7, Animasi: dari tween dan easing sampai skeletal animation.
+- Pelajaran 8: mengukur semua hal di atas dan memperbaikinya.
+
+Konsep-konsep ini berlaku di Unity, Unreal, Godot, dan engine lain. Nama menu dan fungsinya berbeda, tetapi pertanyaan yang diajukan sama.
+
+Topik lanjutan yang direncanakan untuk jalur ini adalah physics dan collision, arsitektur engine (ECS dan scene graph), audio, input, dan networking. Sementara itu, kamu bisa:
+
+- Membuka Bab Tambahan [Web & Three.js](/belajar/web-threejs/), yang menerapkan konsep yang sama di browser.
+- Memakai [Kamus](/kamus/) sebagai rujukan saat menemukan istilah yang terlupa.
+- Melihat jalur lain yang sedang disusun, seperti [Desain Game](/belajar/desain-game/) dan [Produksi](/belajar/produksi/).
+
+Jika kamu menemukan kesalahan di pelajaran mana pun, atau punya pengalaman yang bisa menambah isinya, lihat halaman [Kontribusi](/kontribusi/).

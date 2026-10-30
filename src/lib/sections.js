@@ -4,12 +4,12 @@
  * Kunci = nama folder di src/content/docs/.
  */
 export const TRACKS = [
-  { id: 'fondasi-engine', title: 'Fondasi Engine', blurb: 'Rekayasa 3D real-time: game loop, rendering, shader, physics. Contoh untuk Unity, Unreal, dan Godot.', krekit: 'Ini satu-satunya jalur yang sudah ada pelajarannya. Cocok untuk mulai.' },
-  { id: 'lanskap-engine', title: 'Lanskap Engine', blurb: 'Unity, Unreal, Godot, dan lainnya: arsitektur, lisensi, dan kapan memilih yang mana.', krekit: 'Masih kosong. Kalau kamu pernah pindah engine, pengalamanmu dibutuhkan di sini.' },
-  { id: 'desain-game', title: 'Desain Game', blurb: 'Core loop, game feel, level design, dan playtesting.', krekit: 'Masih kerangka. Rencananya membahas core loop, game feel, dan playtest.' },
-  { id: 'produksi', title: 'Produksi', blurb: 'Scoping, vertical slice, milestone, peran tim, dan alat kerja.', krekit: 'Masih kerangka. Banyak game berhenti di tahap ini, bukan karena idenya jelek.' },
-  { id: 'bisnis-indie', title: 'Bisnis Studio Indie', blurb: 'Pendanaan, hitungan pendapatan, marketing, legal, dan platform.', krekit: 'Masih kerangka. Nanti semua angka di jalur ini wajib ada sumbernya.' },
-  { id: 'industri-karier', title: 'Industri & Karier', blurb: 'Peta peran, ekosistem lokal, portofolio, dan studi kasus.', krekit: 'Masih kerangka. Rencananya banyak diisi cerita orang yang bekerja di studio.' },
+  { id: 'fondasi-engine', title: 'Fondasi Engine', blurb: 'Cara engine membangun dunia game: game loop, ruang, material dan cahaya, shader, bayangan, animasi, sampai profiling. Contoh untuk Unity, Unreal, dan Godot.', krekit: 'Ini satu-satunya jalur yang sudah ada pelajarannya. Cocok untuk mulai.' },
+  { id: 'lanskap-engine', title: 'Lanskap Engine', blurb: 'Unity, Unreal, Godot, dan lainnya: arsitektur, lisensi, dan kapan memilih yang mana.', krekit: 'Kalau kamu pernah pindah engine, pengalamanmu dibutuhkan di sini.' },
+  { id: 'desain-game', title: 'Desain Game', blurb: 'Core loop, game feel, level design, dan playtesting.', krekit: 'Bagian game feel nanti nyambung ke easing dan delta time di Fondasi Engine.' },
+  { id: 'produksi', title: 'Produksi', blurb: 'Scoping, vertical slice, milestone, peran tim, dan alat kerja.', krekit: 'Banyak game berhenti di tahap ini karena cakupannya terlalu besar untuk waktu dan timnya.' },
+  { id: 'bisnis-indie', title: 'Bisnis Studio Indie', blurb: 'Pendanaan, hitungan pendapatan, marketing, legal, dan platform.', krekit: 'Nanti semua angka di jalur ini wajib ada sumbernya.' },
+  { id: 'industri-karier', title: 'Industri & Karier', blurb: 'Peta peran, ekosistem lokal, portofolio, dan studi kasus.', krekit: 'Rencananya banyak diisi cerita orang yang bekerja di studio.' },
 ]
 
 /**

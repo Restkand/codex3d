@@ -1,7 +1,7 @@
 ---
 title: "Ruang, Posisi, dan Hierarki"
 description: "Koordinat 3D, transform, radian, hubungan induk-anak, dan matematika gerak."
-fundamental: "Gerakan yang terasa halus jarang terjadi kebetulan. Radian, hierarki, dan lerp menentukan apakah sebuah gerakan terasa hidup atau kaku, dan pemahaman itulah yang membuatmu bisa mengatur rasanya."
+fundamental: "Objek yang berputar liar karena 90 dikira derajat padahal radian, atau anak yang tidak ikut bergeser bersama induknya: bug gerak seperti ini jarang memunculkan error. Pelajaran ini menjelaskan radian, hierarki, dan lerp supaya kamu bisa mengatur gerakan dengan sengaja."
 kind: lesson
 minutes: 25
 status: draf
@@ -206,8 +206,6 @@ Event mouse memberi posisi dalam piksel (`clientX`, `clientY`), dengan (0,0) di 
 <Demo name="ndc" caption={"Gerakkan kursor di dalam kotak dan bandingkan angka piksel dengan NDC."} />
 
 ## Kesalahan umum
-
-Kesalahan berikut sering terjadi, dan banyak di antaranya **tidak memunculkan error**, sehingga lama ditemukan saat debugging.
 
 ### Objek berputar ke sudut yang aneh
 

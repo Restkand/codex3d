@@ -1,7 +1,7 @@
 ---
 title: "Mesh, Material, dan Cahaya"
 description: "Segitiga dan data per titik, normal, material PBR, jenis cahaya, dan cara kerja shadow map di Unity, Unreal, dan Godot."
-fundamental: "Material dan lampu bawaan engine sudah membuat scene tampak lumayan tanpa disetel. Saat model impor tampak hitam di satu sisi, logam terlihat kusam, atau bayangan tidak muncul padahal lampunya menyala, kamu perlu tahu apakah masalahnya ada di normal, di nilai material, atau di pengaturan lampu."
+fundamental: "Model yang diimpor kadang tampak hitam di satu sisi walaupun lampunya terang. Penyebabnya bisa di normal, di material, atau di lampu, dan pelajaran ini membantumu membedakan ketiganya."
 kind: lesson
 minutes: 30
 status: draf
@@ -34,7 +34,7 @@ krekit:
   satu-material-banyak-objek: "Mau mengubah warna satu musuh, malah semua musuh ikut merah. Ini sebabnya."
   jenis-cahaya: "Matahari tidak peduli kamu taruh di mana. Yang dihitung cuma arahnya."
   bayangan-cara-kerja-shadow-map: "Di Godot, bayangan lampu mati secara bawaan. Banyak yang mengira bayangannya rusak."
-  kesalahan-umum: "Hampir semua kesalahan di sini tidak memunculkan error. Scene tetap jalan, hanya tampilannya salah."
+  kesalahan-umum: "Model yang tampak hitam dari arah lampu hampir selalu soal normal yang terbalik."
 sidebar:
   order: 3
   label: "3 · Mesh, Material, dan Cahaya"
@@ -459,8 +459,6 @@ Shadow map punya resolusi terbatas, sama seperti tekstur. Akibatnya bisa muncul 
 Biayanya juga perlu diingat: setiap objek pemberi bayangan digambar lagi di tahap shadow map. Dokumentasi Godot memberi contoh objek besar yang melintasi keempat split bayangan directional: objek itu digambar lima kali per frame. Mematikan cast shadow pada objek kecil yang bayangannya tidak terlihat adalah penghematan yang murah. Bayangan yang dihitung sebelumnya dan cahaya pantulan dibahas di Pelajaran 5.
 
 ## Kesalahan umum
-
-Hampir semua kesalahan berikut tidak memunculkan error. Scene tetap berjalan, hanya tampilannya salah.
 
 ### Model tampak hitam dari arah lampu
 

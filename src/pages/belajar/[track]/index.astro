@@ -8,6 +8,7 @@ import { getCollection, getEntry, render } from 'astro:content'
 import LearnLayout from '../../../layouts/LearnLayout.astro'
 import { TRACKS, EXTRA_TRACKS, ALL_TRACKS } from '../../../lib/sections.js'
 import { withBase } from '../../../lib/inline.js'
+import { SITE } from '../../../site.config.mjs'
 import upcoming from '../../../data/upcoming-lessons.json'
 
 export async function getStaticPaths() {
@@ -99,9 +100,15 @@ const lessonNum = (e) => e.id.match(/\/(\d+)-/)?.[1] ?? ''
   {
     isOutline && (
       <aside class="outline-cta">
-        <strong>Jalur ini belum ada isinya.</strong>
-        <span>Kalau kamu punya pengalaman di bidang ini, tulisanmu bisa menjadi pelajaran pertamanya.</span>
-        <a href={withBase('/kontribusi/')}>Lihat cara berkontribusi →</a>
+        <strong>Jalur ini masih kerangka.</strong>
+        <span>
+          Rencana isinya ada di atas. Kalau kamu pernah mengerjakan salah satu topiknya, ceritakan pengalamanmu: satu artikel pendek pun bisa
+          menjadi pelajaran pertama jalur ini. Belum siap menulis? Usulkan dulu topik yang ingin kamu baca.
+        </span>
+        <span class="outline-cta__links">
+          <a href={`${SITE.repo}/issues/new?template=usulan-artikel.yml`}>Usulkan topik →</a>
+          <a href={withBase('/kontribusi/')}>Lihat cara berkontribusi →</a>
+        </span>
       </aside>
     )
   }

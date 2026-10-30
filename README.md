@@ -2,15 +2,15 @@
 
 Wadah belajar fundamental pembuatan game, dari cara engine menggambar satu frame sampai bisnis studio indie.
 
-Teknologi membuat game makin cepat jadi, tapi rasa yang membuat sebuah game hidup tetap lahir dari pemahaman. Krekit menjelaskan fundamental itu sampai benar-benar dipahami: materinya disusun sebagai jalur belajar, setiap klaim ada sumbernya, dan komunitas bisa ikut mengoreksi. Visi lengkapnya ada di halaman [Tentang](src/content/docs/tentang.mdx).
+Krekit menjelaskan dasar-dasar pembuatan game dalam bahasa Indonesia: materinya disusun sebagai jalur belajar, setiap klaim ada sumbernya, dan komunitas bisa ikut mengoreksi. Visi lengkapnya ada di halaman [Tentang](src/content/docs/tentang.mdx).
 
 > Krekit adalah nama situs sekaligus nama maskotnya: telur yang mengintip dari celah cangkang. Namanya dari bunyi "krek" saat cangkang retak, dan terbaca seperti *crack it*.
 
 ## Isi
 
-- **Jalur Belajar**: enam jalur, yaitu Fondasi Engine, Lanskap Engine, Desain Game, Produksi, Bisnis Studio Indie, serta Industri & Karier. Pelajaran berisi model mental, bedah kode baris demi baris, demo interaktif, kuis, dan latihan.
+- **Jalur Belajar**: enam jalur, yaitu Fondasi Engine, Lanskap Engine, Desain Game, Produksi, Bisnis Studio Indie, serta Industri & Karier. Pelajaran berisi model mental, pseudocode, contoh per engine, demo interaktif, kuis, dan latihan.
 - **Kamus**: 120 istilah teknis dengan analogi, demo, contoh per engine, dan tautan antar-konsep.
-- **Eksperimen 3D**: scene WebGL (Three.js + GSAP) yang menjadi bahan bedah kode di Jalur Fondasi Engine.
+- **Lab 3D**: scene WebGL (Three.js + GSAP) yang dibedah baris demi baris di Bab Tambahan Web & Three.js.
 
 ## Menjalankan di komputer sendiri
 

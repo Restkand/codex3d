@@ -1,7 +1,7 @@
 ---
 title: "Ruang, Transform, dan Hierarki"
 description: "Koordinat 3D di tiap engine, posisi-rotasi-skala, induk dan anak, local vs world, dan matematika untuk menggerakkan objek menuju target."
-fundamental: "Menggerakkan objek ke target terlihat sepele sampai pedang tertinggal dari tangan karakter, kamera berputar liar, atau objek bergeser setelah induknya diputar. Bug seperti ini hampir selalu berasal dari ruang dan hierarki, dan baru bisa diperbaiki kalau kamu tahu sedang bekerja di ruang yang mana."
+fundamental: "Pedang yang tertinggal dari tangan karakter biasanya bukan bug animasi. Posisinya dibaca di ruang yang salah: lokal, padahal yang dibutuhkan dunia, atau sebaliknya. Bug seperti ini baru bisa dilacak kalau kamu tahu sedang bekerja di ruang yang mana."
 kind: lesson
 minutes: 30
 status: draf
@@ -400,8 +400,6 @@ if dot(depan_musuh, arah_ke_pemain) > 0.5:   // kira-kira dalam sudut 60° dari 
 ```
 
 ## Kesalahan umum
-
-Sebagian besar kesalahan berikut tidak memunculkan error. Objek tetap bergerak, hanya posisinya salah.
 
 ### Derajat dimasukkan ke properti radian
 
