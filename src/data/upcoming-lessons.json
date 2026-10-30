@@ -66,6 +66,38 @@
       "subtitle": "Menulis evaluasi proyek yang jujur dan berguna untuk proyek berikutnya."
     }
   ],
+  "bisnis-indie": [
+    {
+      "num": 2,
+      "title": "Pendanaan",
+      "subtitle": "Dana sendiri, publisher, investor, hibah, dan crowdfunding: apa yang didapat dan apa yang diserahkan."
+    },
+    {
+      "num": 3,
+      "title": "Menghitung Pendapatan",
+      "subtitle": "Dari harga jual ke uang yang diterima studio: potongan platform, pajak, refund, dan bagi hasil."
+    },
+    {
+      "num": 4,
+      "title": "Marketing",
+      "subtitle": "Kapan mulai, halaman toko, wishlist, festival, kreator konten, dan komunitas."
+    },
+    {
+      "num": 5,
+      "title": "Platform",
+      "subtitle": "PC, konsol, mobile, dan web: syarat, proses, dan biaya masuk."
+    },
+    {
+      "num": 6,
+      "title": "Legal dan IP",
+      "subtitle": "Badan usaha, kontrak, kepemilikan aset, merek, dan lisensi aset pihak ketiga."
+    },
+    {
+      "num": 7,
+      "title": "Bekerja dengan Publisher dan Mitra",
+      "subtitle": "Membaca term sheet, milestone pembayaran, hak dan kewajiban."
+    }
+  ],
   "industri-karier": [
     {
       "num": 3,

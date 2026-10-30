@@ -1,0 +1,365 @@
+---
+title: "Model Bisnis"
+description: "Premium, free-to-play, langganan dan katalog, work-for-hire, serta model campuran: dari mana uang masuk, apa yang harus dibangun dan dijalankan studio di luar game-nya, bagaimana model itu membentuk desain, dan cara tim kecil memilih."
+fundamental: "Model bisnis menentukan apa yang harus ada di dalam game dan apa yang harus dikerjakan tim setelah rilis. Tim yang baru memilih model di akhir produksi sering mendapati desainnya tidak cocok: game cerita delapan jam tidak punya tempat untuk pembelian dalam game, dan game free-to-play tanpa rencana konten berkala kehilangan pemain sebelum ada yang membayar. Memahami konsekuensi setiap model membantumu memilih saat desain masih murah untuk diubah."
+kind: lesson
+minutes: 30
+status: draf
+lastReviewed: 2026-10-30
+krekit:
+  gambaran-besar: "Saat memilih model bisnis, kamu juga sedang memilih pekerjaan tim untuk bertahun-tahun ke depan."
+  premium: "Pemain premium membayar di depan, jadi kesan pertama harus menjelaskan kenapa harganya layak."
+  free-to-play: "Di free-to-play, rilis menandai awal pekerjaan rutin. Hitung dulu siapa yang akan mengerjakannya setiap bulan."
+  etika-monetisasi: "Tanyakan ini untuk setiap item berbayar: apakah pemain lain ikut senang saat seseorang membelinya?"
+  langganan-dan-katalog: "Di layanan katalog, yang kamu negosiasikan adalah kesepakatannya. Baca baik-baik apa yang boleh dan tidak boleh ada di game."
+  work-for-hire: "Proyek klien membayar gaji. Game milik sendiri tetap perlu jam kerja yang dilindungi."
+  model-campuran: "Konten tambahan yang baik membuat pemain ingin kembali. Konten yang terasa dipotong dari game utama membuat pemain kecewa."
+  ukuran-tim-dan-profil-risiko: "Bandingkan setiap model dengan jumlah orang yang benar-benar kamu punya, jangan dengan tim impian."
+  contoh-satu-ide-game-empat-model: "Angkanya karangan. Perhatikan pekerjaan apa yang muncul di setiap kolom."
+  cara-memilih: "Kalau jawaban timmu untuk pertanyaan-pertanyaan ini berbeda-beda, selesaikan dulu perbedaan itu sebelum memilih model."
+  kesalahan-umum: "Kesalahan model bisnis jarang terlihat di prototipe. Biasanya baru terasa berbulan-bulan setelah rilis."
+sidebar:
+  order: 1
+  label: "1 · Model Bisnis"
+quiz:
+  - q: "Timmu membuat game petualangan cerita sekitar enam jam, tanpa mode online. Di tengah produksi, seseorang mengusulkan mengubahnya menjadi free-to-play. Pertanyaan mana yang paling penting diajukan dulu?"
+    options:
+      - "Apakah ikon game perlu diganti"
+      - "Apa yang akan membuat pemain kembali dan membayar berulang kali, dan siapa yang akan membuat konten serta menjalankan game itu setiap bulan setelah rilis"
+      - "Apakah trailer bisa dibuat lebih pendek"
+      - "Berapa banyak bahasa yang akan didukung"
+    answer: 1
+    explain: "Free-to-play bergantung pada pemain yang bertahan lama dan sebagian kecil yang membayar berulang. Game cerita yang selesai dalam beberapa jam tidak punya tempat alami untuk itu, dan perubahan model menambah pekerjaan rutin setelah rilis: konten, ekonomi, analitik, dukungan pemain. Mickey Blumental menggambarkan game berbayar seperti film dan free-to-play seperti acara TV yang harus membuat penonton terus kembali."
+  - q: "Menurut halaman Steam Refunds, kapan pembeli game di Steam bisa meminta refund dengan alasan apa pun?"
+    options:
+      - "Kapan saja, tanpa batas waktu"
+      - "Dalam dua minggu sejak pembelian dan dengan waktu bermain kurang dari dua jam"
+      - "Hanya jika game rusak"
+      - "Hanya untuk game yang masih Early Access"
+    answer: 1
+    explain: "Valve menyebut refund untuk alasan apa pun selama permintaan diajukan dalam dua minggu sejak pembelian dan game dimainkan kurang dari dua jam. Bagi game premium yang pendek, ini berarti dua jam pertama ikut menentukan apakah penjualan bertahan."
+  - q: "Kamu membuat game mobile free-to-play dengan item yang hasilnya acak dan bisa dibeli dengan uang. Menurut kebijakan Apple App Store dan Google Play, apa yang wajib dilakukan?"
+    options:
+      - "Tidak ada aturan khusus"
+      - "Menampilkan peluang mendapatkan setiap jenis item kepada pemain sebelum pembelian"
+      - "Membatasi item acak hanya untuk pemain di atas usia tertentu di semua negara"
+      - "Menjual item acak lewat situs web sendiri"
+    answer: 1
+    explain: "App Review Guidelines bagian 3.1.1 dan kebijakan Payments Google Play sama-sama mewajibkan pengungkapan peluang untuk loot box atau mekanisme serupa sebelum pembelian. Aturan hukum tentang loot box sendiri berbeda antarnegara, jadi periksa regulasi di pasar yang kamu tuju."
+  - q: "Apa yang paling membedakan work-for-hire dari model lain di pelajaran ini?"
+    options:
+      - "Studio memiliki game yang dibuatnya"
+      - "Klien membayar pengembangan sehingga pendapatan studio tidak bergantung pada laku tidaknya game, tetapi hak atas game biasanya tetap milik klien"
+      - "Studio harus menjalankan server sendiri"
+      - "Pemain membayar langsung ke studio"
+    answer: 1
+    explain: "Work-for-hire mengubah risiko penjualan menjadi risiko mencari klien. Uangnya lebih bisa ditebak, tetapi studio tidak ikut menikmati keberhasilan game kecuali kontraknya mengatur bonus atau royalti. Rinciannya ada di pelajaran Peta Ekosistem."
+  - q: "Dokumentasi Steamworks tentang DLC memberi satu peringatan untuk DLC yang dirilis bersamaan dengan game utama. Apa isinya?"
+    options:
+      - "DLC hari pertama dilarang"
+      - "Pemain bisa menganggap game sebenarnya sudah siap tetapi sebagian kontennya sengaja dipisahkan untuk dijual"
+      - "DLC hari pertama selalu lebih laku"
+      - "DLC hari pertama harus gratis"
+    answer: 1
+    explain: "Steamworks menulis bahwa DLC punya biaya di luar uang, yaitu persepsi pembeli, dan meluncurkan DLC di hari pertama bisa membuat pembeli merasa konten diambil dari game utama demi uang tambahan."
+  - q: "Tim dua orang ingin memilih model bisnis untuk game pertamanya. Langkah mana yang paling masuk akal?"
+    options:
+      - "Mengikuti model yang paling sering dipakai game populer di genre itu"
+      - "Menuliskan apa yang harus dibangun dan dijalankan untuk setiap model, lalu membandingkannya dengan jumlah orang, dana, dan waktu yang benar-benar ada"
+      - "Menunda keputusan sampai game hampir selesai"
+      - "Memilih model yang potensi pendapatannya paling besar"
+    answer: 1
+    explain: "Setiap model punya daftar pekerjaan di luar game-nya sendiri. Tim kecil paling sering tersandung karena memilih model yang pekerjaan rutinnya tidak sanggup dijalankan. Model yang dipilih sejak pra-produksi juga masih bisa ikut membentuk desain."
+sources:
+  - title: "Steam Refunds"
+    url: "https://store.steampowered.com/steam_refunds/"
+    publisher: "Valve, Steam"
+    accessed: 2026-10-30
+  - title: "Demos"
+    url: "https://partner.steamgames.com/doc/store/application/demos"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-30
+  - title: "Steam Next Fest"
+    url: "https://partner.steamgames.com/doc/marketing/upcoming_events/nextfest"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-30
+  - title: "Downloadable Content (DLC)"
+    url: "https://partner.steamgames.com/doc/store/application/dlc"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-30
+  - title: "Season Passes"
+    url: "https://partner.steamgames.com/doc/store/seasonpass"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-30
+  - title: "Microtransactions (In-Game Purchases)"
+    url: "https://partner.steamgames.com/doc/features/microtransactions"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-30
+  - title: "App Review Guidelines"
+    url: "https://developer.apple.com/app-store/review/guidelines/"
+    publisher: "Apple, Apple Developer"
+    accessed: 2026-10-30
+  - title: "Apple Arcade"
+    url: "https://developer.apple.com/apple-arcade/"
+    publisher: "Apple, Apple Developer"
+    accessed: 2026-10-30
+  - title: "Payments"
+    url: "https://support.google.com/googleplay/android-developer/answer/9858738?hl=en"
+    publisher: "Google, Play Console Help (Kebijakan Developer Google Play)"
+    accessed: 2026-10-30
+  - title: "Ads"
+    url: "https://support.google.com/googleplay/android-developer/answer/9857753?hl=en"
+    publisher: "Google, Play Console Help (Kebijakan Developer Google Play)"
+    accessed: 2026-10-30
+  - title: "Ad units, ad formats, and ad types"
+    url: "https://support.google.com/admob/answer/6128738?hl=en"
+    publisher: "Google, AdMob Help"
+    accessed: 2026-10-30
+  - title: "Government response to the call for evidence on loot boxes in video games"
+    url: "https://www.gov.uk/government/consultations/loot-boxes-in-video-games-call-for-evidence/outcome/government-response-to-the-call-for-evidence-on-loot-boxes-in-video-games"
+    publisher: "Department for Digital, Culture, Media and Sport, Pemerintah Inggris (2022)"
+    accessed: 2026-10-30
+  - title: "The Other Reason to Avoid F2P"
+    url: "https://www.gamedeveloper.com/business/the-other-reason-to-avoid-f2p"
+    publisher: "Mickey Blumental, blog di Game Developer (2014)"
+    accessed: 2026-10-30
+  - title: "Is Your Business Model Evil? The Moral Maze of the New Games Business"
+    url: "https://gdcvault.com/play/1020343/Is-Your-Business-Model-Evil"
+    publisher: "Ben Cousins (Scattered Entertainment/DeNA), GDC 2014, GDC Vault"
+    accessed: 2026-10-30
+  - title: "How Free-to-Play Corrupts Games"
+    url: "https://gdcvault.com/play/1017795/How-Free-to-Play-Corrupts"
+    publisher: "Dino Patti (Playdead), GDC 2013, GDC Vault"
+    accessed: 2026-10-30
+  - title: "Meaningful Pay: Monetizing F2P Without \"The Pinch\""
+    url: "https://gdcvault.com/play/1022151/Meaningful-Pay-Monetizing-F2P-Without"
+    publisher: "Scott Rigby (Immersyve), GDC 2015, GDC Vault"
+    accessed: 2026-10-30
+  - title: "Free-to-Play for Indies"
+    url: "https://gdcvault.com/play/1021407/Free-to-Play-for"
+    publisher: "Anthony Pecorella (Kongregate), GDC Europe 2014, GDC Vault"
+    accessed: 2026-10-30
+  - title: "Free to Play vs. Premium: The Good, the Bad and the Ugly"
+    url: "https://gdcvault.com/play/1021988/Free-to-Play-vs-Premium"
+    publisher: "Amy Dallas (ClutchPlay Games), GDC 2015, GDC Vault"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menjelaskan dari mana uang masuk pada model premium, free-to-play, langganan dan katalog, serta work-for-hire.
+- Menyebut pekerjaan yang harus dibangun dan dijalankan studio di luar game-nya untuk setiap model.
+- Menjelaskan bagaimana setiap model membentuk desain game, termasuk risiko desain yang merugikan pemain.
+- Menilai kecocokan setiap model dengan ukuran tim dan profil risiko studio kecil.
+- Menyusun pertanyaan untuk memilih model bagi proyekmu sendiri.
+</Aside>
+
+<Aside type="caution" title="Edukasi, bukan nasihat keuangan atau hukum">
+Pelajaran ini menjelaskan konsep. Kebijakan platform yang dikutip bisa berubah, jadi periksa dokumen resminya saat kamu benar-benar bersiap rilis. Untuk keputusan keuangan, kontrak, dan pajak, konsultasikan dengan profesional yang memahami situasi dan negaramu.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: membuka warung makan">
+Warung yang menjual paket nasi dengan harga tetap, warung prasmanan yang memungut bayaran per lauk, dan katering yang memasak pesanan kantor sama-sama menjual makanan. Dapurnya, jam kerjanya, dan cara menata menunya berbeda. Memilih jenis warung setelah dapur selesai dibangun biasanya berakhir dengan membongkar sebagian dapur.
+</Aside>
+
+**Model bisnis** adalah cara sebuah game menghasilkan uang untuk studio. Pelajaran [Peta Ekosistem](/belajar/industri-karier/02-peta-ekosistem/#empat-pola-kesepakatan) di jalur Industri & Karier sudah membahas pola kesepakatan antara studio dan pihak lain: self-publishing, publisher, work-for-hire, dan langganan. Pelajaran ini melihat dari sisi lain: apa akibat setiap model pada game yang kamu buat dan pada pekerjaan tim.
+
+Setiap model di bawah dibahas dengan pertanyaan yang sama:
+
+| Pertanyaan | Kenapa penting |
+| --- | --- |
+| Dari mana uang masuk? | Menentukan kapan studio dibayar dan siapa yang menanggung risiko penjualan |
+| Apa yang harus dibangun dan dijalankan di luar game? | Server, analitik, integrasi pembayaran, dan konten berkala adalah pekerjaan nyata yang harus masuk jadwal |
+| Bagaimana model membentuk desain? | Struktur progres, panjang game, dan isi toko dalam game ikut berubah |
+| Cocok untuk tim seperti apa? | Tim dua orang punya batas yang berbeda dengan studio lima puluh orang |
+
+Angka seperti potongan platform, ambang pendapatan, dan pajak sengaja tidak dibahas di sini. Topik itu ada di pelajaran Menghitung pendapatan dan Platform di jalur ini, yang masih dalam rencana.
+
+## Premium
+
+**Uang masuk** saat pemain membeli game, satu kali, sebelum bermain. Sebagian besar pendapatan biasanya datang di sekitar rilis dan saat diskon. Setelah itu, pemasukan baru bergantung pada penjualan lanjutan, konten tambahan, atau game berikutnya.
+
+**Yang harus dibangun dan dijalankan** relatif sedikit di luar game-nya: halaman toko, build untuk setiap platform, patch setelah rilis, dan dukungan pemain. Game premium tanpa fitur online bisa tetap berjalan tanpa server milik studio.
+
+**Bentuk desainnya:**
+
+- **Pengalaman yang utuh.** Pemain membayar di depan untuk sesuatu yang lengkap. Game boleh pendek, asalkan jelas apa yang didapat untuk harganya.
+- **Kesan pertama sangat menentukan.** Di Steam, misalnya, pemain bisa meminta refund untuk alasan apa pun dalam dua minggu sejak pembelian, selama game dimainkan kurang dari dua jam. Menurut halaman Steam Refunds, di beberapa negara konsumen juga punya hak tambahan untuk game yang rusak. Akibatnya, jam-jam pertama ikut menentukan apakah penjualan bertahan, terutama untuk game yang pendek.
+- **Demo sebagai alat penjualan.** Dokumentasi Steamworks menyebut demo sebagai bagian kecil game yang bisa dimainkan untuk menunjukkan mekanik inti. Valve umumnya menyarankan merilis demo saat game rilis, tetapi demo sebelum rilis bisa berguna kalau pemain perlu mencoba game-nya dulu untuk memahaminya. Demo yang terlalu panjang bisa membuat pemain merasa sudah melihat semuanya. Di Steam, demo juga dipakai untuk Steam Next Fest, yang menurut dokumentasinya diadakan tiga kali setahun dan tidak mensyaratkan panjang demo tertentu. Demo adalah pekerjaan tambahan: Steamworks memperlakukannya sebagai aplikasi terpisah dengan build dan halaman tokonya sendiri.
+
+Mickey Blumental, dalam tulisan blognya di Game Developer, membandingkan game berbayar dengan film dan game free-to-play dengan acara TV. Pembuat film ingin kamu membeli tiket. Acara TV ingin kamu terus kembali. Menurutnya, game berbayar lebih berfokus pada pengalaman yang selesai dalam beberapa jam, sedangkan game free-to-play harus mencari cara agar pemain kembali secara rutin sebelum bisa menghasilkan uang.
+
+**Risiko:** seluruh pendapatan bergantung pada orang yang mau membayar sebelum mencoba. Kalau rilis sepi, sumber pemasukan lain hampir tidak ada.
+
+## Free-to-play
+
+Pada model **free-to-play** (F2P), game bisa diunduh dan dimainkan gratis. **Uang masuk** dari dua sumber utama:
+
+- **Pembelian dalam game** (*in-app purchase*, IAP): mata uang virtual, item, kosmetik, akses konten, atau *battle pass* (jalur hadiah musiman yang terbuka bertahap selama satu periode, dengan jalur berbayar dan jalur gratis).
+- **Iklan.** AdMob, salah satu jaringan iklan untuk aplikasi, membagi format iklannya antara lain menjadi banner di tepi layar, *interstitial* (iklan layar penuh di jeda alami, misalnya setelah level selesai), dan *rewarded* (pemain memilih menonton iklan untuk mendapat hadiah dalam game). Bantuan AdMob menyebut format rewarded cocok untuk memonetisasi pemain free-to-play.
+
+Biasanya hanya sebagian pemain yang membayar. Karena itu, game F2P membutuhkan banyak pemain yang bertahan lama.
+
+**Yang harus dibangun dan dijalankan** jauh lebih banyak daripada premium:
+
+- **Integrasi pembayaran toko.** Setiap toko punya aturan sendiri. App Review Guidelines Apple (bagian 3.1.1) mewajibkan in-app purchase untuk membuka fitur atau konten, termasuk mata uang dalam game dan level, dengan beberapa pengecualian dan aturan yang berbeda per wilayah. Kebijakan Payments Google Play mewajibkan sistem penagihan Google Play untuk pembelian dalam aplikasi, juga dengan pengecualian dan program khusus di negara tertentu. Steamworks meminta pembelian dalam game memakai API microtransaction Steam sehingga pemain membayar dari Steam Wallet.
+- **Server dan perlindungan dari kecurangan.** Dokumentasi microtransaction Steamworks mengingatkan bahwa apa pun yang bernilai dan bisa dibeli akan menarik penipuan, terutama kalau item bisa diperdagangkan atau diberikan ke pemain lain. Tim harus memeriksa transaksi dan menyesuaikan item saat terjadi refund.
+- **Analitik.** Tim perlu tahu berapa pemain yang kembali, di mana mereka berhenti, dan apa yang mereka beli. Deskripsi sesi GDC Europe 2014 Anthony Pecorella (Kongregate), yang ditujukan untuk developer kecil, menyebut pembahasan tentang metrik apa yang perlu diukur dan jenis monetisasi apa yang efektif.
+- **Live ops dan konten berkala.** Event, musim, item baru, dan penyetelan ekonomi dikerjakan terus setelah rilis. Pemain yang sudah menghabiskan konten tanpa ada yang baru cenderung pergi.
+- **Dukungan pemain** untuk pembelian yang gagal, akun yang hilang, dan permintaan refund.
+
+**Bentuk desainnya:** monetisasi ikut dirancang di dalam progres. Desainer harus memutuskan apa yang gratis, apa yang dijual, dan bagaimana keduanya terasa adil. Ukuran panjang game bergeser ke berapa lama pemain mau kembali. Iklan juga punya aturan desain. Kebijakan Ads Google Play, misalnya, melarang iklan layar penuh yang muncul tiba-tiba saat pemain sedang melakukan hal lain, termasuk di awal level, dan melarang interstitial yang tidak bisa ditutup setelah 15 detik, kecuali yang dipilih sendiri oleh pemain atau yang tidak memotong aksi pemain, misalnya setelah layar skor.
+
+Struktur hadiah, mata uang, dan kurva progres dibahas lebih dalam di pelajaran Ekonomi dan progres di jalur [Desain Game](/belajar/desain-game/), yang masih dalam rencana.
+
+**Risiko:** biaya setelah rilis berjalan setiap bulan, sementara pendapatan baru datang kalau pemain bertahan dan sebagian membayar. Game yang gagal mempertahankan pemain bisa merugi lebih dalam daripada game premium yang sepi, karena server dan tim live ops tetap harus dibayar sampai game dihentikan.
+
+## Etika monetisasi
+
+Model bisnis bisa menekan desain ke arah yang merugikan pemain. Di GDC 2014, menurut deskripsi sesinya, Ben Cousins mencatat bahwa free-to-play membuat industri untuk pertama kalinya membahas etika sebuah model bisnis, lalu menanyakan apakah F2P memang lebih tidak etis daripada model lain dan apakah ada pegangan yang bisa dipakai selama pengembangan. Di GDC 2013, Dino Patti (Playdead) menganalisis beberapa game F2P untuk mencari batas antara model bisnis yang sah dan eksploitasi pemain. Kedua rujukan ini hanya diperiksa dari deskripsi sesinya.
+
+Beberapa pola yang sering dikritik:
+
+- **Penghalang buatan.** Progres sengaja diperlambat atau dibuat menjengkelkan supaya pemain membayar untuk melewatinya. Dokumentasi microtransaction Steamworks menyebut penghalang progres buatan dan mata uang virtual yang mengaburkan harga cenderung membuat pemain menyesali pembeliannya, dan menyarankan agar ekonomi dalam game dipakai untuk membuat produk lebih baik dan pemain lebih senang. Membayar untuk menghilangkan rasa frustrasi, menurut Valve, bukan model bisnis yang berkelanjutan.
+- **Pay-to-win.** Pemain yang membayar lebih banyak mendapat keunggulan atas pemain lain. Steamworks menyarankan menghindari sistem yang membuat game makin buruk bagi pemain lain saat seseorang membayar, dan memberi pegangan sederhana: rancang item sehingga pemain senang saat orang di sebelahnya membeli.
+- **Loot box**, yaitu pembelian yang hasilnya acak. Apple (App Review Guidelines 3.1.1) dan Google Play (kebijakan Payments) mewajibkan peluang mendapatkan setiap jenis item diungkapkan sebelum pembelian. Status hukumnya berbeda antarnegara. Sebagai satu contoh, tanggapan pemerintah Inggris tahun 2022 menyatakan sebagian besar loot box di pasaran tidak memenuhi definisi judi dalam Gambling Act 2005 negara itu, dan pemerintah memilih mendorong langkah perlindungan dari industri sebelum mengubah undang-undang. Negara lain bisa mengambil sikap yang berbeda, jadi periksa aturan di setiap pasar yang kamu tuju.
+- **Desain yang mengaburkan harga atau waktu**, misalnya mata uang berlapis yang membuat pemain sulit tahu berapa uang sungguhan yang dikeluarkan, atau penawaran dengan hitung mundur yang menekan pemain untuk memutuskan cepat.
+
+Ada juga pendekatan yang berangkat dari nilai bagi pemain. Menurut deskripsi sesinya di GDC 2015, Scott Rigby (Immersyve) membahas monetisasi F2P yang menonjolkan nilai yang berarti bagi pemain, sebagai ganti "pinch" (titik ketika pemain sengaja dibuat frustrasi agar membayar). Pelajaran [Core Loop](/belajar/desain-game/01-core-loop/) sudah memberi satu ukuran yang berguna di sini: loop yang kuat tetap menarik saat hadiahnya dikurangi.
+
+## Langganan dan katalog
+
+Ada dua bentuk yang sering tertukar.
+
+**Langganan ke game-mu sendiri.** Pemain membayar berkala untuk terus mendapat akses atau layanan. Untuk aplikasi di App Store, bagian 3.1.2 App Review Guidelines meminta langganan yang diperpanjang otomatis memberi nilai yang berkelanjutan, dan memberi contoh seperti level baru, konten episodik, dan dukungan multiplayer. Artinya, tim harus terus mengirim sesuatu selama pemain membayar. Beban kerjanya mirip live ops di F2P.
+
+**Layanan katalog.** Pemain membayar langganan ke pengelola layanan untuk mengakses banyak game, dan studio dibayar sesuai kesepakatan dengan pengelola layanan. Mekanisme kesepakatannya sudah dibahas di [Peta Ekosistem](/belajar/industri-karier/02-peta-ekosistem/#empat-pola-kesepakatan). Dari sisi desain, layanan katalog bisa membawa syarat sendiri. Halaman Apple Arcade untuk developer, misalnya, menyebut game di layanan itu dimainkan tanpa iklan dan tanpa in-app purchase, dan mengundang developer dengan game yang belum dirilis untuk mengajukan diri. Game seperti ini dirancang lebih mirip game premium, walaupun pemainnya tidak membeli satu per satu.
+
+**Yang harus dibangun dan dijalankan:** pitch dan negosiasi dengan pengelola layanan, pemenuhan syarat teknis dan konten dari kesepakatan, serta update sesuai janji di kontrak.
+
+**Risiko:** kesepakatan tidak bisa direncanakan sebagai pasti. Tim tidak tahu apakah pitch-nya diterima, dan ketentuannya jarang dipublikasikan, sehingga sulit dibandingkan sebelum ada tawaran nyata.
+
+## Work-for-hire
+
+Dalam **work-for-hire**, studio dibayar klien untuk mengerjakan proyek milik klien: game utuh, sebagian pekerjaan, porting, atau aset. **Uang masuk** dari biaya jasa, sering per milestone. Pendapatan tidak bergantung pada laku tidaknya game, dan hak atas game biasanya tetap milik klien. Penjelasan lengkapnya ada di [Peta Ekosistem](/belajar/industri-karier/02-peta-ekosistem/#empat-pola-kesepakatan).
+
+**Yang harus dibangun dan dijalankan:** mencari klien, menyusun penawaran, mengelola kontrak dan milestone, serta berkomunikasi rutin dengan klien. Pekerjaan ini nyata dan sering dikerjakan pendiri studio di luar jam produksi.
+
+**Bentuk desainnya:** keputusan desain ada di tangan klien. Bagi studio, pengaruhnya lebih terasa pada game milik sendiri. Banyak studio kecil memakai proyek klien untuk membayar gaji sambil mengembangkan game sendiri, dan game itu sering melambat karena tenggat klien selalu didahulukan.
+
+**Risiko:** lebih mudah diperkirakan dalam jangka pendek, tetapi studio harus terus mencari proyek baru. Kalau satu klien besar pergi, pemasukan bisa berhenti sekaligus.
+
+## Model campuran
+
+Banyak game memakai lebih dari satu sumber pendapatan. Beberapa kombinasi yang umum:
+
+- **Premium dengan DLC atau ekspansi.** Game dijual seperti biasa, lalu konten tambahan dijual terpisah. Steamworks menyebut DLC punya biaya di luar uang, yaitu persepsi pembeli: DLC yang diluncurkan bersamaan dengan rilis bisa membuat pembeli menganggap game sebenarnya sudah siap tetapi sebagian kontennya sengaja dipisahkan untuk dijual. Kalau DLC dijual sebagai paket konten masa depan (*season pass*), dokumentasi Steamworks menyebutnya janji kepada pembeli dan kepada Steam, lengkap dengan jadwal rilis setiap konten. Valve juga menyatakan hanya menawarkan season pass dalam kasus tertentu untuk mitra dengan rekam jejak yang mapan.
+- **Premium dengan item kosmetik.** Game dijual, lalu kosmetik dijual di dalamnya. Di Steam, pembelian ini memakai sistem microtransaction yang sama seperti game F2P, dengan pekerjaan anti-penipuan yang sama. Dokumentasi DLC Steamworks juga menyebut kosmetik, item habis pakai, dan mata uang lebih cocok memakai microtransaction daripada DLC.
+- **Soundtrack dan merchandise.** Musik game bisa dijual terpisah. Steamworks menangani soundtrack dengan jenis App ID khusus yang berbeda dari DLC. Merchandise fisik mengikuti jalurnya sendiri, di luar toko game.
+- **F2P dengan opsi bayar sekali.** Contohnya versi tanpa iklan yang dibeli sekali. Kebijakan Payments Google Play menyebut versi bebas iklan sebagai contoh konten yang harus memakai sistem penagihan Google Play.
+
+Crowdfunding sering muncul di diskusi yang sama, tetapi crowdfunding adalah cara mendanai pengembangan, tidak sama dengan model pendapatan game. Topik itu ada di pelajaran Pendanaan di jalur ini, yang masih dalam rencana.
+
+Setiap tambahan sumber pendapatan menambah pekerjaan. DLC perlu didesain, dibuat, diuji, dan dipasarkan. Kosmetik perlu sistem toko dan pemeriksaan transaksi. Gabungan model sebaiknya dipilih karena cocok dengan game-nya, tidak hanya karena menambah peluang pemasukan.
+
+## Ukuran tim dan profil risiko
+
+Tabel berikut adalah gambaran umum, tidak berlaku untuk setiap proyek.
+
+| Model | Kapan uang masuk | Pekerjaan rutin setelah rilis | Risiko utama untuk tim kecil |
+| --- | --- | --- | --- |
+| Premium | Terkumpul di sekitar rilis dan diskon | Patch dan dukungan pemain | Satu rilis menentukan banyak hal |
+| Free-to-play | Bertahap, selama pemain bertahan | Konten berkala, ekonomi, server, analitik, anti-penipuan | Biaya bulanan berjalan sebelum pendapatan cukup |
+| Langganan ke game sendiri | Berkala, selama pemain berlangganan | Konten dan layanan terus-menerus | Pemain berhenti berlangganan kalau update melambat |
+| Layanan katalog | Sesuai kesepakatan | Sesuai kontrak | Kesepakatan belum tentu didapat |
+| Work-for-hire | Per milestone | Tergantung kontrak | Bergantung pada klien, game sendiri melambat |
+
+Untuk tim dua sampai lima orang, pertanyaan yang paling menentukan biasanya sederhana: siapa yang akan mengerjakan pekerjaan rutin setelah rilis, dan dari mana gajinya selama itu? Model yang membutuhkan satu orang penuh untuk live ops berarti satu orang lebih sedikit untuk game berikutnya.
+
+Pengalaman developer berbeda-beda. Menurut deskripsi sesinya di GDC 2015, Amy Dallas dan tim ClutchPlay Games pernah bekerja di studio free-to-play besar, lalu memilih model premium saat mendirikan studio indie sendiri. Di GDC Europe 2014, Anthony Pecorella justru membahas cara developer kecil masuk ke F2P. Kedua rujukan ini hanya diperiksa dari deskripsi sesinya. Pilihan yang tepat untuk satu tim belum tentu cocok untuk tim lain.
+
+## Contoh: satu ide game, empat model
+
+<Aside type="caution" title="Ilustrasi, bukan data">
+Tim, game, dan semua angka di bagian ini dikarang untuk menunjukkan cara membandingkan beban kerja. Angka ini tidak berasal dari proyek nyata, tidak memperkirakan pendapatan, dan bukan nasihat keuangan.
+</Aside>
+
+Rina (programmer dan desain) dan Bayu (art dan audio) punya prototipe game puzzle tentang merapikan rak toko kelontong. Mereka punya tabungan untuk sekitar 12 bulan kerja penuh waktu. Sebelum masuk produksi, mereka menulis apa yang dituntut setiap model dari tim dua orang.
+
+| | Premium di PC | F2P di mobile | Layanan katalog | Work-for-hire plus game sendiri |
+| --- | --- | --- | --- | --- |
+| Isi game | 60 puzzle, selesai | 40 puzzle saat rilis, lalu paket baru setiap 4 minggu | 60 puzzle, tanpa iklan dan IAP (kalau syaratnya begitu) | 60 puzzle, dikerjakan di sela proyek klien |
+| Pekerjaan tambahan sebelum rilis | Demo dan halaman toko: sekitar 1 bulan | Toko dalam game, IAP, iklan rewarded, analitik, server sederhana: sekitar 3 bulan | Pitch dan menunggu jawaban: tidak pasti | Mencari klien dan menyusun penawaran |
+| Pekerjaan rutin setelah rilis | Patch beberapa minggu | Sekitar 1 orang hampir penuh waktu untuk konten, event, dan ekonomi | Sesuai kontrak | Proyek klien sekitar 3 hari per minggu |
+| Perubahan desain | Kesulitan naik bertahap sampai tamat | Energi harian atau hint berbayar harus dirancang adil | Seperti premium | Seperti premium, tetapi rilis mundur |
+| Pertanyaan yang muncul | Apakah dua jam pertama cukup kuat? | Siapa membuat game berikutnya kalau satu orang sibuk live ops? | Apa rencana kalau pitch ditolak? | Berapa lama tabungan bertahan kalau rilis mundur 6 bulan? |
+
+Dari tabel ini, Rina dan Bayu melihat bahwa versi F2P menambah sekitar tiga bulan sebelum rilis dan mengikat satu orang setelahnya. Dengan tabungan 12 bulan, itu berarti puzzle yang lebih sedikit dan tidak ada waktu untuk proyek berikutnya. Mereka memutuskan membuat versi premium dengan demo, sambil menyiapkan pitch ke layanan katalog sebagai jalur kedua. Keputusan ini hanya masuk akal untuk angka karangan mereka. Tim lain dengan dana, genre, dan keahlian berbeda bisa sampai ke keputusan yang lain.
+
+## Cara memilih
+
+Tidak ada model yang selalu benar. Pertanyaan berikut membantu tim sampai ke keputusan yang bisa dipertanggungjawabkan:
+
+1. **Game ini dimainkan seperti apa?** Sekali tamat dalam beberapa jam, atau beberapa menit setiap hari selama berbulan-bulan? Bentuk bermain yang sudah terbukti di prototipe biasanya lebih kuat daripada model yang dipaksakan.
+2. **Siapa pemainnya, dan di platform apa?** Kebiasaan membayar dan aturan toko berbeda antarplatform.
+3. **Pekerjaan apa yang muncul di luar game?** Tulis daftar untuk setiap model seperti contoh di atas, termasuk pekerjaan setelah rilis.
+4. **Siapa yang mengerjakannya, dan berapa lama dana bertahan?** Hitung dengan orang yang benar-benar ada.
+5. **Keahlian apa yang sudah dimiliki tim?** Ekonomi F2P, analitik, dan operasi server adalah keahlian tersendiri.
+6. **Apa yang terjadi kalau hasilnya di bawah harapan?** Untuk setiap model, tulis rencana kalau penjualan sepi, pemain tidak bertahan, atau pitch ditolak.
+7. **Apa batas etika tim?** Tuliskan sejak awal item apa yang tidak akan dijual dan pola apa yang tidak akan dipakai, sebelum angka pendapatan mulai menekan.
+8. **Aturan apa yang berlaku?** Baca kebijakan toko dan regulasi di negara tujuan sebelum desain monetisasi dikunci.
+
+Putuskan model sejak pra-produksi, saat desain masih murah untuk diubah, lalu uji asumsinya di vertical slice. Pelajaran [Scope dan Vertical Slice](/belajar/produksi/01-scope-vertical-slice/) membahas cara menghitung ulang scope setelah slice. Pekerjaan tambahan dari model bisnis ikut masuk ke hitungan itu.
+
+## Kesalahan umum
+
+### Memilih model setelah game hampir selesai
+
+Game dirancang tanpa memikirkan model, lalu di akhir produksi tim memutuskan menjadikannya F2P. Toko dalam game, mata uang, dan iklan ditempelkan ke progres yang tidak dirancang untuk itu, sehingga terasa mengganggu. Putuskan model di pra-produksi dan uji di vertical slice.
+
+### Menghitung F2P hanya sampai hari rilis
+
+```text title="✗ Keliru"
+rencana: produksi 9 bulan, rilis, selesai
+```
+
+```text title="✓ Benar"
+rencana: produksi 9 bulan, rilis
+         setelah rilis: paket konten setiap 4 minggu,
+         event, penyetelan ekonomi, server, dukungan pemain
+         siapa yang mengerjakan, dan dari mana gajinya
+```
+
+Pekerjaan F2P yang paling berat sering terjadi setelah rilis. Masukkan ke jadwal dan anggaran sejak awal.
+
+### Monetisasi yang melawan pemain
+
+Penghalang buatan, item yang membuat pembeli menang atas pemain lain, atau harga yang dikaburkan mungkin menaikkan pendapatan jangka pendek, tetapi merusak kepercayaan. Dokumentasi microtransaction Steamworks menyebut pemain cenderung meninggalkan produk seperti itu. Pakai pegangan sederhana: apakah pemain lain ikut senang saat seseorang membeli item ini?
+
+### Konten tambahan yang terasa dipotong dari game utama
+
+DLC yang rilis di hari yang sama, atau season pass tanpa rincian isi dan jadwal, bisa membuat pembeli curiga. Rencanakan konten tambahan sebagai sesuatu yang menambah, dan jelaskan isinya dengan jujur.
+
+### Menganggap kesepakatan katalog atau proyek klien sudah pasti
+
+Rencana keuangan disusun dengan anggapan pitch pasti diterima atau klien pasti memperpanjang kontrak. Siapkan rencana kalau jawabannya tidak, sebelum tabungan dipakai.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan di kertas atau spreadsheet. Pakai ide game-mu sendiri, atau proyek yang sudah kamu mulai.
+
+1. Tulis dalam dua kalimat bagaimana game-mu dimainkan: berapa lama satu sesi, dan berapa lama pemain biasanya akan memainkannya secara keseluruhan.
+2. Buat tabel seperti contoh Rina dan Bayu untuk dua atau tiga model yang paling masuk akal bagi game-mu. Isi kolom pekerjaan tambahan sebelum rilis, pekerjaan rutin setelah rilis, dan perubahan desain. Tandai semua angkamu sebagai perkiraan.
+3. Untuk setiap model di tabelmu, tulis nama orang yang akan mengerjakan pekerjaan rutin setelah rilis. Kalau kolom itu kosong, apa artinya bagi pilihanmu?
+4. Tulis daftar batas etika timmu: tiga hal yang tidak akan kamu jual atau pola yang tidak akan kamu pakai.
+5. Pilih satu platform tujuan. Baca bagian kebijakan pembayaran atau pembelian dalam game di dokumentasi resminya, lalu catat dua aturan yang memengaruhi desainmu, beserta tanggal kamu membacanya.
