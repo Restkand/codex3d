@@ -1,0 +1,448 @@
+---
+title: "Profil Engine Utama"
+description: "Unity, Unreal Engine, Godot, GameMaker, framework dan library web, serta engine buatan sendiri, dibandingkan dengan sembilan kriteria yang sama: bahasa, model scene, editor, 2D dan 3D, platform, akses kode sumber, kecocokan tim, ekosistem, dan contoh game."
+fundamental: "Engine yang dipilih dari daftar fitur atau pendapat orang sering memberi kejutan di tengah produksi: bahasanya tidak dikuasai tim, platform tujuannya ternyata butuh izin dan port terpisah, atau bug di engine tidak bisa diperbaiki karena kode sumbernya tertutup. Kejutan seperti ini bisa dicegah kalau kamu tahu hal apa saja yang membedakan satu engine dengan yang lain, lalu memeriksanya di dokumentasi resmi sebelum proyek dimulai."
+kind: lesson
+minutes: 35
+status: draf
+lastReviewed: 2026-10-30
+terms:
+  - scene
+  - renderer
+  - threejs
+  - webgl
+krekit:
+  gambaran-besar: "Profil ini potret, tidak ada pemenangnya. Ukurannya sama, isinya yang berbeda."
+  sembilan-kriteria: "Kalau kamu menilai engine lain yang tidak ada di sini, pakai sembilan baris yang sama."
+  unity: "Perhatikan versi di alamat dokumentasinya. Isi halaman platform bisa berubah antarversi."
+  unreal-engine: "Untuk Unreal, buka dokumentasi Epic sendiri dan cocokkan dengan versi yang kamu pasang."
+  godot: "Cek dulu bahasa yang kamu pilih bisa diekspor ke platform tujuanmu."
+  gamemaker: "Model objek dan event-nya berbeda dari empat model di Pelajaran 1, jadi baca Quick Start Guide-nya dulu."
+  framework-dan-library-web: "Di web, banyak bagian engine harus kamu pasang sendiri. Hitung juga waktunya."
+  engine-buatan-sendiri: "Semua barisnya berisi 'ditentukan tim'. Artinya, semua barisnya juga jadi pekerjaan tim."
+  tabel-perbandingan: "Tabel ini ringkasan. Detail dan sumbernya ada di profil masing-masing."
+  cara-membaca-tabel: "Mulai dari kebutuhan proyekmu, baru cari kolom yang memenuhinya."
+  kesalahan-umum: "Kesalahan kedua paling mahal karena biasanya baru ketahuan menjelang rilis."
+sidebar:
+  order: 2
+  label: "2 · Profil Engine"
+quiz:
+  - q: "Lisensi apa yang dipakai Godot Engine menurut halaman lisensi resminya?"
+    options:
+      - "GPL"
+      - "MIT"
+      - "Apache 2.0"
+      - "Source available dengan perjanjian khusus"
+    answer: 1
+    explain: "Halaman lisensi Godot menyebut engine ini dirilis dengan lisensi MIT (disebut juga lisensi Expat). Lisensi ini membolehkan kamu memakai, mempelajari, mengubah, dan mendistribusikan engine-nya, asalkan pemberitahuan hak cipta dan lisensinya ikut disertakan."
+  - q: "Kamu membuat proyek Godot 4 dengan C# dan ingin game-nya bisa dimainkan di browser. Menurut dokumentasi Godot, apa masalahnya?"
+    options:
+      - "Tidak ada masalah, semua bahasa bisa diekspor ke semua platform"
+      - "Proyek C# di Godot 4 saat ini belum bisa diekspor ke platform web"
+      - "Godot tidak bisa mengekspor ke web sama sekali"
+      - "C# hanya bisa dipakai untuk game 3D"
+    answer: 1
+    explain: "Halaman daftar fitur dan FAQ Godot menyebut proyek C# di Godot 4 belum bisa diekspor ke web. Ekspor web tetap tersedia untuk proyek GDScript. Ini contoh kenapa bahasa dan platform target perlu dicek bersama."
+  - q: "Menurut manual GameMaker, dengan cara apa saja kamu bisa memprogram game memakai GameMaker Language (GML)?"
+    options:
+      - "Hanya dengan menulis kode"
+      - "Dengan GML Visual (menyusun blok aksi) atau GML Code (menulis kode)"
+      - "Dengan C# atau C++"
+      - "Dengan JavaScript di browser"
+    answer: 1
+    explain: "Manual GameMaker menjelaskan dua cara memakai GML: GML Visual yang menyusun blok aksi, dan GML Code yang ditulis manual. Pilihannya ditanyakan setiap kali kamu membuat event atau script baru."
+  - q: "Kamu ingin membagikan aset berbayar untuk Godot. Apa kata dokumentasi Godot tentang Asset Library resminya?"
+    options:
+      - "Aset berbayar boleh diunggah dengan bagi hasil"
+      - "Aset di Asset Library resmi dibagikan gratis dengan lisensi open source, dan aset berbayar tidak bisa diunggah ke sana"
+      - "Asset Library hanya menerima aset dari Godot Foundation"
+      - "Godot tidak punya Asset Library"
+    answer: 1
+    explain: "Dokumentasi Godot menyebut semua aset di Asset Library resmi gratis dan memakai lisensi open source seperti MIT atau GPL. Aset berbayar tidak bisa diunggah ke sana, tetapi boleh dijual di tempat lain."
+  - q: "Menurut halaman dukungan konsol di situs Godot, bagaimana game Godot bisa dirilis di konsol?"
+    options:
+      - "Godot Foundation menyediakan ekspor konsol resmi untuk semua orang"
+      - "Konsol tidak bisa menjalankan game Godot"
+      - "Pengembang harus disetujui pemilik platform dan memakai SDK resmi, lalu memakai middleware pihak ketiga atau membuat export template sendiri"
+      - "Cukup mengekspor build Linux, lalu menyalinnya ke konsol"
+    answer: 2
+    explain: "Konsol adalah platform tertutup yang butuh izin, SDK, dan perjanjian kerahasiaan. Godot Foundation tidak merawat port konsol resmi. Pengembang yang sudah disetujui pemilik platform memakai middleware dari pihak ketiga atau membangun export template sendiri dengan SDK resmi."
+  - q: "Di antara alat web yang dibahas, mana yang menyebut dirinya library 3D dan membiarkan kamu menulis game loop sendiri?"
+    options:
+      - "Three.js"
+      - "Phaser"
+      - "PlayCanvas"
+      - "GameMaker"
+    answer: 0
+    explain: "README Three.js menyebutnya library 3D JavaScript. Seperti dibahas di Pelajaran 1, game loop-nya kamu tulis sendiri, misalnya dengan requestAnimationFrame. Phaser menyebut dirinya framework, dan PlayCanvas menyebut dirinya engine."
+sources:
+  - title: "Frequently asked questions (Godot 4.7)"
+    url: "https://docs.godotengine.org/en/stable/about/faq.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "List of features"
+    url: "https://docs.godotengine.org/en/stable/about/list_of_features.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "About the Asset Library"
+    url: "https://docs.godotengine.org/en/stable/community/asset_library/what_is_assetlib.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "License"
+    url: "https://godotengine.org/license/"
+    publisher: "Godot Engine"
+    accessed: 2026-10-30
+  - title: "Console support in Godot"
+    url: "https://godotengine.org/consoles/"
+    publisher: "Godot Engine"
+    accessed: 2026-10-30
+  - title: "Showcase"
+    url: "https://godotengine.org/showcase/"
+    publisher: "Godot Engine"
+    accessed: 2026-10-30
+  - title: "Platform development (Unity 6.0 User Manual)"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/platform-specific"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Gameplay programming (Unity 6.0 User Manual)"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/scripting"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "2D game development (Unity 6.0 User Manual)"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "About Visual Scripting (1.9)"
+    url: "https://docs.unity3d.com/Packages/com.unity.visualscripting@1.9/manual/index.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Unity Source Code"
+    url: "https://unity.com/products/source-code"
+    publisher: "Unity"
+    accessed: 2026-10-30
+  - title: "Unity Asset Store"
+    url: "https://assetstore.unity.com/"
+    publisher: "Unity"
+    accessed: 2026-10-30
+  - title: "GameMaker"
+    url: "https://gamemaker.io/en"
+    publisher: "GameMaker (Opera Norway AS)"
+    accessed: 2026-10-30
+  - title: "Get GameMaker (daftar paket dan fitur ekspor)"
+    url: "https://gamemaker.io/en/get"
+    publisher: "GameMaker (Opera Norway AS)"
+    accessed: 2026-10-30
+  - title: "GameMaker Manual"
+    url: "https://manual.gamemaker.io/monthly/en/"
+    publisher: "YoYo Games"
+    accessed: 2026-10-30
+  - title: "GameMaker Language"
+    url: "https://manual.gamemaker.io/monthly/en/GameMaker_Language.htm"
+    publisher: "YoYo Games"
+    accessed: 2026-10-30
+  - title: "Quick Start Guide"
+    url: "https://manual.gamemaker.io/monthly/en/Quick_Start_Guide/Quick_Start_Guide.htm"
+    publisher: "YoYo Games"
+    accessed: 2026-10-30
+  - title: "Primitives And Vertex Formats"
+    url: "https://manual.gamemaker.io/monthly/en/GameMaker_Language/GML_Reference/Drawing/Primitives/Primitives_And_Vertex_Formats.htm"
+    publisher: "YoYo Games"
+    accessed: 2026-10-30
+  - title: "GameMaker Marketplace"
+    url: "https://marketplace.gamemaker.io/"
+    publisher: "GameMaker"
+    accessed: 2026-10-30
+  - title: "GameMaker Release Notes"
+    url: "https://releases.gamemaker.io/"
+    publisher: "GameMaker"
+    accessed: 2026-10-30
+  - title: "three.js README (r187)"
+    url: "https://github.com/mrdoob/three.js/blob/dev/README.md"
+    publisher: "three.js"
+    accessed: 2026-10-30
+  - title: "three.js LICENSE"
+    url: "https://github.com/mrdoob/three.js/blob/dev/LICENSE"
+    publisher: "three.js"
+    accessed: 2026-10-30
+  - title: "three.js"
+    url: "https://threejs.org/"
+    publisher: "three.js"
+    accessed: 2026-10-30
+  - title: "Phaser README (4.2.1)"
+    url: "https://github.com/phaserjs/phaser/blob/master/README.md"
+    publisher: "Phaser Studio Inc"
+    accessed: 2026-10-30
+  - title: "Phaser LICENSE"
+    url: "https://github.com/phaserjs/phaser/blob/master/LICENSE.md"
+    publisher: "Phaser Studio Inc"
+    accessed: 2026-10-30
+  - title: "PlayCanvas Engine README"
+    url: "https://github.com/playcanvas/engine/blob/main/README.md"
+    publisher: "PlayCanvas"
+    accessed: 2026-10-30
+  - title: "PlayCanvas Engine LICENSE"
+    url: "https://github.com/playcanvas/engine/blob/main/LICENSE"
+    publisher: "PlayCanvas"
+    accessed: 2026-10-30
+  - title: "PlayCanvas Editor README"
+    url: "https://github.com/playcanvas/editor/blob/main/README.md"
+    publisher: "PlayCanvas"
+    accessed: 2026-10-30
+  - title: "Babylon.js README"
+    url: "https://github.com/BabylonJS/Babylon.js/blob/master/readme.md"
+    publisher: "Babylon.js"
+    accessed: 2026-10-30
+  - title: "Babylon.js license"
+    url: "https://github.com/BabylonJS/Babylon.js/blob/master/license.md"
+    publisher: "Babylon.js"
+    accessed: 2026-10-30
+  - title: "Babylon.js (9.0)"
+    url: "https://www.babylonjs.com/"
+    publisher: "Babylon.js"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menyebut sembilan kriteria untuk membandingkan engine, dan alasan setiap kriteria penting.
+- Membaca profil Unity, Unreal Engine, Godot, GameMaker, framework dan library web, serta engine buatan sendiri dengan kriteria yang sama.
+- Membedakan engine open source, engine dengan kode sumber yang bisa diakses lewat perjanjian, dan engine dengan kode sumber tertutup.
+- Mencari fakta engine di dokumentasi resminya dan mencatat versinya.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: lembar spesifikasi kendaraan">
+Mobil keluarga, truk, dan sepeda motor bisa ditulis di lembar spesifikasi yang sama: kapasitas, bahan bakar, jarak tempuh, dan perawatan. Dengan lembar itu kamu mencocokkan kendaraan dengan kebutuhanmu, misalnya mengangkut lima orang atau dua ton barang.
+</Aside>
+
+Pelajaran ini berisi lembar spesifikasi untuk engine yang paling sering kamu temui. Setiap profil memakai sembilan kriteria yang sama, dengan urutan yang sama, supaya bisa dibandingkan baris demi baris. Komponen engine dan empat model scene sudah dibahas di [Pelajaran 1](/belajar/lanskap-engine/01-apa-itu-engine/), jadi di sini cukup ditautkan.
+
+Dua hal sengaja tidak dibahas. Harga, royalti, dan ambang pendapatan dibahas di Pelajaran 3 tentang lisensi dan model biaya, dengan sumber yang diperiksa ketat. Cara menimbang kriteria untuk proyekmu dibahas di Pelajaran 4, Kriteria memilih engine.
+
+Fakta di sini diambil dari dokumentasi dan situs resmi setiap engine pada 30 Oktober 2026: dokumentasi Godot versi stabil 4.7, manual Unity 6.0 (6000.0 LTS), manual GameMaker cabang monthly dengan rilis LTS 2026, Three.js r187, Phaser 4.2.1, dan Babylon.js 9.0. Engine berubah cepat, jadi cocokkan dengan versi yang kamu pakai.
+
+## Sembilan kriteria
+
+| Kriteria | Pertanyaan yang dijawab |
+| --- | --- |
+| **Bahasa scripting** | Dalam bahasa apa kodemu ditulis? Ada pilihan visual tanpa kode? |
+| **Model scene** | Bagaimana isi dunia game disusun? Lihat [empat model di Pelajaran 1](/belajar/lanskap-engine/01-apa-itu-engine/#cara-engine-menyusun-isi-dunia). |
+| **Editor dan alur kerja** | Alat apa yang dipakai sehari-hari untuk menyusun scene, menulis kode, dan menguji? |
+| **2D dan 3D** | Apakah alat dan fiturnya ditujukan untuk 2D, 3D, atau keduanya? |
+| **Platform target** | Ke platform apa game bisa dibuat build-nya, menurut halaman resmi? |
+| **Akses kode sumber** | Open source (dengan nama lisensinya), bisa diakses lewat perjanjian, atau tertutup? |
+| **Cocok untuk tim yang** | Kebutuhan tim seperti apa yang dilayani dengan baik oleh engine ini? |
+| **Ekosistem** | Toko aset, plugin, dan dokumentasi apa yang tersedia? |
+| **Dipakai untuk** | Contoh game, hanya jika halaman resmi engine atau pengembangnya menyebutnya. Kalau tidak ada, baris ini dibiarkan kosong. |
+
+Untuk platform, ada satu ketentuan yang berlaku umum. Konsol seperti PlayStation, Xbox, dan Nintendo Switch adalah platform tertutup. Untuk merilis game di sana, studio biasanya harus terdaftar dan disetujui pemilik platform, lalu mendapat akses ke SDK dan perangkat pengembangan, apa pun engine-nya. Jadi kalau sebuah engine bisa membuat build konsol, itu belum berarti timmu otomatis boleh merilis di sana.
+
+## Unity
+
+Unity adalah engine dari Unity Technologies yang dipakai untuk game 2D dan 3D. Logika game ditulis dengan C# sebagai komponen pada GameObject.
+
+| Kriteria | Unity |
+| --- | --- |
+| Bahasa scripting | C#. Paket **Visual Scripting** menyediakan graf berbasis node untuk menyusun logika tanpa menulis kode C#, dan punya API untuk membuat node sendiri. |
+| Model scene | [GameObject dan komponen](/belajar/lanskap-engine/01-apa-itu-engine/#gameobject-dan-komponen). Paket Entities menyediakan [ECS](/belajar/lanskap-engine/01-apa-itu-engine/#ecs-entitas-komponen-sistem) di samping GameObject. |
+| Editor dan alur kerja | Unity Editor dengan jendela Scene, Hierarchy, dan Inspector. Game diuji di Play mode, lalu build dibuat per platform lewat Build Profiles ([Pelajaran 1](/belajar/lanskap-engine/01-apa-itu-engine/#runtime-dan-editor-apa-yang-ikut-ke-build)). |
+| 2D dan 3D | Keduanya. Manual punya bagian khusus 2D (sprite, Tilemap, physics 2D), dan sebagian besar dokumentasi berlaku untuk keduanya. |
+| Platform target | Manual Unity 6.0 mendaftar Android, iOS, Windows, macOS, Linux, Web, tvOS, Universal Windows Platform, visionOS, Dedicated Server, sistem embedded (Embedded Linux dan QNX), serta XR. Platform tertutup seperti konsol tersedia bagi pengembang yang punya akses dari pemilik platform. |
+| Akses kode sumber | Tertutup untuk umum. Unity menawarkan **Source Code Access**, yang termasuk dalam paket Unity Enterprise, dan **Source Code Adapt** untuk merilis game dengan kode engine yang sudah diubah. |
+| Cocok untuk tim yang | Ingin memakai C#, mengerjakan 2D dan 3D di alat yang sama, menargetkan banyak platform termasuk mobile dan XR, dan mau memakai aset atau alat siap pakai dari toko aset. |
+| Ekosistem | Unity Asset Store (aset 3D, 2D, audio, dan alat editor), paket resmi lewat Package Manager, serta manual dan Script Reference yang dipisah per versi. |
+| Dipakai untuk | *V Rising* (Stunlock Studios), disebut di halaman Unity Source Code sebagai contoh studio yang memakai DOTS dan akses kode sumber. |
+
+Dokumentasi Unity dipisah per versi, dan alamatnya memuat nomor versi seperti `6000.0`. Daftar platform di atas diambil dari manual 6.0. Versi lain bisa punya daftar yang berbeda.
+
+## Unreal Engine
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-30): Unreal Engine buatan Epic Games; bahasa C++ dan Blueprint (pemrograman visual); model Actor dan komponen; editor Unreal dengan Level Editor, Outliner, dan panel Details; dukungan 2D lewat plugin Paper2D, alat dan contoh utamanya 3D; platform Windows, macOS, Linux, iOS, Android, serta konsol bagi pengembang yang disetujui; kode sumber bisa diakses di GitHub setelah akun Epic dihubungkan dengan akun GitHub dan EULA disetujui (source available, bukan open source); toko aset Fab. */}
+
+Unreal Engine adalah engine dari Epic Games. Logika game ditulis dengan C++ atau Blueprint, dan dunia game disusun dari Actor beserta komponennya.
+
+| Kriteria | Unreal Engine |
+| --- | --- |
+| Bahasa scripting | C++, dan Blueprint sebagai sistem pemrograman visual. |
+| Model scene | [Actor dan komponen](/belajar/lanskap-engine/01-apa-itu-engine/#actor-dan-komponen). |
+| Editor dan alur kerja | Unreal Editor dengan panel Outliner dan Details. Game diuji di editor, lalu dipaketkan per platform ([Pelajaran 1](/belajar/lanskap-engine/01-apa-itu-engine/#runtime-dan-editor-apa-yang-ikut-ke-build)). |
+| 2D dan 3D | Alat dan fiturnya terutama untuk 3D. Ada plugin Paper2D untuk game 2D berbasis sprite. |
+| Platform target | Windows, macOS, Linux, iOS, dan Android. Konsol tersedia bagi pengembang yang disetujui pemilik platform. |
+| Akses kode sumber | Source available: kode sumbernya bisa dibaca dan diubah setelah kamu menyetujui perjanjian lisensinya (EULA), tetapi lisensinya bukan lisensi open source. |
+| Cocok untuk tim yang | Mengerjakan game 3D, menguasai C++ atau mau memakai Blueprint, dan butuh kemungkinan membaca atau mengubah kode engine. |
+| Ekosistem | Toko aset Fab, plugin, dan dokumentasi resmi Epic. |
+| Dipakai untuk | |
+
+Untuk Unreal, cocokkan setiap baris dengan dokumentasi Epic untuk versi yang kamu pakai. Nama panel dan cara membuat build bisa berubah antarversi.
+
+## Godot
+
+Godot adalah engine open source yang dikembangkan komunitas dan dinaungi Godot Foundation. Dunia game disusun sebagai pohon node, dan logika ditulis dengan GDScript, C#, atau C++.
+
+| Kriteria | Godot |
+| --- | --- |
+| Bahasa scripting | GDScript, C#, dan C++ adalah bahasa yang didukung resmi. Bahasa lain bisa ditambahkan pihak ketiga lewat GDExtension. Proyek C# di Godot 4 belum bisa diekspor ke web. |
+| Model scene | [Pohon node](/belajar/lanskap-engine/01-apa-itu-engine/#pohon-node), dengan scene yang bisa dipasang di scene lain. |
+| Editor dan alur kerja | Editor dengan Scene dock, editor skrip bawaan (editor luar seperti Visual Studio Code juga didukung), debugger, profiler, dan pengeditan scene saat game berjalan. Skrip `@tool` bisa berjalan di editor. Editor berjalan di Windows, macOS, dan Linux; versi Android dan web masih eksperimental. |
+| 2D dan 3D | Keduanya. Fitur 2D punya node dan alat sendiri (misalnya cahaya dan bayangan 2D). Untuk 3D ada tiga [renderer](/kamus/dasar/renderer/): Forward+, Mobile, dan Compatibility. |
+| Platform target | Windows, macOS, Linux, *BSD, Android, iOS, dan Web. Godot Foundation tidak merawat port konsol resmi. Pengembang yang disetujui pemilik platform memakai middleware dari pihak ketiga atau membangun export template sendiri dengan SDK resmi. |
+| Akses kode sumber | Open source, lisensi MIT. |
+| Cocok untuk tim yang | Ingin bisa membaca dan mengubah kode engine tanpa perjanjian tambahan, mengerjakan 2D atau 3D, dan, jika menargetkan konsol, siap bekerja dengan penyedia port pihak ketiga. |
+| Ekosistem | Asset Library resmi, yang bisa dibuka dari dalam editor. Semua asetnya gratis dengan lisensi open source; aset berbayar dijual di luar Asset Library. Dokumentasi resmi dengan Manual dan Class reference. |
+| Dipakai untuk | *Brotato* (Blobfish) dan *Dome Keeper* (Bippinbits), tercantum di halaman Showcase situs Godot. |
+
+Lisensi MIT juga punya akibat praktis: game yang dirilis wajib menyertakan pemberitahuan hak cipta dan teks lisensi Godot. Dokumentasi Godot punya halaman khusus tentang cara memenuhinya.
+
+## GameMaker
+
+GameMaker adalah engine untuk game 2D dari YoYo Games, yang kini menjadi bagian dari Opera. Logika ditulis dengan GameMaker Language (GML), bahasa milik GameMaker sendiri.
+
+| Kriteria | GameMaker |
+| --- | --- |
+| Bahasa scripting | GML, dalam dua bentuk: **GML Visual** yang menyusun blok aksi, dan **GML Code** yang ditulis manual. |
+| Model scene | Sprite, object, dan room. Object memberi respons terhadap event (misalnya setiap Step, yaitu satu frame), lalu instance dari object itu ditaruh di room. Model ini dekat dengan [GameObject dan komponen](/belajar/lanskap-engine/01-apa-itu-engine/#gameobject-dan-komponen) dalam hal satu objek memegang data dan logikanya, tetapi kemampuannya datang dari event, tanpa komponen yang dipasang. |
+| Editor dan alur kerja | Satu IDE berisi Asset Browser dan editor untuk setiap jenis aset: sprite, object, room, tileset, dan lainnya. |
+| 2D dan 3D | Ditujukan untuk 2D. Manual juga menyediakan fungsi primitive dan vertex buffer yang bisa dipakai untuk menggambar 3D lewat kode. |
+| Platform target | Situs GameMaker menyebut Windows, Mac, Linux, Android, iOS, HTML5, Xbox Series X\|S, PlayStation 5, dan Nintendo Switch, serta GX.games. Ekspor konsol hanya tersedia di paket tertentu, dan tetap butuh persetujuan pemilik platform. |
+| Akses kode sumber | Tertutup untuk umum. Halaman paket GameMaker mencantumkan akses kode sumber di paket Enterprise. |
+| Cocok untuk tim yang | Fokus pada game 2D, ingin satu alat terpadu dari gambar sampai build, dan punya anggota yang lebih nyaman mulai dari blok visual sebelum menulis kode. |
+| Ekosistem | GameMaker Marketplace (aset, ekstensi, shader, template proyek, tutorial), manual resmi, dan Asset Bundles. |
+| Dipakai untuk | *UNDERTALE* dan *Hyper Light Drifter*, disebut di halaman depan gamemaker.io. |
+
+GameMaker punya dua jalur rilis: LTS yang jarang diperbarui dan hanya mendapat perbaikan bug penting, serta Beta yang diperbarui sering. Manual yang dikutip di sini adalah cabang monthly, jadi cek apakah fitur yang kamu baca sudah ada di jalur yang kamu pasang.
+
+## Framework dan library web
+
+Untuk game yang berjalan di browser, banyak tim memakai library atau framework JavaScript. Seperti dibahas di [Pelajaran 1](/belajar/lanskap-engine/01-apa-itu-engine/#library-framework-dan-engine), alat-alat ini berbeda dalam hal siapa yang memegang game loop dan alat apa yang ikut disediakan. Empat contoh berikut sering dipakai dan masing-masing menyebut dirinya dengan istilah berbeda.
+
+| Kriteria | Three.js | Phaser | PlayCanvas | Babylon.js |
+| --- | --- | --- | --- | --- |
+| Menyebut dirinya | Library 3D JavaScript | Framework game HTML5 | Engine game open source | Engine rendering web |
+| Bahasa scripting | JavaScript | JavaScript atau TypeScript | JavaScript atau TypeScript | JavaScript atau TypeScript |
+| Model scene | Scene graph: objek ditambahkan ke `Scene` dan bisa punya anak | Scene berisi Game Object | Entity dengan komponen yang dipasang (`addComponent`) | Scene berisi mesh, kamera, dan cahaya |
+| Editor dan alur kerja | Kode; ada editor daring di threejs.org | Kode, dengan template proyek dari `create-phaser-game` | Kode, atau PlayCanvas Editor berbasis browser | Kode, dengan Playground, Sandbox, dan Node Material Editor daring |
+| 2D dan 3D | 3D, dengan renderer [WebGL](/kamus/web/webgl/) dan WebGPU | 2D, dengan rendering WebGL dan Canvas | 2D dan 3D, di atas WebGL2 dan WebGPU | 3D |
+| Platform target | Browser | Browser; README menyebut iOS, Android, Steam, dan aplikasi native lewat alat pihak ketiga | Browser | Browser; Babylon Native untuk aplikasi native |
+| Akses kode sumber | Open source, MIT | Open source, MIT | Open source, MIT (engine dan editor) | Open source, Apache 2.0 |
+| Ekosistem | Paket npm, contoh, forum, Discord | Paket npm, lebih dari 2.000 contoh kode, forum, Discord | Paket npm, paket React dan Web Components, forum | Paket npm, Playground, forum |
+
+Satu profil untuk keempatnya, dengan baris kecocokan tim dan contoh game:
+
+- **Cocok untuk tim yang** butuh game bisa dimainkan langsung di browser tanpa instalasi, menguasai JavaScript atau TypeScript beserta alat seperti npm dan Vite, dan siap menyusun sendiri bagian yang tidak disediakan, seperti editor level atau pipeline aset.
+- **Dipakai untuk:** tidak dicantumkan. README resmi keempatnya menautkan demo dan galeri proyek, tetapi tidak menyebut judul game tertentu yang bisa dijadikan contoh di sini.
+
+[Three.js](/kamus/web/threejs/) dipakai di Bab Tambahan [Web & Three.js](/belajar/web-threejs/01-frame/), jadi kamu bisa melihat langsung seperti apa bekerja dengan library yang tidak memegang game loop.
+
+## Engine buatan sendiri
+
+Engine buatan sendiri dibahas lengkap di [Pelajaran 1](/belajar/lanskap-engine/01-apa-itu-engine/#engine-buatan-sendiri). Dengan sembilan kriteria tadi, profilnya singkat: hampir semua baris diisi oleh keputusan tim.
+
+| Kriteria | Engine buatan sendiri |
+| --- | --- |
+| Bahasa scripting | Ditentukan tim. Sering C atau C++ untuk runtime, kadang dengan bahasa scripting yang disematkan, misalnya Lua. |
+| Model scene | Ditentukan tim, bisa salah satu dari empat model di Pelajaran 1 atau campurannya. |
+| Editor dan alur kerja | Harus dibuat sendiri, atau memakai alat luar seperti editor level pihak ketiga. |
+| 2D dan 3D | Sesuai kebutuhan game-nya. |
+| Platform target | Setiap platform harus diporting sendiri. Konsol tetap butuh persetujuan pemilik platform. |
+| Akses kode sumber | Milik studio. Library yang dipakai di dalamnya tetap mengikuti lisensinya masing-masing. |
+| Cocok untuk tim yang | Punya kebutuhan teknis yang tidak terpenuhi engine yang ada, dan bisa membiayai pembuatan serta perawatan alatnya dalam jangka panjang. |
+| Ekosistem | Dibangun dan didokumentasikan sendiri. |
+| Dipakai untuk | |
+
+## Tabel perbandingan
+
+Tabel ini meringkas profil di atas. Isinya sengaja pendek; baca profil masing-masing untuk detail dan catatan versinya.
+
+| Kriteria | Unity | Unreal Engine | Godot | GameMaker | Framework web | Buatan sendiri |
+| --- | --- | --- | --- | --- | --- | --- |
+| Bahasa | C#, Visual Scripting | C++, Blueprint | GDScript, C#, C++ | GML Code, GML Visual | JavaScript, TypeScript | Ditentukan tim |
+| Model scene | GameObject dan komponen (ECS opsional) | Actor dan komponen | Pohon node | Object, event, room | Beragam per library | Ditentukan tim |
+| Editor | Unity Editor | Unreal Editor | Editor Godot | IDE GameMaker | Kode; sebagian punya editor web | Dibuat sendiri |
+| 2D dan 3D | Keduanya | Terutama 3D | Keduanya | 2D | Tergantung library | Sesuai kebutuhan |
+| Platform | Desktop, mobile, web, XR; konsol lewat akses pemilik platform | Desktop, mobile; konsol lewat persetujuan | Desktop, mobile, web; konsol lewat pihak ketiga | Desktop, mobile, web, konsol di paket tertentu | Browser | Diporting sendiri |
+| Kode sumber | Tertutup; akses lewat paket tertentu | Source available dengan EULA | Open source, MIT | Tertutup; akses di paket Enterprise | Open source (MIT, Apache 2.0) | Milik studio |
+| Ekosistem | Asset Store, Package Manager | Fab, plugin | Asset Library (gratis, open source) | Marketplace | npm, contoh, forum | Dibuat sendiri |
+
+## Cara membaca tabel
+
+Tabel ini tidak punya kolom pemenang. Setiap sel menjawab pertanyaan tentang fakta, dan fakta itu baru berarti setelah dicocokkan dengan proyekmu. Urutan berikut membantu:
+
+1. **Tulis dulu syarat yang tidak bisa ditawar.** Misalnya "harus bisa dimainkan di browser" atau "harus rilis di konsol". Syarat seperti ini langsung mencoret beberapa kolom.
+2. **Periksa kombinasi baris, tidak hanya satu baris.** Godot mendukung C# dan mendukung web, tetapi proyek C# di Godot 4 belum bisa diekspor ke web. Kesimpulan yang benar baru muncul saat dua baris dibaca bersama.
+3. **Bedakan "bisa" dan "disediakan".** GameMaker bisa menggambar 3D lewat kode, tetapi editornya ditujukan untuk 2D. Three.js bisa dipakai untuk game, tetapi editor level dan pipeline aset harus kamu siapkan sendiri.
+4. **Baca sumbernya untuk versi yang kamu pakai.** Sel di tabel ini adalah ringkasan per 30 Oktober 2026. Setiap profil menyebut versi dokumentasi yang dibaca.
+5. **Lisensi dan biaya punya pelajaran sendiri.** Baris kode sumber hanya menjelaskan siapa yang boleh membaca dan mengubah engine. Ketentuan biaya dibahas di Pelajaran 3.
+
+Cara menimbang kriteria-kriteria ini terhadap genre, ukuran tim, dan keahlian anggotanya dibahas di Pelajaran 4, Kriteria memilih engine.
+
+## Kesalahan umum
+
+### Menyamakan "bisa dibuka kodenya" dengan "open source"
+
+```text title="✗ Keliru"
+kode engine bisa dibaca  →  engine ini open source  →  boleh diubah dan dibagikan bebas
+```
+
+```text title="✓ Benar"
+kode engine bisa dibaca  →  cek nama lisensinya
+    MIT, Apache 2.0, dan sejenisnya  →  open source, ikuti syarat lisensinya
+    perjanjian atau EULA khusus       →  source available, ikuti isi perjanjiannya
+```
+
+Engine yang kodenya bisa diakses lewat perjanjian punya aturan sendiri tentang siapa yang boleh melihat, mengubah, dan membagikan kodenya. Nama lisensinya yang menentukan.
+
+### Mengira dukungan platform di daftar fitur berarti siap rilis
+
+```text title="✗ Keliru"
+daftar platform engine menyebut konsol  →  tinggal klik build di akhir proyek
+```
+
+```text title="✓ Benar"
+awal proyek:  daftar sebagai pengembang di pemilik platform, cek syarat ekspor engine
+selama produksi:  uji di perangkat pengembangan, bukan hanya di PC
+```
+
+Konsol butuh persetujuan, SDK, dan perangkat khusus. Di sebagian engine, ekspor konsol juga lewat pihak ketiga atau paket tertentu. Semua itu makan waktu, jadi perlu diurus jauh sebelum rilis.
+
+### Membandingkan engine dengan ukuran yang berbeda-beda
+
+```text title="✗ Keliru"
+Engine A: "grafisnya bagus"
+Engine B: "mudah dipelajari"
+Engine C: "gratis"
+```
+
+```text title="✓ Benar"
+Engine A, B, C: bahasa, model scene, editor, 2D/3D, platform, kode sumber, tim, ekosistem, contoh
+```
+
+Kesan dari ulasan atau video biasanya menyorot hal yang berbeda untuk setiap engine, jadi tidak bisa dibandingkan. Isi sembilan baris yang sama untuk setiap pilihan, dari sumber resmi.
+
+### Membaca dokumentasi versi lain
+
+```text title="✗ Keliru"
+engine terpasang: versi lama
+dokumentasi dibuka: versi terbaru, fiturnya dikira tersedia
+```
+
+```text title="✓ Benar"
+cek nomor versi di alamat atau pemilih versi dokumentasi, samakan dengan versi engine-mu
+```
+
+Daftar platform, bahasa, dan fitur berubah antarversi. Contohnya di pelajaran ini: dukungan C# untuk web berbeda antara Godot 3 dan Godot 4.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+1. Pilih satu engine yang tidak dibahas di sini (misalnya Defold, Bevy, atau MonoGame). Isi sembilan kriteria untuknya hanya dari situs dan dokumentasi resminya. Catat alamat dan versi setiap sumber. Baris mana yang paling sulit diisi?
+2. Ambil engine yang biasa kamu pakai. Periksa ulang baris platform target di profilnya terhadap dokumentasi untuk versi yang terpasang di komputermu. Apa yang berbeda?
+3. Tulis tiga syarat yang tidak bisa ditawar untuk game impianmu. Coret kolom tabel perbandingan yang tidak memenuhinya, lalu tulis alasan setiap coretan dengan menyebut baris dan sumbernya.
+4. Cari teks lisensi lengkap dua engine dengan model kode sumber yang berbeda. Tulis dalam satu paragraf apa yang boleh dan tidak boleh kamu lakukan dengan kode engine-nya menurut masing-masing teks.

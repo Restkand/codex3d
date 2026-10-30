@@ -1,0 +1,758 @@
+---
+title: "Game 2D"
+description: "Sprite sebagai bidang bertekstur dan pilihan pivot, sprite sheet dan atlas, tilemap dengan aturan terrain dan collision, urutan gambar, animasi tulang 2D, cahaya 2D dengan normal map, serta biayanya bagi CPU, GPU, dan memori."
+fundamental: "Karakter yang tampil di depan pohon padahal berdiri di belakangnya, atau level yang tiba-tiba butuh ratusan draw call, jarang disebabkan gambar yang salah. Penyebabnya ada di pivot, urutan gambar, dan cara sprite dikemas ke tekstur. Perbaikannya baru masuk akal kalau kamu tahu bahwa GPU melihat game 2D sebagai tumpukan persegi bertekstur yang digambar satu per satu dari belakang ke depan."
+kind: lesson
+minutes: 35
+status: draf
+lastReviewed: 2026-10-30
+terms:
+  - 2d/sprite
+  - 2d/sprite-sheet
+  - 2d/sprite-atlas
+  - 2d/tilemap
+  - 2d/sorting-layer
+  - ortho
+  - texture
+  - uv
+  - texture-filtering
+  - blending
+  - normal-map
+  - collider
+  - depth-buffer
+  - skeletal
+  - ik
+  - draw-call
+  - overdraw
+  - fill-rate
+krekit:
+  gambaran-besar: "Bayangkan semua yang ada di layar sebagai stiker di atas kaca. Hampir semua bagian pelajaran ini membahas stiker mana yang ditempel duluan."
+  sprite-sebagai-bidang-bertekstur: "Tentukan pivot sebelum menganimasikan. Mengubahnya belakangan bisa menggeser semua keyframe yang sudah ada."
+  sprite-sheet-atlas-dan-packing: "Kelompokkan sprite menurut kapan mereka tampil bersama. Itu lebih penting daripada menjejalkan semuanya ke satu atlas."
+  tilemap-dan-tileset: "Peta yang bagus menyimpan nomor, tidak menyimpan gambar. Gambarnya cukup ada sekali di tileset."
+  urutan-gambar: "Kalau ada yang tampil di depan padahal seharusnya di belakang, cek urutannya dari atas: lapisan, nomor urut, lalu posisi."
+  animasi-tulang-2d: "Frame demi frame dan tulang bisa dipakai bersama. Bagian yang sulit dirig, seperti tangan atau wajah, tetap boleh digambar per frame."
+  cahaya-2d: "Mulai dari satu cahaya dan satu sprite dengan normal map. Tambahkan cahaya lain setelah kamu tahu berapa biayanya."
+  biaya-di-game-2d: "Game 2D tidak otomatis ringan. Ukur draw call, luas cahaya, dan memori atlas seperti di game 3D."
+  kesalahan-umum: "Sebagian besar kesalahan ini baru muncul saat ada dua karakter atau lebih di layar. Uji dengan beberapa salinan sekaligus."
+sidebar:
+  order: 2
+  label: "2 · Game 2D"
+quiz:
+  - q: "Di game top-down dengan Y-sort, karakter yang berdiri di belakang batang pohon tinggi justru tampil di depan pohon. Pivot pohon berada di tengah gambarnya. Apa perbaikan yang paling tepat?"
+    options:
+      - "Naikkan Order in Layer karakter"
+      - "Pindahkan pivot pohon ke pangkal batangnya, dan pastikan urutan memakai titik pivot (Sprite Sort Point Pivot di Unity, posisi node di Godot)"
+      - "Ubah posisi Z pohon"
+      - "Pisahkan pohon ke sorting layer paling depan"
+    answer: 1
+    explain: "Y-sort membandingkan satu titik per objek. Dengan pivot di tengah, titik pohon berada jauh di atas tanah, sehingga karakter yang kakinya masih di belakang batang dianggap lebih dekat ke kamera. Pivot di pangkal batang membuat titik pembandingnya berada di tempat pohon menyentuh tanah. Menaikkan Order in Layer atau memindahkan pohon ke lapisan depan membuat urutannya tetap untuk semua posisi, sehingga karakter tidak bisa lagi berjalan di belakang pohon."
+  - q: "Semua sprite sudah dikemas ke dua atlas, A dan B, tetapi jumlah draw call hampir tidak turun. Di urutan gambar, sprite dari kedua atlas muncul berselang-seling: A, B, A, B. Kenapa?"
+    options:
+      - "Atlas hanya mengurangi memori, tidak mengurangi draw call"
+      - "Engine hanya bisa menggabungkan sprite berurutan yang memakai tekstur dan material yang sama, jadi setiap pergantian A ke B memutus batch"
+      - "Atlas yang lebih dari satu selalu dinonaktifkan saat runtime"
+      - "Padding atlas terlalu besar"
+    answer: 1
+    explain: "Urutan gambar ditentukan lebih dulu, baru engine mencari sprite berurutan yang bisa digabung. Jika urutannya A, B, A, B, setiap sprite berganti tekstur dari sprite sebelumnya. Kelompokkan sprite yang tampil berdekatan dalam urutan gambar ke atlas yang sama, atau atur lapisannya supaya sprite dari satu atlas digambar berurutan."
+  - q: "Karakter yang meluncur di lantai tilemap kadang tersangkut di sambungan antar-tile, padahal lantainya rata. Setiap tile punya collider kotak sendiri. Apa langkah yang paling masuk akal?"
+    options:
+      - "Perbesar ukuran tile"
+      - "Gabungkan bentuk collider tile yang bersebelahan (Composite Collider 2D dengan Composite Operation Merge di Unity; di Godot, bentuk collision per physics quadrant digabung otomatis)"
+      - "Matikan collision pada tilemap dan pakai trigger"
+      - "Ubah urutan gambar tilemap"
+    answer: 1
+    explain: "Sambungan antara dua kotak yang terpisah punya sudut, dan collider karakter bisa menabrak sudut itu karena posisinya sedikit berbeda dari permukaan lantai. Setelah digabung, lantai menjadi satu garis tepi tanpa sambungan. Penggabungan juga mengurangi jumlah bentuk yang harus dihitung physics."
+  - q: "Kamu membuat karakter besar dengan 12 gerakan dan perlu bisa mengganti senjata serta pakaiannya. Kenapa rig tulang 2D lebih cocok di sini daripada frame demi frame?"
+    options:
+      - "Rig tulang selalu terlihat lebih bagus"
+      - "Potongan gambar yang sama dipakai untuk semua pose, jadi memori kecil, gerakan baru tidak perlu digambar ulang, dan potongan bisa ditukar"
+      - "Rig tulang tidak memakai CPU sama sekali"
+      - "Frame demi frame tidak bisa diputar dengan delta time"
+    answer: 1
+    explain: "Dengan frame demi frame, setiap pose untuk setiap varian pakaian harus digambar. Rig tulang menyimpan potongan sekali, lalu animasi hanya menyimpan transform tulang. Harganya: gerakan yang mengubah bentuk secara besar, seperti tubuh berputar menghadap kamera, sulit dibuat, dan skinning menambah kerja CPU atau GPU setiap frame."
+  - q: "Di Godot, setelah kamu memberi normal map lewat CanvasTexture, cahaya PointLight2D terlihat jauh lebih redup dan reliefnya hampir tidak tampak. Apa yang perlu diubah lebih dulu?"
+    options:
+      - "Naikkan properti Height pada cahaya"
+      - "Ganti Blend Mode cahaya ke Mix"
+      - "Matikan Shadow > Enabled"
+      - "Ubah filter tekstur ke Nearest"
+    answer: 0
+    explain: "Height adalah tinggi virtual cahaya di atas bidang gambar. Bawaannya 0, artinya cahaya datang hampir sejajar dengan permukaan, sehingga normal yang menghadap kamera hampir tidak menerima cahaya. Dokumentasi Godot menyarankan menaikkan Height, lalu menambah Energy sedikit jika perlu."
+  - q: "Dua salinan prefab zombie di Unity berdiri berdekatan. Lengan zombie A tampil di antara badan dan kepala zombie B. Semua bagian tubuh berada di sorting layer yang sama dengan Order in Layer berbeda. Apa solusinya?"
+    options:
+      - "Beri setiap bagian tubuh sorting layer sendiri"
+      - "Tambahkan komponen Sorting Group di objek induk setiap zombie"
+      - "Gabungkan semua zombie ke satu atlas"
+      - "Ubah Transparency Sort Mode ke Orthographic"
+    answer: 1
+    explain: "Tanpa Sorting Group, semua bagian dari kedua zombie diurutkan sebagai satu kumpulan menurut Order in Layer, sehingga lengan A dan badan B bisa bertukar tempat. Sorting Group membuat setiap zombie diurutkan sebagai satu kesatuan, sementara urutan bagian di dalamnya tetap."
+sources:
+  - title: "Sprite (2D and UI) texture Import Settings window reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/textures-reference/texture-type-sprite"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Sprite Editor tab reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/sprite-editor-window-reference/reference"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Sprite Renderer component reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/sprite-renderer-reference"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Sprite atlases"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/atlas/atlas-introduction"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Tilemap Renderer component reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/tilemaps/reference/tilemap-renderer"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Enable collision detection for tiles"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/tilemaps/tilemap-collider-2d/2d"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Tilemap Collider 2D component reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/tilemaps/tilemap-collider-2d/reference"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Create a rule tile"
+    url: "https://docs.unity3d.com/Packages/com.unity.2d.tilemap.extras@4.1/manual/RuleTile.html"
+    publisher: "Unity Documentation (2D Tilemap Extras 4.1)"
+    accessed: 2026-10-30
+  - title: "2D rendering order"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/sort-sprites/sort-sprites"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Change the sorting order of 2D GameObjects"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/sort-sprites/2d-renderer-sorting"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Prevent 2D GameObjects mixing in sorting layers"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/sort-sprites/use-sorting-groups"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Introduction to 2D Animation"
+    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.1/manual/index.html"
+    publisher: "Unity Documentation (2D Animation 10.1)"
+    accessed: 2026-10-30
+  - title: "Preparing and importing artwork"
+    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.1/manual/PreparingArtwork.html"
+    publisher: "Unity Documentation (2D Animation 10.1)"
+    accessed: 2026-10-30
+  - title: "Actor skinning and weighting workflow"
+    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.1/manual/CharacterRig.html"
+    publisher: "Unity Documentation (2D Animation 10.1)"
+    accessed: 2026-10-30
+  - title: "Sprite Skin component"
+    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.1/manual/SpriteSkin.html"
+    publisher: "Unity Documentation (2D Animation 10.1)"
+    accessed: 2026-10-30
+  - title: "2D Inverse Kinematics (IK)"
+    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.1/manual/2DIK.html"
+    publisher: "Unity Documentation (2D Animation 10.1)"
+    accessed: 2026-10-30
+  - title: "Sprite Resolver component in Unity"
+    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.1/manual/SL-Resolver.html"
+    publisher: "Unity Documentation (2D Animation 10.1)"
+    accessed: 2026-10-30
+  - title: "Introduction to 2D lighting in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/2d-urp/2d-index/lights-2d-intro"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Light 2D component reference for URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/2d-urp/2d-index/2dlight-properties"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Create a 2D light in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/2d-urp/2d-index/2d-light-properties-explained"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Add a normal map or a mask map to a sprite in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/2d-urp/2d-index/secondary-textures"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Add shadows from 2D lights in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/2d-urp/2d-index/2d-shadows/2dshadows"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Optimize 2D lights with batching in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/2d-urp/2d-index/2d-light-batching-debugger"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Sprite2D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_sprite2d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "CanvasItem"
+    url: "https://docs.godotengine.org/en/stable/classes/class_canvasitem.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "CanvasGroup"
+    url: "https://docs.godotengine.org/en/stable/classes/class_canvasgroup.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Using TileSets"
+    url: "https://docs.godotengine.org/en/stable/tutorials/2d/using_tilesets.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Using TileMaps"
+    url: "https://docs.godotengine.org/en/stable/tutorials/2d/using_tilemaps.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "TileMapLayer"
+    url: "https://docs.godotengine.org/en/stable/classes/class_tilemaplayer.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Cutout animation"
+    url: "https://docs.godotengine.org/en/stable/tutorials/animation/cutout_animation.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "2D skeletons"
+    url: "https://docs.godotengine.org/en/stable/tutorials/animation/2d_skeletons.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Skeleton2D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_skeleton2d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Bone2D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_bone2d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Polygon2D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_polygon2d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "2D lights and shadows"
+    url: "https://docs.godotengine.org/en/stable/tutorials/2d/2d_lights_and_shadows.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "PointLight2D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_pointlight2d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Light2D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_light2d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "CanvasTexture"
+    url: "https://docs.godotengine.org/en/stable/classes/class_canvastexture.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "ProjectSettings"
+    url: "https://docs.godotengine.org/en/stable/classes/class_projectsettings.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Spine Runtimes"
+    url: "https://esotericsoftware.com/spine-runtimes"
+    publisher: "Esoteric Software"
+    accessed: 2026-10-30
+  - title: "Spine Runtimes License Agreement"
+    url: "https://esotericsoftware.com/spine-runtimes-license"
+    publisher: "Esoteric Software"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menjelaskan sprite sebagai bidang bertekstur, dan memilih pivot yang cocok untuk karakter, proyektil, pintu, atau potongan rig.
+- Membedakan sprite sheet dan sprite atlas, lalu mengelompokkan sprite ke atlas dengan memperhitungkan draw call dan memori.
+- Menyusun level dengan tilemap: tileset, aturan terrain untuk penyambungan otomatis, collision dari tile, dan penggambaran per kelompok.
+- Mengatur urutan gambar dengan lapisan, nomor urut, Y-sort, dan sorting group, serta mengenali bug urutan yang umum.
+- Memilih antara animasi frame demi frame dan rig tulang 2D, dan menyiapkannya di Unity atau Godot.
+- Menambahkan cahaya 2D dan normal map ke sprite, dan memperkirakan biayanya.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: stiker di atas kaca">
+Bayangkan selembar kaca di depan kamera. Setiap gambar di game adalah stiker yang ditempel di kaca itu, dan stiker yang ditempel belakangan menutupi yang lebih dulu. Stiker bisa digeser, diputar, dan dibalik, tetapi gambarnya tetap. Untuk karakter yang bergerak, kamu bisa mengganti stikernya setiap beberapa saat, atau memotong stiker menjadi beberapa bagian lalu menggerakkan bagian-bagiannya.
+</Aside>
+
+[Pelajaran 1](/belajar/seni-visual/01-pixel-art/) membahas pixel art, gaya 2D dengan aturan paling ketat: setiap piksel seni harus jatuh tepat di kotak piksel layar. Pelajaran ini membahas game 2D secara umum, termasuk gambar tangan beresolusi tinggi, ilustrasi vektor yang diekspor ke gambar, dan potongan karakter yang digerakkan tulang. Aturan resolusi dasar, integer scaling, filter nearest, dan kamera pixel-perfect tidak diulang di sini. Untuk gambar beresolusi tinggi, pengaturan bawaan engine biasanya sudah cocok: filter linear, posisi pecahan, dan kompresi tekstur.
+
+Bagi GPU, game 2D tidak punya jenis objek khusus. Setiap gambar adalah [tekstur](/kamus/geometri/texture/) yang ditempel di bidang datar, digambar dengan [kamera ortografis](/kamus/dasar/ortho/), lalu dicampur dengan warna di belakangnya ([Transparansi & Blending](/kamus/geometri/blending/)). Alurnya kira-kira seperti ini:
+
+```text title="Pseudocode: satu frame game 2D"
+semua_objek = sprite + tile + potongan_rig
+urutkan(semua_objek, menurut = lapisan, lalu nomor_urut, lalu posisi)
+untuk setiap kelompok berurutan dengan tekstur dan material yang sama:
+    kirim satu draw call                     // makin sedikit pergantian, makin hemat CPU
+gambar cahaya 2D di atasnya, jika ada        // kerja tambahan GPU per piksel yang tersentuh
+```
+
+Hampir semua keputusan di pelajaran ini mengubah salah satu baris di atas: pivot dan Y-sort mengubah hasil pengurutan, atlas mengubah berapa kelompok yang bisa digabung, tilemap menentukan cara ribuan tile masuk ke kelompok itu, dan cahaya menambah kerja di akhir.
+
+## Sprite sebagai bidang bertekstur
+
+**[Sprite](/kamus/2d/sprite/)** adalah gambar yang ditempel di bidang datar, biasanya persegi panjang dari dua segitiga (*quad*). Setiap sudut bidang membawa koordinat [UV](/kamus/geometri/uv/) yang menunjuk ke bagian tekstur yang dipakai. Engine bisa menggeser, memutar, membalik, dan mewarnai bidang itu tanpa menyentuh file gambarnya.
+
+Bidang tidak harus persegi. Gambar pohon yang berdiri di kanvas lebar menyisakan banyak piksel transparan, dan GPU tetap memproses piksel itu walaupun hasilnya tidak terlihat ([Overdraw](/kamus/performa/overdraw/)). Unity bisa membuat bidang yang mengikuti bentuk gambar (**Mesh Type: Tight**), sehingga piksel kosong tidak ikut digambar. Harganya adalah lebih banyak titik untuk diproses. Untuk sprite kecil, bidang persegi biasanya lebih murah. Dokumentasi Unity mencatat bahwa sprite yang lebih kecil dari 32×32 piksel selalu memakai Full Rect.
+
+### Pivot
+
+**Pivot** (disebut juga *origin*) adalah titik di gambar yang menjadi posisi sprite. Rotasi, skala, dan flip dihitung dari titik ini, dan banyak sistem pengurutan memakai titik ini untuk menentukan siapa yang di depan. Pilih pivot menurut cara objek dipakai:
+
+| Objek | Pivot yang umum | Alasannya |
+| --- | --- | --- |
+| Karakter berjalan | Di tanah, di antara kedua kaki | Posisi karakter sama dengan titik kakinya menyentuh lantai, dan Y-sort membandingkan titik pijak |
+| Pohon, tiang, bangunan | Di pangkal, tempat objek menyentuh tanah | Karakter bisa berjalan di depan dan di belakangnya dengan Y-sort |
+| Peluru, koin, partikel | Di tengah | Objek berputar di tempat dan tidak punya "bawah" |
+| Pintu, tuas | Di engsel | Rotasi langsung terlihat benar |
+| Potongan rig (lengan, kaki) | Di sendi yang menghubungkannya ke induk | Lengan berputar di bahu seperti lengan sungguhan |
+
+Pivot yang salah jarang terlihat saat objek diam. Masalahnya muncul saat objek diputar, dibalik, atau diurutkan. Karakter dengan pivot di tengah yang dibalik ke kiri tetap di tempat, tetapi karakter dengan pivot di tepi kanan gambarnya akan melompat ke samping setiap kali berbalik arah.
+
+<EngineTabs>
+<div slot="unity">
+
+Untuk gambar dengan **Sprite Mode** Single, pilih **Pivot** di pengaturan impor. Untuk sprite sheet (Multiple), atur pivot per potongan di **Sprite Editor**. Pilih salah satu posisi bawaan, atau **Custom** lalu isi **Custom Pivot**. **Pivot Unit Mode** menentukan satuannya: **Normalized** (0,0 di kiri bawah sampai 1,1 di kanan atas) atau **Pixels** (dihitung dari kiri bawah dalam piksel).
+
+**Mesh Type** (Full Rect atau Tight) ada di pengaturan impor yang sama. Di komponen **Sprite Renderer**, **Sprite Sort Point** menentukan titik yang dipakai saat mengurutkan: **Center** atau **Pivot**.
+
+</div>
+<div slot="unreal">
+
+Aset **Sprite** di Paper2D punya pengaturan pivot sendiri, dan ditampilkan lewat **Paper Sprite Component**.
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-30): pengaturan pivot pada aset Sprite Paper2D (Pivot Mode), Paper Sprite Component. */}
+
+</div>
+<div slot="godot">
+
+Di Godot, pivot adalah posisi node itu sendiri. **Sprite2D** punya `centered` (bawaan `true`), yang menaruh tengah tekstur di posisi node. Untuk pivot di kaki, matikan `centered` atau geser gambarnya dengan `offset` sampai titik kaki berada di posisi node. Di editor, tekan **V** sambil mengarahkan kursor untuk memindahkan pivot Sprite2D ke titik itu.
+
+</div>
+</EngineTabs>
+
+## Sprite sheet, atlas, dan packing
+
+**[Sprite sheet](/kamus/2d/sprite-sheet/)** disusun oleh artist: banyak frame atau objek di satu gambar, biasanya berpola grid. **[Sprite atlas](/kamus/2d/sprite-atlas/)** dibuat oleh engine atau alat pengemas: banyak gambar terpisah dikemas otomatis ke satu tekstur besar, dan setiap sprite cukup mengingat letak potongannya. Keduanya mengejar hal yang sama, yaitu lebih sedikit tekstur berbeda saat menggambar, tetapi atlas memberi kebebasan mengatur ulang susunan tanpa menyentuh file aslinya.
+
+### Pengaruhnya ke draw call
+
+Engine hanya bisa menggabungkan objek berurutan yang memakai tekstur dan material yang sama. Setiap pergantian tekstur biasanya berarti [draw call](/kamus/performa/draw-call/) baru, dengan ongkos persiapan di CPU ([Pelajaran 8 Fondasi Engine](/belajar/fondasi-engine/08-profiling/#draw-call-dan-batching)). Dokumentasi Unity menyebut Unity hanya perlu satu draw call untuk semua sprite dalam satu atlas, dengan catatan bahwa jika SRP Batcher aktif, jumlah draw call mungkin tidak turun tetapi performanya tetap membaik dengan kadar yang mirip.
+
+```text title="Ilustrasi: 300 sprite di satu layar"
+300 file PNG terpisah           → hingga 300 draw call
+1 atlas, urutan gambar rapi     → bisa beberapa draw call saja
+2 atlas, urutan A B A B A B ... → batch putus di setiap pergantian, hampir sama dengan tanpa atlas
+```
+
+Baris terakhir adalah jebakan yang paling sering. Atlas hanya membantu jika sprite dari atlas yang sama juga berurutan dalam [urutan gambar](#urutan-gambar). Karena itu, kelompokkan sprite menurut kapan dan di mana mereka tampil bersama, misalnya satu atlas untuk semua yang ada di level hutan, satu untuk UI, dan satu untuk efek.
+
+### Pengaruhnya ke memori
+
+Atlas dimuat ke memori GPU secara utuh, walaupun hanya satu sprite di dalamnya yang dipakai. Hitungannya sederhana:
+
+```text title="Ilustrasi: memori satu atlas"
+2048 × 2048 piksel × 4 byte (RGBA)     = 16 MB tanpa kompresi
+dengan mipmap (sekitar +33%)            ≈ 21 MB
+format blok 4×4 berukuran 16 byte       = 1 byte per piksel → 4 MB
+```
+
+Atlas raksasa yang berisi semua aset game membuat setiap scene membayar memori untuk aset yang tidak dipakai. Dokumentasi Unity menyarankan atlas terpisah untuk sprite yang dipakai bersamaan (misalnya per scene), untuk sprite yang butuh pengaturan kompresi berbeda, dan untuk sprite yang sering dan jarang dipakai.
+
+Untuk gambar beresolusi tinggi, kompresi GPU umumnya aman dan menghemat banyak memori. Ini berbeda dari pixel art, yang dibahas di [Pelajaran 1](/belajar/seni-visual/01-pixel-art/#filter-tekstur-mipmap-dan-kompresi). Mipmap juga berguna jika kamera bisa di-zoom keluar, karena sprite yang tampil mengecil tanpa mipmap akan berkilau. Hati-hati dengan efek sampingnya: di tingkat mipmap yang lebih kecil, sprite yang berdempetan di atlas makin mudah bercampur warna. Jarak antar-sprite (**padding**) perlu cukup lebar untuk itu.
+
+<EngineTabs>
+<div slot="unity">
+
+Buat aset lewat **Assets → Create → 2D → Sprite Atlas**, lalu masukkan sprite atau folder ke **Objects for Packing**. Atlas punya **Padding** (bawaan 4 piksel), **Filter Mode**, **Generate Mip Maps**, dan **Compression** sendiri yang terpisah dari pengaturan setiap sprite. Periksa hasil batching di **Frame Debugger**.
+
+</div>
+<div slot="unreal">
+
+Paper2D bisa mengelompokkan sprite ke aset **Sprite Atlas Group**.
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-30): Paper2D Sprite Atlas Group, termasuk apakah fitur ini masih eksperimental. */}
+
+</div>
+<div slot="godot">
+
+Untuk sprite sheet, Sprite2D bisa menampilkan sebagian tekstur lewat `region_enabled` dan `region_rect`, atau `hframes` dan `vframes`. Untuk atlas otomatis, Godot menyediakan mode impor **TextureAtlas** yang mengubah setiap gambar menjadi **AtlasTexture**. Renderer 2D Godot menggabungkan perintah gambar secara otomatis. Batas jumlah perintah per draw call diatur di **Rendering → 2D → Batching → Item Buffer Size** (bawaan 16384). Jumlah draw call terlihat di **Debugger → Monitors**.
+
+</div>
+</EngineTabs>
+
+## Tilemap dan tileset
+
+**[Tilemap](/kamus/2d/tilemap/)** menyusun level dari potongan gambar berukuran sama di atas grid. **Tileset** berisi potongannya beserta data tambahan, seperti bentuk collision. Tilemap sendiri hanya menyimpan nomor tile untuk setiap sel. Peta 1000×1000 sel dengan nomor 4 byte per sel memakan sekitar 4 MB (ilustrasi), jauh lebih kecil daripada menyimpan sejuta objek sprite, dan gambar setiap tile hanya ada sekali di tekstur tileset.
+
+### Penyambungan otomatis
+
+Tanah yang rapi butuh banyak varian tile: tepi kiri, tepi kanan, sudut, sudut dalam, dan bagian tengah. Memilihnya satu per satu lambat, dan hampir mustahil untuk level yang dibuat prosedural. Engine menyediakan aturan yang memilih varian berdasarkan tetangganya. Bentuk paling sederhana memeriksa empat sisi:
+
+```text title="Pseudocode: autotiling dengan empat tetangga"
+mask = 0
+jika atas  sama jenisnya: mask += 1
+jika kanan sama jenisnya: mask += 2
+jika bawah sama jenisnya: mask += 4
+jika kiri  sama jenisnya: mask += 8
+tile = varian[mask]          // 16 kemungkinan, dari pulau tunggal (0) sampai tengah penuh (15)
+```
+
+Dengan empat sisi saja, sudut dalam tidak bisa dibedakan dari bagian tengah. Aturan yang juga memeriksa empat tetangga diagonal bisa membedakannya, dengan harga varian yang lebih banyak untuk digambar artist. Saat satu sel diubah, delapan tetangganya juga perlu dihitung ulang.
+
+### Collision dari tile
+
+Bentuk collision didefinisikan sekali per tile di tileset, lalu dibuat untuk setiap sel yang memakai tile itu. Jika setiap sel punya [collider](/kamus/fisika/collider/) kotak sendiri, lantai yang tampak rata sebenarnya tersusun dari banyak kotak dengan sambungan. Karakter yang meluncur di atasnya bisa tersangkut di sambungan itu, dan physics harus memeriksa banyak bentuk. Karena itu, bentuk yang bersebelahan biasanya digabung menjadi satu garis tepi.
+
+### Penggambaran per kelompok
+
+Tile tidak digambar satu per satu. Engine mengelompokkan tile yang berdekatan menjadi potongan (*chunk*) yang digambar sekaligus, dan potongan di luar layar bisa dilewati sepenuhnya. Kelompok besar berarti lebih sedikit draw call. Masalahnya, sprite lain tidak bisa diselipkan di antara tile dalam satu kelompok. Jika karakter harus bisa berjalan di belakang pohon dari tilemap, tile itu perlu diurutkan satu per satu bersama sprite, atau dipisah ke tilemap sendiri.
+
+<EngineTabs>
+<div slot="unity">
+
+**Penyambungan otomatis.** Paket **2D Tilemap Extras** menyediakan **Rule Tile** (**Create → 2D → Tiles → Rule Tile**). Setiap aturan di **Tiling Rules** memakai grid 3×3 untuk memeriksa tetangga. Unity memeriksa aturan dari atas, jadi dokumentasi menyarankan menaruh aturan yang paling sering cocok di urutan teratas. **Rule Override Tile** memakai aturan yang sama dengan sprite berbeda, misalnya untuk varian musim.
+
+**Collision.** Tambahkan **Tilemap Collider 2D**. Tile dengan **Collider Type** None tidak ikut membentuk collision. Untuk menggabungkan bentuk, tambahkan **Composite Collider 2D** di objek yang sama, lalu atur **Composite Operation** di Tilemap Collider 2D ke **Merge**. Perubahan tile diproses bersama di `LateUpdate`.
+
+**Penggambaran.** **Tilemap Renderer → Mode**:
+
+- **Chunk:** tile digambar berkelompok. Cepat, tetapi objek lain tidak bisa tampil di antara tile, dan mode ini tidak kompatibel dengan SRP Batcher.
+- **Individual:** tile diurutkan bersama sprite lain. Lebih lambat karena setiap tile digambar sendiri.
+- **SRP Batch:** tile dikelompokkan lewat SRP Batcher.
+
+Jika sprite tile yang besar ikut hilang di tepi layar, ubah **Detect Chunk Culling Bounds** ke Manual dan perbesar **Chunk Culling Bounds**.
+
+</div>
+<div slot="unreal">
+
+Paper2D menyediakan aset **Tile Set** dan **Tile Map**, ditampilkan lewat **Paper Tile Map Component**. Bentuk collision didefinisikan per tile di editor Tile Set.
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-30): Paper2D Tile Set, Tile Map, Paper Tile Map Component, collision per tile, dan ketersediaan aturan terrain/autotiling. */}
+
+</div>
+<div slot="godot">
+
+Sejak Godot 4.3, tilemap memakai node **TileMapLayer**, satu node per lapisan. Node lama **TileMap** berstatus deprecated.
+
+**Penyambungan otomatis.** Buat **Terrain Set** di resource TileSet, lalu tambahkan satu atau lebih **Terrain** di dalamnya. Setiap terrain set punya mode **Match Corners and Sides**, **Match Corners**, atau **Match Sides**. Di editor TileSet, beri setiap tile nomor terrain dan atur **Terrain Peering Bits**, yaitu tetangga mana yang harus berjenis sama. Nilai -1 berarti ruang kosong. Terrain juga bisa menyambungkan dua jenis tanah, misalnya rumput ke pasir.
+
+**Collision.** Tambahkan **Physics Layers** di TileSet, lalu gambar bentuk per tile (tekan **F** untuk kotak penuh). Di TileMapLayer, bentuk dari sel dengan properti physics yang sama digabung per kelompok berukuran `physics_quadrant_size` (bawaan 16, yaitu 16 × 16 = 256 tile). Untuk platform bergerak, nyalakan `use_kinematic_bodies`.
+
+**Penggambaran.** Tile digambar per kelompok berukuran `rendering_quadrant_size` (bawaan 16). Jika `y_sort_enabled` aktif di TileMapLayer, tile dikelompokkan menurut posisi Y, sehingga ukuran kelompok ini tidak berlaku. **Use Texture Padding** di atlas TileSet (aktif secara bawaan) menambahkan tepi transparan 1 piksel di sekeliling tile untuk mencegah warna tile tetangga ikut terambil.
+
+</div>
+</EngineTabs>
+
+## Urutan gambar
+
+Sprite yang digambar belakangan menutupi yang lebih dulu. Game 2D umumnya tidak memakai [depth buffer](/kamus/geometri/depth-buffer/) untuk sprite transparan, karena tepi yang semi-transparan harus dicampur dengan warna yang sudah ada di belakangnya. Jadi engine harus mengurutkan semuanya dari belakang ke depan sebelum menggambar, dengan kriteria bertingkat ([Sorting Layer & Urutan Gambar](/kamus/2d/sorting-layer/)):
+
+1. **Lapisan besar**, misalnya Latar, Dunia, Depan, UI.
+2. **Nomor urut di dalam lapisan.**
+3. **Posisi**, jika lapisan dan nomornya sama.
+
+### Y-sort untuk game top-down
+
+Di game yang dilihat dari atas, objek yang lebih ke bawah layar dianggap lebih dekat ke pemain. Pengurutan berdasarkan posisi Y membuat karakter tampil di depan pohon saat berdiri di bawahnya, dan di belakang pohon saat berdiri di atasnya.
+
+```text title="Pseudocode: Y-sort"
+objek_dunia.urutkan(menurut = titik_pivot.y, dari atas layar ke bawah)
+gambar dari yang paling atas di layar
+```
+
+Y-sort hanya membandingkan **satu titik** per objek. Titik itu harus berada di tempat objek menyentuh tanah. Pohon setinggi 200 piksel dengan pivot di tengah punya titik 100 piksel di atas tanah, sehingga karakter yang kakinya masih di belakang batang sudah dianggap lebih dekat.
+
+### Kelompok yang diurutkan sebagai satu kesatuan
+
+Karakter yang tersusun dari banyak potongan, misalnya rig tulang, memakai nomor urut berbeda untuk setiap potongan: lengan belakang, badan, kepala, lengan depan. Jika ada dua karakter seperti itu di lapisan yang sama, semua potongan dari keduanya diurutkan bersama, dan lengan karakter A bisa terselip di antara badan dan kepala karakter B. Solusinya adalah mengelompokkan setiap karakter: potongannya diurutkan di dalam kelompok, lalu kelompok itu diurutkan sebagai satu objek terhadap objek lain.
+
+### Bug urutan yang sering muncul
+
+- **Posisi Z diubah, tetapi tidak ada efeknya.** Di Unity, lapisan dan nomor urut diperiksa lebih dulu. Jarak ke kamera baru berpengaruh jika keduanya sama.
+- **Objek tinggi dengan pivot di tengah** pada Y-sort. Karakter muncul di depan pohon yang seharusnya menutupinya.
+- **Potongan karakter tercampur** saat dua karakter berdekatan, karena tidak ada kelompok.
+- **Karakter tidak bisa berjalan di belakang tile** karena tilemap digambar per kelompok.
+- **Urutan berkedip** antara dua objek dengan lapisan, nomor, dan posisi yang persis sama. Engine tidak menjamin urutan untuk kasus seri seperti ini, jadi berikan pembeda yang jelas.
+
+<EngineTabs>
+<div slot="unity">
+
+Kriteria Unity, menurut dokumentasi *2D rendering order*: **Sorting Layer** (urutan daftar di **Tags and Layers**, lapisan paling bawah di daftar tampil paling depan), **Order in Layer** (angka kecil di belakang), **Render Queue** material (bawaan 2D 3000), lalu jarak ke kamera. Jika semuanya sama, urutan internal Unity tidak dijamin.
+
+**Y-sort.** Di aset 2D Renderer, atur **Transparency Sort Mode** ke **Custom Axis** dengan **Transparency Sort Axis** (0, 1, 0). Untuk game isometrik, dokumentasi memberi contoh (1, 1, 0). Atur **Sprite Sort Point** ke **Pivot** pada Sprite Renderer, dan letakkan pivot di titik pijak.
+
+**Kelompok.** Tambahkan **Sorting Group** di objek induk karakter. Semua anaknya digambar di Sorting Layer dan Order in Layer milik Sorting Group, dengan jarak ke kamera dihitung dari posisi objek induk. Sorting Group bisa bersarang. **Sorting Type: Sort At Root** mengeluarkan kelompok bersarang ke tingkat teratas tanpa memindahkannya di Hierarchy.
+
+</div>
+<div slot="unreal">
+
+Urutan sprite Paper2D mengikuti aturan objek transparan di Unreal, dan bisa diatur lewat **Translucency Sort Priority** pada komponen.
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-30): Translucency Sort Priority pada Paper Sprite Component, pengaturan Translucent Sort Policy / Translucent Sort Axis di Project Settings untuk Y-sort. */}
+
+</div>
+<div slot="godot">
+
+Urutan dasarnya mengikuti pohon scene: node yang lebih bawah di panel Scene digambar belakangan. Anak digambar di depan induknya, kecuali `show_behind_parent` dinyalakan.
+
+- `z_index` (bawaan 0): angka lebih besar tampil di depan.
+- `y_sort_enabled` pada node induk: anak dengan posisi Y lebih besar tampil di depan. Karena posisi node adalah pivotnya, atur `offset` Sprite2D supaya kaki berada di posisi node. Satu karakter dengan banyak potongan otomatis diurutkan menurut posisi node karakternya, selama node karakter itu sendiri tidak memakai Y-sort.
+- **CanvasLayer** untuk lapisan besar seperti latar dan UI.
+- **CanvasGroup** menggambar semua anaknya sebagai satu objek. Gunanya berbeda dari Sorting Group: potongan semi-transparan yang bertumpuk tidak tampak lebih pekat di bagian yang tumpang tindih saat seluruh karakter dibuat transparan.
+
+Pada rig potongan, dokumentasi *Cutout animation* memakai **RemoteTransform2D** supaya potongan bisa tetap di posisi yang benar dalam hierarki tulang, tetapi digambar di urutan lain, misalnya lengan kiri di belakang badan.
+
+</div>
+</EngineTabs>
+
+## Animasi tulang 2D
+
+Ada dua cara utama untuk menganimasikan karakter 2D, dan banyak game memakai keduanya.
+
+**Frame demi frame** menggambar setiap pose sebagai gambar terpisah. Cara kerjanya dibahas di [Pelajaran 1](/belajar/seni-visual/01-pixel-art/#animasi-frame-demi-frame).
+
+**Rig tulang** memotong karakter menjadi bagian-bagian (kepala, badan, lengan atas, lengan bawah), lalu menggerakkannya dengan hierarki tulang. Animasi hanya menyimpan posisi dan rotasi tulang dari waktu ke waktu, sama seperti [skeletal animation](/kamus/animasi/skeletal/) di 3D ([Pelajaran 7 Fondasi Engine](/belajar/fondasi-engine/07-animasi/#skeletal-animation-tulang-bind-pose-dan-skinning)). Ada dua tingkatan:
+
+- **Cutout:** setiap potongan adalah sprite kaku yang menempel pada satu tulang. Mirip boneka kertas dengan paku keling di sendinya.
+- **Deformasi mesh:** potongan diberi jaring titik, dan setiap titik terikat ke beberapa tulang dengan bobot. Siku dan perut bisa melentur, rambut dan kain bisa bergoyang.
+
+```text title="Pseudocode: deformasi satu titik dengan dua tulang"
+// titik di siku terikat 60% ke lengan atas, 40% ke lengan bawah
+posisi = 0.6 * (transform_lengan_atas  * posisi_awal)
+       + 0.4 * (transform_lengan_bawah * posisi_awal)
+```
+
+Perbandingannya:
+
+| Aspek | Frame demi frame | Rig tulang 2D |
+| --- | --- | --- |
+| Membuat gerakan baru | Gambar ulang setiap pose | Atur ulang tulang, potongan tetap |
+| Memori | Bertambah dengan setiap frame | Satu set potongan, ditambah data tulang yang kecil |
+| Gerakan yang mengubah bentuk besar (berputar menghadap kamera, berubah wujud) | Mudah, karena digambar bebas | Sulit, butuh potongan tambahan atau tukar sprite |
+| Kehalusan | Terbatas oleh jumlah frame | Halus di frame rate berapa pun, karena tulang diinterpolasi |
+| Blending antar-klip | Tidak bisa, hanya berganti gambar | Bisa, seperti di 3D |
+| Mengganti pakaian atau senjata | Gambar ulang semua frame | Tukar potongannya saja |
+| Biaya runtime | Hampir nol, hanya ganti potongan tekstur | Skinning di CPU atau GPU setiap frame |
+
+Contoh hitungan memori untuk karakter 200×300 piksel dengan 12 gerakan, masing-masing 10 frame (ilustrasi, tanpa kompresi dan tanpa ruang kosong di atlas): 200 × 300 × 4 byte ≈ 234 KB per frame, dikali 120 frame ≈ 28 MB. Versi rig dari karakter yang sama bisa muat di satu atlas potongan 1024×1024, yaitu 4 MB, berapa pun jumlah gerakannya.
+
+Gaya geraknya juga berbeda. Frame demi frame bisa melebih-lebihkan bentuk dengan bebas, sedangkan rig tulang cenderung terasa seperti boneka jika tidak digarap dengan hati-hati. Pilihan yang umum adalah rig untuk badan, lalu tukar sprite untuk bagian yang sulit dirig, seperti telapak tangan, ekspresi wajah, atau mulut. Dokumentasi Godot menyebut cara gabungan ini secara khusus.
+
+<EngineTabs>
+<div slot="unity">
+
+Paket **2D Animation** (versi 10.x untuk Unity 6) dipakai bersama paket **PSD Importer**:
+
+1. Simpan karya berlapis dalam format `.psb`, dengan setiap bagian tubuh di layer terpisah dan karakter dalam pose netral.
+2. Impor dengan Texture Type **Sprite (2D and UI)**, Sprite Mode **Multiple**, lalu nyalakan **Mosaic** (layer dikemas menjadi sprite sheet) dan **Character Rig** (Unity membuat prefab dengan potongan di posisi aslinya). Prefab ini disebut *actor*.
+3. Buka **Sprite Editor**, pilih modul **Skinning Editor**. Buat tulang dengan **Create Bone**, buat mesh dengan **Auto Geometry**, lalu bobot dengan **Auto Weights**. Perhalus dengan **Weight Brush** dan **Weight Slider**, dan uji dengan **Preview Pose**.
+4. Seret actor ke scene. Unity menambahkan komponen **Sprite Skin**, yang mengubah bentuk sprite mengikuti Transform tulang. Animasikan tulangnya di jendela Animation.
+
+Sprite Skin bisa dihitung di CPU atau GPU. Dokumentasi menyebut deformasi GPU hanya tersedia di URP, dan membuat setiap objek digambar lewat SRP Batcher dengan sedikit biaya draw call per objek. Deformasi CPU membuat sprite bisa digabung, sehingga cocok untuk banyak objek dengan sedikit titik. **Always Update** (tetap menghitung saat di luar layar) sebaiknya dibiarkan mati kecuali dibutuhkan.
+
+Untuk mengganti potongan, misalnya senjata atau ekspresi, pakai **Sprite Library** dan **Sprite Resolver**. Untuk tangan dan kaki, **IK Manager 2D** menambahkan [inverse kinematics](/kamus/animasi/ik/).
+
+</div>
+<div slot="unreal">
+
+Paper2D menganimasikan sprite lewat **Flipbook** (frame demi frame). Untuk rig tulang 2D, Spine menyediakan runtime resmi untuk Unreal Engine (lihat catatan di bawah tab ini).
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-30): apakah Paper2D punya sistem rig tulang 2D bawaan. Runtime Spine untuk Unreal sudah dicek di esotericsoftware.com/spine-runtimes. */}
+
+</div>
+<div slot="godot">
+
+Godot punya dua jalur yang dibahas di dokumentasinya:
+
+- **Cutout:** potongan berupa Sprite2D yang disusun sebagai hierarki node (pinggul sebagai akar, lalu badan, lalu lengan). Animasikan rotasinya dengan AnimationPlayer. Menu **Skeleton → Make Bones** membuat tulang di antara node yang dipilih, dan node ujung seperti **Marker2D** dipakai supaya tulang terakhir punya arah.
+- **Deformasi:** potongan berupa **Polygon2D** yang bentuknya digambar di editor **UV**. Buat **Skeleton2D** dengan anak-anak **Bone2D**, lalu tetapkan pose diam lewat **Skeleton2D → Overwrite Rest Pose**. Pada setiap Polygon2D, isi properti `skeleton`, buka editor UV, tekan **Sync Bones to Polygon**, lalu cat bobot per tulang (putih penuh, hitam tanpa pengaruh). Tambahkan titik dalam (*internal vertices*) di area yang harus melentur, dan jangan lupa memberi bobot juga pada titik itu.
+
+Yang dianimasikan adalah tulangnya, dan polygon ikut berubah bentuk mengikuti bobotnya. Jika polygon melentur aneh, penyebabnya biasanya segitiga yang dibuat otomatis dari titik tepi saja, dan titik dalam memperbaikinya.
+
+</div>
+</EngineTabs>
+
+<Aside type="note" title="Alat pihak ketiga: Spine">
+Spine dari Esoteric Software adalah editor animasi tulang 2D komersial. Hasilnya diekspor sebagai data kerangka (JSON atau biner) ditambah texture atlas, lalu diputar oleh runtime. Runtime resmi tersedia untuk Unity, Unreal Engine, Godot, dan beberapa framework lain. Menurut perjanjian lisensi runtime-nya, setiap pengguna produk yang memakai runtime itu harus punya lisensi editor Spine sendiri. Baca ketentuannya sebelum memilih. Alat bawaan engine tidak butuh lisensi tambahan, tetapi alur kerjanya berbeda di setiap engine.
+</Aside>
+
+## Cahaya 2D
+
+Secara bawaan, sprite tampil dengan warna aslinya tanpa terpengaruh cahaya. Ini cepat dan sering sudah cukup, karena artist bisa melukis cahaya langsung di gambarnya. Cahaya 2D berguna jika cahaya berubah saat game berjalan: obor yang dibawa pemain, ledakan, siang dan malam.
+
+Cahaya 2D tidak memakai fisika cahaya seperti di 3D. Cara kerjanya kira-kira seperti ini:
+
+```text title="Pseudocode: cahaya 2D per piksel"
+warna_cahaya = cahaya_dasar                         // ambient, warna untuk area gelap
+untuk setiap cahaya yang menyentuh piksel ini:
+    kuat = tekstur_atau_bentuk_cahaya(posisi_piksel) // jatuh perlahan dari pusat ke tepi
+    jika ada normal map:
+        arah = normalize(posisi_cahaya_3d - posisi_piksel_3d)   // cahaya diberi "tinggi" virtual
+        kuat *= max(dot(normal_dari_peta, arah), 0)
+    jika piksel tertutup penghalang: kuat *= 1 - kekuatan_bayangan
+    warna_cahaya += warna * kuat
+warna_akhir = warna_sprite * warna_cahaya
+```
+
+Tanpa normal map, cahaya hanya menerangi sprite secara rata, seperti menyorot kertas datar. **[Normal map](/kamus/geometri/normal-map/)** menyimpan arah permukaan untuk setiap piksel, sehingga sisi batu yang menghadap obor lebih terang dari sisi sebaliknya. Karena gambar 2D tidak punya kedalaman, cahaya diberi **tinggi** virtual di atas bidang gambar. Jika tingginya nol, cahaya datang sejajar dengan bidang dan hampir tidak menerangi permukaan yang menghadap kamera.
+
+Normal map harus sejajar piksel demi piksel dengan sprite-nya. Jika sprite sheet dikemas ulang ke atlas, normal map-nya harus ikut dikemas dengan susunan yang sama. Engine yang mendukung "tekstur sekunder" menangani ini otomatis.
+
+<EngineTabs>
+<div slot="unity">
+
+Cahaya 2D tersedia di URP dengan 2D Renderer. Sprite dan tile memakai material **Sprite-Lit-Default** secara bawaan, yang sudah bereaksi terhadap cahaya 2D.
+
+Komponen **Light 2D** punya empat **Light Type**:
+
+- **Spot:** dari satu titik, dengan radius dalam dan luar serta sudut kerucut.
+- **Freeform:** bentuk poligon yang bisa diedit.
+- **Sprite:** berbentuk seperti sprite yang dipilih.
+- **Global:** menerangi semua objek secara rata. Hanya satu per Blend Style dan sorting layer.
+
+Properti penting lain: **Intensity** (bawaan 1), **Target Sorting Layers** (lapisan mana yang terkena cahaya ini), dan **Blend Style** (Multiply, Additive, Multiply with Mask (R), Additive with Mask (R)). Posisi Z cahaya tidak berpengaruh.
+
+**Normal map.** Impor normal map dengan Texture Type **Normal Map** dan matikan **sRGB (Color Texture)**. Di **Sprite Editor**, pilih tab **Secondary Textures**, tambahkan entri bernama **\_NormalMap**, lalu isi teksturnya. Di Light 2D, atur **Normal Map Quality** ke **Fast** atau **Accurate**, dan **Normal Map Distance** untuk tinggi virtual cahaya. Tekstur sekunder **\_MaskTex** dipakai untuk mask map.
+
+**Bayangan.** Nyalakan **Shadows** di Light 2D, lalu tambahkan **Shadow Caster 2D** pada objek penghalang. Bentuknya diambil dari **Custom Outline** sprite, atau digambar sendiri dengan **Casting Source: Shape Editor**. **Composite Shadow Caster 2D** di objek induk menggabungkan bayangan anak-anaknya.
+
+</div>
+<div slot="unreal">
+
+Sprite Paper2D bisa memakai material lit sehingga diterangi cahaya biasa Unreal, termasuk dengan normal map. Ini sistem cahaya 3D, jadi cahaya perlu ditempatkan di depan bidang sprite.
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-30): material DefaultLitSpriteMaterial pada Paper2D, dukungan normal map pada sprite lit. */}
+
+</div>
+<div slot="godot">
+
+Node yang terlibat:
+
+- **CanvasModulate:** warna dasar untuk area yang tidak terkena cahaya. Tanpa node ini, cahaya hanya menambah terang pada scene yang sudah terang penuh.
+- **PointLight2D:** cahaya dari satu titik. Bentuk dan jangkauannya mengikuti **Texture** dan **Texture Scale** (bawaan 1).
+- **DirectionalLight2D:** cahaya sejajar seperti matahari atau bulan.
+- **LightOccluder2D:** poligon penghalang yang membuat bayangan. Bisa dibuat otomatis dari Sprite2D lewat menu **Sprite2D → Create LightOccluder2D Sibling**, atau lewat lapisan occlusion di TileSet.
+
+**Normal map.** Ganti tekstur Sprite2D dengan resource **CanvasTexture**, lalu isi **Diffuse → Texture**, **Normal Map → Texture**, dan bila perlu **Specular**. Naikkan **Height** pada cahaya (bawaan 0) supaya normal map terlihat. Pada PointLight2D, Height dihitung dalam piksel: tinggi 100 menerangi objek yang berjarak 100 piksel dengan sudut 45°.
+
+**Bayangan.** Nyalakan **Shadow → Enabled** pada cahaya (bawaan mati). **Filter** bawaannya **None**, yang paling cepat dan cocok untuk pixel art. **PCF5** lebih lembut, sedangkan **PCF13** paling lembut dan paling mahal, sehingga dokumentasi menyarankannya hanya untuk beberapa cahaya. Ketajaman bayangan diatur oleh **Rendering → 2D → Shadow Atlas → Size** (bawaan 2048).
+
+Cahaya dan bayangan 2D Godot dihitung di resolusi viewport. Resolusi tekstur sprite tidak berpengaruh. Untuk game pixel art, filter nearest tidak membuat cahayanya ikut kotak-kotak. Dokumentasi Godot memberi contoh shader yang membulatkan posisi cahaya ke grid piksel.
+
+</div>
+</EngineTabs>
+
+## Biaya di game 2D
+
+Game 2D bisa lebih berat dari kelihatannya, karena setiap fitur di atas punya harga di tempat yang berbeda. Tabel ini merangkumnya. Cara mengukur masing-masing ada di [Pelajaran 8 Fondasi Engine](/belajar/fondasi-engine/08-profiling/).
+
+| Sumber biaya | Dibayar di | Gejala | Yang bisa dilakukan |
+| --- | --- | --- | --- |
+| Banyak tekstur berbeda | CPU (draw call) | Waktu CPU per frame tinggi, GPU santai | Atlas per kelompok tampil, urutan gambar yang tidak berselang-seling |
+| Atlas terlalu besar atau terlalu banyak | Memori GPU | Memori tekstur membengkak, waktu muat lama | Atlas per scene, kompresi untuk gambar resolusi tinggi |
+| Sprite besar yang banyak ruang kosong, partikel bertumpuk | GPU ([fill rate](/kamus/performa/fill-rate/), overdraw) | Lambat di resolusi tinggi atau di ponsel | Mesh Tight, potong ruang kosong, kurangi lapisan transparan |
+| Tilemap dengan mode urutan per tile | CPU | Draw call naik saat tile diurutkan bersama sprite | Pisahkan hanya tile yang perlu diurutkan ke tilemap sendiri |
+| Collider tile yang tidak digabung | CPU (physics) | Waktu physics tinggi, karakter tersangkut | Gabungkan bentuk collision |
+| Skinning rig tulang | CPU atau GPU | Waktu naik seiring jumlah karakter dan titik | Kurangi titik dan tulang, matikan pembaruan di luar layar |
+| Cahaya 2D | GPU per piksel yang disentuh | Lambat saat cahaya besar atau banyak | Cahaya lebih kecil, lebih sedikit cahaya berbayangan |
+
+Untuk cahaya, dua catatan dari dokumentasi engine. Godot menyebut cahaya yang lebih besar lebih mahal karena menyentuh lebih banyak piksel di layar, dan menyarankan sprite dengan blending additive sebagai pengganti murah untuk efek singkat seperti peluru atau ledakan. Harganya, sprite additive tidak membuat bayangan dan tidak memakai normal map. Unity menggambar cahaya ke tekstur cahaya sebelum menggambar objek. Setiap kombinasi Blend Style dan setiap kelompok sorting layer dengan daftar cahaya berbeda bisa butuh tekstur cahaya sendiri, dan normal map menambahkan langkah *depth pre-pass* untuk setiap kelompok lapisan. Jendela **Window → 2D → Light Batching Debugger** menunjukkan cahaya mana yang mencegah dua kelompok digabung.
+
+## Kesalahan umum
+
+### Karakter melompat ke samping saat berbalik arah
+
+```text title="✗ Keliru"
+pivot karakter di tepi kanan gambar
+flip_x = true    // gambar terbalik di sekitar tepi kanan, karakter pindah satu lebar sprite
+```
+
+```text title="✓ Benar"
+pivot karakter di tengah bawah, di antara kedua kaki
+flip_x = true    // gambar terbalik di tempat
+```
+
+Flip dan rotasi selalu dihitung dari pivot.
+
+### Karakter tampil di depan pohon padahal di belakangnya
+
+```text title="✗ Keliru"
+pohon.pivot = tengah gambar
+urutan memakai titik tengah sprite
+```
+
+```text title="✓ Benar"
+pohon.pivot = pangkal batang
+urutan memakai titik pivot (Sprite Sort Point: Pivot di Unity, offset Sprite2D di Godot)
+```
+
+Y-sort hanya membandingkan satu titik, jadi titik itu harus berada di tanah.
+
+### Atlas dibuat, draw call tidak turun
+
+```text title="✗ Keliru"
+atlas_karakter, atlas_dekorasi
+urutan gambar: karakter, dekorasi, karakter, dekorasi, ...
+```
+
+```text title="✓ Benar"
+atlas_level_hutan berisi karakter dan dekorasi yang tampil bersama
+atau: lapisan diatur supaya sprite dari satu atlas digambar berurutan
+```
+
+Batch putus setiap kali tekstur berganti dalam urutan gambar.
+
+### Bagian tubuh dua karakter saling menyelip
+
+```text title="✗ Keliru"
+zombie_A/lengan  Order in Layer 3
+zombie_B/badan   Order in Layer 2
+zombie_B/kepala  Order in Layer 4    // lengan A muncul di antara badan dan kepala B
+```
+
+```text title="✓ Benar"
+zombie_A  + Sorting Group (Unity) / satu node karakter di bawah induk Y-sort (Godot)
+zombie_B  + Sorting Group
+```
+
+Setiap karakter diurutkan sebagai satu kesatuan, potongannya diurutkan di dalam kelompok.
+
+### Karakter tersangkut di lantai tilemap yang rata
+
+```text title="✗ Keliru"
+satu collider kotak per tile, tanpa digabung
+```
+
+```text title="✓ Benar"
+Tilemap Collider 2D + Composite Collider 2D, Composite Operation: Merge (Unity)
+bentuk collision di Physics Layer TileSet, digabung per physics quadrant (Godot)
+```
+
+Sambungan antar-kotak punya sudut yang bisa ditabrak collider karakter.
+
+### Normal map dipasang, cahaya malah redup
+
+```text title="✗ Keliru"
+PointLight2D.height = 0      // cahaya sejajar bidang gambar
+```
+
+```text title="✓ Benar"
+PointLight2D.height = 50 sampai 150, lalu sesuaikan energy
+```
+
+Permukaan yang menghadap kamera butuh cahaya yang datang dari atas bidang gambar. Angka di contoh adalah titik awal untuk dicoba, sesuaikan dengan ukuran sprite-mu. Di Unity, peran yang sama dipegang **Normal Map Distance**.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan di Unity (template Universal 2D) atau Godot. Pakai gambar buatanmu sendiri atau aset berlisensi jelas.
+
+1. **Pivot dan Y-sort.** Buat satu karakter dan tiga pohon tinggi. Nyalakan Y-sort (Custom Axis (0, 1, 0) dan Sprite Sort Point Pivot di Unity, `y_sort_enabled` pada induk di Godot). Jalankan karakter memutari pohon dengan pivot pohon di tengah, lalu dengan pivot di pangkal batang. Di posisi mana urutannya salah pada percobaan pertama?
+2. **Atlas dan draw call.** Taruh 100 sprite dari 10 gambar berbeda di layar. Catat draw call-nya (Frame Debugger di Unity, Debugger → Monitors di Godot). Kemas semuanya ke satu atlas dan catat lagi. Lalu pisahkan ke dua atlas dan susun lapisannya supaya berselang-seling. Apa yang terjadi pada angkanya?
+3. **Tilemap.** Buat tileset tanah dengan varian tepi dan sudut. Atur penyambungan otomatis (Rule Tile di Unity, Terrain Set di Godot) dan lukis sebuah pulau. Tambahkan collision, lalu bandingkan bentuk collider sebelum dan sesudah digabung dengan menampilkan debug collision.
+4. **Rig tulang.** Potong satu karakter menjadi minimal enam bagian. Rig di Skinning Editor (Unity) atau Skeleton2D dengan Polygon2D (Godot), lalu buat animasi jalan 1 detik. Duplikasi karakter itu dua kali dan letakkan berdempetan. Apakah potongannya saling menyelip? Perbaiki dengan cara dari bagian [Urutan gambar](#urutan-gambar).
+5. **Cahaya.** Buat ruangan gelap (Global light redup di Unity, CanvasModulate gelap di Godot) dengan satu obor yang mengikuti pemain. Tambahkan normal map pada dinding, lalu ubah tinggi virtual cahayanya dari kecil ke besar. Terakhir, nyalakan bayangan dengan satu penghalang dan bandingkan waktu GPU per frame sebelum dan sesudahnya.

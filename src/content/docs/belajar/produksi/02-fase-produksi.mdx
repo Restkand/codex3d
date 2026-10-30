@@ -1,0 +1,448 @@
+---
+title: "Fase Produksi"
+description: "Konsep, pra-produksi, produksi, alpha dan beta, rilis, dan pascarilis: tujuan, keluaran, orang yang paling sibuk, keputusan di akhir, dan risiko setiap fase, untuk tim kecil maupun studio besar, termasuk sprint di dalam fase dan Early Access sebagai jalur lain."
+fundamental: "Setiap fase pengembangan game menjawab pertanyaan yang berbeda, dan jawaban dari satu fase menjadi dasar fase berikutnya. Tim yang mulai membuat puluhan level sebelum tahu cara membuat satu level dengan baik biasanya baru sadar setelah banyak kerja harus diulang. Memahami urutan fase membantumu tahu pertanyaan apa yang harus dijawab sekarang dan keputusan apa yang belum perlu diambil."
+kind: lesson
+minutes: 30
+status: draf
+lastReviewed: 2026-10-30
+krekit:
+  gambaran-besar: "Nama fasenya tidak terlalu penting. Yang penting, setiap fase punya pertanyaan dan keputusan di ujungnya."
+  konsep: "Kalau idemu belum muat di satu halaman, biasanya idenya belum jelas, belum tentu halamannya yang kurang."
+  pra-produksi: "Pra-produksi terasa lambat karena hasilnya belum banyak. Padahal di sinilah kesalahan paling murah diperbaiki."
+  produksi: "Di produksi, rasa \"sudah hampir selesai\" sering menipu. Lihat angka sisa pekerjaannya saja."
+  alpha-dan-beta: "Setelah fitur dikunci, ide baru tetap boleh ditulis. Tempatnya di daftar untuk update atau game berikutnya."
+  rilis: "Hitung mundur dari tanggal rilis, termasuk waktu tunggu review platform. Seminggu bisa hilang di situ."
+  pascarilis: "Satu sore untuk catatan postmortem bisa menghemat berbulan-bulan di proyek berikutnya."
+  tim-kecil-dan-studio-besar: "Di tim dua orang, gerbangnya cuma obrolan di meja makan. Tetap tulis keputusannya."
+  iterasi-di-dalam-fase: "Sprint menjawab \"minggu ini kita mengerjakan apa\". Gerbang fase menjawab \"proyek ini lanjut atau tidak\"."
+  early-access-sebagai-jalur-lain: "Early Access itu janji kerja jangka panjang kepada pemain. Pikirkan dulu apakah kamu sanggup menepatinya."
+  contoh-sari-dan-dimas-dari-konsep-sampai-pascarilis: "Angkanya karangan. Perhatikan kapan mereka berhenti untuk memutuskan sesuatu."
+  kesalahan-umum: "Lembur panjang di akhir proyek biasanya berawal dari keputusan yang ditunda berbulan-bulan sebelumnya."
+sidebar:
+  order: 2
+  label: "2 · Fase Produksi"
+quiz:
+  - q: "Tim kecilmu sudah punya prototipe yang menyenangkan. Seorang anggota ingin langsung membuat 30 level. Apa yang sebaiknya dibuktikan dulu?"
+    options:
+      - "Tidak ada, prototipe yang menyenangkan sudah cukup sebagai bukti"
+      - "Bahwa satu level bisa dibuat sampai mendekati final dengan pipeline yang akan dipakai seterusnya, dan berapa lama waktunya"
+      - "Bahwa trailer game sudah siap"
+      - "Bahwa semua bahasa terjemahan sudah dipilih"
+    answer: 1
+    explain: "Prototipe menjawab apakah idenya menyenangkan. Sebelum produksi, tim perlu tahu cara membuat kontennya dan berapa biayanya. Itu tugas vertical slice di akhir pra-produksi. Kalau 30 level dibuat sebelum pipeline teruji, setiap masalah pipeline ikut terulang 30 kali."
+  - q: "Apa ciri utama fase produksi?"
+    options:
+      - "Mencari ide game baru"
+      - "Membuat sebagian besar konten dengan pipeline yang sudah teruji, sambil memantau laju kerja terhadap rencana"
+      - "Mengirim build ke review platform"
+      - "Menulis postmortem"
+    answer: 1
+    explain: "Produksi biasanya fase terpanjang dan jumlah orang yang bekerja paling banyak. Pekerjaannya sebagian besar membuat konten berulang kali. Karena itu, laju kerja (berapa konten selesai per minggu) dibandingkan terus dengan sisa pekerjaan."
+  - q: "Game-mu sudah beta. Seorang playtester mengusulkan mode baru yang menarik. Langkah mana yang paling masuk akal?"
+    options:
+      - "Langsung mengerjakannya karena masukan pemain selalu diutamakan"
+      - "Mencatatnya untuk update atau game berikutnya, karena di beta tim sudah berhenti menambah fitur dan fokus ke bug, performa, dan balancing"
+      - "Menunda rilis tanpa batas sampai mode itu selesai"
+      - "Menghapus fitur lain secara acak untuk memberi tempat"
+    answer: 1
+    explain: "Fitur baru di beta harus didesain, dibuat, diuji, dan diperbaiki pada saat tim seharusnya memoles. Ide yang bagus tidak hilang kalau dicatat. Kalau idenya memang sangat penting, keputusan itu diambil bersama dengan menghitung ulang jadwal, tidak diselipkan diam-diam."
+  - q: "Menurut dokumentasi Steamworks, kapan Early Access tidak cocok?"
+    options:
+      - "Saat game sudah bisa dimainkan dan tim masih ingin mengubahnya berdasarkan masukan pemain"
+      - "Saat game baru berupa tech demo tanpa gameplay yang jelas, atau saat pengembangan sudah selesai dan tim hanya mencari pengujian bug akhir"
+      - "Saat tim ingin menulis rencana pengembangan di halaman toko"
+      - "Saat game masih dalam keadaan alpha yang bisa dimainkan"
+    answer: 1
+    explain: "Steamworks menyebut Early Access untuk game dalam keadaan alpha atau beta yang bisa dimainkan dan masih akan dikembangkan. Tech demo dianggap terlalu dini, dan game yang tinggal diuji bug dianggap terlalu matang. Untuk dua keadaan itu, Steamworks menyarankan membagikan key ke penggemar atau playtest internal."
+  - q: "Apa hubungan sprint dan gerbang fase?"
+    options:
+      - "Keduanya sama, hanya beda nama"
+      - "Sprint adalah putaran kerja pendek di dalam fase untuk memeriksa dan menyesuaikan rencana. Gerbang fase adalah keputusan besar di akhir fase, misalnya lanjut ke produksi atau mengubah scope"
+      - "Tim yang memakai sprint tidak perlu gerbang fase"
+      - "Gerbang fase terjadi setiap hari"
+    answer: 1
+    explain: "Scrum Guide mendefinisikan sprint sebagai putaran dengan panjang tetap, paling lama satu bulan, yang diakhiri peninjauan hasil. Gerbang fase lebih jarang dan menyangkut seluruh proyek. Banyak tim memakai keduanya: sprint untuk pekerjaan sehari-hari, gerbang untuk keputusan go atau no-go."
+  - q: "Di bulan terakhir, tim harus lembur setiap hari agar rilis tepat waktu. Dari sudut pandang perencanaan, apa pertanyaan pertama yang paling berguna?"
+    options:
+      - "Siapa yang paling lambat bekerja?"
+      - "Keputusan apa yang tertunda sebelumnya, misalnya scope yang tidak dihitung ulang setelah vertical slice atau fitur yang masuk setelah alpha?"
+      - "Bagaimana menambah jam kerja minggu depan?"
+      - "Apakah cadangan waktu untuk bug bisa dihapus?"
+    answer: 1
+    explain: "Lembur panjang di akhir proyek biasanya gejala dari rencana yang tidak lagi cocok dengan kenyataan, dan selisihnya sudah ada sejak lama. Mencari keputusan yang tertunda membantu memperbaiki rencana sekarang dan mencegah hal serupa di proyek berikutnya."
+sources:
+  - title: "Early Access"
+    url: "https://partner.steamgames.com/doc/store/earlyaccess"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-30
+  - title: "Review Process"
+    url: "https://partner.steamgames.com/doc/store/review_process"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-30
+  - title: "Coming Soon"
+    url: "https://partner.steamgames.com/doc/store/coming_soon"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-30
+  - title: "The 2020 Scrum Guide"
+    url: "https://scrumguides.org/scrum-guide.html"
+    publisher: "Ken Schwaber dan Jeff Sutherland, Scrum Guides (2020)"
+    accessed: 2026-10-30
+  - title: "Beyond Scrum: Agile Project Management for Games"
+    url: "https://gdcvault.com/play/1012345/Beyond-Scrum-Agile-Project-Management"
+    publisher: "Clinton Keith (Clinton Keith Consulting), GDC 2010, GDC Vault"
+    accessed: 2026-10-30
+  - title: "One-Page Designs"
+    url: "https://gdcvault.com/play/1012356/One-Page"
+    publisher: "Stone Librande (EA/Maxis), GDC 2010, GDC Vault"
+    accessed: 2026-10-30
+  - title: "The Vertical Slice Challenge"
+    url: "https://gdcvault.com/play/1022329/The-Vertical-Slice"
+    publisher: "Greg Donovan (Volition), GDC 2015, GDC Vault"
+    accessed: 2026-10-30
+  - title: "Darkest Dungeon: A Design Postmortem"
+    url: "https://gdcvault.com/play/1023089/Darkest-Dungeon-A-Design"
+    publisher: "Tyler Sigman (Red Hook Studios), GDC 2016, GDC Vault"
+    accessed: 2026-10-30
+  - title: "'Dead Cells': What the F*n!?"
+    url: "https://gdcvault.com/play/1025788/-Dead-Cells-What-the"
+    publisher: "Sebastien Benard (Motion Twin), GDC 2019, GDC Vault"
+    accessed: 2026-10-30
+  - title: "The Game Outcomes Project: How Teamwork, Leadership and Culture Drive Results"
+    url: "https://gdcvault.com/play/1022972/The-Game-Outcomes-Project-How"
+    publisher: "Paul Tozour (Mothership Entertainment), GDC 2016, GDC Vault"
+    accessed: 2026-10-30
+  - title: "Production Essentials Summit: Anti-Crunch: Patterns and Practices"
+    url: "https://gdcvault.com/play/1027559/Production-Essentials-Summit-Anti-Crunch"
+    publisher: "Chris Cobb (Pragma Platform), GDC 2022, GDC Vault"
+    accessed: 2026-10-30
+  - title: "Alpha, Beta, Gold: A Commitment to High-quality Game Development"
+    url: "https://www.filamentgames.com/blog/alpha-beta-gold-commitment-high-quality-game-development"
+    publisher: "Jennifer Javornik, Filament Games (2017)"
+    accessed: 2026-10-30
+  - title: "The Game Production Toolbox"
+    url: "https://www.routledge.com/The-Game-Production-Toolbox/Chandler/p/book/9781138341708"
+    publisher: "Heather Maxwell Chandler, CRC Press (2019)"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menyebut fase pengembangan game dari konsep sampai pascarilis, beserta tujuan dan keluaran setiap fase.
+- Menjelaskan siapa yang paling sibuk di setiap fase dan keputusan apa yang diambil di akhirnya.
+- Mengenali risiko yang khas untuk setiap fase.
+- Membandingkan bentuk fase di tim indie kecil dan di studio besar.
+- Menjelaskan bagaimana sprint berjalan di dalam fase, dan kapan Early Access bisa menjadi jalur lain.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: merenovasi rumah">
+Orang yang merenovasi rumah biasanya tidak langsung membongkar dinding. Ada tahap memutuskan mau seperti apa rumahnya, lalu tahap gambar kerja, anggaran, dan memilih tukang. Setelah itu baru pembangunan, lalu pemeriksaan dan perbaikan detail, serah terima kunci, dan masa garansi. Membongkar dinding sebelum gambar kerja jadi memang terasa cepat, tetapi sering berakhir dengan membongkar lagi.
+</Aside>
+
+Pengembangan game biasanya dibagi menjadi beberapa fase. Namanya berbeda antar studio, tetapi urutannya mirip:
+
+| Fase | Pertanyaan utama | Keluaran yang umum | Keputusan di akhir |
+| --- | --- | --- | --- |
+| Konsep | Game apa yang mau dibuat, untuk siapa, dan kenapa menarik? | Pitch, one-pager, target pemain, referensi | Layak dikembangkan lebih jauh atau tidak |
+| Pra-produksi | Apakah game ini menyenangkan, dan bagaimana cara membuatnya? | Prototipe, vertical slice, pipeline, pilihan teknologi, jadwal, anggaran | Lanjut ke produksi, perkecil scope, atau ubah arah |
+| Produksi | Bisakah semua konten dibuat sesuai rencana? | Fitur dan konten dalam jumlah penuh, build berkala | Sampai alpha: fitur lengkap |
+| Alpha dan beta | Apakah game ini stabil, seimbang, dan siap diuji orang luar? | Fitur dan konten dikunci, bug ditekan, hasil playtest, terjemahan | Siap menjadi release candidate |
+| Rilis | Apakah build ini siap dijual atau dibagikan? | Release candidate, lolos review platform, halaman toko, build rilis | Tombol rilis ditekan |
+| Pascarilis | Apa yang perlu diperbaiki, ditambah, dan dipelajari? | Patch, update, dukungan pemain, postmortem | Lanjut merawat game, atau menutup proyek |
+
+Pelajaran [Scope dan Vertical Slice](/belajar/produksi/01-scope-vertical-slice/) sudah membahas milestone dari prototipe sampai release candidate, lengkap dengan kriteria keluarnya. Milestone itu adalah titik periksa di dalam fase-fase ini. Prototipe dan vertical slice ada di pra-produksi. Alpha menandai akhir produksi penuh. Beta dan release candidate ada di bagian akhir proyek. Pelajaran ini melihat gambar yang lebih luas: apa yang dikerjakan di antara titik-titik periksa itu, sebelum titik pertama, dan sesudah titik terakhir.
+
+Setiap fase diakhiri sebuah **gerbang**: momen ketika tim (dan publisher atau investor, kalau ada) memeriksa hasil fase itu lalu memutuskan apakah proyek lanjut, berubah, atau berhenti. Gerbang yang jujur kadang menghasilkan keputusan untuk berhenti, dan berhenti di akhir konsep jauh lebih murah daripada berhenti di tengah produksi.
+
+## Konsep
+
+Fase konsep mencari jawaban atas pertanyaan dasar: game apa yang mau dibuat, untuk siapa, dan kenapa orang mau memainkannya. Fase ini biasanya singkat dan melibatkan sedikit orang. Hasilnya sebagian besar berupa dokumen dan percobaan kecil.
+
+Keluaran yang umum:
+
+- **Pitch**: penjelasan singkat tentang game, cukup untuk membuat orang lain (rekan tim, publisher, calon investor) paham dan tertarik.
+- **One-pager**: ringkasan desain sepanjang satu halaman. Di GDC 2010, Stone Librande (EA/Maxis) memperlihatkan dokumen desain satu halaman dari *Diablo III*, *The Simpsons*, dan *Spore*. Menurut deskripsi sesinya, alasannya sederhana: kebanyakan orang hanya membaca halaman pertama.
+- **Target pemain**: siapa yang akan memainkan game ini, di perangkat apa, dan game apa yang sudah mereka mainkan.
+- **Referensi**: game, film, atau gambar yang mewakili rasa bermain dan gaya visual yang dituju, termasuk game sejenis yang sudah dirilis untuk dibandingkan.
+- **Core loop** yang ditulis secara konkret, seperti di pelajaran [Core Loop](/belajar/desain-game/01-core-loop/) di jalur Desain Game.
+- **Perkiraan kasar** scope, waktu, dan dana, dalam bentuk rentang.
+
+Yang paling sibuk di fase ini biasanya pemegang visi (game director, lead designer, atau pendiri studio) dan orang yang mengurus dana atau publisher. Di tim kecil, keduanya sering orang yang sama.
+
+**Gerbang:** apakah ide ini cukup jelas dan cukup menarik untuk diberi waktu dan dana pra-produksi? Untuk studio yang bekerja dengan publisher, gerbang ini sering berupa presentasi pitch. Untuk tim indie, gerbangnya bisa berupa keputusan untuk memakai tabungan selama beberapa bulan.
+
+Risiko yang umum:
+
+- Ide terlalu kabur untuk diuji ("game petualangan yang emosional"), sehingga pra-produksi tidak tahu harus membuktikan apa.
+- Tidak ada pembanding. Tanpa melihat game sejenis, tim sulit memperkirakan ukuran pekerjaan dan ukuran pasarnya.
+- Terlalu lama di fase ini. Dokumen bisa terus disempurnakan, padahal banyak pertanyaan hanya bisa dijawab dengan sesuatu yang bisa dimainkan.
+
+## Pra-produksi
+
+Pra-produksi menjawab dua pertanyaan: apakah game ini menyenangkan, dan bagaimana cara membuatnya dengan waktu dan dana yang ada. Fase ini sering terasa lambat karena hasilnya belum terlihat banyak. Justru di sini perubahan arah masih murah.
+
+Keluaran yang umum:
+
+- **Prototipe** untuk menguji mekanik inti dan risiko teknis terbesar.
+- **Vertical slice**: satu bagian kecil game yang dibuat sampai mendekati final di semua lapisan, lengkap dengan catatan waktu per aset. Rinciannya ada di pelajaran sebelumnya, di bagian [apa yang harus dibuktikan vertical slice](/belajar/produksi/01-scope-vertical-slice/#apa-yang-harus-dibuktikan-vertical-slice).
+- **Pipeline** yang teruji: jalan yang ditempuh setiap jenis aset dari ide sampai masuk game, termasuk alat, format file, dan aturan penamaan.
+- **Pilihan teknologi**: engine, versi engine, plugin, layanan online, dan platform target. Mengganti engine di tengah produksi sangat mahal, jadi pilihan ini sebaiknya diuji di sini.
+- **Panduan gaya**: contoh art, animasi, dan audio yang menjadi acuan semua aset berikutnya.
+- **Jadwal dan anggaran** produksi yang dihitung ulang dengan angka dari vertical slice, termasuk daftar must, should, could, dan won't.
+- **Persiapan lokalisasi** kalau game akan diterjemahkan: teks disimpan terpisah dari kode dan UI diberi ruang untuk kalimat yang lebih panjang. Menyiapkannya sekarang jauh lebih murah daripada membongkar ratusan teks di akhir proyek.
+
+Yang paling sibuk: programmer yang membangun fondasi teknis dan alat, desainer yang membuat dan menguji prototipe, dan art director yang menetapkan gaya. Jumlah orangnya masih kecil dibandingkan produksi. Di studio besar, sebagian tim produksi biasanya belum bergabung.
+
+**Gerbang:** vertical slice. Deskripsi talk GDC 2015 Greg Donovan (Volition) menyebut vertical slice sebagai gerbang dari pra-produksi ke produksi, yang menunjukkan apakah tim paham apa yang dibuat dan bagaimana cara membuatnya. Pilihannya: lanjut dengan scope yang sudah dihitung ulang, perkecil scope, atau ubah arah.
+
+Risiko yang umum:
+
+- Pra-produksi dipotong karena terasa tidak produktif, sehingga pertanyaan yang belum terjawab pindah ke produksi dan dijawab dengan biaya lebih mahal.
+- Prototipe tidak pernah dibuang, dan kodenya diam-diam menjadi fondasi produksi.
+- Vertical slice dibuat dengan lembur dan trik manual, sehingga angkanya terlalu optimis.
+
+## Produksi
+
+Produksi adalah fase terpanjang. Di sini sebagian besar fitur dan konten dibuat dengan pipeline yang sudah teruji: level, musuh, item, animasi, suara, dialog. Pertanyaannya bergeser dari "bagaimana" menjadi "berapa banyak, dan apakah sempat".
+
+Keluaran yang umum:
+
+- Fitur dan konten dalam jumlah penuh, sesuai daftar scope.
+- **Build berkala** yang bisa dimainkan, misalnya setiap minggu atau setiap akhir sprint, supaya masalah integrasi cepat terlihat.
+- Milestone di tengah produksi yang diperiksa dengan kriteria tertulis.
+- Catatan **laju kerja** (*burn*): berapa banyak pekerjaan selesai per minggu, dibandingkan dengan sisa pekerjaan dan sisa waktu.
+
+Melacak laju kerja adalah inti pekerjaan produser di fase ini. Caranya bisa sederhana: hitung berapa level selesai per minggu, lalu bagi sisa level dengan angka itu. Kalau hasilnya melewati tanggal alpha, kamu tahu sekarang, dan masih ada waktu untuk memotong scope dengan tenang. Contoh hitung ulang seperti ini ada di [contoh scoping pelajaran sebelumnya](/belajar/produksi/01-scope-vertical-slice/#contoh-scoping-game-2d-untuk-tim-dua-orang).
+
+Yang paling sibuk: pembuat konten, seperti artist, animator, level designer, penulis, dan audio designer. Di studio besar, jumlah orang biasanya paling banyak di fase ini, termasuk tenaga outsourcing. Produser sibuk menjaga jadwal dan mengatur prioritas.
+
+**Gerbang:** alpha. Semua fitur sudah ada di game, walaupun kontennya mungkin belum lengkap dan masih ada aset sementara. Setelah alpha, tim berhenti menambah fitur besar.
+
+Risiko yang umum:
+
+- Laju kerja lebih lambat dari angka vertical slice dan tidak ada yang menghitung ulang.
+- Fitur baru terus masuk tanpa ada yang keluar.
+- Konten dibuat berbulan-bulan tanpa dimainkan utuh, sehingga masalah alur dan tingkat kesulitan baru terlihat di beta.
+
+## Alpha dan beta
+
+Setelah alpha, fokus tim berpindah dari menambah menjadi menyelesaikan dan memoles. Alpha dan beta sering dibahas bersama karena pekerjaannya bersambung: alpha mengunci fitur, beta mengunci konten.
+
+Pekerjaan dan keluaran yang umum:
+
+- **Feature lock dan content lock.** Setelah fitur dikunci, tidak ada fitur baru. Setelah konten dikunci, tidak ada level atau aset baru, kecuali pengganti aset sementara.
+- **Triase bug.** Setiap bug dicatat, diberi tingkat keparahan, lalu diputuskan: diperbaiki sekarang, ditunda, atau dibiarkan. Bug yang membuat game crash atau progres pemain hilang hampir selalu didahulukan.
+- **Balancing**: menyetel tingkat kesulitan, harga, waktu, dan angka lain berdasarkan data playtest.
+- **Playtest eksternal** dengan orang di luar tim, kadang dalam bentuk beta tertutup atau terbuka.
+- **Performa**: memastikan frame rate memenuhi target di perangkat yang didukung. Filament Games, misalnya, mensyaratkan frame rate target di sebagian besar skenario uji untuk beta dan di semua skenario untuk tahap siap rilis.
+- **Lokalisasi**: teks yang sudah dikunci diterjemahkan, lalu diperiksa di dalam game karena terjemahan bisa terlalu panjang untuk tombol atau terpotong di layar.
+
+Yang paling sibuk: QA (penguji), programmer yang memperbaiki bug dan performa, desainer yang menyetel balancing, dan penerjemah. Artist mulai lebih sedikit pekerjaannya, kecuali untuk polish dan perbaikan visual.
+
+**Gerbang:** release candidate. Build dianggap layak dirilis kalau lolos pengujian akhir.
+
+Risiko yang umum:
+
+- Fitur baru tetap masuk setelah alpha karena "cuma kecil", lalu membawa bug baru ke build yang seharusnya makin stabil.
+- Daftar bug terus bertambah karena tidak ada keputusan tegas tentang bug mana yang boleh dibiarkan.
+- Playtest eksternal dimulai terlalu dekat dengan rilis, sehingga masukan penting tidak sempat ditindaklanjuti.
+
+## Rilis
+
+Fase rilis mengubah build yang sudah stabil menjadi produk yang bisa dibeli atau diunduh pemain. Banyak pekerjaannya ada di luar kode, dan sebagian bergantung pada pihak lain, misalnya pemilik platform.
+
+Keluaran dan pekerjaan yang umum:
+
+- **Release candidate**: build yang akan dirilis kalau tidak ditemukan masalah serius. Kalau masih ada, bug diperbaiki dan dibuat release candidate baru.
+- **Review atau sertifikasi platform.** Setiap platform memeriksa game sebelum rilis, dengan aturan dan kedalaman yang berbeda. Di konsol, prosesnya biasa disebut sertifikasi: build diuji terhadap daftar persyaratan teknis pemilik platform. Detail persyaratan itu umumnya hanya bisa dibaca developer yang terdaftar di program platform tersebut, jadi rencanakan waktunya sejak awal dan baca dokumen resminya begitu kamu punya akses.
+- **Halaman toko**: deskripsi, screenshot, trailer, tanggal rilis, dan harga.
+- **Build rilis** yang diunggah ke setiap toko, plus rencana untuk patch hari pertama.
+
+Sebagai contoh yang dokumentasinya terbuka, Steam memeriksa halaman toko dan build sebelum game pertama kali dirilis. Menurut dokumentasi Steamworks:
+
+- Game baru harus punya halaman *Coming Soon* yang tampil setidaknya dua minggu sebelum rilis.
+- Review halaman toko dan review build masing-masing biasanya selesai dalam 3 sampai 5 hari kerja. Valve menyarankan mengajukan halaman toko setidaknya 7 hari kerja sebelum ingin tayang, dan menyiapkan setidaknya 7 hari kerja untuk review build.
+- Halaman toko hanya boleh memuat fitur dan konten yang ada saat rilis. Fitur yang direncanakan harus dihapus dari daftar fitur sampai benar-benar ada di build.
+- Setelah game disetujui, update berikutnya tidak perlu melewati review lagi.
+
+Aturan platform bisa berubah, jadi periksa dokumentasi resminya saat kamu benar-benar bersiap rilis.
+
+**Patch hari pertama** (*day-one patch*) adalah update yang dirilis bersamaan atau sangat dekat dengan tanggal rilis. Patch ini biasanya ada karena tim terus memperbaiki bug selama build rilis sedang direview atau diproduksi. Patch hari pertama yang direncanakan berbeda dengan patch darurat karena build rilis ternyata tidak layak.
+
+Yang paling sibuk: produser yang mengatur jadwal dan pengajuan, programmer yang menyiapkan build, QA, serta orang yang mengurus marketing dan komunitas.
+
+**Gerbang:** tombol rilis ditekan, setelah build dan halaman toko disetujui.
+
+Risiko yang umum:
+
+- Waktu tunggu review platform tidak masuk jadwal, sehingga tanggal rilis yang sudah diumumkan terancam.
+- Halaman toko dibuat terburu-buru di minggu terakhir.
+- Tidak ada rencana kalau build rilis punya bug serius, misalnya siapa yang siaga dan bagaimana patch diuji.
+
+## Pascarilis
+
+Pekerjaan masih berlanjut setelah tombol rilis ditekan. Setelah game dimainkan banyak orang, muncul bug yang tidak pernah terlihat di pengujian, pertanyaan dari pemain, dan masukan tentang balancing.
+
+Pekerjaan yang umum:
+
+- **Patch** untuk bug dan masalah performa yang ditemukan pemain.
+- **Update konten** atau ekspansi, kalau direncanakan.
+- **Live ops** untuk sebagian game, terutama game online dan game layanan: event berkala, musim, pengaturan ekonomi, dan pemantauan server. Untuk game seperti ini, pascarilis bisa berlangsung bertahun-tahun dan butuh tim tetap.
+- **Dukungan pemain**: menjawab laporan masalah, permintaan refund, dan pertanyaan di forum atau media sosial.
+- **Postmortem**: evaluasi jujur tentang apa yang berjalan baik, apa yang tidak, dan apa yang akan dilakukan berbeda di proyek berikutnya. Topik ini akan dibahas di pelajaran Postmortem di jalur ini, yang masih dalam rencana.
+
+Yang paling sibuk: programmer yang membuat patch, orang yang mengurus komunitas dan dukungan pemain, dan untuk game live ops, tim desain dan konten yang menyiapkan update.
+
+**Gerbang:** kapan berhenti menambah update besar dan beralih ke perawatan minimal, atau ke proyek berikutnya. Keputusan ini sering tidak diambil secara sadar, sehingga tim terus menambal game lama tanpa rencana.
+
+Risiko yang umum:
+
+- Tidak ada waktu dan dana yang disisihkan untuk patch setelah rilis, karena semua habis untuk mencapai tanggal rilis.
+- Postmortem dilewati karena tim sudah lelah atau langsung pindah ke proyek baru, sehingga kesalahan yang sama terulang.
+
+## Tim kecil dan studio besar
+
+Fase-fase di atas berlaku untuk tim satu orang maupun ratusan orang. Bentuknya yang berbeda.
+
+| | Tim indie kecil | Studio besar |
+| --- | --- | --- |
+| Gerbang | Keputusan bersama, sering informal | Rapat resmi dengan publisher, investor, atau manajemen, kadang terikat pembayaran milestone di kontrak |
+| Peran | Satu orang memegang banyak peran sekaligus | Ada orang khusus untuk produksi, QA, lokalisasi, rilis, dan komunitas |
+| Jumlah orang per fase | Hampir tetap dari awal sampai akhir | Kecil di konsep, membesar di produksi, mengecil lagi setelah rilis |
+| Dokumen | Pendek, sering cukup satu halaman dan daftar tugas | Lebih banyak, karena banyak orang harus memakai informasi yang sama |
+| Risiko khas | Tidak ada yang mengurus produksi dan rilis, karena semua orang sibuk membuat game | Banyak orang menunggu keputusan, dan perubahan arah menjadi sangat mahal |
+
+Untuk tim kecil, dua hal sering terlupa. Pertama, gerbang tetap perlu walaupun tidak ada publisher. Menulis keputusan di akhir setiap fase ("lanjut ke produksi dengan 12 level, co-op dipindah ke won't have") membuat semua orang memegang rencana yang sama. Kedua, pekerjaan fase rilis dan pascarilis tetap ada walaupun tidak ada orang khusus untuknya, jadi masukkan ke jadwal sejak awal.
+
+## Iterasi di dalam fase
+
+Urutan fase terlihat seperti air terjun: satu fase selesai, baru fase berikutnya mulai. Di dalam setiap fase, pekerjaannya tetap berulang dalam putaran pendek. Banyak tim memakai keduanya: putaran pendek untuk pekerjaan sehari-hari, dan gerbang fase untuk keputusan besar.
+
+### Sprint
+
+Salah satu cara yang banyak dipakai adalah **Scrum**. Menurut Scrum Guide 2020, pekerjaan dibagi menjadi **sprint**: putaran dengan panjang tetap, paling lama satu bulan, yang langsung disambung sprint berikutnya. Setiap sprint punya tujuan, diawali perencanaan, dan diakhiri peninjauan hasil dan retrospektif. Hasil setiap sprint berupa *increment*, pekerjaan yang benar-benar selesai menurut definisi "selesai" yang disepakati tim.
+
+Scrum Guide juga mencatat bahwa sprint yang lebih pendek memberi lebih banyak kesempatan belajar dan membatasi risiko ke rentang waktu yang lebih kecil. Untuk game, itu berarti build yang bisa dimainkan sering diperiksa, sehingga masalah rasa bermain dan integrasi cepat terlihat.
+
+### Cara kerja berubah antar fase
+
+Cara kerja yang cocok untuk pra-produksi belum tentu cocok untuk produksi. Di GDC 2010, Clinton Keith membahas bagaimana praktik Scrum berubah dari pengembangan konsep, pra-produksi, sampai produksi. Menurut deskripsi sesinya, di produksi ia menambahkan praktik Lean seperti Kanban untuk memindahkan fokus dari iterasi ke efisiensi, dan membahas cara mengelola risiko agar tim dengan tanggal rilis tetap juga bisa memakai Scrum.
+
+Alasannya masuk akal kalau kamu melihat isi pekerjaannya:
+
+- **Di pra-produksi**, pekerjaan penuh ketidakpastian. Sprint pendek dengan tujuan berupa pertanyaan ("apakah dash terasa enak dengan cooldown 0,5 detik?") cocok di sini.
+- **Di produksi**, banyak pekerjaan berupa aliran aset yang mirip satu sama lain: level demi level, musuh demi musuh. Papan Kanban yang memperlihatkan setiap aset bergerak dari sketsa sampai selesai membantu melihat di langkah mana pekerjaan menumpuk.
+- **Di alpha dan beta**, pekerjaan didominasi daftar bug yang terus berubah prioritasnya, sehingga triase harian sering lebih berguna daripada rencana sprint yang panjang.
+
+### Gerbang tetap diperlukan
+
+Sprint menjawab "apa yang dikerjakan dua minggu ini". Gerbang fase menjawab pertanyaan yang lebih besar: apakah proyek ini layak diteruskan dengan scope dan dana sekarang. Tim yang hanya memakai sprint tanpa pernah berhenti di gerbang bisa terus berputar di pra-produksi, atau masuk produksi tanpa pernah membuktikan pipeline-nya.
+
+## Early Access sebagai jalur lain
+
+Jalur di atas berakhir dengan satu rilis besar. Early Access menggeser sebagian pengembangan ke setelah game mulai dijual: game dirilis dalam keadaan belum selesai, lalu dikembangkan bersama pemain.
+
+Dokumentasi Steamworks menjelaskan Early Access di Steam sebagai cara menjual game yang masih dikembangkan, untuk game dalam keadaan **alpha atau beta yang bisa dimainkan**, sepadan dengan harga build saat itu, dan masih akan dikembangkan sampai rilis. Beberapa aturan dan saran dari dokumentasi itu:
+
+- Early Access bukan cara untuk mendanai pengembangan (*crowdfunding*), dan bukan pre-order. Pembeli harus menerima game yang bisa dimainkan saat membeli.
+- Jangan membuat janji spesifik tentang masa depan, misalnya tanggal selesai atau fitur tertentu. Pembeli seharusnya membeli berdasarkan keadaan game saat ini.
+- Jangan masuk Early Access kalau game masih berupa tech demo atau tim belum tahu apa yang membuat game-nya menyenangkan. Itu terlalu dini.
+- Jangan masuk Early Access kalau pengembangan sudah selesai dan tim hanya mencari pengujian bug akhir. Itu terlalu matang, dan playtest atau membagikan key ke penggemar lebih cocok.
+- Game yang sudah dijual di Early Access tidak bisa kembali ke status *Coming Soon*. Untuk uji coba sementara yang bisa ditarik lagi, Steamworks menyarankan fitur Steam Playtest.
+- Game Early Access tidak mendapat visibilitas peluncuran penuh sampai dirilis versi penuh.
+- Kalau dalam 12 bulan tidak ada build baru atau pengumuman update, Steam menambahkan catatan di halaman toko bahwa game ini sudah lama tidak diperbarui.
+- Game bisa keluar dari Early Access saat developer menganggapnya fitur lengkap dan tidak lagi berubah besar. Setelah itu, pemain mengharapkan game yang stabil dan lengkap.
+
+Kalau dipetakan ke fase di atas, Early Access biasanya dimulai di sekitar alpha atau beta, lalu sebagian produksi dan seluruh polish terjadi di depan pemain. Fase konsep dan pra-produksi tetap ada. Aturan "jangan masuk tanpa game yang bisa dimainkan" pada dasarnya meminta core loop sudah terbukti.
+
+Beberapa studio membagikan pengalamannya di GDC. Menurut deskripsi sesinya, *Dead Cells* dari Motion Twin keluar dari Early Access pada Agustus 2018 setelah sekitar satu setengah tahun. Tyler Sigman dari Red Hook Studios menyebut iterasi desain *Darkest Dungeon* di tengah Early Access dengan komunitas besar sebagai bagian yang menegangkan. Pelajaran ini hanya merujuk deskripsi sesi tersebut, belum isi talk-nya.
+
+Early Access juga membawa risikonya sendiri. Game yang setengah jadi langsung dinilai pemain, dan tim harus sanggup merilis update rutin dan berkomunikasi dengan komunitas selama berbulan-bulan atau bertahun-tahun. Dokumentasi Steamworks juga meminta developer berpikir serius tentang apa yang terjadi kalau penjualan tidak mencapai target: apakah pengembangan tetap bisa lanjut tanpa penjualan?
+
+## Contoh: Sari dan Dimas dari konsep sampai pascarilis
+
+<Aside type="caution" title="Ilustrasi, bukan data">
+Jadwal dan kejadian di bagian ini dibuat untuk menunjukkan cara berpikir per fase dan tidak berasal dari proyek nyata. Lama setiap fase di proyekmu bisa sangat berbeda.
+</Aside>
+
+Sari (programmer dan desain) dan Dimas (art dan audio) adalah tim dua orang dari [contoh di pelajaran sebelumnya](/belajar/produksi/01-scope-vertical-slice/#contoh-scoping-game-2d-untuk-tim-dua-orang). Mereka membuat platformer 2D tentang kurir di kota bertingkat, dengan tabungan untuk 9 bulan kerja penuh waktu dan target rilis di Steam.
+
+```text title="Garis waktu (ilustrasi)"
+minggu 1 sampai 2    konsep
+minggu 3 sampai 12   pra-produksi (prototipe, vertical slice)
+bulan 4 sampai 7     produksi, alpha di akhir bulan 7
+bulan 8              beta
+bulan 9              release candidate, review Steam, rilis
+setelah rilis        patch, lalu postmortem
+```
+
+**Konsep (2 minggu).** Mereka menulis one-pager: kurir yang melompat antar atap untuk mengantar paket sebelum waktu habis. Target pemainnya penggemar platformer presisi di PC. Mereka memilih tiga game sejenis sebagai pembanding, lalu menulis core loop: lari, lompat, hindari, ambil paket, sampai tujuan. Gerbangnya obrolan di akhir minggu kedua: idenya cukup jelas untuk diuji, dan tabungan siap dipakai.
+
+**Pra-produksi (10 minggu).** Sari membuat prototipe gerak dalam bentuk kotak abu-abu. Setelah dash terasa enak, Dimas menetapkan gaya pixel art dan ukuran tile. Mereka memisahkan semua teks ke satu file karena berencana menambah bahasa. Vertical slice selesai di minggu ke-12, dan angka per level dipakai untuk menyusun daftar must sampai won't. Gerbangnya: lanjut ke produksi dengan 12 level, co-op dan port konsol masuk won't have. Karena arah visual sudah mantap, halaman *Coming Soon* di Steam mulai disiapkan.
+
+**Produksi (bulan 4 sampai 7).** Mereka bekerja dalam sprint dua minggu dan membuat build setiap Jumat. Sari mencatat jumlah level selesai per minggu. Di bulan kelima, laju kerjanya lebih lambat dari angka slice, dan mereka memotong could have seperti di contoh pelajaran sebelumnya. Di akhir bulan ketujuh, semua fitur sudah ada: alpha.
+
+**Beta (bulan 8).** Semua 12 level dan boss selesai, lalu konten dikunci. Mereka mengundang 15 pemain dari komunitas lokal untuk playtest. Dua masukan besar muncul: level 7 terlalu sulit, dan beberapa pemain ingin mode time attack. Level 7 disetel ulang. Time attack masuk daftar untuk update, karena fitur sudah dikunci.
+
+**Rilis (bulan 9).** Halaman toko diajukan untuk review jauh sebelum tanggal rilis, dan build diajukan dengan jarak lebih dari tujuh hari kerja sebelum tanggal yang mereka umumkan. Sambil menunggu review, mereka memperbaiki tiga bug kecil dan menyiapkannya sebagai patch hari pertama.
+
+**Pascarilis.** Minggu pertama dipakai untuk membaca laporan pemain dan merilis dua patch. Setelah itu, mereka meluangkan satu hari untuk postmortem: apa yang membuat produksi melambat (tile yang tidak bisa dipakai ulang), apa yang menolong (build setiap Jumat), dan apa yang akan mereka lakukan berbeda di game berikutnya.
+
+## Kesalahan umum
+
+### Melewati pra-produksi
+
+Tim langsung memproduksi level setelah prototipe terasa menyenangkan. Cara membuat level final, waktu per aset, dan batas performa belum diketahui, sehingga setiap masalah pipeline terulang di setiap level. Habiskan waktu untuk membuat satu bagian kecil sampai mendekati final sebelum memproduksi semuanya.
+
+### Konten dibuat sebelum pipeline terbukti
+
+```text title="✗ Keliru"
+bulan 2: 20 sprite musuh selesai
+bulan 3: ukuran tile dan skala karakter diubah
+         20 sprite musuh dibuat ulang
+```
+
+```text title="✓ Benar"
+bulan 2: 1 musuh dibuat sampai final, diimpor, dianimasikan, diuji di level
+         aturan ukuran dan skala ditulis
+bulan 4: musuh lain dibuat mengikuti aturan itu
+```
+
+Aset yang dibuat sebelum aturan teknisnya stabil sering harus dibuat ulang. Buktikan pipeline dengan satu aset dulu, lalu produksi.
+
+### Gerbang tanpa keputusan
+
+Tim mencapai tanggal "alpha", tetapi tidak ada yang memeriksa kriteria keluarnya, dan fitur baru tetap masuk. Gerbang hanya berguna kalau ada kriteria tertulis dan seseorang yang berani menyatakan bahwa kriterianya belum terpenuhi.
+
+### Rilis dan pascarilis tidak masuk jadwal
+
+Seluruh waktu habis untuk membuat game, lalu halaman toko, review platform, dan patch dikerjakan dalam kepanikan. Masukkan waktu review platform, halaman toko, dan beberapa minggu pascarilis ke jadwal sejak pra-produksi.
+
+### Menganggap crunch sebagai bagian normal dari rilis
+
+*Crunch* adalah periode lembur panjang, biasanya menjelang milestone atau rilis. Lembur seperti ini sering menjadi gejala masalah perencanaan: scope yang tidak dihitung ulang setelah vertical slice, fitur yang masuk setelah alpha, atau waktu review platform yang terlupa. Lembur tidak memperbaiki penyebab itu. Kelelahan malah bisa menambah bug di saat build seharusnya makin stabil.
+
+Ada developer yang membahas ini dengan data dan praktik. Menurut deskripsi sesinya di GDC 2016, Game Outcomes Project yang dipresentasikan Paul Tozour menemukan korelasi yang kuat dan konsisten antara faktor seperti kerja sama tim, kepemimpinan, dan crunch atau lembur dengan hasil proyek seperti skor MetaCritic, keterlambatan, tercapainya tujuan proyek, dan tingkat pengembalian investasi. Sesi itu juga membahas batasan penelitiannya, termasuk apa yang tidak bisa dibuktikan. Di GDC 2022, Chris Cobb (Pragma) membahas cara membuat milestone yang bisa dikirim tepat waktu tanpa crunch, termasuk menulis kode lebih awal dan sering mengirim build untuk mencegah masalah besar di akhir proyek. Kedua rujukan ini hanya diperiksa dari deskripsi sesinya.
+
+Kalau timmu mulai lembur terus-menerus, perlakukan itu sebagai tanda untuk memeriksa rencana: hitung ulang sisa pekerjaan, potong scope, atau geser tanggal.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan di kertas atau spreadsheet. Pakai ide game-mu sendiri, atau proyek yang sudah kamu mulai.
+
+1. Tulis one-pager untuk game-mu: ide utama, target pemain, tiga game pembanding, dan core loop.
+2. Untuk setiap fase, tulis satu kalimat pertanyaan utama yang harus dijawab proyekmu dan satu kriteria gerbang di akhirnya.
+3. Buat garis waktu kasar seperti contoh Sari dan Dimas. Pastikan ada waktu untuk review platform, halaman toko, dan minimal beberapa minggu pascarilis.
+4. Kalau proyekmu sudah berjalan, tentukan sekarang kamu ada di fase apa. Pertanyaan dari fase sebelumnya mana yang belum terjawab?
+5. Tulis tiga risiko terbesar proyekmu dan fase tempat setiap risiko sebaiknya diuji. Contoh: "level butuh waktu terlalu lama" diuji di vertical slice.
+6. Baca halaman Early Access di dokumentasi Steamworks. Apakah game-mu cocok untuk Early Access? Tulis alasanmu berdasarkan aturan di sana.

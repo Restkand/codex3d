@@ -1,0 +1,636 @@
+---
+title: "Game Feel"
+description: "Respons input (kurva percepatan, lompatan yang bisa diatur, coyote time, jump buffer, sumber jeda input dan cara mengukurnya), kamera (smoothing, dead zone, look-ahead, screen shake dengan trauma), umpan balik kecil seperti hit stop dan squash and stretch, cara menyetel sambil bermain, aksesibilitas, dan biaya setiap efek."
+fundamental: "Pemain sering menulis bahwa kontrol sebuah game terasa licin, berat, atau tidak menurut, tanpa bisa menunjuk penyebabnya. Penyebabnya biasanya angka kecil yang tersebar di banyak tempat: percepatan, beberapa frame jeda, kamera yang mengejar terlalu lambat, efek yang menutupi musuh. Kamu baru bisa memperbaikinya kalau tahu bagian mana yang membentuk rasa itu dan cara mengukurnya."
+kind: lesson
+minutes: 35
+status: draf
+lastReviewed: 2026-10-30
+terms:
+  - input-action
+  - delta-time
+  - fixed-timestep
+  - vsync
+  - lerp
+  - tween
+  - easing
+  - deadzone
+  - overdraw
+krekit:
+  gambaran-besar: "Coba mainkan game favoritmu sambil memperhatikan satu hal saja: apa yang terjadi di frame setelah kamu menekan tombol."
+  respons-input: "Pemain hampir tidak pernah memuji coyote time. Mereka hanya merasa game-nya adil."
+  kamera: "Kamera yang bagus jarang disadari. Kamera yang buruk langsung bikin pusing."
+  umpan-balik-yang-menguatkan-aksi: "Tambahkan satu per satu, lalu bandingkan. Kalau semuanya dipasang sekaligus, kamu tidak tahu mana yang berguna."
+  menyetel-sambil-bermain: "Angka yang terkubur di dalam kode jarang disentuh. Taruh di tempat yang gampang diubah."
+  saat-umpan-balik-menjadi-gangguan: "Menu aksesibilitas itu murah dibuat di awal, dan mahal ditambahkan belakangan."
+  biaya-setiap-efek: "Satu partikel itu murah. Seratus partikel transparan yang bertumpuk di depan kamera, lain cerita."
+  kesalahan-umum: "Kesalahan nomor satu paling sering kutemui di prototipe: kamera yang mengejar dengan angka 0,1 per frame."
+sidebar:
+  order: 2
+  label: "2 · Game Feel"
+quiz:
+  - q: "Pemain mengeluh: \"Aku sudah menekan lompat tepat sebelum mendarat, tapi karakternya diam saja.\" Fitur apa yang paling mungkin menyelesaikan keluhan ini?"
+    options:
+      - "Coyote time"
+      - "Jump buffer"
+      - "Screen shake saat mendarat"
+      - "Kamera dengan look-ahead"
+    answer: 1
+    explain: "Tombol ditekan saat karakter masih di udara, jadi game menolaknya. Jump buffer mengingat tekanan itu selama sepersekian detik, lalu menjalankannya begitu karakter menyentuh tanah. Coyote time menangani kasus sebaliknya: tombol ditekan sedikit setelah karakter meninggalkan pijakan."
+  - q: "Kode kamera menjalankan kamera = lerp(kamera, target, 0.1) sekali setiap frame. Apa yang terjadi di layar 144 Hz dibanding 60 Hz?"
+    options:
+      - "Sama saja, karena angkanya sama"
+      - "Kamera mengejar lebih cepat di 144 Hz, karena langkah 10% itu dijalankan lebih sering setiap detik"
+      - "Kamera mengejar lebih lambat di 144 Hz"
+      - "Kamera berhenti bergerak di 144 Hz"
+    answer: 1
+    explain: "Setiap frame kamera menempuh 10% sisa jarak. Di 144 Hz langkah itu terjadi 144 kali per detik, jadi kamera lebih cepat sampai. Versi yang sama di semua layar memakai delta time, misalnya lerp(kamera, target, 1 - exp(-kecepatan × delta))."
+  - q: "Kamu merekam layar dan tombol controller dengan mode slow motion 240 fps di ponsel. Dari frame video saat tombol mulai turun sampai karakter mulai bergerak ada 21 frame video. Berapa kira-kira jeda totalnya?"
+    options:
+      - "Sekitar 21 ms"
+      - "Sekitar 35 ms"
+      - "Sekitar 88 ms"
+      - "Sekitar 350 ms"
+    answer: 2
+    explain: "Satu frame video 240 fps berarti sekitar 4,2 ms. 21 × 4,2 ≈ 88 ms. Angka ini mencakup seluruh rantai: controller, sistem operasi, game, render, dan layar. Hasil dari satu kali tekan bisa meleset, jadi ulangi beberapa kali lalu ambil rata-ratanya."
+  - q: "Kamu menambahkan pengaturan untuk efek kilatan layar. Nama mana yang paling sesuai saran Game Accessibility Guidelines?"
+    options:
+      - "Mode aman epilepsi"
+      - "Efek kilatan layar: aktif / kurangi / mati"
+      - "Mode mudah"
+      - "Grafik rendah"
+    answer: 1
+    explain: "Pedoman itu meminta pengembang tidak memakai istilah epilepsy safe, karena risiko kejang tidak bisa dihilangkan sepenuhnya. Beri nama sesuai apa yang diubah pengaturan itu, misalnya efek kilatan layar atau intensitas efek."
+  - q: "Di game aksi yang pemainnya sering mengenai belasan musuh dalam satu ayunan, setiap pukulan diberi hit stop 0,08 detik. Apa risiko yang paling mungkin?"
+    options:
+      - "Tidak ada, hit stop selalu membuat pukulan terasa lebih kuat"
+      - "Jeda bertumpuk sehingga aksi terlalu sering berhenti dan game terasa lambat"
+      - "Frame rate turun karena hit stop berat dihitung"
+      - "Suara pukulan tidak terdengar"
+    answer: 1
+    explain: "Masahiro Sakurai menulis bahwa game yang menyerang banyak musuh sekaligus cenderung jarang memakai hit stop, karena aksi akan sering berhenti dan kecepatan game turun. Pilihannya antara lain: satu hit stop per ayunan, durasi lebih pendek, atau hanya untuk pukulan berat."
+  - q: "Kamu ingin screen shake terasa kuat untuk ledakan besar tetapi hampir tidak terasa untuk tembakan kecil. Pendekatan trauma mana yang cocok?"
+    options:
+      - "Besar guncangan = trauma, dan trauma tidak pernah berkurang"
+      - "Besar guncangan = trauma², dengan trauma yang berkurang seiring waktu"
+      - "Posisi kamera diacak penuh setiap frame"
+      - "Guncangan diterapkan ke posisi logika pemain"
+    answer: 1
+    explain: "Karena trauma ada di antara 0 dan 1, memangkatkannya membuat nilai kecil menjadi jauh lebih kecil. Tembakan yang menambah sedikit trauma hampir tidak menggerakkan kamera, sedangkan ledakan yang mendorong trauma mendekati 1 terasa kuat. Peluruhan membuat guncangan berhenti sendiri."
+sources:
+  - title: "Game Feel: The Secret Ingredient"
+    url: "https://www.gamedeveloper.com/design/game-feel-the-secret-ingredient"
+    publisher: "Steve Swink, Game Developer (2007)"
+    accessed: 2026-10-30
+  - title: "Celeste: Source/Player/Player.cs"
+    url: "https://github.com/NoelFB/Celeste/blob/master/Source/Player/Player.cs"
+    publisher: "Maddy Thorson dan Noel Berry, repositori GitHub NoelFB/Celeste"
+    accessed: 2026-10-30
+  - title: "Celeste: Source/Player/Readme.md"
+    url: "https://github.com/NoelFB/Celeste/blob/master/Source/Player/Readme.md"
+    publisher: "Maddy Thorson dan Noel Berry, repositori GitHub NoelFB/Celeste"
+    accessed: 2026-10-30
+  - title: "Fixing jitter, stutter and input lag"
+    url: "https://docs.godotengine.org/en/stable/tutorials/rendering/jitter_stutter.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Computer latency: 1977-2017"
+    url: "https://danluu.com/input-lag/"
+    publisher: "Dan Luu, danluu.com (2017)"
+    accessed: 2026-10-30
+  - title: "Scroll Back: The Theory and Practice of Cameras in Side-Scrollers"
+    url: "https://www.gamedeveloper.com/design/scroll-back-the-theory-and-practice-of-cameras-in-side-scrollers"
+    publisher: "Itay Keren, blog di Game Developer (2015)"
+    accessed: 2026-10-30
+  - title: "Math for Game Programmers: Juicing Your Cameras With Math"
+    url: "https://gdcvault.com/play/1023146/Math-for-Game-Programmers-Juicing"
+    publisher: "Squirrel Eiserloh, GDC 2016 (GDC Vault)"
+    accessed: 2026-10-30
+  - title: "2d_screen_shake.rs (contoh resmi Bevy)"
+    url: "https://github.com/bevyengine/bevy/blob/main/examples/camera/2d_screen_shake.rs"
+    publisher: "Bevy Engine, repositori GitHub bevyengine/bevy"
+    accessed: 2026-10-30
+  - title: "Position Composer"
+    url: "https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachinePositionComposer.html"
+    publisher: "Unity Documentation (Cinemachine 3.1)"
+    accessed: 2026-10-30
+  - title: "Cinemachine Impulse"
+    url: "https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/CinemachineImpulse.html"
+    publisher: "Unity Documentation (Cinemachine 3.1)"
+    accessed: 2026-10-30
+  - title: "Vector3.SmoothDamp"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/vector3/smoothdamp"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Camera2D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_camera2d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Vlambeer co-founder shares advice on building better action games"
+    url: "https://www.gamedeveloper.com/design/vlambeer-co-founder-shares-advice-on-building-better-action-games"
+    publisher: "Alex Wawro, Game Developer (2014)"
+    accessed: 2026-10-30
+  - title: "Juice It or Lose It"
+    url: "https://www.gdcvault.com/play/1016487/Juice-It-or-Lose"
+    publisher: "Martin Jonasson dan Petri Purho, GDC Europe 2012 (GDC Vault)"
+    accessed: 2026-10-30
+  - title: "Juicy Breakout (README)"
+    url: "https://github.com/grapefrukt/juicy-breakout"
+    publisher: "Martin Jonasson dan Petri Purho, repositori GitHub (2012)"
+    accessed: 2026-10-30
+  - title: "Hitstop/Hitfreeze/Hitlag/Hitpause/Hitshit"
+    url: "https://critpoints.net/2017/05/17/hitstophitfreezehitlaghitpausehitshit/"
+    publisher: "Celia Wagar, blog CritPoints (2017)"
+    accessed: 2026-10-30
+  - title: "Sakurai talks about the term hitstop used in fighting games"
+    url: "https://mynintendonews.com/2015/11/12/sakurai-talks-about-the-term-hitstop-used-in-fighting-games/"
+    publisher: "My Nintendo News (2015), terjemahan kolom Masahiro Sakurai di Famitsu"
+    accessed: 2026-10-30
+  - title: "Time.timeScale"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/time/timescale"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Engine (time_scale)"
+    url: "https://docs.godotengine.org/en/stable/classes/class_engine.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "AudioStreamRandomizer"
+    url: "https://docs.godotengine.org/en/stable/classes/class_audiostreamrandomizer.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Gamepad support (Rumble)"
+    url: "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.11/manual/Gamepad.html"
+    publisher: "Unity Input System Documentation"
+    accessed: 2026-10-30
+  - title: "Input (start_joy_vibration)"
+    url: "https://docs.godotengine.org/en/stable/classes/class_input.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Avoid flickering images and repetitive patterns"
+    url: "https://gameaccessibilityguidelines.com/avoid-flickering-images-and-repetitive-patterns/"
+    publisher: "Game Accessibility Guidelines"
+    accessed: 2026-10-30
+  - title: "Avoid (or provide option to disable) any difference between controller movement and camera movement"
+    url: "https://gameaccessibilityguidelines.com/avoid-or-provide-option-to-disable-any-difference-between-controller-movement-and-camera-movement/"
+    publisher: "Game Accessibility Guidelines"
+    accessed: 2026-10-30
+  - title: "Include toggle/slider for any haptics"
+    url: "https://gameaccessibilityguidelines.com/include-toggle-slider-for-any-haptics/"
+    publisher: "Game Accessibility Guidelines"
+    accessed: 2026-10-30
+  - title: "Provide an option to turn off / hide background movement"
+    url: "https://gameaccessibilityguidelines.com/provide-an-option-to-turn-off-hide-background-movement/"
+    publisher: "Game Accessibility Guidelines"
+    accessed: 2026-10-30
+  - title: "Avoid any sudden unexpected movement or events"
+    url: "https://gameaccessibilityguidelines.com/avoid-any-sudden-unexpected-movement-or-events/"
+    publisher: "Game Accessibility Guidelines"
+    accessed: 2026-10-30
+  - title: "Understanding SC 2.3.1: Three Flashes or Below Threshold"
+    url: "https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold.html"
+    publisher: "W3C Web Accessibility Initiative (WCAG 2.2)"
+    accessed: 2026-10-30
+  - title: "Understanding SC 2.3.3: Animation from Interactions"
+    url: "https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html"
+    publisher: "W3C Web Accessibility Initiative (WCAG 2.2)"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menyetel gerak karakter dengan kurva percepatan, lompatan yang tingginya bisa diatur, coyote time, dan jump buffer.
+- Menyebutkan dari mana saja jeda input berasal, lalu mengukurnya frame demi frame.
+- Membuat kamera yang mengikuti dengan halus, memakai dead zone dan look-ahead, dan menambahkan screen shake yang bisa dimatikan.
+- Memakai hit stop, squash and stretch, partikel, suara, dan getaran secukupnya, dengan kekuatan yang mengikuti besar kejadiannya.
+- Menyetel semua angka itu sambil bermain, dan menimbang biaya produksi, performa, dan aksesibilitas setiap efek.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: alat musik">
+Gitar yang senarnya baru berbunyi sepersepuluh detik setelah dipetik tidak bisa dimainkan, sebagus apa pun suaranya. Pemain musik menilai alatnya dari dua hal: seberapa cepat dan tepat alat itu menjawab tangannya, lalu seberapa kaya bunyi yang keluar. Game feel punya dua lapis yang sama. Lapis pertama adalah respons: input, gerak, kamera. Lapis kedua adalah umpan balik yang menguatkan respons itu: animasi, suara, efek, getaran.
+</Aside>
+
+[Pelajaran 1](/belajar/desain-game/01-core-loop/) menutup dengan enam bagian game feel menurut Steve Swink: input, respons, konteks, polesan, metafora, dan aturan. Pelajaran ini masuk ke bagian yang paling sering disetel oleh programmer dan desainer: **respons** dan **polesan**. Swink mendefinisikan polesan sebagai kesan fisik yang muncul ketika animasi, suara, dan efek selaras dengan gerak yang dikendalikan pemain. Contoh yang ia sebut antara lain semburan partikel di titik benturan, screen shake, pergeseran sudut pandang, dan squash and stretch.
+
+Urutan kerjanya penting. Efek tidak bisa menyelamatkan kontrol yang telat atau licin, karena efek hanya memperjelas apa yang sudah terjadi. Karena itu pelajaran ini mulai dari respons, lalu kamera, baru efek. Setelah itu ada cara menyetel semuanya, kapan efek mulai mengganggu, dan berapa biayanya.
+
+Sepanjang pelajaran, contoh angka diambil dari kode `Player.cs` milik Celeste, yang dirilis Maddy Thorson dan Noel Berry di GitHub sebagai bahan belajar. Kode itu memperlihatkan banyak teknik di pelajaran ini dalam satu file nyata. Satuan jaraknya piksel di resolusi asli game yang kecil, jadi angkanya tidak bisa disalin langsung ke game-mu. Yang bisa ditiru adalah bentuk aturannya.
+
+## Respons input
+
+Respons adalah semua yang terjadi antara niat pemain dan gerak di layar. Bagian ini membahas empat hal: bagaimana kecepatan naik dan turun, bagaimana tinggi lompatan dikendalikan, bagaimana game memaafkan tekanan tombol yang sedikit meleset, dan dari mana jeda datang.
+
+### Percepatan dan perlambatan
+
+Karakter yang langsung mencapai kecepatan penuh pada frame pertama terasa kaku dan ringan. Karakter yang butuh satu detik untuk mencapai kecepatan penuh terasa berat dan sulit diarahkan. Di antara keduanya ada beberapa angka yang bisa disetel terpisah:
+
+- **Percepatan**: seberapa cepat kecepatan naik saat tombol arah ditekan.
+- **Perlambatan**: seberapa cepat karakter berhenti saat tombol dilepas. Jika angka ini kecil, karakter terasa licin seperti di atas es.
+- **Berbalik arah**: banyak game memakai angka yang lebih besar saat pemain menekan arah berlawanan, supaya berbalik terasa sigap.
+- **Pengali di udara**: kendali di udara biasanya lebih lemah daripada di tanah.
+
+Celeste mendekatkan kecepatan lari ke kecepatan maksimum dengan percepatan 1000 piksel per detik², dan memakai pengali 0,65 saat karakter di udara. Jika karakter sedang bergerak lebih cepat dari batas lari (misalnya setelah terlempar) dan pemain masih menekan arah yang sama, kecepatannya diturunkan perlahan dengan angka yang lebih kecil, 400, supaya dorongan itu tidak hilang mendadak.
+
+```text title="Pseudocode: kecepatan horizontal dengan percepatan terpisah"
+setiap langkah physics:
+    target = arah_input * KECEPATAN_MAKS            // -1, 0, atau 1 dikali batas
+    jika arah_input == 0:           laju = PERLAMBATAN
+    lainnya jika berlawanan arah:   laju = BERBALIK
+    lainnya:                        laju = PERCEPATAN
+    jika di_udara: laju = laju * PENGALI_UDARA
+    kecepatan.x = mendekat(kecepatan.x, target, laju * delta)
+```
+
+Fungsi `mendekat(nilai, target, langkah)` menggeser nilai ke arah target paling jauh sebesar langkah, tanpa melewatinya. Karena langkahnya dikali [delta time](/kamus/dasar/delta-time/), kurva yang sama berlaku di semua frame rate. Jika gerak ini berjalan di [langkah waktu tetap](/kamus/fisika/fixed-timestep/), delta-nya selalu sama panjang.
+
+### Tinggi lompatan yang bisa diatur
+
+Lompatan yang tingginya selalu sama memaksa pemain menebak dari mana harus melompat. Kebanyakan platformer membiarkan pemain mengatur tinggi lompatan dengan lama menahan tombol. Ada dua cara yang umum:
+
+- **Pertahankan kecepatan naik selama tombol ditahan**, sampai batas waktu tertentu. Celeste memakai cara ini: selama 0,2 detik setelah lompat, kecepatan naik tidak dibiarkan turun di bawah kecepatan lompat awal selama tombol masih ditahan. Begitu tombol dilepas, jendela itu ditutup dan gravitasi bekerja normal.
+- **Potong kecepatan naik saat tombol dilepas**, misalnya dikali setengah. Cara ini lebih sederhana, dan hasilnya mirip.
+
+Celeste juga memakai gravitasi setengah di dekat puncak lompatan selama tombol masih ditahan. Karakter melayang sedikit lebih lama di puncak, sehingga pemain punya waktu untuk mengarahkan pendaratan. Detail seperti ini tidak terlihat sebagai fitur, tetapi terasa saat bermain.
+
+### Coyote time dan jump buffer
+
+Pemain menekan tombol berdasarkan apa yang ia lihat, dan apa yang ia lihat selalu sedikit tertinggal dari keadaan game. Akibatnya dua kesalahan kecil sering terjadi:
+
+- Pemain berlari keluar dari ujung pijakan, lalu menekan lompat beberapa frame setelah kakinya tidak lagi menyentuh tanah. Secara aturan ia sudah jatuh, tetapi di matanya ia masih di pinggir pijakan.
+- Pemain menekan lompat beberapa frame sebelum mendarat. Secara aturan ia masih di udara, jadi tekanannya diabaikan.
+
+**Coyote time** (namanya dari tokoh kartun yang baru jatuh setelah sadar sudah lewat tebing) memberi jendela waktu singkat setelah meninggalkan pijakan, saat lompat masih diterima. **Jump buffer** mengingat tekanan tombol sesaat sebelum mendarat, lalu menjalankannya begitu karakter menyentuh tanah. Di Celeste, jendela coyote time-nya disebut `JumpGraceTime` dan panjangnya 0,1 detik. Fungsi lompatnya juga memanggil `Input.Jump.ConsumeBuffer()`, tanda bahwa tombol lompat di game itu di-buffer, walaupun panjang buffer-nya tidak ada di file tersebut.
+
+```text title="Pseudocode: coyote time dan jump buffer"
+COYOTE = 0.1    // detik (Celeste memakai 0,1)
+BUFFER = 0.1    // detik (ilustrasi)
+
+saat tombol lompat baru ditekan (di update biasa):
+    sisa_buffer = BUFFER
+
+setiap langkah physics:
+    jika di_tanah: sisa_coyote = COYOTE
+    lainnya:       sisa_coyote = sisa_coyote - delta
+    sisa_buffer = sisa_buffer - delta
+
+    jika sisa_buffer > 0 dan sisa_coyote > 0:
+        kecepatan.y = KECEPATAN_LOMPAT
+        sisa_buffer = 0     // satu tekanan, satu lompatan
+        sisa_coyote = 0     // cegah lompatan kedua dari jendela yang sama
+```
+
+Perhatikan bahwa tekanan tombol dicatat di update biasa dan dipakai di langkah physics. Dalam satu frame, langkah physics bisa berjalan nol, satu, atau beberapa kali (lihat [Pelajaran 1 Fondasi Engine](/belajar/fondasi-engine/01-frame/)). Jika "baru ditekan" dibaca langsung di langkah physics, tekanan yang jatuh di frame tanpa langkah physics bisa hilang. Buffer kecil menyelesaikan masalah itu juga.
+
+Kedua jendela ini sebaiknya pendek. Jika terlalu panjang, pemain bisa melompat dari udara kosong dan tahu bahwa game "curang". Mulai dari angka kecil, lalu setel lewat playtest. Kedua teknik ini juga bisa dipakai di luar lompatan: serangan yang ditekan saat animasi sebelumnya hampir selesai, atau interaksi yang ditekan sedikit sebelum pemain sampai di depan pintu.
+
+### Dari mana jeda input datang
+
+Waktu antara tombol ditekan dan perubahan pertama di layar adalah jumlah dari banyak jeda kecil. Dokumentasi Godot menyebutnya *input lag*: jeda yang terlihat di layar saat memakai mouse, keyboard, controller, atau layar sentuh. Penyebabnya bisa di kode game, di engine, atau di luar game, misalnya di hardware. Rantai yang umum:
+
+| Tahap | Contoh sumber jeda | Yang bisa kamu ubah |
+| --- | --- | --- |
+| Perangkat input | Controller atau keyboard membaca tombolnya beberapa ratus kali per detik | Hampir tidak ada, kecuali menyarankan mode kabel |
+| Game membaca input | Input dibaca sekali per frame, jadi tekanan menunggu frame berikutnya | Frame rate yang lebih tinggi dan stabil |
+| Logika dan physics | Gerak baru dihitung di langkah physics berikutnya | Tick physics yang lebih sering |
+| Animasi | Transisi menunggu klip selesai, atau ada wind-up panjang sebelum aksi | Transisi tanpa exit time, gerak dimulai di frame pertama |
+| Render dan antrean frame | Frame yang sudah jadi menunggu giliran tampil | Pengaturan [V-Sync](/kamus/dasar/vsync/) dan jumlah buffer |
+| Layar | Refresh rate dan waktu tanggap panel | Tidak ada, tetapi perlu diketahui saat mengukur |
+
+Dua baris di tabel itu punya catatan dari dokumentasi Godot. Mematikan V-Sync membuat jeda input kurang terasa, tetapi memunculkan tearing, sehingga Godot menyarankan V-Sync dijadikan pilihan yang bisa diubah pemain. Physics interpolation membuat gerak lebih halus tetapi menambah jeda untuk gerak yang bergantung pada tick physics, termasuk gerak pemain. Dokumentasi yang sama menyebut jeda itu bisa dikurangi dengan menaikkan jumlah tick physics per detik, dengan biaya pemakaian CPU yang lebih tinggi.
+
+Baris animasi sering terlupakan. Contohnya ada di bagian [Kesalahan umum Pelajaran 7 Fondasi Engine](/belajar/fondasi-engine/07-animasi/): transisi yang menunggu 90% klip diam selesai sebelum serangan dimulai. Untuk aksi yang harus terasa responsif, buat sesuatu terlihat berubah di frame pertama, walaupun hanya pose awal, suara, atau sedikit gerak. Wind-up panjang boleh ada untuk serangan berat, asalkan pemain langsung melihat bahwa tekanannya diterima.
+
+Dan Luu, yang mengukur jeda dari tombol ke layar di puluhan komputer, mencatat contoh pengaruh layar: di mesin yang sama, jedanya sekitar 140 ms di 24 Hz, 80 ms di 60 Hz, dan 50 ms di 165 Hz. Angka itu dari pengukurannya mengetik di terminal dan tidak bisa langsung dipindah ke game, tetapi ia menunjukkan bahwa satu tahap di rantai saja bisa menggeser jeda puluhan milidetik.
+
+### Mengukur jeda frame demi frame
+
+Rasa "agak telat" sulit dibahas. Angka bisa dibandingkan. Cara paling sederhana adalah kamera cepat:
+
+1. Pasang ponsel dalam mode slow motion (misalnya 240 fps), arahkan ke layar dan tanganmu sekaligus.
+2. Tekan tombol aksi beberapa kali dengan jeda di antaranya.
+3. Buka videonya, maju frame demi frame, dan hitung frame dari saat tombol mulai turun sampai perubahan pertama di layar.
+4. Kalikan jumlah frame dengan durasi satu frame video. Di 240 fps, satu frame video sekitar 4,2 ms.
+
+Dan Luu memakai cara ini. Sebagian besar pengukurannya memakai kamera 240 fps dengan resolusi sekitar 4,167 ms, dan perangkat yang sangat cepat diukur ulang dengan kamera 1000 fps. Ia juga membulatkan hasil ke 10 ms terdekat supaya tidak terkesan lebih presisi dari kenyataannya. Dokumentasi Godot meminta hal yang sama dari pelapor masalah input lag: sertakan rekaman dari kamera berkecepatan tinggi, misalnya mode slow motion ponsel.
+
+Untuk melihat bagian rantai yang ada di dalam game, catat nomor frame. Tulis ke log nomor frame saat input diterima, saat state karakter berubah, dan saat animasi atau posisi pertama kali berubah. Jika selisihnya dua atau tiga frame padahal seharusnya nol, penyebabnya ada di kodemu, tidak di layar atau controller.
+
+Bandingkan juga dengan referensi. Ukur game lain yang kontrolnya kamu sukai di perangkat yang sama. Angka mutlak sangat bergantung pada layar dan controller, jadi yang paling berguna adalah perbandingan di perangkat yang sama.
+
+## Kamera
+
+Kamera adalah bagian dari respons. Karakter yang bergerak dengan sempurna tetap terasa buruk jika kamera tersentak-sentak, tertinggal jauh, atau menyembunyikan apa yang ada di depan. Dalam tulisannya tentang kamera di game side-scroller, Itay Keren menghubungkan rasa tidak nyaman ini dengan cara mata dan telinga bagian dalam bekerja: perubahan mendadak di latar belakang ditangkap penglihatan tepi, dan jika tidak ada gerak tubuh yang sesuai, hasilnya bisa pusing dan mual, bahkan di game 2D.
+
+### Mengikuti dengan halus
+
+Bentuk paling sederhana adalah kamera yang terkunci di posisi pemain. Keren menyebutnya *position-locking*, dan cara ini masih cocok untuk game dengan karakter kecil dan lompatan pendek. Untuk gerak yang lebih cepat, kamera biasanya mengejar target dengan halus. Keren membedakan dua cara:
+
+- **Lerp smoothing**: setiap frame, kamera menempuh sebagian sisa jarak ke target. Geraknya seperti ease out: cepat di awal, melambat saat dekat. Keren menyebutnya teknik smoothing yang paling umum.
+- **Physics smoothing**: kamera punya kecepatan sendiri, sehingga mulai bergerak lebih lembut dan bisa sedikit melewati target. Hasilnya lebih organik tetapi kurang reaktif. Ia menyamakannya dengan ease in-out, dan menyebut `SmoothDamp` di Unity sebagai contoh. Dokumentasi Unity menjelaskan `SmoothDamp` sebagai gerak yang dihaluskan oleh fungsi peredam mirip pegas, dengan `smoothTime` sebagai kira-kira waktu untuk mencapai target.
+
+Lerp smoothing punya jebakan klasik. Menulis `kamera = lerp(kamera, target, 0.1)` setiap frame membuat kamera mengejar lebih cepat di layar 144 Hz daripada di 60 Hz. Versi yang sama di semua frame rate memakai delta time, seperti yang dijelaskan di [Kamus: Lerp](/kamus/ruang/lerp/):
+
+```text title="Pseudocode: kamera mengikuti dengan halus"
+setiap frame:
+    kamera = lerp(kamera, target_kamera, 1 - exp(-KECEPATAN * delta))
+```
+
+Angka `KECEPATAN` di sini bermakna "seberapa cepat sisa jarak menyusut per detik", dan tidak bergantung pada frame rate.
+
+### Dead zone dan look-ahead
+
+Kamera yang ikut bergerak setiap kali karakter bergeser sedikit membuat layar terus goyang, misalnya saat karakter menyesuaikan posisi atau saat animasi diam membuat badannya naik turun. **Dead zone** kamera adalah area di layar tempat target boleh bergerak tanpa membuat kamera ikut bergerak. Keren menyebut teknik yang sama *camera-window*: kamera baru terdorong saat karakter menyentuh tepi jendela. Istilah ini berbeda dengan [dead zone stik analog](/kamus/interaksi/deadzone/), walaupun idenya mirip: abaikan perubahan kecil.
+
+Jendela yang tinggi punya masalah sendiri. Setelah lompatan kecil, karakter bisa tertinggal di tepi atas jendela, dan pemain hanya melihat sedikit ruang di atasnya. Keren mencatat beberapa solusi dari game lama, salah satunya *platform-snapping*: kamera tidak bergerak vertikal selama lompatan, lalu menyesuaikan diri dengan halus saat karakter mendarat di pijakan.
+
+**Look-ahead** menggeser titik fokus kamera ke arah karakter bergerak atau menghadap, supaya pemain melihat lebih banyak apa yang ada di depannya. Keren menyebut beberapa varian: fokus tetap di arah maju, fokus yang berpindah sisi saat karakter berbalik (sebaiknya baru setelah melewati ambang tertentu, supaya bolak-balik kecil tidak membuat kamera ikut bolak-balik), dan fokus yang mengikuti arah input pemain.
+
+```text title="Pseudocode: dead zone dan look-ahead"
+setiap frame:
+    fokus = posisi_pemain + arah_hadap * JARAK_LOOK_AHEAD
+    selisih = fokus - target_kamera
+    // geser target hanya sebanyak fokus keluar dari dead zone
+    jika |selisih.x| > SETENGAH_LEBAR_DZ:
+        target_kamera.x += selisih.x - tanda(selisih.x) * SETENGAH_LEBAR_DZ
+    jika |selisih.y| > SETENGAH_TINGGI_DZ:
+        target_kamera.y += selisih.y - tanda(selisih.y) * SETENGAH_TINGGI_DZ
+    kamera = lerp(kamera, target_kamera, 1 - exp(-KECEPATAN * delta))
+```
+
+Engine populer sudah menyediakan sebagian besar perilaku ini, sehingga kamu cukup menyetel angkanya.
+
+<EngineTabs>
+<div slot="unity">
+
+Paket **Cinemachine** punya komponen **Position Composer** untuk kamera yang hanya bergeser tanpa berputar, cocok untuk 2D. Properti yang relevan:
+
+- **Damping**: seberapa cepat kamera menjaga posisi yang diinginkan, per sumbu. Angka kecil berarti responsif, angka besar berarti lambat seperti kamera fisik yang berat.
+- **Dead Zone**: area di sekitar Screen Position tempat kamera tidak bergerak saat target bergerak. Ukurannya pecahan dari lebar dan tinggi layar.
+- **Hard Limits**: batas yang tidak boleh dilewati target sama sekali.
+- **Lookahead Time**: kamera memperkirakan posisi target sekian detik ke depan. Dokumentasinya memperingatkan bahwa fitur ini sensitif terhadap animasi yang bergetar dan bisa memperbesar getaran itu. Jika kamera bergetar saat target bergerak, turunkan nilainya atau haluskan gerak targetnya.
+
+Area-area ini terlihat sebagai panduan berwarna di jendela Game, dan tepinya bisa digeser langsung di sana.
+
+</div>
+<div slot="unreal">
+
+Untuk kamera orang ketiga, kamera biasanya dipasang di ujung komponen **Spring Arm**. Opsi **Enable Camera Lag** dan **Camera Lag Speed** di komponen itu membuat kamera mengejar posisi target dengan halus. Angka lag speed yang lebih kecil berarti kamera tertinggal lebih jauh.
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-30): komponen Spring Arm (USpringArmComponent), properti Enable Camera Lag / bEnableCameraLag dan Camera Lag Speed / CameraLagSpeed, serta arti "angka lebih kecil = tertinggal lebih jauh". */}
+
+</div>
+<div slot="godot">
+
+Node **Camera2D** punya smoothing dan dead zone bawaan:
+
+- `position_smoothing_enabled` dan `position_smoothing_speed` (bawaan 5): kamera bergerak halus ke posisi targetnya.
+- `drag_horizontal_enabled` dan `drag_vertical_enabled`: jika aktif, kamera baru bergerak saat target mencapai margin. Margin diatur dengan `drag_left_margin`, `drag_right_margin`, `drag_top_margin`, dan `drag_bottom_margin` (bawaan 0,2). Nilai 1 berarti kamera baru bergerak saat target sampai di tepi layar.
+- `offset`: geseran relatif kamera. Dokumentasinya menyebut properti ini berguna untuk melihat sekeliling atau animasi guncangan.
+
+Dokumentasi Godot juga mengingatkan bahwa `global_position` milik Camera2D tidak selalu sama dengan posisi layar yang sebenarnya, karena smoothing dan batas kamera. Untuk posisi yang benar-benar terlihat, pakai `get_screen_center_position()`.
+
+</div>
+</EngineTabs>
+
+### Screen shake dengan trauma
+
+Screen shake memutus sementara hubungan antara kontrol dan kamera. Keren menulis bahwa pemutusan ini bisa memberi kesan ada kejadian yang lebih kuat daripada pemain. Dalam talk "The Art of Screenshake", Jan Willem Nijman dari Vlambeer mengambil shooter yang membosankan lalu menambahkan sekitar 30 perubahan kecil satu per satu. Menurut ringkasan Game Developer, salah satunya adalah layar yang sedikit berguncang ke arah berlawanan dengan arah tembakan pemain.
+
+Guncangan yang diacak penuh setiap frame terlihat kasar, dan guncangan yang selalu sama kuatnya tidak membedakan tembakan kecil dari ledakan. Pendekatan yang banyak dipakai berasal dari talk Squirrel Eiserloh di GDC 2016, "Juicing Your Cameras With Math". Deskripsi sesinya di GDC Vault menyebut pembahasan framing, jenis gerak halus, camera shake, dan split screen. Rincian rumus di bawah ini diambil dari contoh resmi engine Bevy yang menyatakan mengikuti talk tersebut:
+
+- Kamera menyimpan nilai **trauma** antara 0 dan 1. Kejadian di game menambah trauma, misalnya tembakan +0,1 dan ledakan +0,5 (ilustrasi).
+- Trauma **meluruh** dengan sendirinya. Di contoh Bevy, laju 0,5 per detik berarti trauma penuh habis dalam 2 detik.
+- Besar guncangan adalah trauma yang **dipangkatkan**, misalnya trauma². Contoh Bevy memberi alasan bahwa guncangan yang naik linear terasa kurang menghentak. Karena trauma kurang dari 1, pangkat membuat nilai kecil menjadi jauh lebih kecil.
+- Arah guncangan diambil dari fungsi **noise** yang mulus, sehingga kamera bergerak terus-menerus tanpa melompat-lompat.
+- Guncangan hanya mengubah posisi kamera **untuk render**. Posisi kamera yang dipakai logika game tetap normal, dan dikembalikan di awal frame berikutnya.
+
+```gdscript title="kamera_guncang.gd (Godot)"
+extends Camera2D
+
+@export var guncangan_maks := Vector2(12.0, 8.0)  # piksel, ilustrasi
+@export var peluruhan := 1.5                     # trauma per detik, ilustrasi
+@export var kekuatan_pengaturan := 1.0           # 0..1, dari menu aksesibilitas
+
+var trauma := 0.0
+var _noise := FastNoiseLite.new()
+var _t := 0.0
+
+func tambah_trauma(jumlah: float) -> void:
+    trauma = minf(trauma + jumlah, 1.0)
+
+func _process(delta: float) -> void:
+    trauma = maxf(trauma - peluruhan * delta, 0.0)
+    _t += delta * 30.0                     # kecepatan menyusuri noise
+    var kuat := trauma * trauma * kekuatan_pengaturan
+    offset = Vector2(
+        guncangan_maks.x * kuat * _noise.get_noise_1d(_t),
+        guncangan_maks.y * kuat * _noise.get_noise_1d(_t + 100.0))
+```
+
+Variabel `kekuatan_pengaturan` di contoh itu sengaja ada sejak awal. Guncangan kamera termasuk efek yang menurut Game Accessibility Guidelines perlu bisa dimatikan, dan jauh lebih mudah menambahkan satu pengali sekarang daripada mencari semua pemanggil guncangan nanti. Di Unity, Cinemachine menyediakan sistem **Impulse** untuk hal serupa: **Impulse Source** memancarkan sinyal saat kejadian di game, dan **Impulse Listener** di kamera bereaksi dengan berguncang.
+
+## Umpan balik yang menguatkan aksi
+
+Martin Jonasson dan Petri Purho membahas *juice* dalam talk "Juice It or Lose It" (GDC Europe 2012; yang dicek untuk pelajaran ini hanya halaman sesinya). Di README contoh game mereka, Juicy Breakout, mereka menulis bahwa game yang *juicy* terasa hidup dan menjawab semua yang kamu lakukan, dengan banyak aksi dan reaksi berantai dari input yang sedikit.
+
+Swink memberi cara memilih efek yang lebih terarah. Mulai dari sifat fisik yang ingin disampaikan, misalnya "kenyal", lalu pecah menjadi petunjuk gerak, sentuhan, visual, dan suara. Urutkan petunjuk itu dari yang paling penting, dan buat yang paling penting dulu. Ia juga mengingatkan bahwa polesan terkenal memakan waktu, jadi batasi pada efek yang benar-benar dibutuhkan untuk menyampaikan kesan itu.
+
+Satu prinsip berlaku untuk semua efek di bawah: **kekuatan efek mengikuti besar kejadian**. Pendaratan Celeste adalah contoh yang bagus. Saat karakter mendarat, sprite-nya dipipihkan sebanding dengan kecepatan jatuh, sampai paling banyak 1,6 kali lebih lebar dan 0,4 kali lebih pendek. Debu baru muncul jika kecepatan jatuhnya minimal setengah kecepatan jatuh maksimum. Getaran ringan dan suara mendarat diputar sesuai jenis permukaan. Lompatan kecil menghasilkan reaksi kecil, jatuh dari tempat tinggi menghasilkan reaksi besar, dan pemain bisa membaca tinggi jatuhnya dari reaksi itu.
+
+### Hit stop
+
+**Hit stop** (juga disebut hitlag, hit freeze, atau hit pause) membekukan penyerang dan yang diserang selama beberapa frame tepat saat serangan mengenai sasaran. Celia Wagar di blog CritPoints menjelaskan manfaatnya: gerak serangan yang berhenti di titik benturan memberi mata waktu beberapa frame untuk melihat bahwa benturan terjadi, dan memberi kesan butuh tenaga besar untuk menembus sasaran. Masahiro Sakurai, dalam kolomnya yang diterjemahkan My Nintendo News, menyebut hit stop sebagai efek yang krusial di game fighting.
+
+Sakurai juga menulis batasannya. Di game yang menyerang banyak musuh sekaligus, hit stop di setiap pukulan membuat aksi terlalu sering berhenti dan kecepatan game turun. Durasi dan jumlah hit stop perlu disesuaikan dengan berapa sering serangan mengenai sasaran.
+
+```text title="Pseudocode: hit stop"
+saat serangan mengenai sasaran:
+    sisa_hitstop = DURASI_HITSTOP     // misalnya 0,05 sampai 0,1 detik (ilustrasi)
+    bekukan(penyerang, sasaran)       // animasi dan gerak berhenti
+    putar_suara_benturan()            // suara tidak ikut dibekukan
+    tambah_trauma(0.2)
+
+setiap frame:
+    jika sisa_hitstop > 0:
+        sisa_hitstop = sisa_hitstop - delta_waktu_nyata
+        jika sisa_hitstop <= 0: lanjutkan(penyerang, sasaran)
+```
+
+Ada dua cara membekukan: hanya objek yang terlibat, atau seluruh game lewat skala waktu. Jika memakai skala waktu, penghitung hit stop harus memakai waktu nyata. Kalau tidak, ia ikut melambat dan tidak pernah selesai. Dokumentasi Unity mencatat bahwa saat `Time.timeScale` bernilai 0, `FixedUpdate` dan coroutine dengan `WaitForSeconds` tidak berjalan. Dokumentasi Godot menyarankan `Engine.time_scale` dibiarkan di atas 0 karena game bisa berperilaku tak terduga, dan mencatat bahwa nilai ini tidak memengaruhi kecepatan pemutaran audio. Membekukan objek yang terlibat saja biasanya lebih mudah dikendalikan.
+
+### Squash and stretch
+
+Squash and stretch adalah prinsip animasi lama: benda memipih saat menabrak dan memanjang saat melesat, dengan volume yang kira-kira tetap. Di game, efek ini sering cukup dibuat dengan mengubah skala sprite atau mesh sesaat. Celeste memakai skala 0,6 × 1,4 (lebih sempit, lebih tinggi) di frame karakter melompat, memipih saat mendarat seperti dijelaskan di atas, lalu mengembalikan skalanya ke 1 secara bertahap setiap frame dengan laju yang dikali delta time.
+
+Cara mengembalikan skala adalah [tween](/kamus/animasi/tween/) pendek. [Easing](/kamus/animasi/easing/) yang dipakai menentukan rasanya: ease out untuk kembali yang lembut, kurva *back* atau *elastic* untuk kesan kenyal. Cara membuat tween dan memilih kurva sudah dibahas di [Pelajaran 7 Fondasi Engine](/belajar/fondasi-engine/07-animasi/). Yang perlu diingat di sini: ubah skala sprite atau model visualnya, jangan collider-nya. Collider yang ikut memipih bisa membuat karakter tersangkut atau jatuh menembus lantai.
+
+### Partikel dan kilatan
+
+Partikel memberi tahu di mana dan seberapa keras sesuatu terjadi: debu di kaki, percikan di titik pukulan, serpihan saat benda hancur. Wagar menyebut percikan di titik benturan (*hitspark*) berguna sebagai umpan balik tambahan dan untuk memperjelas titik kontak.
+
+Kilatan putih singkat pada musuh yang terkena, atau pada karakter yang menerima damage, adalah cara murah untuk mengatakan "ini kena". Kilatan yang menutupi seluruh layar lain soal. Efek itu menyentuh batas fotosensitivitas yang dibahas di bagian [Saat umpan balik menjadi gangguan](#saat-umpan-balik-menjadi-gangguan).
+
+### Suara berlapis dan variasi pitch
+
+Satu suara jarang cukup untuk kejadian penting. Pukulan yang terasa berat biasanya terdiri dari beberapa lapis: bunyi benturan yang tajam di awal, lapisan rendah yang memberi bobot, dan sisa bunyi khusus bahan, misalnya logam atau kayu. Setiap lapis bisa diganti terpisah, sehingga satu set lapisan bisa menghasilkan banyak kombinasi.
+
+Suara yang diulang ratusan kali, seperti langkah kaki dan tembakan, cepat terdengar seperti mesin jika selalu sama persis. Dua cara umum mengatasinya: siapkan beberapa varian dan pilih acak, lalu ubah sedikit pitch dan volume setiap kali diputar. Di Godot, **AudioStreamRandomizer** menyediakan keduanya: daftar stream dengan bobot peluang, `random_pitch_semitones` untuk jarak variasi pitch dalam semitone, dan `random_volume_offset_db` untuk variasi volume. Di Unity, cara sederhananya adalah mengacak `AudioSource.pitch` dalam rentang kecil sebelum memutar suara. Variasi yang terlalu lebar membuat suara terdengar seperti benda yang berbeda, jadi mulai dari rentang kecil.
+
+Celeste memilih suara mendarat berdasarkan jenis permukaan tempat karakter mendarat. Variasi seperti ini membuat suara ikut menjelaskan dunia, tidak hanya mengulang konfirmasi yang sama.
+
+### Getaran controller
+
+Getaran menyampaikan benturan lewat tangan. Kebanyakan gamepad punya dua motor: satu untuk getaran frekuensi rendah yang berat, satu untuk getaran frekuensi tinggi yang tajam. Celeste memanggil getaran ringan dan pendek saat karakter mendarat, dan getaran sedang untuk kejadian yang lebih besar, sejalan dengan prinsip kekuatan mengikuti besar kejadian.
+
+<EngineTabs>
+<div slot="unity">
+
+Dengan Input System, kelas `Gamepad` punya `SetMotorSpeeds(low, high)` untuk kecepatan motor frekuensi rendah dan tinggi. Getaran bisa dihentikan sementara untuk semua perangkat dengan `InputSystem.PauseHaptics()`, misalnya saat menu jeda terbuka, lalu dilanjutkan dengan `InputSystem.ResumeHaptics()`. Dokumentasinya juga mencantumkan kombinasi controller dan platform mana yang mendukung rumble, jadi periksa daftar itu untuk platform targetmu.
+
+```csharp
+// Getaran pendek saat mendarat. Kalikan dengan pengaturan pemain.
+Gamepad.current?.SetMotorSpeeds(0.2f * kekuatanGetar, 0.4f * kekuatanGetar);
+```
+
+Setelah durasi yang kamu inginkan, panggil `SetMotorSpeeds(0f, 0f)` atau `ResetHaptics()` untuk menghentikannya.
+
+</div>
+<div slot="godot">
+
+`Input.start_joy_vibration(device, weak_magnitude, strong_magnitude, duration)` menggetarkan joypad. Kekuatan motor lemah dan kuat bernilai 0 sampai 1, dan `duration` dalam detik. Getaran bisa dihentikan lebih awal dengan `Input.stop_joy_vibration(device)`.
+
+```gdscript
+# Getaran pendek saat mendarat. Kalikan dengan pengaturan pemain.
+Input.start_joy_vibration(0, 0.4 * kekuatan_getar, 0.2 * kekuatan_getar, 0.12)
+```
+
+</div>
+</EngineTabs>
+
+Game Accessibility Guidelines meminta setidaknya pilihan untuk mematikan getaran, karena getaran bisa menimbulkan rasa tidak nyaman atau sakit, misalnya pada orang dengan RSI atau carpal tunnel, dan menjadi hambatan bagi orang dengan gangguan pemrosesan sensorik. Pedoman itu menyarankan pilihan tetap ada walaupun platform punya pengaturan getaran sendiri, slider kekuatan jika memungkinkan, dan pengaturan terpisah jika getaran dipakai untuk beberapa tujuan berbeda.
+
+## Menyetel sambil bermain
+
+Game feel ditemukan dengan menyetel, dan menyetel butuh banyak percobaan pendek. README kode pemain Celeste menyebut bahwa perilaku pemain di platformer seperti itu perlu diurutkan dan disetel dengan sangat teliti. Alur kerja yang membantu:
+
+1. **Keluarkan semua angka dari logika.** Kecepatan, percepatan, coyote time, durasi hit stop, kekuatan guncangan: jadikan variabel bernama yang bisa diubah dari Inspector (Unity) atau sebagai `@export` (Godot), atau kumpulkan di satu file data.
+2. **Ubah saat game berjalan.** Mainkan, ubah satu angka, mainkan lagi tanpa memulai ulang. Hati-hati di Unity: perubahan di Inspector selama Play Mode hilang saat Play Mode dihentikan, jadi catat angka yang bagus sebelum berhenti.
+3. **Ubah satu hal sekali waktu.** Jika tiga angka diubah bersamaan, kamu tidak tahu mana yang membuat perbedaan. Talk Nijman memakai pola ini: satu perubahan kecil, lihat hasilnya, lalu perubahan berikutnya.
+4. **Bandingkan A dan B.** Pasang tombol debug untuk berganti cepat antara dua set angka, atau untuk menyalakan dan mematikan satu efek. Perbedaan kecil lebih mudah terasa jika keduanya dicoba berselang beberapa detik. Minta orang lain memilih tanpa tahu mana yang mana.
+5. **Rekam dan lihat frame demi frame.** Rekam layar saat bermain, lalu maju per frame di pemutar video. Kamu bisa melihat apakah squash muncul tepat di frame mendarat, apakah partikel menutupi karakter, dan berapa frame hit stop sebenarnya. Unity punya tombol Step di samping tombol Pause untuk maju satu frame di editor.
+6. **Catat angka yang dipakai.** Simpan setiap set angka yang terasa bagus bersama tanggal dan alasannya. Jika ukuran lompatan berubah, level yang sudah disusun ikut berubah, seperti dibahas di [Pelajaran 1](/belajar/desain-game/01-core-loop/).
+
+Swink menyarankan menguji game feel di tempat uji yang terpisah dari desain game secara keseluruhan. Ruang kosong berisi beberapa pijakan, dinding, dan sasaran sering cukup. Masalah gerak lebih mudah terlihat tanpa level, musuh, dan cerita di sekitarnya.
+
+## Saat umpan balik menjadi gangguan
+
+Efek yang membantu satu pemain bisa menghalangi pemain lain, dan efek yang terasa bagus saat dilihat sekali bisa melelahkan saat muncul ratusan kali. Tiga hal perlu diperiksa.
+
+**Keterbacaan.** Umpan balik ada untuk menjelaskan apa yang terjadi. Jika partikel menutupi peluru musuh, jika guncangan membuat pemain kehilangan posisi karakternya, atau jika setiap aksi diberi efek yang sama besarnya, efek itu mulai menyembunyikan informasi. Game Accessibility Guidelines mencatat bahwa animasi latar bisa sangat mengganggu, terutama bagi orang dengan kondisi yang berhubungan dengan perhatian seperti ADHD, sampai informasi penting sulit terlihat. Pedoman itu juga meminta menghindari gerak atau kejadian mendadak yang tidak terduga jika mekanik game tidak membutuhkannya, karena bisa sangat membebani sebagian orang, terutama di spektrum autisme.
+
+**Gerak dan rasa mual.** Game Accessibility Guidelines menyebut guncangan atau kemiringan kamera, motion blur, guncangan langkah (walk bob), dan chromatic aberration sebagai perbedaan antara apa yang dilihat dan apa yang diharapkan tubuh, yang bisa membuat sebagian orang tidak bisa bermain sama sekali. Sarannya: jika efek itu tetap dipakai, sediakan pilihan untuk mematikannya. WCAG 2.3.3 memakai prinsip yang sama untuk web: animasi gerak yang dipicu interaksi bisa dimatikan, kecuali animasi itu penting untuk fungsi atau informasinya. W3C menyebut reaksi gangguan vestibular bisa berupa pusing, mual, dan sakit kepala. Jika platform punya pengaturan *reduce motion*, game bisa membacanya sebagai nilai awal.
+
+**Kilatan dan fotosensitivitas.** Game Accessibility Guidelines menyebut pemicu kejang yang bisa dihindari, antara lain lebih dari tiga kilatan dalam satu detik yang menutupi 25% layar atau lebih, rangkaian kilatan yang berlangsung lebih dari 5 detik, dan pola garis berulang yang kontras tinggi. Kilatan di sini termasuk perubahan kecerahan atau kontras yang besar dan mendadak, serta perubahan ke atau dari warna merah. WCAG 2.3.1 memakai batas serupa (tidak lebih dari tiga kilatan dalam satu detik, atau di bawah ambang kilatan umum dan ambang kilatan merah) dan mencatat bahwa orang lebih sensitif terhadap kilatan merah jenuh. Pedoman game itu juga menyarankan agar pengaturan tidak dinamai "mode aman epilepsi", karena risiko kejang tidak bisa dihilangkan sepenuhnya. Beri nama sesuai yang diubah, misalnya "efek kilatan layar" atau "intensitas efek".
+
+Menu yang memenuhi semua ini tidak rumit:
+
+```text title="Ilustrasi: pengaturan umpan balik"
+Guncangan layar        [===|======]  0 sampai 100%
+Efek kilatan layar     aktif / kurangi / mati
+Getaran controller     [======|===]  0 sampai 100%
+Kurangi gerak kamera   aktif / mati   (matikan look-ahead dan kemiringan, perlambat zoom)
+```
+
+Supaya pengaturan ini mudah dibuat, setiap efek perlu lewat satu titik pusat yang membaca pengaturan pemain, seperti variabel `kekuatan_pengaturan` di contoh kamera. Jika efek dipanggil langsung dari puluhan tempat tanpa titik pusat, menambahkan pengaturan belakangan berarti menyisir seluruh kode.
+
+## Biaya setiap efek
+
+Setiap efek punya dua jenis biaya, dan keduanya jarang terlihat saat efek pertama kali dipasang.
+
+**Biaya produksi.** Efek perlu dibuat, disetel, dan dirawat. Satu efek pukulan bisa berarti sprite partikel, tiga lapis suara dengan beberapa varian, kurva guncangan, durasi hit stop, dan pola getaran, dikalikan jumlah jenis serangan dan jenis sasaran. Setiap efek juga menambah kasus yang perlu diuji. Hit stop yang memakai skala waktu global bisa mengganggu timer lain, menu jeda, atau sinkronisasi di game online. Getaran yang lupa dihentikan saat menu jeda dibuka termasuk bug yang sering muncul. Swink menyebut polesan sebagai sumber pemborosan waktu yang terkenal, dan sarannya relevan untuk tim kecil: buat dulu efek yang paling penting untuk kesan yang dituju, dan tunda sisanya.
+
+**Biaya performa.** Partikel transparan yang bertumpuk menggambar piksel yang sama berkali-kali ([overdraw](/kamus/performa/overdraw/)), dan biaya ini paling terasa di perangkat mobile dan saat partikel memenuhi layar dekat kamera. Efek layar penuh seperti kilatan, chromatic aberration, atau motion blur menambah pass di GPU (lihat [Pelajaran 6 Fondasi Engine](/belajar/fondasi-engine/06-post-processing/)). Banyak suara yang diputar bersamaan memakai CPU dan memori, dan varian suara menambah ukuran unduhan. Dokumentasi Godot tentang stutter juga mencatat bahwa efek partikel atau material baru bisa memicu kompilasi shader saat pertama kali muncul, sehingga game tersendat sesaat tepat di momen yang seharusnya terasa paling memuaskan.
+
+Cara menjaganya: tetapkan anggaran (misalnya jumlah partikel maksimum per efek dan jumlah suara bersamaan), pakai ulang objek partikel lewat pooling, dan ukur di perangkat target yang paling lemah, tidak hanya di komputer pengembang. Cara membaca profiler dan anggaran frame ada di [Pelajaran 8 Fondasi Engine](/belajar/fondasi-engine/08-profiling/). Ingat juga hitungan dari Pelajaran 1: efek untuk aksi yang diulang ratusan kali sebaiknya singkat dan ringan, dan efek besar disimpan untuk momen yang jarang.
+
+## Kesalahan umum
+
+### Smoothing kamera yang bergantung frame rate
+
+```text title="✗ Keliru"
+setiap frame:
+    kamera = lerp(kamera, target, 0.1)
+```
+
+```text title="✓ Benar"
+setiap frame:
+    kamera = lerp(kamera, target, 1 - exp(-KECEPATAN * delta))
+```
+
+Versi pertama mengejar lebih cepat di layar dengan refresh rate tinggi dan lebih lambat saat frame rate turun. Versi kedua menghasilkan kurva yang sama di semua perangkat.
+
+### Efek untuk menutupi kontrol yang telat
+
+```text title="✗ Keliru"
+serangan terasa lemah → tambah guncangan, partikel, dan kilatan
+(padahal karakter baru bergerak 6 frame setelah tombol ditekan)
+```
+
+```text title="✓ Benar"
+ukur jeda dulu → buat sesuatu berubah di frame pertama
+→ baru tambahkan efek satu per satu
+```
+
+### Guncangan yang mengubah posisi logika
+
+```text title="✗ Keliru"
+kamera.posisi += acak(-5, 5)    // posisi asli hilang, kamera melayang menjauh
+```
+
+```text title="✓ Benar"
+posisi_render = kamera.posisi_logika + offset_guncangan(trauma)
+// posisi logika tidak pernah disentuh, guncangan hilang sendiri saat trauma habis
+```
+
+### Semua kejadian diberi efek yang sama besar
+
+```text title="✗ Keliru"
+setiap tembakan: guncangan penuh + kilatan layar + getaran kuat
+```
+
+```text title="✓ Benar"
+tembakan:       trauma +0,05, tanpa kilatan, getaran sangat ringan
+ledakan dekat:  trauma +0,5, kilatan singkat pada objek, getaran sedang
+(angka di atas ilustrasi; setel sambil bermain)
+```
+
+Jika semuanya besar, pemain tidak bisa membedakan kejadian penting dari kejadian biasa.
+
+### Efek tanpa pengaturan
+
+```text title="✗ Keliru"
+guncang_kamera(0.6)   // dipanggil langsung dari 40 tempat
+```
+
+```text title="✓ Benar"
+efek.guncang(0.6)     // satu titik pusat yang membaca pengaturan pemain
+```
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Semua latihan dikerjakan di engine pilihanmu. Pakai greybox platformer dari Latihan 3 di [Pelajaran 1](/belajar/desain-game/01-core-loop/) jika sudah ada.
+
+1. Tambahkan coyote time dan jump buffer ke greybox-mu, dengan tombol debug untuk menyalakan dan mematikan keduanya. Minta seseorang melewati sepuluh pijakan dalam dua versi tanpa memberi tahu bedanya, lalu tanyakan versi mana yang terasa lebih adil. Setelah itu coba naikkan kedua jendela menjadi 0,3 detik dan catat kapan mulai terasa curang.
+2. Ukur jeda inputmu. Rekam layar dan controller dengan mode slow motion ponsel, tekan lompat sepuluh kali, dan hitung frame video sampai karakter mulai bergerak. Ulangi dengan V-Sync aktif dan nonaktif, lalu bandingkan rata-ratanya.
+3. Buat kamera dengan dead zone, look-ahead, dan smoothing berbasis delta time. Batasi frame rate ke 30 dan ke 144, lalu periksa apakah kamera terasa sama. Tambahkan screen shake dengan trauma dan slider kekuatan dari 0 sampai 100%.
+4. Tambahkan umpan balik pendaratan satu per satu: squash yang sebanding dengan kecepatan jatuh, debu yang hanya muncul saat jatuh cukup tinggi, suara dengan sedikit variasi pitch, dan getaran ringan. Setelah setiap tambahan, rekam video dan periksa frame per frame bahwa efeknya muncul tepat di frame mendarat. Terakhir, matikan semuanya dan main dua menit. Tulis efek mana yang paling kamu rindukan, dan perkirakan berapa lama setiap efek dibuat.

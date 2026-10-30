@@ -1,0 +1,413 @@
+---
+title: "Peta Ekosistem Industri Game"
+description: "Pihak-pihak di sekitar studio game, dari developer, publisher, platform holder, dan toko sampai pembuat hardware, penyedia engine, outsourcing, media, event, pendanaan, dan komunitas: apa yang dikerjakan masing-masing, dan bagaimana uang serta layanan mengalir di antara mereka."
+fundamental: "Banyak developer menandatangani kesepakatan dengan publisher tanpa tahu apa saja yang sebenarnya akan dikerjakan publisher itu, dan baru sadar setelah rilis bahwa uang yang diterima di depan ternyata dipotong dari bagian mereka sendiri. Developer lain menyusun rencana keuangan dari harga jual di toko, padahal toko dan pihak lain mengambil bagian sebelum uang itu sampai. Kalau kamu tahu siapa melakukan apa dan ke mana uang mengalir, kamu bisa bertanya hal yang tepat sebelum berjanji apa pun."
+kind: lesson
+minutes: 25
+status: draf
+lastReviewed: 2026-10-30
+krekit:
+  gambaran-besar: "Studio itu satu titik di peta yang besar. Pelajaran ini mundur beberapa langkah supaya seluruh petanya kelihatan."
+  developer: "Label first-party dan third-party menjawab satu pertanyaan sederhana: siapa pemilik studionya?"
+  publisher: "Sebelum bertanya berapa uangnya, tanyakan dulu apa saja yang akan dikerjakan publisher untuk game kamu."
+  platform-holder-dan-toko: "Toko punya aturan sendiri. Baca dokumentasinya sebelum tanggal rilis kamu umumkan."
+  pembuat-hardware: "Game kamu akhirnya berjalan di perangkat milik pemain. Pembuat perangkat itu ikut menentukan batasnya."
+  penyedia-engine-dan-tools: "Engine juga punya model bisnis. Ketentuannya ikut masuk ke hitungan uang studio."
+  outsourcing-dan-layanan: "Di daftar kredit game besar, coba cari nama perusahaan yang berbeda dari nama studionya."
+  media-kreator-dan-pers: "Salinan review yang dikirim ke orang yang tepat bisa lebih berguna daripada seratus salinan yang dikirim asal-asalan."
+  event-dan-showcase: "Demo di festival juga berfungsi sebagai playtest besar, dengan pemain yang tidak kamu kenal."
+  dana-hibah-dan-inkubator: "Setiap sumber dana meminta sesuatu sebagai gantinya. Cari tahu apa itu sebelum mendaftar."
+  komunitas-dan-asosiasi: "Banyak kesepakatan bermula dari obrolan di meetup komunitas."
+  bagaimana-uang-mengalir: "Ikuti uangnya dari dompet pemain. Hitung berapa kali uang itu dipotong sebelum sampai ke tim."
+  empat-pola-kesepakatan: "Pola yang sama bisa adil atau merugikan. Penentunya ada di rincian kontrak."
+  kesalahan-umum: "Anggapan kedua sering muncul tepat saat orang membaca surat penawaran pertamanya."
+sidebar:
+  order: 2
+  label: "2 · Peta Ekosistem"
+quiz:
+  - q: "Sebuah studio menerima advance dari publisher dalam model advance against royalties. Apa arti uang itu bagi studio?"
+    options:
+      - "Hadiah dari publisher yang tidak terkait dengan penjualan"
+      - "Royalti yang dibayar di muka, yang nanti diperhitungkan dari bagian studio atas pendapatan game"
+      - "Pinjaman bank yang harus dicicil setiap bulan apa pun hasil penjualannya"
+      - "Pembayaran dari toko digital untuk menampilkan game di halaman depan"
+    answer: 1
+    explain: "Dalam model ini, advance adalah royalti studio yang dibayar lebih dulu. Publisher memperhitungkannya (recoup) dari bagian studio, jadi studio baru menerima royalti tambahan setelah jumlah advance itu tertutup."
+  - q: "Ryan Sumo dari Squeaky Wheel membedakan publishing deal dan distribution deal. Apa pembeda utamanya menurut tulisannya?"
+    options:
+      - "Publishing deal memberi pendanaan, distribution deal tidak memberi pendanaan tetapi memberi dukungan pemasaran dan distribusi"
+      - "Publishing deal hanya untuk konsol, distribution deal hanya untuk PC"
+      - "Distribution deal selalu memberi bagian pendapatan lebih besar ke publisher"
+      - "Tidak ada bedanya, kedua istilah itu sinonim"
+    answer: 0
+    explain: "Sumo memakai kata publishing untuk kesepakatan yang menyediakan dana, dan distribution untuk kesepakatan tanpa dana yang menukar dukungan pemasaran dan distribusi dengan bagian pendapatan. Ia sendiri mengakui tidak semua orang memakai definisi yang sama, jadi selalu periksa isi kontraknya."
+  - q: "Sebuah studio dibayar perusahaan lain untuk membawa game milik perusahaan itu dari PC ke konsol. Pola apa ini?"
+    options:
+      - "Self-publishing"
+      - "Work-for-hire, dalam bentuk porting"
+      - "Distribution deal"
+      - "Langganan katalog"
+    answer: 1
+    explain: "Studio dibayar untuk mengerjakan proyek milik klien. Pendapatannya berasal dari biaya jasa yang disepakati dan tidak bergantung pada penjualan game. Biasanya hak atas game tetap di tangan klien."
+  - q: "Menurut dokumentasi Steamworks yang diakses 30 Oktober 2026, apa yang terjadi sebelum halaman toko atau build game pertama kali bisa tayang di Steam?"
+    options:
+      - "Tidak ada pemeriksaan sama sekali"
+      - "Game harus lebih dulu dirilis di konsol"
+      - "Valve meninjau halaman toko dan build, misalnya apakah game bisa berjalan dan fitur yang dicantumkan benar-benar ada"
+      - "Developer wajib memakai publisher"
+    answer: 2
+    explain: "Steamworks menjelaskan proses review: Valve menjalankan game, memeriksa halaman toko, dan memastikan konfigurasinya benar. Setelah disetujui, developer bebas memperbarui game tanpa review ulang."
+  - q: "Di model sederhana aliran uang, pemain membayar Rp100.000 untuk sebuah game. Kenapa developer tidak menerima Rp100.000?"
+    options:
+      - "Karena pemain selalu meminta refund"
+      - "Karena sebelum sampai ke developer, ada potongan toko, pajak, refund, dan, kalau ada publisher, bagian publisher serta recoup biayanya"
+      - "Karena engine selalu mengambil setengahnya"
+      - "Karena developer harus membayar media yang meliput gamenya"
+    answer: 1
+    explain: "Uang berpindah melewati beberapa pihak. Besar setiap potongan berbeda tergantung toko, negara, kontrak, dan lisensi engine, jadi angkanya harus dicek di dokumen masing-masing."
+  - q: "IGDA adalah contoh pihak jenis apa di ekosistem game?"
+    options:
+      - "Publisher yang mendanai game indie"
+      - "Platform holder yang menjual konsol"
+      - "Organisasi keanggotaan nirlaba untuk orang-orang yang membuat game"
+      - "Toko digital untuk game PC"
+    answer: 2
+    explain: "IGDA menyebut dirinya organisasi keanggotaan nirlaba yang melayani individu pembuat game, dengan chapter lokal dan kelompok minat khusus (SIG)."
+sources:
+  - title: "Advance Against Royalties vs. Development Fee: Round 1"
+    url: "https://www.gamedeveloper.com/programming/advance-against-royalties-vs-development-fee-round-1"
+    publisher: "Tyrone Rodriguez, Game Developer (2010)"
+    accessed: 2026-10-30
+  - title: "What Does A Healthy Publisher/Developer Relationship Looks Like (With Real Contract Details!)"
+    url: "https://www.gamedeveloper.com/business/what-does-a-healthy-publisher-developer-relationship-looks-like-with-real-contract-details-"
+    publisher: "Ryan Sumo, Game Developer (2019)"
+    accessed: 2026-10-30
+  - title: "Hooded Horse co-founder says publishers should ditch 'horrible' recoup clauses to help devs"
+    url: "https://www.gamedeveloper.com/business/hooded-horse-co-founder-says-publishers-should-ditch-horrible-recoup-clauses-to-help-devs"
+    publisher: "Chris Kerr, Game Developer (2024)"
+    accessed: 2026-10-30
+  - title: "Onboarding (Steamworks Documentation)"
+    url: "https://partner.steamgames.com/doc/gettingstarted/onboarding"
+    publisher: "Valve"
+    accessed: 2026-10-30
+  - title: "Steam Direct Fee (Steamworks Documentation)"
+    url: "https://partner.steamgames.com/doc/gettingstarted/appfee"
+    publisher: "Valve"
+    accessed: 2026-10-30
+  - title: "Review Process (Steamworks Documentation)"
+    url: "https://partner.steamgames.com/doc/store/review_process"
+    publisher: "Valve"
+    accessed: 2026-10-30
+  - title: "App Review Guidelines"
+    url: "https://developer.apple.com/app-store/review/guidelines/"
+    publisher: "Apple Developer"
+    accessed: 2026-10-30
+  - title: "App Store Small Business Program"
+    url: "https://developer.apple.com/app-store/small-business-program/"
+    publisher: "Apple Developer"
+    accessed: 2026-10-30
+  - title: "Service fees (Play Console Help)"
+    url: "https://support.google.com/googleplay/android-developer/answer/112622"
+    publisher: "Google"
+    accessed: 2026-10-30
+  - title: "Bring your game to Xbox (ID@Xbox)"
+    url: "https://www.xbox.com/en-US/developers/id"
+    publisher: "Microsoft"
+    accessed: 2026-10-30
+  - title: "Games that sell DLC and in-app purchases appear to benefit most from subscription services"
+    url: "https://www.gamedeveloper.com/business/games-that-sell-dlc-and-in-app-purchases-appear-to-benefit-most-from-subscription-services"
+    publisher: "Bryant Francis, Game Developer (2026)"
+    accessed: 2026-10-30
+  - title: "About Auroch Digital's Work-For-Hire"
+    url: "https://aurochdigital.com/about-work-for-hire"
+    publisher: "Auroch Digital"
+    accessed: 2026-10-30
+  - title: "Co-Development: An Inside Look"
+    url: "https://www.deconstructoroffun.com/blog/2023/8/8/co-development-an-inside-look"
+    publisher: "Deconstructor of Fun (2023)"
+    accessed: 2026-10-30
+  - title: "Keywords Studios (halaman utama dan daftar layanan)"
+    url: "https://www.keywordsstudios.com/en/"
+    publisher: "Keywords Studios"
+    accessed: 2026-10-30
+  - title: "Curators and Curator Connect (Steamworks Documentation)"
+    url: "https://partner.steamgames.com/doc/marketing/curators"
+    publisher: "Valve"
+    accessed: 2026-10-30
+  - title: "Steam Next Fest (Steamworks Documentation)"
+    url: "https://partner.steamgames.com/doc/marketing/upcoming_events/nextfest"
+    publisher: "Valve"
+    accessed: 2026-10-30
+  - title: "About GDC"
+    url: "https://gdconf.com/about-gdc"
+    publisher: "GDC"
+    accessed: 2026-10-30
+  - title: "International Game Developers Association"
+    url: "https://igda.org/about-igda/"
+    publisher: "IGDA"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menyebut pihak-pihak utama di sekitar studio game dan apa yang dikerjakan masing-masing.
+- Membedakan developer, publisher, platform holder, dan toko digital.
+- Menjelaskan konsep advance dan recoup dalam kesepakatan publishing.
+- Menelusuri aliran uang dan layanan dari pemain sampai ke developer dan pemasoknya.
+- Membedakan self-publishing, kesepakatan dengan publisher, work-for-hire, dan kesepakatan langganan.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: warung dan pasar">
+Di [Pelajaran 1](/belajar/industri-karier/01-peta-peran/), studio diibaratkan dapur. Sekarang lihat pasarnya. Dapur butuh pemasok bahan dan peralatan, tempat berjualan, orang yang membantu membuka cabang dan memasang iklan, pembeli yang bercerita ke temannya, dan paguyuban pedagang. Setiap pihak ini menyediakan sesuatu, dan hampir semuanya mengambil bagian dari uang pembeli.
+</Aside>
+
+Pelajaran sebelumnya membahas peran di dalam studio. Pelajaran ini membahas organisasi di sekitar studio. Supaya rapi, pihak-pihak itu bisa dikelompokkan berdasarkan apa yang mereka berikan dalam rantai dari ide sampai pemain:
+
+| Pihak | Yang diberikan | Biasanya dibayar dengan |
+| --- | --- | --- |
+| Developer | game itu sendiri | penjualan, royalti, atau biaya jasa |
+| Publisher | dana, pemasaran, QA, lokalisasi, akses ke platform | bagian pendapatan |
+| Platform holder dan toko | tempat berjualan, pembayaran, pemeriksaan | potongan dari setiap penjualan |
+| Pembuat hardware | perangkat, alat pengembangan, program developer | penjualan perangkat |
+| Penyedia engine dan tools | engine, middleware, aplikasi | lisensi, langganan, atau royalti |
+| Outsourcing | art, audio, QA, lokalisasi, porting | biaya jasa |
+| Media, kreator, pers | perhatian calon pemain | iklan dan penonton mereka sendiri |
+| Event dan showcase | panggung, pertemuan bisnis | tiket, biaya stan, sponsor |
+| Dana, hibah, inkubator | modal dan pendampingan | bagian saham, bagian pendapatan, atau syarat program |
+| Komunitas dan asosiasi | jaringan, pengetahuan, advokasi | iuran anggota, sponsor |
+
+Satu perusahaan bisa memegang beberapa baris sekaligus. Pembuat konsol biasanya juga punya toko, studio sendiri, dan divisi publishing. Toko PC bisa juga membuat hardware. Publisher besar sering punya studio internal. Karena itu, pegang fungsinya, lalu lihat siapa yang sedang menjalankan fungsi itu di kasus tertentu.
+
+Pelajaran ini membahas konsep. Rincian bisnis seperti cara menghitung pendapatan, membaca kontrak, dan memilih platform direncanakan di jalur [Bisnis Studio Indie](/belajar/bisnis-indie/). Ekosistem khusus Indonesia dan Asia Tenggara dibahas di Pelajaran 3 jalur ini.
+
+## Developer
+
+**Developer** adalah pihak yang membuat game. Label yang sering muncul di berita dan forum menjelaskan hubungan developer dengan pemilik platform:
+
+- **First-party**: studio milik perusahaan pembuat platform, misalnya studio internal pembuat konsol. Game buatannya biasanya hanya terbit di platform pemiliknya.
+- **Second-party**: istilah tidak resmi untuk studio di luar pemilik platform yang terikat kontrak eksklusif atau sebagian sahamnya dimiliki pemilik platform. Pemakaiannya tidak seragam, jadi jangan menganggapnya istilah kontrak.
+- **Third-party**: developer atau publisher yang tidak dimiliki pemilik platform dan bisa merilis game di berbagai platform.
+- **Independen** (indie): developer yang tidak dimiliki publisher atau pemilik platform. Istilah ini juga dipakai untuk menggambarkan ukuran tim atau cara pendanaan, sehingga artinya ikut berubah sesuai konteks.
+
+Ada juga developer yang pekerjaannya membuat game untuk pihak lain:
+
+- **Studio work-for-hire** dibayar untuk mengerjakan proyek milik klien. Auroch Digital, studio di Bristol, menggambarkan layanan work-for-hire mereka mulai dari membuat game utuh, co-development, sampai porting, termasuk mengerjakan game dengan IP (*intellectual property*, hak atas karya seperti merek dan karakter) milik perusahaan lain.
+- **Co-development** berarti studio luar bekerja bersama tim inti klien pada game yang sama, misalnya menambah mode baru atau mengerjakan sebagian konten. Dalam wawancara dengan Deconstructor of Fun, COO Hot Head Games menyebut beberapa alasan umum klien memakai co-development: menambah cakupan game, kekurangan keahlian teknis, atau salah memperkirakan waktu dan jumlah orang.
+- **Studio porting** membawa game yang sudah ada ke platform lain, misalnya dari PC ke konsol atau dari konsol ke HP.
+
+Satu studio bisa menjalankan beberapa model bersamaan. Narasumber Deconstructor of Fun menyebut studio bisa tetap mengerjakan game sendiri sambil menerima proyek co-development, selama terbuka kepada kliennya.
+
+## Publisher
+
+**Publisher** membantu game sampai ke pemain dan sering menanggung sebagian risiko keuangannya. Layanan yang biasa ditawarkan:
+
+- **Pendanaan** untuk biaya pengembangan, biasanya dibayar bertahap per *milestone* (tahap pekerjaan yang disepakati).
+- **Pemasaran dan PR**: kampanye, trailer, hubungan dengan media dan kreator, kehadiran di event.
+- **QA** tambahan, sering lewat tim internal atau vendor.
+- **Lokalisasi** ke bahasa lain.
+- **Distribusi dan akses platform**: mengurus akun toko, submission ke konsol, dan hubungan dengan pemilik platform.
+- **Produksi dan masukan**: producer di publisher memeriksa hasil milestone dan memberi saran. Perannya dibahas singkat di [Pelajaran 1](/belajar/industri-karier/01-peta-peran/#produksi).
+
+Tidak semua publisher menawarkan semua layanan ini, dan isi setiap kesepakatan berbeda. Ryan Sumo dari studio Squeaky Wheel, dalam tulisannya di Game Developer, membedakan dua jenis kesepakatan. **Publishing deal** menyediakan dana, biasanya ditambah berbagi pengetahuan dan saran. **Distribution deal** tidak menyediakan dana, tetapi menawarkan dukungan pemasaran dan distribusi dengan imbalan bagian pendapatan. Sumo mengakui sebagian orang memakai definisi lain, jadi yang penting adalah isi kontraknya, apa pun namanya.
+
+### Advance dan recoup
+
+Dua istilah ini muncul di hampir semua pembahasan kontrak publishing.
+
+- **Advance** adalah uang yang dibayar publisher di muka. Tyrone Rodriguez menjelaskan model *advance against royalties*: uang di muka itu sebenarnya royalti developer yang dibayar lebih awal, sebelum game terjual.
+- **Recoup** berarti publisher menutup kembali uang yang sudah dikeluarkannya dari pendapatan game. Selama belum tertutup, bagian developer dipakai untuk menutup advance, sehingga developer belum menerima royalti tambahan.
+
+Cara recoup sangat menentukan kapan developer mulai menerima uang. Sumo menulis bahwa publisher biasanya meminta bagi hasil setelah biayanya tertutup, dan bentuk pembagiannya bisa bermacam-macam. Recoup juga diperdebatkan. Tim Bender, salah satu pendiri publisher Hooded Horse, dalam wawancara dengan Game Developer berpendapat bahwa ketentuan recoup memindahkan risiko ke developer, padahal publisher yang memegang banyak proyek lebih mampu menanggung risiko satu proyek yang gagal.
+
+<Aside type="caution" title="Untuk edukasi">
+Pelajaran ini sengaja tidak mencantumkan persentase bagi hasil. Angka di satu kontrak tidak berlaku untuk kontrak lain. Untuk kesepakatan nyata, minta penjelasan tertulis tentang layanan yang diberikan, cara recoup, dan hak atas game, lalu konsultasikan dengan profesional hukum.
+</Aside>
+
+## Platform holder dan toko
+
+**Platform holder** adalah pemilik platform tempat game berjalan dan dijual: pembuat konsol, pemilik sistem operasi HP, dan pengelola toko PC. **Toko** (*storefront*) adalah tempat pemain membeli dan mengunduh game. Di konsol dan HP, platform holder biasanya juga mengelola toko utamanya. Di PC, ada beberapa toko yang bersaing.
+
+Hampir semua toko menjalankan dua hal yang mempengaruhi developer:
+
+**Pemeriksaan sebelum rilis.** Nama dan ketatnya berbeda: *certification* di konsol, *review* di toko HP dan PC. Contohnya:
+
+- Dokumentasi Steamworks menjelaskan bahwa sebelum halaman toko atau build bisa tayang, Valve menjalankan game, memeriksa halaman toko, dan memastikan konfigurasinya benar. Setelah disetujui, developer bebas memperbarui game tanpa review ulang. Developer baru juga harus menunggu 21 hari setelah membayar biaya aplikasi, dan memasang halaman "coming soon" setidaknya dua minggu sebelum rilis.
+- Panduan App Review dari Apple menyebut setiap aplikasi di App Store ditinjau oleh tim peninjau sebelum tersedia.
+- Untuk konsol, programnya lebih tertutup. Halaman ID@Xbox milik Microsoft menyebut tiga syarat dasar untuk mulai mengembangkan game di platform itu: berusia minimal 18 tahun (atau diwakili orang tua), menandatangani NDA (perjanjian kerahasiaan), dan berada di negara tempat Microsoft bisa berbisnis.
+
+**Potongan toko.** Toko mengambil sebagian dari setiap penjualan sebagai imbalan atas distribusi, pemrosesan pembayaran, dan layanan lain. Besarnya berbeda antartoko, antarnegara, dan antarprogram, dan bisa berubah. Beberapa contoh dari halaman resmi, per 30 Oktober 2026:
+
+- Apple menyebut tarif komisi 15% untuk developer yang ikut App Store Small Business Program, yaitu developer dengan hasil penjualan bersih (*proceeds*) hingga 1 juta USD per tahun. Di atas ambang itu berlaku tarif standar.
+- Google menulis bahwa Google Play tidak punya satu tarif biaya layanan tunggal. Tarifnya bergantung pada wilayah, jenis transaksi, dan program yang diikuti developer.
+- Steam memungut biaya Steam Direct sebesar 100 USD untuk setiap aplikasi baru. Biaya ini tidak bisa dikembalikan, tetapi diperhitungkan kembali ke developer setelah aplikasinya mencapai pendapatan kotor yang disesuaikan sebesar 1.000 USD.
+
+Angka-angka ini hanya contoh bahwa setiap toko punya ketentuan sendiri. Selalu baca halaman resmi terbaru sebelum menghitung. Cara menghitung pendapatan bersih direncanakan di jalur [Bisnis Studio Indie](/belajar/bisnis-indie/).
+
+## Pembuat hardware
+
+Pembuat hardware membuat perangkat tempat game dimainkan: komponen PC, konsol, HP, handheld, headset VR, dan perangkat input. Hubungan mereka dengan developer biasanya berbentuk:
+
+- **Alat pengembangan**: driver, SDK, alat profiling, dan dokumentasi optimasi untuk perangkat mereka.
+- **Kit pengembangan** (*devkit*): perangkat khusus untuk menguji game sebelum rilis, terutama di konsol.
+- **Program developer**: dukungan teknis, akses awal ke perangkat baru, atau kerja sama promosi.
+- **Batasan teknis**: spesifikasi perangkat menentukan anggaran memori, performa, dan kontrol yang harus diikuti game. Bagian ini dibahas dari sisi teknis di [Perangkat Keras Game](/belajar/perangkat-keras/).
+
+Pelajaran ini tidak membandingkan merek. Kalau Krekit bekerja sama dengan sebuah brand, kerja sama itu diungkap di halaman terkait dan tidak mengubah isi edukasi, sesuai halaman [Kemitraan](/kemitraan/) dan [Standar konten](/kontribusi/standar-konten/).
+
+## Penyedia engine dan tools
+
+Hampir tidak ada studio yang membuat semua alatnya sendiri. Penyedia di bagian ini antara lain:
+
+- **Engine**: fondasi tempat game dibangun. Lihat jalur [Lanskap Engine](/belajar/lanskap-engine/) untuk komponen dan cara membandingkannya.
+- **Middleware**: pustaka untuk satu bidang, misalnya audio, physics, jaringan, atau animasi. [Pelajaran 1](/belajar/industri-karier/01-peta-peran/#audio) menyebut middleware audio sebagai contoh.
+- **Aplikasi pembuat konten**: aplikasi 3D, 2D, dan audio yang dipakai artist dan sound designer.
+- **Layanan online**: server multipemain, akun pemain, analitik, dan alat live ops.
+
+Model bayarnya bermacam-macam: gratis dan open source, langganan per kursi, biaya lisensi sekali bayar, atau royalti dari pendapatan game. Karena itu, pilihan engine dan tools ikut masuk ke hitungan uang studio, tidak hanya ke keputusan teknis. Ketentuan lisensi engine direncanakan di jalur Lanskap Engine.
+
+## Outsourcing dan layanan
+
+Studio sering menyerahkan sebagian pekerjaan ke pihak luar. Bentuknya bisa freelancer, studio kecil spesialis, atau perusahaan layanan besar. Keywords Studios, misalnya, mengelompokkan layanannya ke pengembangan game, art, audio, QA, lokalisasi, pemasaran, dan dukungan pemain.
+
+Pekerjaan yang paling sering di-outsource:
+
+| Bidang | Contoh pekerjaan |
+| --- | --- |
+| Art | model 3D, tekstur, animasi, ilustrasi |
+| Audio | musik, efek suara, rekaman voice over |
+| QA | pengujian fungsional, pengujian kompatibilitas perangkat, pengujian kepatuhan platform |
+| Lokalisasi | penerjemahan, QA lokalisasi |
+| Pengembangan | co-development, porting |
+
+Outsourcing memindahkan pekerjaan, tetapi tanggung jawab atas hasilnya tetap di studio. Serah terima yang dibahas di Pelajaran 1 tetap berlaku, hanya saja sekarang melewati batas perusahaan: brief harus jelas, format file harus disepakati, dan hasilnya tetap perlu diperiksa.
+
+## Media, kreator, dan pers
+
+Pemain menemukan game lewat orang yang mereka percaya. Pihak di bagian ini antara lain:
+
+- **Pers dan media game**: situs berita, majalah, dan pengulas yang menulis berita dan ulasan.
+- **Kreator konten**: streamer, YouTuber, dan kreator video pendek.
+- **Kurator di toko**: dokumentasi Steamworks menjelaskan Steam Curators sebagai individu atau kelompok yang merekomendasikan game, dan menyediakan Curator Connect untuk mengirim salinan review langsung ke kurator yang dipilih developer.
+
+Hubungan dengan pihak ini biasanya berbentuk salinan review, *press kit* (kumpulan screenshot, trailer, logo, dan deskripsi yang siap dipakai media), embargo (kesepakatan tanggal kapan ulasan boleh terbit), dan akses awal. Media dan kreator punya penonton dan penilaian sendiri, jadi liputan tidak bisa dipesan seperti iklan. Liputan berbayar, kalau ada, harus ditandai sebagai iklan atau sponsor sesuai aturan di platform dan negara masing-masing.
+
+## Event dan showcase
+
+Event mempertemukan developer dengan pemain, media, publisher, dan sesama developer. Jenisnya antara lain:
+
+- **Konferensi industri**: GDC, misalnya, menggambarkan dirinya sebagai tempat developer belajar, menemukan teknologi baru, menutup kesepakatan, mencari mitra, dan membangun jaringan. GDC dimulai pada 1988 sebagai pertemuan kecil antardeveloper.
+- **Pameran untuk pemain**: tempat developer memajang demo dan bertemu calon pemain langsung.
+- **Festival online di toko**: dokumentasi Steamworks menjelaskan Steam Next Fest sebagai event seminggu untuk game yang belum rilis, dengan demo yang bisa dimainkan. Event ini diadakan tiga kali setahun, dan setiap game hanya boleh ikut satu kali.
+- **Showcase**: siaran pengumuman game, baik dari platform holder, publisher, media, maupun komunitas.
+
+Event juga tempat bertemunya pihak-pihak lain di pelajaran ini. Publisher mencari game baru, studio work-for-hire mencari klien, dan media mencari cerita.
+
+## Dana, hibah, dan inkubator
+
+Selain publisher, ada beberapa sumber dana lain. Gambaran umumnya:
+
+- **Investor** (misalnya modal ventura atau investor perorangan) memberi dana dengan imbalan bagian kepemilikan studio.
+- **Hibah** dari pemerintah, lembaga budaya, atau perusahaan teknologi. Biasanya tidak meminta bagian pendapatan, tetapi punya syarat pemakaian dan pelaporan.
+- **Dana dari platform holder** untuk game yang akan hadir di platform mereka, sering dengan syarat tertentu seperti eksklusivitas sementara.
+- **Inkubator dan akselerator**: program pendampingan untuk studio baru, kadang disertai dana kecil, ruang kerja, atau akses ke mentor.
+- **Crowdfunding**: dana dari calon pemain sebelum game selesai, biasanya dengan imbalan salinan game atau hadiah lain.
+
+Setiap sumber dana meminta sesuatu sebagai gantinya, entah bagian saham, bagian pendapatan, eksklusivitas, atau kewajiban laporan. Perbandingan sumber dana direncanakan di jalur [Bisnis Studio Indie](/belajar/bisnis-indie/). Program yang ada di Indonesia dan Asia Tenggara dibahas di Pelajaran 3 jalur ini.
+
+## Komunitas dan asosiasi
+
+Komunitas developer menjadi tempat berbagi pengetahuan, mencari rekan tim, dan mendengar lowongan atau peluang kerja sama. Bentuknya bisa meetup lokal, server diskusi online, kelompok game jam, atau komunitas kampus.
+
+**Asosiasi** lebih formal. Ada asosiasi yang anggotanya perorangan, ada yang anggotanya perusahaan. Sebagai contoh, IGDA (International Game Developers Association) menyebut dirinya organisasi keanggotaan nirlaba terbesar yang melayani individu pembuat game. Kegiatannya menghubungkan anggota, mendukung pengembangan profesional, dan memperjuangkan kepentingan developer. IGDA juga menyebut punya lebih dari 160 chapter lokal dan kelompok minat khusus (*special interest group*, SIG), misalnya kelompok lokalisasi yang panduannya dikutip di Pelajaran 1. Asosiasi perusahaan biasanya mewakili studio dalam urusan seperti kebijakan pemerintah, data industri, dan misi dagang.
+
+## Bagaimana uang mengalir
+
+Diagram berikut adalah **ilustrasi model sederhana**, tidak menggambarkan kesepakatan atau perusahaan tertentu. Tanda panah ke bawah menunjukkan uang, keterangan di kanan menunjukkan layanan yang diberikan sebagai gantinya.
+
+```text title="Ilustrasi: aliran uang dan layanan (model sederhana)"
+PEMAIN
+  │  bayar harga game, item dalam game, atau langganan
+  ▼
+TOKO / PLATFORM          ← memberi: etalase, pembayaran, unduhan, pemeriksaan
+  │  menahan: potongan toko, pajak tertentu, refund
+  │  meneruskan sisa ke pemegang akun penerbit game
+  ▼
+PUBLISHER (jika ada)     ← memberi: dana di muka, pemasaran, QA, lokalisasi
+  │  menahan: bagian publisher, recoup advance dan biaya
+  │  meneruskan royalti
+  ▼
+DEVELOPER                ← memberi: game dan pembaruannya
+  │  membayar
+  ▼
+PEMASOK                  ← memberi: engine, tools, outsourcing, freelancer
+  (lisensi, langganan, royalti engine, biaya jasa)
+```
+
+Beberapa hal yang terlihat dari ilustrasi ini:
+
+1. **Uang dipotong beberapa kali sebelum sampai ke tim.** Harga di halaman toko tidak sama dengan uang yang diterima developer.
+2. **Urutannya menentukan siapa menanggung risiko.** Pihak yang menerima uang lebih dulu sudah aman saat penjualan rendah. Pihak di ujung rantai baru menerima uang setelah semua potongan di atasnya terpenuhi.
+3. **Aliran layanan berlawanan arah dengan aliran uang.** Setiap potongan seharusnya dibayar dengan layanan yang nyata. Pertanyaan yang berguna untuk setiap pihak: apa yang saya dapat untuk bagian yang diambilnya?
+
+Tidak semua uang lewat jalur ini. Pendapatan iklan, sponsor, merchandise, atau penjualan langsung di situs developer mengikuti jalurnya sendiri.
+
+## Empat pola kesepakatan
+
+Rantai di atas berubah bentuk tergantung kesepakatannya. Berikut empat pola umum, dijelaskan sebagai konsep. Kontrak nyata sering menggabungkan beberapa pola.
+
+| Pola | Siapa memegang akun toko | Dari mana developer dibayar | Siapa menanggung risiko penjualan |
+| --- | --- | --- | --- |
+| Self-publishing | developer | pendapatan toko, setelah potongan toko | developer |
+| Publisher deal | biasanya publisher | advance di muka, lalu royalti setelah recoup | dibagi, sesuai kontrak |
+| Work-for-hire | klien | biaya jasa per milestone | klien |
+| Langganan atau katalog | publisher atau developer | pembayaran yang dinegosiasikan dengan pengelola layanan | tergantung kontrak |
+
+**Self-publishing.** Developer mendaftar sendiri ke toko, mengurus halaman toko, pemasaran, dan submission. Contohnya, onboarding Steamworks meminta identitas badan usaha, data bank, informasi pajak, dan biaya aplikasi. Developer mendapat seluruh sisa setelah potongan toko, tetapi juga menanggung seluruh biaya dan risikonya.
+
+**Publisher deal.** Publisher memegang sebagian besar urusan setelah game dibuat, dan sering mendanai pengembangannya. Pendapatan dari toko masuk ke publisher dulu, lalu dibagi sesuai kontrak. Untuk distribution deal tanpa dana, pembagiannya bisa dimulai tanpa advance yang perlu ditutup.
+
+**Work-for-hire.** Klien membayar biaya pengembangan, dan hak atas game biasanya tetap milik klien. Pendapatan studio tidak bergantung pada laku tidaknya game. Akibatnya, studio juga tidak ikut menikmati kalau game itu sukses, kecuali kontraknya menyertakan bonus atau royalti. Narasumber Deconstructor of Fun mencatat bahwa studio work-for-hire harus terus mencari proyek baru agar gaji tim tetap terbayar.
+
+**Langganan atau katalog.** Pemain membayar langganan ke pengelola layanan untuk mengakses banyak game. Pengelola layanan biasanya membayar pemilik game sesuai kesepakatan untuk masa tayang tertentu, jadi pemasukan dari layanan tidak bergantung langsung pada jumlah salinan yang terjual. Ketentuannya dinegosiasikan per game dan jarang diumumkan. Dalam artikel Game Developer tentang layanan langganan, direktur ID@Xbox menyebut timnya bekerja sama dengan kreator untuk menyusun program yang disesuaikan dengan kebutuhan mereka. Game di layanan seperti ini tetap bisa dijual biasa, termasuk DLC (konten tambahan yang dijual terpisah).
+
+## Kesalahan umum
+
+### Publisher sama dengan toko
+
+Toko menjual dan mengirim game ke pemain. Publisher membantu game sampai ke toko dan ke perhatian pemain, sering dengan dana dan pemasaran. Developer yang self-publish berurusan langsung dengan toko tanpa publisher.
+
+### Advance adalah uang tambahan di luar bagi hasil
+
+Dalam model advance against royalties, advance adalah royalti yang dibayar lebih awal. Selama advance belum tertutup, bagian developer dipakai untuk menutupnya. Game bisa laku cukup baik dan developer tetap belum menerima royalti tambahan.
+
+### Harga di toko adalah uang developer
+
+Di antara pemain dan developer ada potongan toko, pajak, refund, dan, kalau ada, bagian publisher. Developer juga masih harus membayar lisensi engine, tools, dan pihak luar. Hitung dari uang yang benar-benar diterima.
+
+### Masuk toko berarti ditemukan pemain
+
+Lolos review hanya berarti game boleh dijual. Pemain tetap perlu tahu game itu ada, lewat media, kreator, event, komunitas, atau pemasaran. Karena itu sebagian developer memakai publisher, dan sebagian lain menyiapkan waktu dan dana khusus untuk pemasaran.
+
+### Work-for-hire berarti ikut memiliki game
+
+Dalam work-for-hire, studio dibayar untuk pekerjaannya. Hak atas game biasanya tetap di tangan klien, kecuali kontrak menyatakan lain. Baca bagian hak dan kepemilikan di setiap kontrak.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Latihan ini tidak butuh engine.
+
+1. Pilih tiga game yang pernah kamu mainkan. Buka halaman tokonya, lalu catat nama developer dan publisher. Mana yang sama, mana yang berbeda? Cari tahu apakah developernya first-party, third-party, atau independen.
+2. Buka daftar kredit salah satu game itu. Cari nama perusahaan di luar developer dan publisher, misalnya vendor QA, lokalisasi, art, atau audio. Pihak mana di pelajaran ini yang mereka wakili?
+3. Gambar ulang ilustrasi aliran uang untuk game yang self-publish di satu toko HP. Pihak mana yang hilang dibandingkan diagram di atas, dan pekerjaan siapa yang sekarang harus diambil alih developer?
+4. Baca halaman onboarding di dokumentasi Steamworks atau panduan App Review dari Apple. Tulis tiga hal yang perlu disiapkan developer sebelum game bisa dijual, selain gamenya sendiri.
+5. Bayangkan sebuah publisher menawarkan advance untuk game kamu. Tulis lima pertanyaan yang ingin kamu ajukan sebelum menandatangani apa pun, berdasarkan bagian Publisher dan Empat pola kesepakatan.
