@@ -1,0 +1,632 @@
+---
+title: "Menulis Shader Pertama"
+description: "Vertex dan fragment shader, uniform, varying, dan GLSL dari nol, sampai bisa membaca shader hologram Lab."
+fundamental: "Shader hasil salinan biasanya langsung jalan, sampai ada yang meleset. Objek transparan yang tetap pekat, efek yang diam padahal waktu sudah dikirim, atau layar yang tiba-tiba kosong dengan error berisi nomor baris yang tidak cocok dengan file-mu hanya bisa dibereskan kalau kamu tahu apa yang ditambahkan Three.js ke shader dan bagaimana data mengalir dari JavaScript ke GPU."
+kind: lesson
+minutes: 35
+status: draf
+lastReviewed: 2026-10-30
+terms:
+  - shader
+  - vertex-shader
+  - fragment-shader
+  - glsl
+  - glsl-functions
+  - uniform
+  - attribute
+  - varying
+  - fresnel
+  - shader-material
+  - raw-import
+  - vite
+  - devtools
+  - lil-gui
+krekit:
+  gambaran-besar: "Dua program pendek, satu untuk titik dan satu untuk piksel. Semua efek di Lab dibangun dari pasangan ini."
+  shadermaterial-dan-rawshadermaterial: "Hampir selalu pakai ShaderMaterial. RawShaderMaterial berguna kalau kamu ingin melihat semuanya tanpa bantuan."
+  glsl-dalam-satu-halaman: "Tulis 1.0, jangan 1. Kebiasaan kecil ini menghemat banyak error."
+  shader-pertama-satu-warna: "Coba ubah angka di vec4 itu dulu. Di shader, warna ditulis dari 0.0 sampai 1.0."
+  uniform-waktu-dan-warna-dari-javascript: "Shader tidak punya jam. Setiap frame, JavaScript yang memberi tahu sekarang jam berapa."
+  varying-dari-titik-ke-piksel: "Varying itu titipan. Vertex shader menulis, GPU mencampur, fragment shader membaca."
+  bedah-kode-hologramjs: "Aura di sekeliling cangkangku juga dibuat dari fungsi ini. Cuma angkanya yang beda."
+  bedah-kode-ujung-vertexglsl: "Bagian morph, twist, dan gelombang di tengahnya kita bedah di pelajaran berikutnya."
+  transparansi-blending-dan-depthwrite: "Tiga baris pengaturan ini yang membuat hologram terlihat seperti cahaya."
+  debugging-shader: "Shader tidak punya console.log. Warnakan saja nilainya, lalu lihat."
+  kesalahan-umum: "Kesalahan nomor dua tidak memunculkan error sama sekali. Paling lama ditemukan."
+sidebar:
+  order: 4
+  label: "4 · Menulis Shader Pertama"
+quiz:
+  - q: "Cangkang hologram punya sekitar 3.700 titik dan di layar menutupi sekitar 200.000 piksel. Kira-kira berapa kali baris `vNormal = ...` dan baris `float fresnel = ...` dijalankan per frame?"
+    options:
+      - "Keduanya sekitar 200.000 kali"
+      - "vNormal sekitar 3.700 kali (per titik), fresnel sekitar 200.000 kali (per piksel)"
+      - "vNormal sekitar 200.000 kali, fresnel sekitar 3.700 kali"
+      - "Keduanya sekali per frame"
+    answer: 1
+    explain: "vNormal ditulis di vertex shader, yang dijalankan sekali per titik. fresnel dihitung di fragment shader, yang dijalankan sekali per piksel yang tertutup. Karena cangkang dua sisi dan transparan, piksel yang tertutup sisi depan dan belakang bahkan diwarnai dua kali."
+  - q: "Di JavaScript kamu menulis `uniforms: { time: { value: 0 } }` dan memperbarui `uniforms.time.value` setiap frame. Di shader tertulis `uniform float uTime;`. Apa yang terjadi?"
+    options:
+      - "Three.js mencocokkan keduanya otomatis"
+      - "uTime di shader tetap 0, efek tidak bergerak, dan biasanya tidak ada error"
+      - "Shader gagal dikompilasi"
+      - "Browser menampilkan error di Console"
+    answer: 1
+    explain: "Nama uniform harus sama persis. Uniform yang tidak pernah diisi bernilai 0, dan GLSL menganggapnya sah. Tidak ada yang salah dari sudut pandang compiler, jadi tidak ada pesan apa pun."
+  - q: "Fragment shader menulis `gl_FragColor = vec4(warna, 0.2);`, tetapi objeknya tetap tampak pekat. Pengaturan material apa yang paling mungkin terlupa?"
+    options:
+      - "depthWrite: false"
+      - "transparent: true"
+      - "side: THREE.DoubleSide"
+      - "uniformsNeedUpdate: true"
+    answer: 1
+    explain: "Dengan blending normal dan transparent false, Three.js mematikan blending sama sekali, sehingga nilai alpha diabaikan. transparent: true menyalakan blending dan menggambar objek setelah objek pekat."
+  - q: "Kenapa material hologram memakai `depthWrite: false`?"
+    options:
+      - "Agar shader lebih cepat dikompilasi"
+      - "Agar sisi belakang cangkang tidak dibuang depth test setelah sisi depannya tergambar lebih dulu"
+      - "Agar hologram memberi bayangan"
+      - "Agar uniform diperbarui setiap frame"
+    answer: 1
+    explain: "Jika sisi depan menulis kedalamannya, piksel sisi belakang yang datang kemudian dianggap tertutup dan dibuang. Untuk cangkang tembus pandang yang bercahaya, kedua sisi justru harus terlihat."
+  - q: "Console menunjukkan error shader di baris 140, padahal vertex.glsl milikmu hanya 57 baris. Kenapa?"
+    options:
+      - "File .glsl tersimpan ganda"
+      - "Nomor baris dihitung dari kode lengkap, termasuk deklarasi dan #define yang ditambahkan Three.js di depan shader-mu"
+      - "Error berasal dari shader lain"
+      - "Vite menambahkan baris kosong saat impor ?raw"
+    answer: 1
+    explain: "ShaderMaterial menyambung kode pembuka (versi GLSL, precision, uniform, dan attribute bawaan) di depan kodemu. Cari baris yang ditandai `>` di potongan kode pada pesan error, lalu cocokkan isinya dengan file-mu."
+  - q: "Kamu memindahkan shader dari RawShaderMaterial ke ShaderMaterial tanpa mengubah isinya. Shader berisi `uniform mat4 modelMatrix;` dan `attribute vec3 position;`. Apa yang terjadi?"
+    options:
+      - "Tetap berjalan normal"
+      - "Error kompilasi karena variabel itu sudah dideklarasikan Three.js, sehingga dideklarasikan dua kali"
+      - "Objek menjadi hitam"
+      - "Three.js menghapus deklarasi ganda otomatis"
+    answer: 1
+    explain: "ShaderMaterial sudah menambahkan deklarasi itu di depan kodemu. Deklarasi yang sama untuk kedua kalinya adalah error di GLSL. Hapus deklarasi bawaan saat memakai ShaderMaterial."
+sources:
+  - title: "ShaderMaterial"
+    url: "https://threejs.org/docs/pages/ShaderMaterial.html"
+    publisher: "three.js docs"
+    accessed: 2026-10-30
+  - title: "RawShaderMaterial"
+    url: "https://threejs.org/docs/pages/RawShaderMaterial.html"
+    publisher: "three.js docs"
+    accessed: 2026-10-30
+  - title: "Material"
+    url: "https://threejs.org/docs/pages/Material.html"
+    publisher: "three.js docs"
+    accessed: 2026-10-30
+  - title: "WebGLProgram.js (r186)"
+    url: "https://github.com/mrdoob/three.js/blob/r186/src/renderers/webgl/WebGLProgram.js"
+    publisher: "three.js (kode sumber)"
+    accessed: 2026-10-30
+  - title: "Static Asset Handling: Importing Asset as String"
+    url: "https://vite.dev/guide/assets"
+    publisher: "Vite"
+    accessed: 2026-10-30
+  - title: "GLSL shaders"
+    url: "https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders"
+    publisher: "MDN Web Docs"
+    accessed: 2026-10-30
+  - title: "pow (OpenGL ES 3.0 Reference Pages)"
+    url: "https://registry.khronos.org/OpenGL-Refpages/es3.0/html/pow.xhtml"
+    publisher: "Khronos Group"
+    accessed: 2026-10-30
+  - title: "mod (OpenGL ES 3.0 Reference Pages)"
+    url: "https://registry.khronos.org/OpenGL-Refpages/es3.0/html/mod.xhtml"
+    publisher: "Khronos Group"
+    accessed: 2026-10-30
+  - title: "gl_FrontFacing (OpenGL ES 3.0 Reference Pages)"
+    url: "https://registry.khronos.org/OpenGL-Refpages/es3.0/html/gl_FrontFacing.xhtml"
+    publisher: "Khronos Group"
+    accessed: 2026-10-30
+  - title: "The OpenGL ES Shading Language, Version 3.00"
+    url: "https://registry.khronos.org/OpenGL/specs/es/3.0/GLSL_ES_Specification_3.00.pdf"
+    publisher: "Khronos Group"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Demo from '~/components/Demo.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Memilih antara ShaderMaterial dan RawShaderMaterial, dan tahu apa yang ditambahkan Three.js ke shader-mu.
+- Membaca dan menulis GLSL dasar: tipe, vektor, swizzle, dan fungsi bawaan.
+- Menulis vertex shader yang menggeser titik dan fragment shader yang memberi warna.
+- Mengirim waktu dan warna dari render loop lewat uniform, dan meneruskan data dari titik ke piksel lewat varying.
+- Mengatur transparansi, blending, dan depthWrite untuk efek bercahaya.
+- Menemukan kesalahan shader lewat warna dan pesan error di Console.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title={"Model mental: dua formulir yang diisi jutaan kali"}>
+GPU membagikan dua formulir. Formulir pertama diisi sekali untuk **setiap titik** dan hanya berisi satu pertanyaan wajib: "di mana titik ini di layar?". Formulir kedua diisi sekali untuk **setiap piksel**: "warna apa piksel ini?". Ada papan pengumuman yang sama untuk semua pengisi (uniform), dan formulir titik boleh menitipkan catatan untuk formulir piksel (varying). Shader adalah cara kamu menulis jawaban kedua formulir itu.
+</Aside>
+
+[Pelajaran 4 Fondasi Engine](/belajar/fondasi-engine/04-shader/) menjelaskan konsepnya: pipa grafis, [vertex shader](/kamus/shader/vertex-shader/), [fragment shader](/kamus/shader/fragment-shader/), dan biaya masing-masing. Di engine, sebagian besar kerangka shader diurus untukmu. Di Three.js kamu menulisnya sendiri dalam [GLSL](/kamus/shader/glsl/), bahasa shader milik WebGL, lalu menyerahkannya ke material.
+
+Di [Pelajaran 3](/belajar/web-threejs/03-permukaan/) kamu memakai `MeshStandardMaterial`. Material itu juga berisi shader, hanya saja ditulis tim Three.js. Pelajaran ini membuat shader dari nol sampai kamu bisa membaca shader hologram di [Lab](/lab/), cangkang bercahaya yang mengelilingi objek kuning. Bagian morph, twist, gelombang, dan scanline dari shader itu dibedah di Pelajaran 5.
+
+## ShaderMaterial dan RawShaderMaterial
+
+Three.js punya dua material untuk shader buatan sendiri. Dokumentasinya menyebut keduanya bekerja sama, kecuali satu hal: [ShaderMaterial](/kamus/web/shader-material/) menambahkan deklarasi uniform dan attribute bawaan ke depan kodemu, sedangkan `RawShaderMaterial` tidak menambahkan apa-apa.
+
+Daftar yang ditambahkan ShaderMaterial (dari kode sumber `WebGLProgram.js` Three.js r186, versi yang dipakai situs ini):
+
+| Nama | Jenis | Ada di | Isi |
+| --- | --- | --- | --- |
+| `position`, `normal`, `uv` | attribute | vertex | Data per titik dari geometri |
+| `modelMatrix` | uniform `mat4` | vertex | Lokal objek ke dunia (transform Pelajaran 2) |
+| `viewMatrix` | uniform `mat4` | vertex, fragment | Dunia ke ruang kamera |
+| `projectionMatrix` | uniform `mat4` | vertex | Ruang kamera ke layar (perspektif) |
+| `modelViewMatrix` | uniform `mat4` | vertex | `viewMatrix × modelMatrix`, sudah dikalikan |
+| `normalMatrix` | uniform `mat3` | vertex | Untuk memutar normal ke ruang kamera |
+| `cameraPosition` | uniform `vec3` | vertex, fragment | Posisi kamera di dunia |
+
+Selain itu ShaderMaterial menambahkan baris versi (`#version 300 es`), baris `precision`, dan beberapa `#define` agar kode bergaya lama tetap jalan di WebGL 2. Contohnya, `attribute` dan `varying` diterjemahkan ke `in` dan `out`, dan `gl_FragColor` diarahkan ke variabel keluaran yang dibuat Three.js. Karena itu shader proyek ini boleh memakai `gl_FragColor` walaupun nama itu sudah tidak ada di GLSL ES 3.00.
+
+Komentar di awal vertex shader hologram merangkum hal yang sama:
+
+```glsl title="src/experiment/shaders/hologram/vertex.glsl" showLineNumbers startLineNumber=1
+// VERTEX SHADER: dijalankan GPU sekali untuk SETIAP titik (vertex) geometri, paralel.
+// Tugas utamanya: menentukan posisi akhir titik di layar (gl_Position).
+//
+// Variabel bawaan dari Three.js (tidak perlu dideklarasikan):
+//   attribute vec3 position, normal; attribute vec2 uv;
+//   uniform mat4 modelMatrix, viewMatrix, projectionMatrix; uniform vec3 cameraPosition;
+```
+
+Dengan `RawShaderMaterial`, semua itu kamu tulis sendiri:
+
+```glsl title="Contoh: awal vertex shader untuk RawShaderMaterial"
+precision highp float;
+
+uniform mat4 projectionMatrix;
+uniform mat4 modelViewMatrix;
+attribute vec3 position;
+
+void main() {
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+```
+
+Nama matriksnya tetap harus sama, karena Three.js mengisi uniform berdasarkan nama. Bedanya hanya siapa yang menulis deklarasinya. Untuk belajar dan untuk hampir semua efek, ShaderMaterial lebih praktis. RawShaderMaterial berguna saat kamu ingin kendali penuh atas kode yang dikirim ke GPU, misalnya untuk memakai shader dari luar Three.js tanpa diubah.
+
+## GLSL dalam satu halaman
+
+GLSL mirip C: setiap variabel punya tipe, setiap baris diakhiri titik koma, dan program dimulai dari fungsi `main()`. Tipe yang paling sering kamu temui:
+
+| Tipe | Isi | Contoh |
+| --- | --- | --- |
+| `float` | Satu angka desimal | `float kuat = 1.2;` |
+| `int`, `bool` | Bilangan bulat, benar/salah | `int n = 3;` |
+| `vec2`, `vec3`, `vec4` | 2, 3, atau 4 float | `vec3 warna = vec3(1.0, 0.8, 0.2);` |
+| `mat2`, `mat3`, `mat4` | Matriks | `mat4 modelMatrix` |
+
+Tiga aturan yang paling sering membuat pemula tersandung:
+
+- **Angka desimal wajib bertitik.** `2` adalah `int`, `2.0` adalah `float`. GLSL ES tidak mengubah tipe secara otomatis, jadi `float x = 2;` gagal dikompilasi.
+- **Vektor dibaca per komponen dengan swizzle.** `pos.x` mengambil satu komponen, `pos.xz` mengambil dua sekaligus sebagai `vec2`, dan `warna.rgb` mengambil tiga. Nama `xyzw` dan `rgba` menunjuk komponen yang sama, jadi pilih yang paling jelas maknanya.
+- **Operasi berlaku per komponen.** `vec3(1.0, 2.0, 3.0) * 2.0` menghasilkan `vec3(2.0, 4.0, 6.0)`. Mengalikan matriks dengan vektor (`modelMatrix * vec4(pos, 1.0)`) menerapkan transform ke vektor itu.
+
+Fungsi bawaan yang dipakai shader hologram: `sin`, `cos`, `normalize` (membuat panjang vektor menjadi 1), `dot`, `abs`, `pow`, `mod`, dan `mix`. Bentuk kurva sebagian fungsi itu bisa kamu lihat di demo berikut. Penjelasan lengkapnya ada di [Fungsi Shader Penting](/kamus/shader/glsl-functions/).
+
+<Demo name="glslfn" caption={"Sumbu X adalah input 0 sampai 1, sumbu Y outputnya. Pilih pow(fract(x * 4.0), 3.0): itulah bentuk scanline hologram."} />
+
+<Aside type="caution">
+`pow(x, y)` tidak terdefinisi untuk `x` negatif. Spesifikasi GLSL ES menyebut hasilnya *undefined*, sehingga GPU yang berbeda bisa memberi hasil berbeda. Pastikan `x` tidak negatif sebelum dipangkatkan, seperti yang dilakukan shader hologram dengan `abs` dan `mod`.
+</Aside>
+
+## Shader pertama: satu warna
+
+Shader terkecil yang berjalan di ShaderMaterial hanya punya dua baris isi:
+
+```js title="Contoh: ShaderMaterial paling sederhana" showLineNumbers
+const material = new THREE.ShaderMaterial({
+  vertexShader: `
+    void main() {
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    void main() {
+      gl_FragColor = vec4(1.0, 0.8, 0.2, 1.0);
+    }
+  `,
+})
+```
+
+- **L2 sampai 6** · Vertex shader. `position` adalah attribute, yaitu posisi titik ini dalam ruang lokal objek. `vec4(position, 1.0)` menambah komponen keempat bernilai 1 agar matriks 4×4 bisa menggeser titik, tidak hanya memutar dan menskalakannya. Hasil perkaliannya ditulis ke `gl_Position`, variabel bawaan yang wajib diisi.
+- **L7 sampai 11** · Fragment shader. `gl_FragColor` berisi warna RGBA piksel ini, dengan setiap komponen dari 0,0 sampai 1,0. Komponen keempat adalah alpha (1,0 berarti pekat).
+
+Hasilnya objek kuning rata tanpa cahaya, setara `MeshBasicMaterial`. Shader ini belum tahu apa pun tentang lampu di scene: semua perhitungan cahaya di Pelajaran 3 dikerjakan shader bawaan `MeshStandardMaterial`, dan di shader buatan sendiri kamu yang harus menulisnya jika perlu.
+
+## Vertex shader: menggeser titik
+
+Attribute bersifat hanya-baca. Untuk mengubah posisi, salin dulu ke variabel baru, ubah salinannya, baru proyeksikan:
+
+```glsl title="Contoh: vertex shader dengan gelombang" showLineNumbers
+uniform float uTime;
+
+void main() {
+  vec3 pos = position;
+  pos.y += sin(pos.x * 4.0 + uTime * 2.0) * 0.1;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+}
+```
+
+- **L1** · Uniform waktu, dikirim dari JavaScript. Bagian berikutnya membahas cara mengirimnya.
+- **L4** · Salinan posisi. Menulis langsung `position.y += ...` adalah error kompilasi.
+- **L5** · Setiap titik naik-turun mengikuti sinus. `pos.x * 4.0` membuat titik di tempat berbeda berada di fase gelombang yang berbeda, dan `uTime * 2.0` menggeser gelombang seiring waktu. Sinus dari [Pelajaran 2](/belajar/web-threejs/02-ruang/) dipakai lagi di sini, hanya saja dijalankan untuk ribuan titik sekaligus.
+- **L6** · Proyeksi memakai `pos`, posisi yang sudah digeser.
+
+Gelombang hanya terlihat jika geometrinya punya cukup banyak titik. `PlaneGeometry(2, 2)` hanya punya 4 titik di sudut, jadi bidangnya cuma miring. `PlaneGeometry(2, 2, 64, 64)` punya 65 × 65 titik, cukup untuk membentuk gelombang halus. Itu alasan hologram memakai `BoxGeometry` dengan 24 segmen per sisi.
+
+## Uniform: waktu dan warna dari JavaScript
+
+[Uniform](/kamus/shader/uniform/) adalah nilai yang sama untuk semua titik dan piksel dalam satu draw call. Di ShaderMaterial, uniform didaftarkan sebagai objek dengan bentuk `{ value: ... }`. Kuncinya harus sama persis dengan nama `uniform` di GLSL.
+
+```js title="Contoh: uniform waktu dan warna" showLineNumbers
+const uniforms = {
+  uTime: { value: 0 },
+  uColor: { value: new THREE.Color('#00e5ff') },
+}
+const material = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms })
+
+function tick() {
+  uniforms.uTime.value = timer.getElapsed()
+  renderer.render(scene, camera)
+  requestAnimationFrame(tick)
+}
+```
+
+- **L2** · `float` di GLSL menerima angka JavaScript.
+- **L3** · `THREE.Color` dikirim sebagai `vec3` (r, g, b). Di shader ditulis `uniform vec3 uColor;`.
+- **L8** · Yang diubah adalah `.value`, bukan objeknya. Dokumentasi ShaderMaterial menyebut uniform disegarkan setiap frame, jadi nilai baru langsung terbaca di frame berikutnya tanpa perlu menandai apa pun.
+
+Pembungkus `{ value }` tampak berlebihan, tetapi gunanya nyata: GSAP dan [lil-gui](/kamus/web/lil-gui/) bisa memegang objek itu dan mengubah `.value`-nya, sementara material membaca dari objek yang sama. Panel debug proyek ini memanfaatkannya:
+
+```js title="src/experiment/debug.js" showLineNumbers startLineNumber=52
+  // Uniform shader diakses lewat .value. listen() membuat slider ikut bergerak
+  // saat nilainya diubah GSAP (misalnya saat transisi antar-section).
+  const u = hologram.uniforms
+  const holoFolder = gui.addFolder('Hologram shader')
+  holoFolder.add(u.uMorph, 'value', 0, 1, 0.01).name('morph (bola→kubus)').listen()
+  holoFolder.add(u.uTwist, 'value', -4, 4, 0.01).name('twist').listen()
+  holoFolder.add(u.uWaveAmp, 'value', 0, 0.4, 0.001).name('wave amplitude')
+  holoFolder.add(u.uWaveFreq, 'value', 0, 15, 0.1).name('wave frequency')
+  holoFolder.add(u.uOpacity, 'value', 0, 2, 0.01).name('opacity')
+  holoFolder.addColor(u.uColorA, 'value').name('color A').listen()
+  holoFolder.addColor(u.uColorB, 'value').name('color B').listen()
+```
+
+Untuk waktu, render loop di main.js mengirim `elapsed` (detik sejak awal, Pelajaran 1) ke shader setiap frame:
+
+```js title="src/experiment/main.js" showLineNumbers startLineNumber=78
+  // Shader tidak punya jam sendiri; waktu dikirim dari JS lewat uniform setiap frame
+  hologram.uniforms.uTime.value = elapsed
+```
+
+Shader tidak bisa menyimpan nilai dari frame sebelumnya. Karena itu gerakan di shader hampir selalu dihitung dari waktu total, seperti `sin(... + uTime * 2.0)`, dan tidak ditambah sedikit demi sedikit seperti `rotation.y += delta * speed` di JavaScript.
+
+## Varying: dari titik ke piksel
+
+Fragment shader tidak bisa membaca attribute. Jika piksel butuh data per titik, misalnya normal, vertex shader harus menitipkannya lewat [varying](/kamus/shader/varying/): variabel dengan nama dan tipe yang sama, dideklarasikan di kedua shader. Vertex shader menulisnya, lalu GPU mencampur nilai dari tiga titik segitiga sesuai letak setiap piksel, dan fragment shader membaca hasil campuran itu.
+
+```glsl title="Contoh: vertex shader yang menitipkan normal" showLineNumbers
+varying vec3 vNormal;
+
+void main() {
+  vNormal = normalize(mat3(modelMatrix) * normal);
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+```
+
+```glsl title="Contoh: fragment shader yang membaca normal" showLineNumbers
+varying vec3 vNormal;
+
+void main() {
+  vec3 n = normalize(vNormal);
+  gl_FragColor = vec4(n * 0.5 + 0.5, 1.0);
+}
+```
+
+- **Vertex L4** · `mat3(modelMatrix)` mengambil bagian putar dan skala dari matriks model, lalu membawa normal dari ruang lokal ke ruang dunia. Normal adalah arah, jadi tidak boleh ikut tergeser posisi objek. Itu sebabnya dipakai `mat3`, bukan `mat4`.
+- **Fragment L4** · Dinormalisasi lagi, karena hasil campuran dua panah sepanjang 1 biasanya lebih pendek dari 1.
+- **Fragment L5** · Normal berisi angka −1 sampai 1, sedangkan warna 0 sampai 1. `n * 0.5 + 0.5` memetakan rentang itu, sehingga arah normal bisa dilihat sebagai warna. Trik ini dipakai lagi di bagian debugging.
+
+Dari normal di ruang dunia dan arah ke kamera, fragment shader bisa menghitung [efek Fresnel](/kamus/shader/fresnel/): piksel di tepi siluet bernilai mendekati 1, piksel yang menghadap kamera bernilai mendekati 0. Shader hologram memakai efek ini sebagai sumber cahayanya.
+
+<Demo name="fresnel" caption={"Bagian yang menghadap kamera bernilai 0, tepi siluet mendekati 1. Ketajaman yang lebih tinggi menipiskan pinggiran."} />
+
+<Aside type="tip">
+`mat3(modelMatrix)` hanya benar jika objek diskalakan sama rata di ketiga sumbu. Dengan skala tidak rata, normal ikut condong dan tidak lagi tegak lurus permukaan. Versi yang selalu benar adalah invers-transpos matriksnya, dan Three.js menyediakannya sebagai `normalMatrix`, tetapi dalam ruang kamera. Untuk efek hologram yang hanya butuh kesan tepi bercahaya, perbedaan kecil ini tidak terlihat.
+</Aside>
+
+## Memuat file .glsl dengan ?raw
+
+Menulis shader di dalam string JavaScript cepat untuk contoh kecil, tetapi editor tidak bisa memberi warna sintaks atau memeriksa isinya. Proyek ini menyimpan shader di file `.glsl` terpisah dan mengimpornya dengan [import ?raw](/kamus/web/raw-import/), fitur [Vite](/kamus/web/vite/) yang mengimpor isi file sebagai string biasa:
+
+```js title="src/experiment/world/hologram.js" showLineNumbers startLineNumber=1
+import * as THREE from 'three'
+// Akhiran ?raw adalah fitur Vite: isi file diimpor sebagai string biasa
+import vertexShader from '../shaders/hologram/vertex.glsl?raw'
+import fragmentShader from '../shaders/hologram/fragment.glsl?raw'
+```
+
+- **L3 sampai 4** · `vertexShader` dan `fragmentShader` berisi teks file apa adanya. Three.js tidak peduli dari mana string itu berasal, jadi hasilnya sama dengan menulis shader di dalam backtick.
+
+Akhiran `?raw` itu wajib. Tanpanya, Vite tidak mengimpor file sebagai string, sehingga yang sampai ke ShaderMaterial bukan kode shader.
+
+## Bedah kode: hologram.js
+
+```js title="src/experiment/world/hologram.js" showLineNumbers startLineNumber=17
+  const geometry = new THREE.BoxGeometry(2.3, 2.3, 2.3, 24, 24, 24)
+
+  const uniforms = {
+    uTime: { value: 0 },
+    uMorph: { value: 0 },
+    uTwist: { value: 0 },
+    uWaveAmp: { value: 0.06 },
+    uWaveFreq: { value: 4 },
+    uPulse: { value: 0 },
+    uSphereRadius: { value: 1.45 },
+    uColorA: { value: new THREE.Color('#00e5ff') },
+    uColorB: { value: new THREE.Color('#ff2bd6') },
+    uOpacity: { value: 0.35 },
+  }
+
+  const material = new THREE.ShaderMaterial({
+    vertexShader,
+    fragmentShader,
+    uniforms,
+    transparent: true,
+    side: THREE.DoubleSide,
+    // Additive blending: warna ditambahkan ke apa yang ada di belakangnya -> kesan cahaya
+    blending: THREE.AdditiveBlending,
+    // Tidak menulis ke depth buffer agar sisi depan dan belakang cangkang sama-sama terlihat
+    depthWrite: false,
+  })
+```
+
+- **L17** · Kubus 2,3 unit dengan 24 segmen per sisi. Segmen yang banyak diperlukan agar vertex shader punya cukup titik untuk dibentuk menjadi bola dan bergelombang.
+- **L19 sampai 30** · Sepuluh uniform, semuanya diawali `u` agar mudah dibedakan dari variabel biasa di GLSL. Nilai awalnya adalah keadaan hologram saat halaman dibuka.
+- **L20** · `uTime` mulai dari 0, lalu diisi main.js setiap frame.
+- **L27 sampai 28** · Dua warna, cyan dan magenta, dikirim sebagai `vec3`. Fragment shader mencampur keduanya.
+- **L33 sampai 35** · Shader dan uniform diserahkan ke material. Penulisan `vertexShader,` adalah singkatan `vertexShader: vertexShader`.
+- **L36 sampai 41** · Pengaturan transparansi dan blending. Dibahas di bagian khusus di bawah.
+
+Fungsi ini juga dipakai di luar Lab. Aura di sekeliling Krekit, maskot yang menemanimu di setiap halaman, memanggil `createHologram` yang sama:
+
+```js title="src/site/krekit.js" showLineNumbers startLineNumber=356
+  // ---------- Aura hologram (shader yang sama dengan eksperimen 3D) ----------
+  const aura = createHologram(turn)
+  aura.mesh.scale.set(0.72, 0.88, 0.72)
+  aura.uniforms.uWaveAmp.value = 0.03
+  aura.uniforms.uWaveFreq.value = 6
+  aura.uniforms.uOpacity.value = 0.1
+```
+
+- **L357** · Setiap panggilan `createHologram` membuat objek `uniforms` dan material baru. Akibatnya aura Krekit dan hologram Lab punya nilai uniform masing-masing walaupun shadernya sama.
+- **L359 sampai 361** · Gelombang dibuat lebih kecil dan lebih rapat, dan cahayanya lebih redup, agar cocok untuk objek sekecil Krekit.
+
+Krekit juga mengirim waktunya sendiri di fungsi `update`, persis seperti main.js:
+
+```js title="src/site/krekit.js" showLineNumbers startLineNumber=635
+    aura.uniforms.uTime.value = elapsed
+```
+
+## Bedah kode: ujung vertex.glsl
+
+Bagian deklarasi vertex shader hologram:
+
+```glsl title="src/experiment/shaders/hologram/vertex.glsl" showLineNumbers startLineNumber=8
+uniform float uTime;
+uniform float uMorph;    // 0 = bola, 1 = kubus
+uniform float uTwist;    // besar puntiran (radian per satuan tinggi)
+uniform float uWaveAmp;  // tinggi gelombang
+uniform float uWaveFreq; // kerapatan gelombang
+uniform float uPulse;    // tambahan gelombang sesaat saat objek diklik
+uniform float uSphereRadius;
+
+// varying = data yang dikirim dari vertex shader ke fragment shader
+// (nilainya diinterpolasi GPU untuk tiap piksel di antara titik-titik)
+varying vec3 vNormal;
+varying vec3 vViewDir;
+varying float vHeight;
+varying float vWave;
+```
+
+- **L8 sampai 14** · Setiap kunci di objek `uniforms` hologram.js yang dipakai vertex shader dideklarasikan di sini dengan nama yang sama. Uniform warna dan opacity tidak muncul karena hanya dipakai fragment shader.
+- **L18 sampai 21** · Empat titipan untuk fragment shader: normal, arah pandang, tinggi titik, dan nilai gelombang. Keempatnya dideklarasikan lagi di fragment.glsl dengan nama dan tipe yang sama.
+
+Baris 29 sampai 47 (morph, twist, dan gelombang) mengubah variabel `pos` dan `objNormal`. Hasil akhirnya diproyeksikan dan dititipkan di bagian penutup:
+
+```glsl title="src/experiment/shaders/hologram/vertex.glsl" showLineNumbers startLineNumber=49
+  // Ruang objek -> ruang dunia -> ruang kamera -> ruang layar (clip space)
+  vec4 worldPos = modelMatrix * vec4(pos, 1.0);
+  gl_Position = projectionMatrix * viewMatrix * worldPos;
+
+  vNormal = normalize(mat3(modelMatrix) * objNormal);
+  vViewDir = normalize(cameraPosition - worldPos.xyz);
+  vHeight = pos.y;
+  vWave = wave;
+}
+```
+
+- **L50** · Posisi titik di dunia disimpan dulu karena dipakai dua kali.
+- **L51** · Sama dengan `projectionMatrix * modelViewMatrix * vec4(pos, 1.0)`, hanya dipecah agar `worldPos` bisa dipakai lagi.
+- **L53** · Normal ke ruang dunia dengan `mat3(modelMatrix)`, seperti contoh di bagian varying.
+- **L54** · Arah dari titik ini ke kamera, juga di ruang dunia. `cameraPosition` adalah uniform bawaan ShaderMaterial. Karena normal dan arah pandang berada di ruang yang sama, `dot` keduanya bermakna.
+- **L55 sampai 56** · Tinggi titik dan nilai gelombang, dipakai fragment shader untuk scanline dan warna.
+
+## Bedah kode: fresnel di fragment.glsl
+
+```glsl title="src/experiment/shaders/hologram/fragment.glsl" showLineNumbers startLineNumber=14
+void main() {
+  vec3 normal = normalize(vNormal);
+  // Material dua sisi: untuk sisi belakang, normal dibalik agar fresnel tetap benar
+  if (!gl_FrontFacing) normal *= -1.0;
+
+  // FRESNEL: dot(normal, arahPandang) = 1 saat permukaan menghadap kamera, 0 di tepi siluet.
+  // Dibalik (1 - ...) -> tepi terang, tengah transparan. Ini ciri khas efek hologram.
+  float fresnel = 1.0 - abs(dot(normal, vViewDir));
+  fresnel = pow(fresnel, 2.0);
+```
+
+- **L15** · Varying dinormalisasi ulang, alasannya sama seperti contoh sebelumnya.
+- **L17** · `gl_FrontFacing` adalah variabel bawaan fragment shader yang bernilai `true` jika segitiga ini menghadap kamera. Cangkang digambar dua sisi, jadi untuk sisi dalamnya normal dibalik.
+- **L21** · [Dot product](/kamus/ruang/dot/) normal dan arah pandang, yang kamu kenal dari model Lambert di Pelajaran 3. `abs` membuat hasilnya tidak pernah negatif, lalu `1.0 - ...` membalik: tengah 0, tepi 1.
+- **L22** · `pow(..., 2.0)` menipiskan pinggiran. Nilai 0,5 menjadi 0,25, sementara nilai mendekati 1 tetap tinggi. Karena `abs` sudah menjamin nilainya tidak negatif, `pow` di sini aman.
+
+Baris 24 sampai 32 menambahkan scanline dan mencampur dua warna (Pelajaran 5). Baris terakhir menulis hasilnya:
+
+```glsl title="src/experiment/shaders/hologram/fragment.glsl" showLineNumbers startLineNumber=34
+  // Nilai > 1.0 sengaja dibiarkan: piksel "terlalu terang" inilah yang ditangkap Bloom
+  gl_FragColor = vec4(color * 1.2, holo * uOpacity);
+}
+```
+
+- **L35** · Warna dikali 1,2 sehingga bisa melebihi 1,0. Alpha diisi kekuatan efek hologram dikali `uOpacity`. Bagian berikutnya menjelaskan kenapa alpha di sini bekerja sebagai pengatur terang.
+
+## Transparansi, blending, dan depthWrite
+
+Tiga pengaturan di hologram.js baris 36 sampai 41 menentukan cara hasil fragment shader digabung dengan gambar yang sudah ada.
+
+**`transparent: true`.** Tanpa ini, Three.js mematikan [blending](/kamus/geometri/blending/) untuk material dengan blending normal, sehingga alpha di `gl_FragColor` diabaikan dan objek tampak pekat. Dokumentasi Material juga menyebut objek transparan digambar **setelah** objek pekat, agar ada sesuatu di belakangnya untuk dicampur.
+
+**`blending: THREE.AdditiveBlending`.** Warna piksel baru **ditambahkan** ke warna di belakangnya. Di kode sumber Three.js r186, untuk material biasa (tanpa `premultipliedAlpha`) rumusnya:
+
+```text title="Additive blending di Three.js (premultipliedAlpha: false)"
+warna_akhir = warna_shader × alpha_shader + warna_di_belakang
+```
+
+Jadi alpha `holo * uOpacity` mengatur seberapa banyak cahaya yang ditambahkan. Penjumlahan tidak pernah membuat gambar lebih gelap, dan bagian hologram yang bertumpuk makin terang, persis seperti cahaya yang menumpuk.
+
+**`depthWrite: false`.** [Depth buffer](/kamus/geometri/depth-buffer/) mencatat jarak permukaan terdekat di setiap piksel. Jika cangkang menulis kedalamannya, bagian yang tergambar lebih dulu akan membuat bagian lain di belakangnya gagal depth test dan dibuang. Urutan segitiga di dalam satu mesh tidak bisa kamu atur dari JavaScript, jadi hasilnya sisi belakang hilang sebagian secara acak. Dengan `depthWrite: false`, cangkang tetap diuji terhadap objek pekat (objek kuning tetap bisa menutupinya), tetapi tidak menghalangi dirinya sendiri.
+
+**`side: THREE.DoubleSide`.** Bawaannya `FrontSide`: segitiga yang membelakangi kamera dibuang. Cangkang hologram perlu sisi dalamnya juga terlihat, dan itu sebabnya fragment shader mengecek `gl_FrontFacing`.
+
+<Aside type="caution">
+Efek bercahaya seperti ini mahal di sisi piksel. Cangkang dua sisi berarti hampir setiap pikselnya diwarnai dua kali, dan objek transparan yang bertumpuk menambah [overdraw](/kamus/performa/overdraw/). Untuk satu cangkang tidak masalah. Untuk ratusan partikel bercahaya, ukuran di layar dan jumlah lapisan perlu dijaga.
+</Aside>
+
+## Debugging shader
+
+Shader tidak punya `console.log`. Ada dua alat utama: mewarnai nilai yang ingin kamu periksa, dan membaca error kompilasi.
+
+**Visualisasikan nilai sebagai warna.** Ganti sementara baris terakhir fragment shader dengan nilai yang ingin kamu lihat:
+
+```glsl title="Contoh: melihat nilai di fragment.glsl"
+gl_FragColor = vec4(vec3(fresnel), 1.0);        // hitam di tengah, putih di tepi
+gl_FragColor = vec4(normal * 0.5 + 0.5, 1.0);   // arah normal sebagai warna
+gl_FragColor = vec4(vec3(fract(vHeight)), 1.0); // tinggi titik, berulang setiap 1 unit
+```
+
+Aturan bacanya sederhana: hitam berarti 0 atau kurang, putih berarti 1 atau lebih. Nilai di luar 0 sampai 1 terpotong, jadi peta nilainya dulu ke rentang itu, misalnya dengan `* 0.5 + 0.5` atau `fract`. Karena hologram memakai additive blending, warna debug ikut ditambahkan ke latar. Latar Lab gelap, jadi masih mudah dibaca.
+
+**Baca error kompilasi di Console.** Three.js mengompilasi shader saat objek pertama kali digambar. Jika gagal, objek itu tidak muncul dan [Console DevTools](/kamus/web/devtools/) menampilkan pesan yang diawali `THREE.WebGLProgram: Shader Error`, berisi nama dan tipe material, pesan dari driver GPU, lalu potongan kode di sekitar baris yang bermasalah dengan tanda `>`.
+
+Nomor baris di pesan itu dihitung dari kode **lengkap**, termasuk versi, precision, deklarasi bawaan, dan `#define` yang ditambahkan ShaderMaterial di depan kodemu. Itu sebabnya nomornya lebih besar dari jumlah baris di file `.glsl`. Jangan mencari nomornya di editor. Cari isi baris yang ditandai `>` di potongan kode, lalu cocokkan dengan file-mu. Teks pesan dari driver berbeda antara browser dan GPU, tetapi biasanya menyebut nama variabel atau tipe yang bermasalah.
+
+## Kesalahan umum
+
+Sebagian kesalahan berikut memunculkan error di Console. Sisanya tidak, dan efeknya diam-diam tidak bekerja.
+
+### Angka bulat untuk float
+
+```glsl title="✗ Keliru"
+float kuat = 2;
+```
+
+```glsl title="✓ Benar"
+float kuat = 2.0;
+```
+
+GLSL ES tidak mengubah `int` menjadi `float` secara otomatis. Error ini muncul di Console.
+
+### Nama uniform tidak sama
+
+```js title="✗ Keliru"
+uniforms: { time: { value: 0 } }   // shader: uniform float uTime;
+```
+
+```js title="✓ Benar"
+uniforms: { uTime: { value: 0 } }  // nama sama persis dengan shader
+```
+
+Uniform yang tidak pernah diisi bernilai 0. Shader tetap sah, jadi tidak ada error. Efeknya hanya diam.
+
+### Menulis ke attribute
+
+```glsl title="✗ Keliru"
+position.y += sin(uTime);
+gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+```
+
+```glsl title="✓ Benar"
+vec3 pos = position;
+pos.y += sin(uTime);
+gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+```
+
+Attribute hanya bisa dibaca. Salin dulu ke variabel sendiri.
+
+### Alpha ditulis, objek tetap pekat
+
+```js title="✗ Keliru"
+new THREE.ShaderMaterial({ vertexShader, fragmentShader })
+// fragment: gl_FragColor = vec4(warna, 0.3);
+```
+
+```js title="✓ Benar"
+new THREE.ShaderMaterial({ vertexShader, fragmentShader, transparent: true })
+```
+
+Tanpa `transparent: true`, blending normal dimatikan dan nilai alpha diabaikan. Tidak ada error.
+
+### Deklarasi bawaan ditulis ulang di ShaderMaterial
+
+```glsl title="✗ Keliru (ShaderMaterial)"
+uniform mat4 modelMatrix;
+attribute vec3 position;
+```
+
+```glsl title="✓ Benar (ShaderMaterial)"
+// langsung pakai modelMatrix dan position tanpa deklarasi
+```
+
+ShaderMaterial sudah mendeklarasikannya, jadi deklarasi kedua adalah error kompilasi. Sebaliknya, di RawShaderMaterial deklarasi itu wajib ditulis.
+
+### Varying hanya dideklarasikan di satu sisi
+
+```glsl title="✗ Keliru"
+// vertex:   varying vec3 vNormal;
+// fragment: varying vec4 vNormal;
+```
+
+```glsl title="✓ Benar"
+// vertex:   varying vec3 vNormal;
+// fragment: varying vec3 vNormal;
+```
+
+Nama dan tipe varying harus sama di kedua shader. Jika berbeda, atau jika fragment shader membaca varying yang tidak ada di vertex shader, program gagal digabungkan (*link*) dan objek tidak muncul.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi bacalah juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan langsung di kode proyek. Simpan file, lalu lihat hasilnya di halaman Lab (dev server memuat ulang otomatis). Kembalikan kodenya setelah selesai.
+
+1. Di fragment.glsl, ganti baris 35 dengan `gl_FragColor = vec4(vec3(fresnel), 1.0);`. Di mana cangkang paling terang, dan kenapa bagian tengahnya hampir tidak terlihat? Lalu coba `pow(fresnel, 5.0)` di baris 22.
+2. Di fragment.glsl baris 22, ganti `2.0` menjadi `2`. Buka Console, temukan pesan `THREE.WebGLProgram: Shader Error`, lalu cari baris bertanda `>`. Berapa nomor barisnya, dan kenapa berbeda dari 22?
+3. Di hologram.js, ganti `THREE.AdditiveBlending` menjadi `THREE.NormalBlending`. Bandingkan kesan cahayanya. Kembalikan, lalu ubah `depthWrite` menjadi `true` dan putar objeknya dengan kursor. Bagian mana yang hilang?
+4. Di main.js baris 79, beri tanda komentar pada `hologram.uniforms.uTime.value = elapsed`. Apa yang berhenti bergerak, dan apa yang tetap bergerak? (Petunjuk: rotasi dan posisi mesh diatur JavaScript, gelombang dan scanline diatur shader.)

@@ -602,6 +602,13 @@ a.track-tile:hover {
   color: var(--sl-color-white);
 }
 
+.outline-cta__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-top: 4px;
+}
+
 /* ---------- Krekit pendamping ---------- */
 
 .companion {

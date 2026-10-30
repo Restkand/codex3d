@@ -1,22 +1,6 @@
 {
-  "fondasi-engine": [
-    {
-      "num": 7,
-      "title": "Animasi",
-      "subtitle": "Dari tween dan easing sampai skeletal animation dan blend tree."
-    },
-    {
-      "num": 8,
-      "title": "Profiling & Optimasi",
-      "subtitle": "Membaca profiler, draw call, batching, culling, dan LOD."
-    }
-  ],
+  "fondasi-engine": [],
   "web-threejs": [
-    {
-      "num": 4,
-      "title": "Menulis Shader Pertama",
-      "subtitle": "Vertex & fragment shader, uniform, varying, dan GLSL dari nol."
-    },
     {
       "num": 5,
       "title": "Shader Lanjut: Morph & Hologram",

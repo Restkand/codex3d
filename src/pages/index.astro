@@ -27,7 +27,7 @@ const pad2 = (n) => String(n).padStart(2, '0')
 // Pos 5 · Layar akhir: daftar kredit. Angka dihitung dari isi situs saat build
 const lessonCount = docs.filter((d) => d.data.kind === 'lesson').length
 const CREDITS = [
-  { role: 'Dibuat oleh', name: 'Restkand' },
+  { role: 'Dibuat oleh', name: 'Restkand', note: 'mengarahkan materi dan memeriksa isinya' },
   { role: 'Maskot', name: 'Krekit', note: 'dibangun dari geometri Three.js' },
   { role: 'Isi', name: `${lessonCount} pelajaran · ${termCount} istilah Kamus` },
   { role: 'Dibangun dengan', name: 'Astro · Three.js · GSAP' },
@@ -42,13 +42,13 @@ const RULES_QA = [
     id: 'bersumber',
     title: 'Bersumber',
     question: 'Angka di artikel ini dari mana?',
-    answer: 'Setiap angka, kebijakan platform, dan ketentuan lisensi wajib menautkan sumbernya, lengkap dengan tanggal akses. Jadi kamu bisa mengeceknya sendiri.',
+    answer: 'Setiap angka, kebijakan platform, dan ketentuan lisensi wajib menautkan sumbernya beserta tanggal akses, supaya kamu bisa mengeceknya sendiri.',
   },
   {
     id: 'ditinjau',
     title: 'Ditinjau',
     question: 'Sudah dicek orang yang paham?',
-    answer: 'Status setiap halaman ditampilkan terbuka di bagian atas: kerangka, draf, atau ditinjau praktisi. Kamu tahu seberapa jauh isinya sudah diperiksa.',
+    answer: 'Setiap halaman menulis statusnya di bagian atas: kerangka, draf, atau ditinjau praktisi. Dari situ kamu tahu seberapa jauh isinya sudah diperiksa.',
   },
   {
     id: 'netral',
@@ -149,7 +149,7 @@ const progressItems = docs
       <section id="mulai" class="section section--split hero" data-section>
         <div class="hero__text">
           <h1 class="display display--hero" aria-label="Lewat celah ini, kelihatan cara game dibuat." data-hero-title>Lewat celah ini, <span class="accent" data-hero-wire>kelihatan cara game dibuat.</span></h1>
-          <p class="lead">Teknologi membuat game makin cepat jadi. Krekit mengajakmu memahami apa yang ada di baliknya: engine dan shader, desain, produksi, sampai bisnis studio indie.</p>
+          <p class="lead">Pelajari apa yang ada di balik sebuah game: engine dan shader, desain, produksi, sampai bisnis studio indie.</p>
           <div class="actions">
             <a class="btn btn--primary" href={withBase('/belajar/')} data-krekit-say="Pelajaran 1 tidak butuh pengetahuan 3D sebelumnya."><span class="btn__label">Mulai belajar →</span></a>
             <a class="btn btn--ghost" href={withBase('/lab/')} data-krekit-say="Scene ini dibedah di Bab Tambahan Web & Three.js. Tekan H di sana untuk membuka panel pengaturan."><span class="btn__label">Buka Lab 3D</span></a>
@@ -209,7 +209,7 @@ const progressItems = docs
         <div class="section__inner">
           <p class="eyebrow" data-reveal>01 · Kenapa situs ini ada</p>
           <h2 class="display display--md" data-reveal>Bisa berjalan<br /><span class="accent">belum tentu hidup.</span></h2>
-          <p class="lead" data-reveal>Teknologi sekarang membuat game makin cepat jadi, tapi rasa yang membuatnya hidup tetap lahir dari pemahaman. Di sini kita mempelajari fundamentalnya, dari cara engine merender dunia sampai bagaimana game diproduksi, didanai, dan sampai ke tangan pemain.</p>
+          <p class="lead" data-reveal>Sekarang prototipe game bisa jadi dalam hitungan jam. Tapi kenapa sebuah lompatan terasa enak, atau kenapa game patah-patah di HP tertentu, hanya bisa dijawab kalau kamu paham dasarnya. Di sini kamu mempelajari dasar itu, dari cara engine menggambar satu frame sampai cara game diproduksi, didanai, dan sampai ke pemain.</p>
           <!-- Ajakan yang bisa langsung ditanggapi: mulai dari pelajaran pertama -->
           <div class="start" data-reveal>
             <a class="btn btn--primary btn--wire" href={withBase('/belajar/fondasi-engine/01-frame/')} data-krekit-say="Pelajaran 1 tidak butuh pengetahuan 3D sebelumnya."><span class="btn__label">Mulai dari Pelajaran 1 →</span></a>
@@ -226,8 +226,8 @@ const progressItems = docs
       <section id="jalur" class="section section--tree reveal" data-section>
         <div class="tree-head">
           <p class="eyebrow" data-reveal>02 · Jalur belajar</p>
-          <h2 class="display display--md" data-reveal>Enam jalur, <span class="accent">satu akar.</span></h2>
-          <p class="lead" data-reveal>Mulai dari akar, lalu pilih cabang sesuai peran yang kamu minati. Cabangnya saran, bukan syarat.</p>
+          <h2 class="display display--md" data-reveal>Enam jalur belajar, <span class="accent">mulai dari Fondasi Engine.</span></h2>
+          <p class="lead" data-reveal>Mulai dari akarnya, lalu pilih cabang sesuai peran yang kamu minati. Urutan cabang hanya saran, jadi kamu boleh melompat.</p>
         </div>
         <div class="skill-tree" data-skill-tree data-reveal>
           <div class="krekit-spot krekit-spot--tree" data-krekit-spot aria-hidden="true"></div>
@@ -359,7 +359,7 @@ const progressItems = docs
         <div class="section__inner">
           <p class="eyebrow" data-reveal>04 · Prinsip konten</p>
           <h2 class="display display--md" data-reveal>Tiga aturan<br /><span class="accent">untuk setiap halaman.</span></h2>
-          <p class="lead" data-reveal>Tiga pertanyaan yang wajar muncul saat membaca konten game, dan aturan yang dipakai Krekit untuk menjawabnya.</p>
+          <p class="lead" data-reveal>Pertanyaan yang sering muncul saat membaca konten game, dan aturan Krekit yang menjawabnya.</p>
           <ol class="rule-chips" data-reveal>
             {RULES_QA.map((rule, i) => (
               <li data-rule={rule.id}><span>{i + 1}</span>{rule.title}</li>

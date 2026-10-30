@@ -30,8 +30,13 @@ const siblings = (await getCollection('docs', (e) => e.data.kind === 'term' && e
 const index = siblings.findIndex((s) => s.id === entry.id)
 const prev = siblings[index - 1]
 const next = siblings[index + 1]
-// Pelajaran yang membahas istilah ini (field `terms` di frontmatter pelajaran)
-const lessons = await getCollection('docs', (e) => e.data.kind === 'lesson' && (e.data.terms ?? []).includes(termKey))
+// Pelajaran yang membahas istilah ini (field `terms` di frontmatter pelajaran). Istilah yang namanya
+// ada di dua bab (mis. `blending` di Geometri dan Animasi) ditulis lengkap sebagai `bab/istilah`,
+// agar pelajarannya hanya tercantum di bab yang tepat.
+const lessons = await getCollection(
+  'docs',
+  (e) => e.data.kind === 'lesson' && (e.data.terms ?? []).some((t) => t === termKey || t === `${chapterId}/${termKey}`),
+)
 const sources = entry.data.sources ?? []
 const dateFmt = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
 ---

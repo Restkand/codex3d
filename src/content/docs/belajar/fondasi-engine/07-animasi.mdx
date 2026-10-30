@@ -1,0 +1,767 @@
+---
+title: "Animasi"
+description: "Tween dan easing, keyframe dan interpolasi, klip dan timeline, skeletal animation dan skinning, state machine, blend tree, root motion, IK, animation event, dan biaya animasi bagi CPU dan GPU."
+fundamental: "Karakter yang telat bereaksi saat tombol serang ditekan, kaki yang meluncur di lantai, atau langkah yang tersandung di antara jalan dan lari jarang disebabkan oleh klip animasinya. Penyebabnya ada di cara engine memilih, mencampur, dan menjalankan klip setiap frame, dan perbaikannya baru terlihat kalau kamu tahu urutan kerjanya."
+kind: lesson
+minutes: 35
+status: draf
+lastReviewed: 2026-10-30
+terms:
+  - tween
+  - easing
+  - lerp
+  - timeline
+  - quaternion
+  - skeletal
+  - hierarchy
+  - state-machine
+  - animasi/blending
+  - root-motion
+  - ik
+krekit:
+  gambaran-besar: "Animasi itu juga bagian dari langkah update. Setiap frame, engine menghitung ulang pose semua karakter."
+  tween-dan-easing-rasa-sebuah-gerakan: "Jaraknya sama, waktunya sama, tapi kurvanya beda. Coba demonya dan rasakan bedanya."
+  keyframe-dan-interpolasi: "Klip 30 FPS tetap mulus di layar 144 Hz. Engine mengisi celah di antara keyframe."
+  klip-dan-timeline: "Klip itu satu gerakan. Timeline itu satu adegan yang berisi banyak gerakan."
+  skeletal-animation-tulang-bind-pose-dan-skinning: "Yang dianimasikan hanya tulangnya. Kulitnya ikut karena bobot."
+  state-machine-dan-transisi: "Durasi transisi kelihatannya cuma angka kecil. Tapi itulah jeda antara tombol ditekan dan karakter bereaksi."
+  blend-tree-dan-blend-space: "Kalau kaki tersandung di tengah campuran, cek dulu apakah langkah di kedua klip jatuh di waktu yang sama."
+  root-motion: "Pilih siapa yang memegang kemudi: kode atau animasi. Dua-duanya punya harga."
+  inverse-kinematics: "IK datang paling akhir. Ia membetulkan pose yang sudah jadi supaya cocok dengan dunia."
+  animation-event: "Suara langkah yang pas dengan kaki menapak itu kecil, tapi pemain langsung merasa kalau meleset."
+  biaya-animasi: "Karakter yang tidak terlihat tetap bisa memakan waktu CPU. Cek pengaturan culling-nya."
+  kesalahan-umum: "Kesalahan nomor dua paling sering membuat game terasa berat dimainkan, padahal FPS-nya tinggi."
+sidebar:
+  order: 7
+  label: "7 · Animasi"
+quiz:
+  - q: "Panel menu bergeser dari luar layar ke tengah dalam 0,3 detik. Kurva easing mana yang paling cocok?"
+    options:
+      - "Linear"
+      - "Ease in: pelan di awal, cepat di akhir"
+      - "Ease out: cepat di awal, melambat di akhir"
+      - "Bounce, agar terasa ceria setiap kali dibuka"
+    answer: 2
+    explain: "Benda yang datang lalu berhenti terasa alami kalau melambat sebelum sampai. Ease in cocok untuk benda yang pergi, dan bounce cepat melelahkan untuk elemen yang dibuka puluhan kali."
+  - q: "Di Unity, transisi dari Diam ke Serang memakai Has Exit Time dengan Exit Time 0,9. Pemain mengeluh serangan terasa telat. Apa penyebab yang paling mungkin?"
+    options:
+      - "Klip serangnya terlalu pendek"
+      - "Transisi baru boleh terjadi setelah 90% klip Diam selesai diputar, jadi tombol serang menunggu sampai titik itu"
+      - "Exit Time harus selalu 1"
+      - "Animator berjalan di FixedUpdate"
+    answer: 1
+    explain: "Exit Time adalah syarat waktu dalam waktu ternormalisasi. Selama klip Diam belum mencapai 90%, transisi tidak terjadi walaupun parameter serang sudah aktif. Untuk aksi yang harus responsif, matikan Has Exit Time dan andalkan parameter saja."
+  - q: "Blend tree mencampur klip jalan dan lari sesuai kecepatan. Di kecepatan menengah, kaki karakter tampak tersandung. Apa yang paling mungkin salah?"
+    options:
+      - "Parameter kecepatan tidak dinormalisasi"
+      - "Langkah kaki di kedua klip tidak jatuh di waktu ternormalisasi yang sama"
+      - "Blend tree hanya bisa mencampur dua klip"
+      - "Klip lari lebih pendek daripada klip jalan"
+    answer: 1
+    explain: "Campuran dihitung per tulang dari dua pose yang diambil pada waktu ternormalisasi yang sama. Jika kaki kiri menapak di 0,0 pada klip jalan tetapi di 0,3 pada klip lari, pose campurannya berisi kaki yang setengah menapak dan setengah terangkat. Panjang klip yang berbeda tidak masalah."
+  - q: "Titik di siku terikat 50% ke lengan atas dan 50% ke lengan bawah. Jika batas tulang per titik diturunkan menjadi 1, apa yang terlihat saat lengan ditekuk?"
+    options:
+      - "Tidak ada perubahan"
+      - "Lipatan siku tidak lagi melentur halus dan tampak patah seperti sambungan boneka kayu"
+      - "Lengan tidak bisa ditekuk sama sekali"
+      - "Mesh lengan menghilang"
+    answer: 1
+    explain: "Dengan satu tulang per titik, setiap titik hanya mengikuti satu tulang. Titik di sekitar siku terbagi tegas antara lengan atas dan lengan bawah, sehingga lipatannya kaku. Batas yang lebih rendah lebih murah dihitung, jadi biasanya dipakai untuk karakter jauh."
+  - q: "Musuh bergerak dengan root motion. Animator-nya diatur Cull Completely. Saat musuh keluar dari layar, apa yang terjadi?"
+    options:
+      - "Musuh tetap berjalan seperti biasa"
+      - "Animasi berhenti, jadi root motion yang menggerakkan musuh juga berhenti"
+      - "Musuh teleport ke posisi awalnya"
+      - "Unity otomatis beralih ke Always Animate"
+    answer: 1
+    explain: "Cull Completely mematikan animasi sepenuhnya saat renderer tidak terlihat. Karena perpindahan musuh diambil dari animasinya, perpindahannya ikut berhenti. Untuk karakter yang digerakkan root motion, pakai Always Animate atau Cull Update Transforms."
+  - q: "Foot IK dipasang agar kaki menapak di anak tangga. Kapan IK dijalankan dalam satu frame?"
+    options:
+      - "Sebelum klip diambil sampelnya, untuk menentukan klip mana yang diputar"
+      - "Setelah klip diambil sampelnya dan dicampur, untuk mengoreksi pose akhirnya"
+      - "Hanya saat game dimuat"
+      - "Di GPU, bersamaan dengan skinning"
+    answer: 1
+    explain: "IK membetulkan pose yang sudah jadi. Engine memutar dan mencampur klip dulu, lalu IK menekuk tulang agar ujung rantai sampai di tujuan. Bobot IK menentukan seberapa besar koreksinya."
+sources:
+  - title: "Tween"
+    url: "https://docs.godotengine.org/en/stable/classes/class_tween.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Introduction to the animation features"
+    url: "https://docs.godotengine.org/en/stable/tutorials/animation/introduction.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Animation Track types"
+    url: "https://docs.godotengine.org/en/stable/tutorials/animation/animation_track_types.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Using AnimationTree"
+    url: "https://docs.godotengine.org/en/stable/tutorials/animation/animation_tree.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "AnimationMixer"
+    url: "https://docs.godotengine.org/en/stable/classes/class_animationmixer.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Skeleton3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_skeleton3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "TwoBoneIK3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_twoboneik3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "SkeletonIK3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_skeletonik3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "VisibleOnScreenEnabler3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_visibleonscreenenabler3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Animator component"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/animation-section/animation-mecanim/class-animator"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Animation transitions"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/animation-section/animation-mecanim/animation-animator-controller/animation-state-machines/class-transition"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Blend Trees"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/animation-section/animation-mecanim/animation-animator-controller/animation-state-machines/animation-blend-trees/class-blend-tree"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Animator.SetFloat"
+    url: "https://docs.unity.com/en-us/engine/current/script-reference/unityengine/animator/setfloat"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Use Animation Events"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/animation-section/animation-mecanim/animation-clips/animation-editor-guide/script-animation-window-event"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Skinned Mesh Renderer component reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/assets-and-media/asset-types/mesh/components-reference/class-skinned-mesh-renderer"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Two Bone IK constraint (Animation Rigging)"
+    url: "https://docs.unity3d.com/Packages/com.unity.animation.rigging@1.3/manual/constraints/TwoBoneIKConstraint.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "About Timeline"
+    url: "https://docs.unity3d.com/Packages/com.unity.timeline@1.8/manual/index.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Playable Director component"
+    url: "https://docs.unity3d.com/Packages/com.unity.timeline@1.8/manual/playable-director.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Demo from '~/components/Demo.astro'
+import Quiz from '~/components/Quiz.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menganimasikan nilai apa pun lewat kode dengan tween, dan memilih kurva easing yang sesuai.
+- Menjelaskan bagaimana engine mengisi gerakan di antara keyframe.
+- Menjelaskan cara kerangka tulang dan skinning menggerakkan mesh karakter.
+- Menyusun state machine dan blend tree, dan tahu pengaturan mana yang membuat kontrol terasa telat.
+- Memilih antara gerakan dari kode dan root motion, dan tahu kapan IK dibutuhkan.
+- Memperkirakan biaya animasi dan mematikan animasi yang tidak terlihat.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: animator utama dan asisten">
+Di studio animasi tradisional, animator utama menggambar pose-pose penting: kaki diangkat, kaki menapak, badan condong. Asisten menggambar semua gambar di antaranya. Di game, kamu atau animator membuat pose penting, dan engine menjadi asistennya. Bedanya, asisten ini menggambar ulang setiap frame, dan bisa mengubah rencana saat pemain menekan tombol.
+</Aside>
+
+Di [Pelajaran 1](/belajar/fondasi-engine/01-frame/), langkah update disebut berisi "gerak, AI, animasi". Pelajaran ini membuka bagian animasinya. Animasi adalah **nilai yang berubah seiring waktu**: posisi pintu, warna lampu, ukuran tombol, atau rotasi puluhan tulang di dalam karakter. Yang berubah biasanya [transform](/kamus/ruang/transform/) dari [Pelajaran 2](/belajar/fondasi-engine/02-ruang/), jadi semua aturan ruang dan hierarki tetap berlaku.
+
+Untuk satu karakter, pekerjaan engine di setiap frame kira-kira seperti ini:
+
+```text title="Pseudocode: animasi satu karakter dalam satu frame"
+parameter = baca_dari_gameplay()           // kecepatan, di_tanah, tombol_serang
+state     = state_machine.update(parameter, delta)
+pose      = sampel_dan_campur_klip(state)  // rotasi setiap tulang saat ini
+pose      = terapkan_ik(pose, dunia)       // kaki menapak di tanah yang tidak rata
+kirim_event(waktu_sebelum, waktu_sekarang) // suara langkah, hitbox serangan
+skinning(mesh, pose)                       // kulit mengikuti tulang
+```
+
+Setiap baris punya bagian sendiri di pelajaran ini. Sebelum masuk ke karakter, mulai dari bentuk paling sederhana: satu nilai yang bergerak dari A ke B. Contoh berikut membuka pintu 90 derajat dalam 0,6 detik, dengan gerakan yang melambat di akhir.
+
+<EngineTabs>
+<div slot="unity">
+
+Unity tidak punya sistem tween bawaan untuk kode. Cara paling sederhana adalah coroutine yang membaca sebuah `AnimationCurve` setiap frame.
+
+```csharp title="Pintu.cs"
+using System.Collections;
+using UnityEngine;
+
+public class Pintu : MonoBehaviour
+{
+    public float durasi = 0.6f; // detik
+    public AnimationCurve kurva = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+
+    // Panggil dengan StartCoroutine(Buka())
+    public IEnumerator Buka()
+    {
+        Quaternion awal = transform.localRotation;
+        Quaternion akhir = awal * Quaternion.Euler(0f, 90f, 0f);
+
+        for (float waktu = 0f; waktu < durasi; waktu += Time.deltaTime)
+        {
+            float t = kurva.Evaluate(waktu / durasi); // 0..1 setelah easing
+            // Unclamped: kurva seperti back boleh sedikit melewati 1
+            transform.localRotation = Quaternion.SlerpUnclamped(awal, akhir, t);
+            yield return null; // lanjut di frame berikutnya
+        }
+        transform.localRotation = akhir; // pastikan tepat di akhir
+    }
+}
+```
+
+Bentuk kurvanya bisa digambar ulang di Inspector. Banyak tim memakai paket pihak ketiga seperti DOTween untuk pola ini.
+
+</div>
+<div slot="unreal">
+
+Di Blueprint, pakai node **Timeline**. Buat satu kurva float dari 0 ke 1 sepanjang 0,6 detik dengan bentuk melambat di akhir. Hubungkan keluaran **Update** ke node **Lerp (Rotator)** dengan rotasi awal dan akhir pintu, lalu ke **Set Relative Rotation**. Timeline bisa diputar dengan **Play** dan dibalik dengan **Reverse** untuk menutup pintu.
+
+</div>
+<div slot="godot">
+
+Godot punya kelas **Tween** bawaan, dibuat dengan `create_tween()`.
+
+```gdscript title="pintu.gd"
+extends Node3D
+
+func buka() -> void:
+    var tween := create_tween()
+    tween.tween_property(self, "rotation_degrees:y", rotation_degrees.y + 90.0, 0.6) \
+        .set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+```
+
+Tween langsung berjalan begitu dibuat, jadi buat tween hanya saat animasinya memang ingin dimulai.
+
+</div>
+</EngineTabs>
+
+Ketiganya melakukan hal yang sama: menghitung seberapa jauh waktu sudah berjalan (0 sampai 1), membentuknya dengan kurva, lalu mencampur rotasi awal dan akhir.
+
+## Tween dan easing: rasa sebuah gerakan
+
+[Tween](/kamus/animasi/tween/) adalah satu animasi dari nilai awal ke nilai akhir dalam durasi tertentu. Namanya berasal dari *in-betweening*, pekerjaan si asisten tadi. Intinya adalah [lerp](/kamus/ruang/lerp/): campuran dua nilai dengan perbandingan t.
+
+<Demo name="lerp" caption="Geser t dari 0 ke 1. Tween hanyalah lerp dengan t yang bergerak sendiri seiring waktu." />
+
+Jika t naik dengan kecepatan tetap, gerakannya linear: mulai mendadak, bergerak rata, lalu berhenti mendadak. Benda nyata tidak bergerak seperti itu. Mereka butuh waktu untuk mulai dan berhenti. [Easing](/kamus/animasi/easing/) adalah kurva yang mengubah t sebelum dipakai lerp:
+
+```text title="Pseudocode: tween dengan easing"
+setiap frame:
+    waktu_berjalan += delta
+    t     = min(waktu_berjalan / durasi, 1)   // linear, 0..1
+    t_ish = ease_out(t)                       // dibentuk kurva
+    nilai = lerp(awal, akhir, t_ish)
+```
+
+Waktu tetap berjalan rata. Yang diubah kurva hanya **seberapa jauh** nilai sudah bergerak pada setiap titik waktu.
+
+<Demo name="easing" caption="Pilih kurva, lalu tekan Putar. Durasinya selalu sama, yang berbeda hanya rasanya." />
+
+Di sinilah animasi mulai menyentuh **rasa** sebuah game. Dua game bisa punya gerakan dengan jarak dan durasi yang sama, tetapi yang satu terasa berat dan yang lain terasa ringan, hanya karena kurvanya berbeda. Beberapa pedoman praktis:
+
+- **Ease out** untuk sesuatu yang datang dan berhenti: menu masuk, kamera tiba di target, karakter mendarat.
+- **Ease in** untuk sesuatu yang pergi: menu keluar, benda mulai jatuh.
+- **Ease in-out** untuk perpindahan dari satu tempat ke tempat lain, misalnya kamera cutscene.
+- **Back, elastic, bounce** memberi kesan berpegas. Cocok untuk momen yang jarang, seperti hadiah terbuka, dan melelahkan jika dipakai di setiap tombol.
+
+Durasi sama pentingnya dengan kurva. Animasi UI yang dilihat puluhan kali per sesi terasa lamban jika lebih dari sekitar 0,3 detik, karena pemain harus menunggunya setiap kali.
+
+## Keyframe dan interpolasi
+
+Tween cocok untuk satu perubahan sederhana. Gerakan yang lebih rumit, seperti ayunan pedang atau pintu yang terbuka sambil berderit dan memantul sedikit, dibuat dengan **keyframe**: nilai yang ditandai pada waktu tertentu. "Pada detik 0, rotasinya 0°. Pada detik 0,4, rotasinya 100°. Pada detik 0,6, rotasinya 90°." Engine mengisi semua nilai di antaranya dengan **interpolasi**.
+
+```text title="Pseudocode: mengambil nilai sebuah track pada waktu tertentu"
+cari dua keyframe yang mengapit waktu sekarang: kiri dan kanan
+t     = (waktu - kiri.waktu) / (kanan.waktu - kiri.waktu)
+nilai = interpolasi(kiri.nilai, kanan.nilai, t)   // nearest, linear, atau kurva
+```
+
+Ada beberapa mode interpolasi yang umum:
+
+- **Nearest / constant:** nilai melompat langsung ke keyframe berikutnya. Dipakai untuk hal yang memang tidak boleh transisi, seperti mengganti sprite atau menyalakan objek.
+- **Linear:** garis lurus di antara dua keyframe. Gerakannya terlihat patah di setiap keyframe.
+- **Kurva (cubic / bezier):** gerakan halus yang melewati keyframe tanpa patah. Bentuknya diatur lewat *tangent* di setiap keyframe, dan di sinilah easing sebuah klip ditentukan.
+
+Karena engine menghitung nilai dari waktu, bukan dari nomor frame, klip yang dibuat dengan 30 keyframe per detik tetap mulus di layar 144 Hz. Ini juga alasan animasi tetap memakai [delta time](/kamus/dasar/delta-time/): waktu klip maju sebesar delta setiap frame, lalu nilainya diambil pada waktu itu.
+
+Rotasi butuh perlakuan khusus. Mencampur tiga sudut Euler satu per satu bisa membuat objek berputar lewat jalur yang aneh atau memutar hampir satu lingkaran penuh untuk sampai ke sudut yang sebenarnya dekat. Engine menginterpolasi rotasi sebagai [quaternion](/kamus/ruang/quaternion/), sehingga selalu mengambil jalur terpendek. Itu sebabnya contoh Unity di atas memakai `Quaternion.SlerpUnclamped`, dan Godot menyediakan mode interpolasi khusus rotasi.
+
+<EngineTabs>
+<div slot="unity">
+
+Keyframe dibuat di jendela **Animation**, lalu disimpan sebagai **Animation Clip**. Tampilan **Curves** di jendela yang sama memperlihatkan kurva setiap properti, dan tangent keyframe bisa diubah di sana.
+
+</div>
+<div slot="unreal">
+
+Keyframe untuk aktor dan kamera dibuat di **Sequencer**. Animasi karakter biasanya dibuat di aplikasi 3D dan diimpor sebagai **Animation Sequence**. Untuk kurva kecil di Blueprint, node **Timeline** menyimpan keyframe-nya sendiri.
+
+</div>
+<div slot="godot">
+
+Keyframe dibuat di panel **Animation** milik node **AnimationPlayer**. Setiap track punya mode interpolasi: **Nearest**, **Linear**, **Cubic**, serta **Linear Angle** dan **Cubic Angle** khusus rotasi, yang mengambil jalur putar terpendek. Nilai easing bisa diatur per keyframe.
+
+</div>
+</EngineTabs>
+
+## Klip dan timeline
+
+Sekumpulan keyframe yang membentuk satu gerakan disebut **klip**: "jalan", "lompat", "pintu terbuka". Satu klip berisi beberapa **track**, satu track untuk satu properti. Klip jalan seorang karakter, misalnya, berisi satu track rotasi untuk setiap tulang. Klip bisa diputar sekali atau diulang (*loop*). Klip loop seperti jalan dan lari harus punya pose awal dan akhir yang sama, atau karakter akan tersentak setiap kali klip mengulang.
+
+Track tidak harus berupa transform. Engine bisa menganimasikan hampir semua nilai: warna material, intensitas lampu, volume suara, bahkan memanggil fungsi pada waktu tertentu.
+
+Jika klip adalah satu gerakan, [timeline](/kamus/animasi/timeline/) adalah satu **adegan**: banyak klip dan kejadian disusun pada satu garis waktu. Kamera bergerak, dua karakter berbicara, pintu terbuka, musik masuk. Timeline dipakai untuk cutscene, intro level, dan rangkaian gameplay yang dirancang di editor oleh desainer atau animator.
+
+<EngineTabs>
+<div slot="unity">
+
+Klip disimpan sebagai aset **Animation Clip**. Untuk adegan, ada paket **Timeline**: aset Timeline diedit di jendela Timeline, dan komponen **Playable Director** menghubungkan aset itu dengan objek di scene serta mengatur kapan dan bagaimana ia diputar.
+
+</div>
+<div slot="unreal">
+
+Klip karakter adalah aset **Animation Sequence**. Adegan dibuat dengan **Sequencer**: aset **Level Sequence** menyimpan track dan keyframe, dan **Level Sequence Actor** menempatkannya di level.
+
+</div>
+<div slot="godot">
+
+Satu **AnimationPlayer** menyimpan banyak klip (resource `Animation`). Jenis track-nya beragam: Property, Position/Rotation/Scale 3D, Blend Shape, **Call Method**, Bezier Curve, Audio Playback, dan Animation Playback. Karena satu klip bisa berisi suara, panggilan fungsi, dan klip lain, AnimationPlayer juga dipakai sebagai timeline untuk cutscene.
+
+</div>
+</EngineTabs>
+
+## Skeletal animation: tulang, bind pose, dan skinning
+
+Karakter punya ribuan titik ([vertex](/kamus/geometri/vertex/)). Menyimpan posisi setiap titik di setiap keyframe akan sangat boros dan hampir mustahil diedit. Karena itu karakter digerakkan lewat **kerangka** (*skeleton*): sekumpulan tulang tak terlihat yang tersusun dalam [hierarki](/kamus/ruang/hierarchy/), seperti panggul → tulang belakang → bahu → lengan atas → lengan bawah → tangan. Klip animasi hanya menyimpan transform setiap tulang, biasanya hanya rotasinya.
+
+Hierarki ini bekerja persis seperti induk dan anak di Pelajaran 2. Putar bahu, maka lengan atas, lengan bawah, dan tangan ikut berputar. Inilah yang disebut **forward kinematics**: pose ujung (tangan) adalah hasil dari rotasi semua tulang di atasnya.
+
+Mesh karakter dibuat dalam satu pose netral, biasanya berdiri dengan lengan terbuka (pose T atau pose A). Posisi tulang pada saat mesh itu dipasangkan ke kerangka disebut **bind pose**. Setiap titik mesh lalu diberi **bobot** (*bone weight*) ke satu atau beberapa tulang. Proses memasang tulang dan mengatur bobot ini disebut *rigging* dan *weight painting*, dan dikerjakan di aplikasi 3D.
+
+**Skinning** adalah perhitungan yang membuat mesh mengikuti tulang setiap frame. Untuk setiap titik:
+
+```text title="Pseudocode: linear blend skinning untuk satu titik"
+posisi_akhir = 0
+untuk setiap (tulang, bobot) yang memengaruhi titik ini:
+    // 1. Kembalikan titik ke ruang tulang saat bind pose
+    // 2. Pindahkan sesuai pose tulang sekarang
+    gerak = matriks_pose[tulang] * kebalikan_matriks_bind[tulang]
+    posisi_akhir += bobot * (gerak * posisi_bind)
+// total bobot satu titik = 1
+```
+
+Matriks `kebalikan_matriks_bind` dihitung sekali saat model dimuat. Jika pose sekarang sama dengan bind pose, `gerak` menjadi matriks identitas dan mesh tampil persis seperti saat dimodelkan.
+
+Bobot itulah yang membuat lipatan terlihat wajar. Titik di siku yang terikat 50% ke lengan atas dan 50% ke lengan bawah akan berada di tengah-tengah keduanya saat siku ditekuk, sehingga lipatannya melengkung. Tanpa bobot campuran, siku tampak patah seperti sambungan boneka kayu. Penjelasan lebih ringkas ada di [Skeletal Animation & Skinning](/kamus/animasi/skeletal/).
+
+<EngineTabs>
+<div slot="unity">
+
+Mesh berkerangka ditampilkan oleh komponen **Skinned Mesh Renderer**. Tulang-tulangnya adalah GameObject biasa di Hierarchy. Pengaturan **Quality** membatasi jumlah tulang yang memengaruhi satu titik (Auto, 1, 2, atau 4 tulang). Dokumentasi Unity menyarankan batas ini diatur saat impor di tab **Rig**, karena membatasinya saat game berjalan kurang efisien.
+
+</div>
+<div slot="unreal">
+
+Aset **Skeleton** menyimpan hierarki tulang, aset **Skeletal Mesh** menyimpan mesh berbobot, dan **Animation Sequence** menyimpan klip. Beberapa Skeletal Mesh bisa memakai Skeleton yang sama sehingga berbagi animasi.
+
+</div>
+<div slot="godot">
+
+Node **Skeleton3D** mengelola hierarki tulang dan pose. Rest pose setiap tulang bisa dibaca dengan `get_bone_rest()` dan `get_bone_global_rest()`. Mesh berbobot berupa `MeshInstance3D` yang dihubungkan ke Skeleton3D lewat resource **Skin**.
+
+</div>
+</EngineTabs>
+
+## State machine dan transisi
+
+Karakter punya banyak klip: diam, jalan, lari, lompat, jatuh, mendarat, menyerang. Sesuatu harus memutuskan klip mana yang diputar sekarang. Tugas ini dipegang [animation state machine](/kamus/animasi/state-machine/): diagram berisi **state** (biasanya satu klip atau satu campuran klip) dan **transisi** di antaranya.
+
+```text title="Contoh state machine sederhana"
+Diam  ──(kecepatan > 0.1)──▶ Jalan
+Jalan ──(kecepatan < 0.1)──▶ Diam
+Diam/Jalan ──(tombol lompat)──▶ Lompat ──(tidak di tanah)──▶ Jatuh ──(di tanah)──▶ Mendarat ──▶ Diam
+```
+
+Kode gameplay tidak memilih klip secara langsung. Kode hanya mengirim **parameter**: kecepatan, sedang di tanah atau tidak, tombol serang ditekan. State machine yang memutuskan perpindahannya. Pemisahan ini membuat animator bisa merapikan perpindahan klip tanpa mengubah kode gameplay.
+
+Setiap transisi biasanya punya **durasi**: selama beberapa saat, klip lama memudar dan klip baru masuk (*crossfade*). Tanpa durasi, pose karakter meloncat dari satu klip ke klip lain dalam satu frame.
+
+Pengaturan transisi ini sangat menentukan rasa kontrol:
+
+- **Durasi transisi** adalah jeda sebelum pose baru benar-benar terlihat. Crossfade 0,4 detik untuk serangan berarti pemain melihat ayunan pedangnya baru jelas hampir setengah detik setelah menekan tombol. Untuk aksi yang harus responsif, durasi pendek (sekitar 0,05 sampai 0,15 detik) biasanya lebih baik, sedangkan perpindahan santai seperti diam ke jalan boleh lebih panjang.
+- **Menunggu klip selesai.** Transisi yang hanya boleh terjadi setelah klip lama mencapai titik tertentu membuat input "tertahan". Ini berguna untuk klip yang memang tidak boleh dipotong, seperti mendarat dari lompatan tinggi, dan merugikan untuk klip yang harus bisa dibatalkan.
+- **Interupsi.** Bisakah transisi yang sedang berjalan dipotong transisi lain? Jika tidak, pemain yang menekan tombol menghindar di tengah crossfade harus menunggu crossfade selesai.
+
+<EngineTabs>
+<div slot="unity">
+
+State machine dibuat di aset **Animator Controller** dan dipasang di komponen **Animator**. Setiap transisi punya pengaturan:
+
+- **Has Exit Time** dan **Exit Time**: transisi baru boleh terjadi setelah klip mencapai waktu ternormalisasi tertentu, misalnya 0,75 berarti 75% klip.
+- **Transition Duration**, dalam detik jika **Fixed Duration** dicentang, atau sebagai pecahan panjang klip jika tidak.
+- **Transition Offset**: dari titik mana klip tujuan mulai diputar.
+- **Interruption Source**: kapan transisi ini boleh dipotong transisi lain.
+
+```csharp title="GerakKarakter.cs"
+using UnityEngine;
+
+public class GerakKarakter : MonoBehaviour
+{
+    public Animator animator;
+
+    void Update()
+    {
+        float kecepatan = HitungKecepatan(); // dari input atau physics
+        // dampTime 0.1: nilai parameter mendekati target dalam ±0,1 detik
+        animator.SetFloat("Kecepatan", kecepatan, 0.1f, Time.deltaTime);
+
+        if (Input.GetButtonDown("Fire1"))
+            animator.SetTrigger("Serang");
+    }
+
+    float HitungKecepatan() { return 0f; /* diisi sesuai gamemu */ }
+}
+```
+
+</div>
+<div slot="unreal">
+
+State machine dibuat di **AnimGraph** milik sebuah **Animation Blueprint**, dengan **transition rule** berupa ekspresi Blueprint. Nilai seperti kecepatan biasanya dihitung di **Event Graph** Animation Blueprint itu sendiri, dengan membaca data dari karakter pemiliknya.
+
+</div>
+<div slot="godot">
+
+Pakai node **AnimationTree** dengan root **AnimationNodeStateMachine**. AnimationTree tidak menyimpan klip sendiri, tetapi memakai klip dari sebuah AnimationPlayer. Setiap transisi punya:
+
+- **Switch Mode**: Immediate (langsung), Sync (langsung, tetapi melanjutkan posisi putar state lama), atau At End (menunggu klip selesai).
+- **Xfade Time**: durasi crossfade, dan **Xfade Curve** untuk bentuk peralihannya.
+- **Advance Mode**: Disabled, Enabled (hanya lewat `travel()`), atau Auto (saat kondisi atau ekspresinya terpenuhi).
+
+```gdscript title="karakter.gd"
+@onready var anim_tree: AnimationTree = $AnimationTree
+
+func serang() -> void:
+    var playback = anim_tree["parameters/playback"]
+    playback.travel("Serang") # mencari jalur lewat state perantara jika perlu
+```
+
+</div>
+</EngineTabs>
+
+Jika state machine makin besar, setiap state baru bisa butuh transisi ke banyak state lain. Engine mengatasinya dengan sub-state machine, layer per bagian tubuh (badan atas menembak sambil kaki berlari), dan transisi dari "state mana pun" untuk aksi seperti terkena pukulan.
+
+## Blend tree dan blend space
+
+Transisi mencampur dua klip **sebentar**, saat berpindah state. Ada kebutuhan lain: mencampur beberapa klip **terus-menerus** sesuai parameter. Karakter yang kecepatannya bisa berapa saja, dari jalan pelan sampai lari penuh, tidak mungkin punya satu klip untuk setiap kecepatan. Yang dilakukan engine adalah mencampur klip jalan dan lari dengan perbandingan yang mengikuti kecepatan saat itu.
+
+```text title="Pseudocode: blend space 1D berdasarkan kecepatan"
+// titik klip: diam di 0, jalan di 2, lari di 6 (meter per detik)
+kecepatan = 4
+// 4 berada di antara jalan (2) dan lari (6), tepat di tengah
+bobot_jalan = 0.5
+bobot_lari  = 0.5
+untuk setiap tulang:
+    rotasi = slerp(rotasi_jalan[tulang], rotasi_lari[tulang], bobot_lari)
+```
+
+Struktur ini disebut **blend tree** atau **blend space** ([Animation Blending](/kamus/animasi/blending/)). **1D** memakai satu parameter, biasanya kecepatan. **2D** memakai dua parameter, misalnya kecepatan maju dan kecepatan ke samping, untuk karakter yang bisa bergerak ke segala arah sambil tetap menghadap ke depan.
+
+Campuran hanya terlihat benar jika klip-klipnya **sinkron**. Pose diambil dari kedua klip pada waktu ternormalisasi yang sama (0 di awal klip, 1 di akhir). Jika kaki kiri menapak di 0,0 pada klip jalan tetapi di 0,3 pada klip lari, pose campurannya berisi kaki yang setengah menapak dan setengah terangkat, dan karakter tampak tersandung. Panjang klip boleh berbeda, karena waktunya dinormalisasi.
+
+<EngineTabs>
+<div slot="unity">
+
+**Blend Tree** adalah jenis state khusus di Animator Controller (klik kanan → **Create State → From New Blend Tree**). Pilih **Blend Type** 1D, 2D, atau Direct, lalu tentukan parameter pengendalinya. Dokumentasi Unity mencontohkan klip jalan dan lari yang diselaraskan agar kaki kiri menapak di 0,0 dan kaki kanan di 0,5 pada keduanya. Parameter `Kecepatan` dari contoh di bagian sebelumnya bisa langsung dipakai sebagai pengendali blend tree.
+
+</div>
+<div slot="unreal">
+
+Aset **Blend Space** (dua sumbu) dan **Blend Space 1D** (satu sumbu), dengan sumbu seperti Speed dan Direction, dipakai di dalam state machine Animation Blueprint.
+
+</div>
+<div slot="godot">
+
+Di AnimationTree, pakai **AnimationNodeBlendSpace1D** atau **AnimationNodeBlendSpace2D**, baik sebagai root maupun sebagai state di dalam state machine. Untuk menjaga klip tetap sinkron, atur **Sync Mode** pada blend space. Nilai parameternya diatur dari kode lewat path:
+
+```gdscript
+# "Gerak" adalah nama state berisi BlendSpace1D di dalam state machine
+anim_tree.set("parameters/Gerak/blend_position", kecepatan)
+```
+
+</div>
+</EngineTabs>
+
+## Root motion
+
+Ada dua cara menggerakkan karakter yang beranimasi, dan pilihannya sangat memengaruhi rasa kontrol ([Root Motion](/kamus/animasi/root-motion/)):
+
+- **In-place (kode yang menggerakkan):** klip berjalan di tempat seperti di atas treadmill, dan kode memindahkan karakter dengan kecepatan tertentu. Kontrol terasa sangat responsif karena karakter langsung berbelok dan berhenti mengikuti input. Kekurangannya, jika kecepatan kode tidak cocok dengan langkah di klip, kaki tampak **meluncur** di lantai.
+- **Root motion (animasi yang menggerakkan):** perpindahan diambil dari tulang akar di dalam klip, lalu diterapkan ke objek karakter. Langkah kaki selalu pas dan gerakan terasa berbobot. Kekurangannya, pemain tidak bisa berbelok atau berhenti di tengah gerakan, jadi kontrol terasa lebih lambat.
+
+Banyak game memakai keduanya: in-place untuk jalan dan lari biasa, root motion untuk aksi khusus seperti serangan sambil melangkah, berguling, atau memanjat. Saat memakai in-place, kaki yang meluncur bisa dikurangi dengan menyesuaikan kecepatan putar klip dengan kecepatan karakter, atau dengan blend space yang titik-titiknya ditempatkan pada kecepatan asli setiap klip.
+
+<EngineTabs>
+<div slot="unity">
+
+Centang **Apply Root Motion** di komponen Animator. Pengaturan ini menentukan apakah posisi dan rotasi karakter dikendalikan oleh animasi atau oleh skrip.
+
+</div>
+<div slot="unreal">
+
+Aktifkan **Enable Root Motion** pada Animation Sequence atau Montage, lalu pilih **Root Motion Mode** di Class Defaults Animation Blueprint, misalnya *Root Motion from Montages Only*.
+
+</div>
+<div slot="godot">
+
+Di AnimationTree, pilih tulang akar sebagai **root motion track**. Engine tidak memindahkan karakter sendiri. Kamu mengambil perpindahannya lalu menerapkannya:
+
+```gdscript title="karakter.gd"
+extends CharacterBody3D
+
+@onready var anim_tree: AnimationTree = $AnimationTree
+
+func _physics_process(delta: float) -> void:
+    var gerak := anim_tree.get_root_motion_position()
+    velocity = quaternion * gerak / delta   # ubah ke arah hadap karakter
+    move_and_slide()
+```
+
+</div>
+</EngineTabs>
+
+## Inverse kinematics
+
+Klip animasi dibuat di lantai datar. Dunia game tidak rata: ada tangga, lereng, batu, gagang pintu yang tingginya berbeda-beda. [Inverse kinematics (IK)](/kamus/animasi/ik/) membalik arah perhitungan forward kinematics. Kamu menentukan **tujuan** untuk ujung rantai tulang, misalnya "telapak kaki harus di titik ini", lalu engine menghitung bagaimana paha dan betis harus menekuk agar kaki sampai di sana.
+
+Kasus paling umum adalah **rantai dua tulang**: lengan atas dan lengan bawah, atau paha dan betis. Dengan dua panjang tulang dan satu titik tujuan, ada banyak kemungkinan arah tekukan, jadi IK butuh satu petunjuk lagi (*pole* atau *hint*) agar lutut menekuk ke depan, bukan ke samping atau ke belakang.
+
+IK dijalankan **setelah** klip diambil sampelnya dan dicampur. Ia mengoreksi pose yang sudah jadi. Karena itu IK punya **bobot** 0 sampai 1: bobot 0 berarti pose animasi asli, bobot 1 berarti sepenuhnya mengikuti tujuan. Bobot ini sering dinaikkan perlahan, misalnya hanya saat tangan sudah dekat ke gagang pintu, agar koreksinya tidak terlihat melompat.
+
+```text title="Pseudocode: foot IK sederhana"
+untuk setiap kaki:
+    titik_tanah = raycast(dari = posisi_kaki + atas * 0.5, arah = bawah)
+    jika kena:
+        ik_kaki.tujuan = titik_tanah.posisi
+        ik_kaki.bobot  = 1
+    jika tidak:
+        ik_kaki.bobot  = 0       // kaki di udara: biarkan animasi asli
+```
+
+<EngineTabs>
+<div slot="unity">
+
+Ada dua jalur. Untuk karakter **Humanoid**, Animator punya IK bawaan: aktifkan **IK Pass** pada layer, lalu atur tujuan di `OnAnimatorIK`. Untuk rig apa pun, paket **Animation Rigging** menyediakan constraint seperti **Two Bone IK**, dengan **Root**, **Mid**, dan **Tip** untuk rantai tulang, **Target** sebagai tujuan, **Hint** untuk arah tekukan, dan **Weight** untuk bobotnya.
+
+</div>
+<div slot="unreal">
+
+Node **Two Bone IK** di AnimGraph: **Effector Location** adalah tujuan ujung rantai, dan **Joint Target Location** menentukan arah tekukan sendi tengah. Untuk rig dan IK yang lebih rumit, Unreal menyediakan **Control Rig**.
+
+</div>
+<div slot="godot">
+
+Tambahkan node turunan **IKModifier3D** sebagai anak Skeleton3D. **TwoBoneIK3D** butuh node target (tujuan tulang ujung) dan node pole (bidang tempat sendi menekuk). Seperti semua **SkeletonModifier3D**, besarnya pengaruh diatur lewat `influence`. Node lama `SkeletonIK3D` sudah ditandai *deprecated*.
+
+</div>
+</EngineTabs>
+
+## Animation event
+
+Banyak hal di game harus terjadi tepat pada momen tertentu di dalam klip: suara langkah saat kaki menapak, debu saat mendarat, hitbox pedang yang aktif hanya saat bilahnya berayun, peluru keluar saat jari menarik pelatuk. Jika waktunya dihitung terpisah di kode ("0,35 detik setelah serangan dimulai"), angka itu akan meleset begitu animator mengubah klipnya atau kecepatan putarnya diubah.
+
+**Animation event** menyelesaikan ini dengan menandai momen itu langsung di klip. Saat waktu klip melewati tanda tersebut, engine memanggil fungsi yang ditentukan.
+
+```text title="Pseudocode: memeriksa event di setiap frame"
+untuk setiap event di klip:
+    jika waktu_sebelum < event.waktu <= waktu_sekarang:
+        panggil(event.fungsi, event.argumen)
+```
+
+Perhatikan bahwa yang diperiksa adalah **rentang** waktu antara frame sebelumnya dan frame sekarang. Waktu klip melompat sebesar delta setiap frame, jadi hampir tidak pernah tepat sama dengan waktu event. Saat dua klip sedang dicampur, event dari keduanya bisa terpicu. Engine punya aturan sendiri untuk ini, dan suara langkah yang terdengar dobel saat crossfade biasanya berasal dari sini.
+
+<EngineTabs>
+<div slot="unity">
+
+Tambahkan event di jendela **Animation** lewat tombol **Event**, lalu pilih fungsi di Inspector. Fungsinya harus ada di skrip yang terpasang pada GameObject yang dianimasikan, dan hanya boleh menerima satu parameter: `float`, `int`, `string`, referensi `object`, atau `AnimationEvent`.
+
+```csharp title="SuaraLangkah.cs"
+using UnityEngine;
+
+public class SuaraLangkah : MonoBehaviour
+{
+    public AudioSource sumber;
+
+    // Dipanggil oleh animation event di klip jalan dan lari
+    public void Langkah()
+    {
+        sumber.Play();
+    }
+}
+```
+
+</div>
+<div slot="unreal">
+
+Tandai momen di Animation Sequence atau Montage dengan **Anim Notify**, lalu tangani notify itu di Event Graph Animation Blueprint.
+
+</div>
+<div slot="godot">
+
+Tambahkan **Call Method Track** di AnimationPlayer. Track ini memanggil fungsi pada waktu yang tepat di dalam klip, misalnya `queue_free()` di akhir animasi mati, atau fungsi suara langkah di klip jalan.
+
+</div>
+</EngineTabs>
+
+## Biaya animasi
+
+Animasi karakter punya biaya. Untuk setiap karakter, setiap frame, engine harus mengambil sampel semua klip yang aktif, mencampurnya, menjalankan IK, menghitung matriks setiap tulang lewat hierarki, lalu menjalankan skinning untuk setiap titik mesh. Untuk satu karakter pemain, ini kecil. Untuk 200 prajurit di medan perang, ini bisa menghabiskan anggaran 16,7 ms dari Pelajaran 1.
+
+Pekerjaan ini terbagi antara CPU dan GPU:
+
+- **Pose (CPU):** state machine, sampel klip, campuran, IK, dan perhitungan matriks tulang. Biayanya naik sesuai jumlah karakter dan jumlah tulang.
+- **Skinning:** menerapkan matriks tulang ke setiap titik. Jika dikerjakan di **CPU**, CPU menghitung ulang semua titik lalu mengirim hasilnya ke GPU setiap frame. Jika dikerjakan di **GPU**, CPU hanya mengirim matriks tulang, dan perhitungan per titik dijalankan secara paralel, biasanya di [vertex shader](/kamus/shader/vertex-shader/) atau compute shader. Engine modern umumnya memakai GPU skinning karena GPU memang dibuat untuk pekerjaan per titik seperti ini.
+
+Cara mengurangi biayanya, dari yang paling besar pengaruhnya:
+
+1. **Jangan animasikan yang tidak terlihat.** Karakter di belakang kamera tidak perlu dihitung pose atau skinning-nya. Hati-hati dengan karakter yang digerakkan root motion: jika animasinya berhenti, perpindahannya juga berhenti.
+2. **Turunkan laju update karakter jauh.** Karakter yang tampak kecil di layar bisa dihitung pose-nya setiap dua atau empat frame tanpa terlihat bedanya.
+3. **Kurangi tulang dan bobot.** Karakter jauh bisa memakai mesh LOD dengan tulang lebih sedikit dan batas tulang per titik yang lebih rendah. Jari dan wajah tidak perlu dianimasikan di karakter yang tingginya hanya 30 piksel.
+4. **Ukur dulu.** Buka profiler dari Pelajaran 1 dan lihat berapa milidetik yang dipakai animasi sebelum mengubah apa pun.
+
+<EngineTabs>
+<div slot="unity">
+
+Pengaturan **Culling Mode** di komponen Animator:
+
+- **Always Animate:** selalu dianimasikan, walaupun di luar layar.
+- **Cull Update Transforms:** retargeting, IK, dan penulisan transform dimatikan saat renderer tidak terlihat.
+- **Cull Completely:** animasi dimatikan sepenuhnya saat renderer tidak terlihat.
+
+Di Skinned Mesh Renderer, **Update When Offscreen** bawaannya mati, sehingga skinning berhenti saat objek di luar layar. **Update Mode** di Animator menentukan kapan animasi diperbarui: Normal (bersama `Update`), Animate Physics (bersama `FixedUpdate`, untuk karakter yang mendorong Rigidbody), atau Unscaled Time (mengabaikan time scale, misalnya untuk UI saat game dijeda).
+
+</div>
+<div slot="unreal">
+
+Skeletal Mesh Component punya pengaturan **Visibility Based Anim Tick Option** untuk menentukan apakah pose tetap dihitung saat mesh tidak terlihat. Pakai `stat unit` dan profiler untuk melihat porsi waktu animasi di sisi Game.
+
+</div>
+<div slot="godot">
+
+AnimationPlayer dan AnimationTree sama-sama turunan **AnimationMixer**, yang punya `callback_mode_process`: Idle (bawaan, bersama `_process`), Physics (bersama `_physics_process`), atau Manual (kamu memanggil `advance()` sendiri, misalnya hanya setiap beberapa frame untuk karakter jauh). Untuk mematikan karakter yang tidak terlihat, pasang **VisibleOnScreenEnabler3D**: node ini mengaktifkan node target hanya saat area kotaknya terlihat di layar. Pemeriksaannya perkiraan dan tidak memperhitungkan dinding yang menghalangi, kecuali occlusion culling dipakai.
+
+</div>
+</EngineTabs>
+
+## Kesalahan umum
+
+Hampir semua kesalahan berikut tidak memunculkan error. Game berjalan, FPS tetap tinggi, tetapi gerakannya terasa salah.
+
+### Dua tween berebut satu properti
+
+```text title="✗ Keliru"
+saat_kursor_masuk:  tween(tombol.skala, 1.2, 0.2)
+saat_kursor_keluar: tween(tombol.skala, 1.0, 0.2)   // tween pertama masih jalan
+```
+
+```text title="✓ Benar"
+saat_kursor_masuk:
+    tween_lama.hentikan()
+    tween_lama = tween(tombol.skala, 1.2, 0.2)
+saat_kursor_keluar:
+    tween_lama.hentikan()
+    tween_lama = tween(tombol.skala, 1.0, 0.2)
+```
+
+Jika kursor keluar sebelum tween pertama selesai, keduanya mengubah skala di frame yang sama dan tombol tampak gemetar. Di Godot, simpan tween di variabel lalu panggil `kill()` sebelum membuat yang baru.
+
+### Aksi responsif menunggu klip selesai
+
+```text title="✗ Keliru"
+Diam ──(serang, menunggu 90% klip, crossfade 0.4 s)──▶ Serang
+```
+
+```text title="✓ Benar"
+Diam ──(serang, tanpa menunggu, crossfade 0.1 s)──▶ Serang
+```
+
+Pemain menilai kontrol dari jeda antara tombol dan reaksi di layar. Jeda yang tidak diminta desainer biasanya datang dari pengaturan transisi seperti Exit Time di Unity atau switch mode At End di Godot.
+
+### Klip blend tidak sinkron
+
+```text title="✗ Keliru"
+jalan: kaki kiri menapak di 0.00, kanan di 0.50
+lari:  kaki kiri menapak di 0.30, kanan di 0.80
+```
+
+```text title="✓ Benar"
+jalan: kaki kiri menapak di 0.00, kanan di 0.50
+lari:  kaki kiri menapak di 0.00, kanan di 0.50
+```
+
+Potong atau geser titik awal klip di importer sampai langkahnya sejajar.
+
+### Kecepatan kode tidak cocok dengan langkah klip
+
+```text title="✗ Keliru"
+posisi += arah * 6 * delta     // klip lari dibuat untuk 4 m/s
+```
+
+```text title="✓ Benar"
+posisi += arah * kecepatan * delta
+anim.kecepatan_putar = kecepatan / 4   // atau blend space dengan titik di 4 m/s
+```
+
+Hasil yang keliru adalah kaki yang meluncur, dan pemain langsung merasa karakternya "melayang" walaupun tidak bisa menyebut sebabnya.
+
+### Menginterpolasi rotasi lewat sudut Euler
+
+```text title="✗ Keliru"
+rotasi_y = lerp(350, 10, t)        // berputar 340° ke arah sebaliknya
+```
+
+```text title="✓ Benar"
+rotasi = slerp(quat(350), quat(10), t)   // hanya 20°, lewat jalur terpendek
+```
+
+### Root motion dimatikan oleh culling
+
+```text title="✗ Keliru"
+Musuh: Apply Root Motion = aktif, Culling Mode = Cull Completely
+```
+
+```text title="✓ Benar"
+Musuh: Apply Root Motion = aktif, Culling Mode = Cull Update Transforms (atau Always Animate)
+```
+
+Musuh berhenti berjalan setiap kali keluar dari layar, lalu tampak tertinggal saat kamera kembali.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan di engine pilihanmu.
+
+1. Pasang skrip pintu dari bagian Gambaran besar. Coba tiga kurva: linear, ease out, dan back atau elastic. Lalu ubah durasinya dari 0,6 menjadi 0,2 dan 1,5 detik. Kombinasi mana yang terasa seperti pintu besi yang berat, dan mana yang terasa seperti lemari kayu ringan?
+2. Ambil karakter dengan klip diam dan serang (banyak engine menyediakan karakter contoh). Buat transisi Diam ke Serang dengan durasi 0, 0,1, dan 0,4 detik, lalu dengan dan tanpa menunggu klip selesai. Tekan tombol serang berulang kali dan catat pengaturan mana yang terasa paling responsif.
+3. Buat blend space 1D dari diam, jalan, dan lari berdasarkan kecepatan. Gerakkan karakter dengan kecepatan yang naik perlahan, lalu perhatikan kakinya di kecepatan menengah. Apakah kakinya meluncur atau tersandung?
+4. Taruh 100 karakter beranimasi di scene. Ukur waktu frame dengan profiler saat semuanya terlihat, lalu saat kamera diputar membelakangi mereka. Ulangi dengan pengaturan culling animasi dimatikan.

@@ -481,7 +481,7 @@ function growthStage() {
  */
 const MOODS = [
   // Pos 0 "Dunia belum di-render": ruang hitam, aura cyan
-  { glow: '#7ff0ff', aura: '#00e5ff', bg: '#07070b', line: 'Ikuti aku, maka kamu akan memahami bagaimana dunia di belakangku ini terbentuk.' },
+  { glow: '#7ff0ff', aura: '#00e5ff', bg: '#07070b', line: 'Ikuti aku. Dunia di belakangku ini dibangun lapis demi lapis.' },
   {
     glow: '#ffe08a',
     aura: '#ffcc33',
@@ -521,7 +521,7 @@ const DRAW_LINES = {
 }
 const CLICK_LINES = ['Hup!', 'Pelan-pelan, cangkangku sudah retak.', 'Aku ringan, tapi jangan dilempar.', 'Iya, aku masih di sini.']
 // Pos 0 di layar sempit: sapaan pertama, mengajak mencoba tab Wireframe · Blockout · Render di bawah Krekit
-const HERO_TOUCH_LINE = 'Coba ketuk tab di bawahku ini, maka kamu akan mengetahui perbedaannya.'
+const HERO_TOUCH_LINE = 'Coba ketuk tab di bawahku. Bandingkan wireframe, blockout, dan render.'
 // Pos 0 di layar sempit: dunia di-render per tingkat setiap Krekit diketuk
 const LEVEL_LINES = [
   'Dunia ini masih wireframe. Ketuk aku untuk membangunnya.',

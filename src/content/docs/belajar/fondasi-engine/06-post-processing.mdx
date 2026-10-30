@@ -1,7 +1,7 @@
 ---
 title: "Post-processing"
 description: "Render target, rangkaian efek layar penuh, HDR dan tone mapping, bloom, color grading dengan LUT, anti-aliasing, urutan efek, dan biayanya bagi GPU."
-fundamental: "Game yang tampak bagus di PC kerja bisa turun ke 30 FPS di laptop pemain hanya karena bloom dan blur, atau warnanya tampak pucat dan langitnya terpotong putih karena tone mapping salah diatur. Masalah seperti ini tidak terlihat di kode game, dan baru bisa diperbaiki kalau kamu tahu urutan efek layar penuh dijalankan dan berapa biaya setiap efek."
+fundamental: "Game yang tampak bagus di PC kerja bisa turun ke 30 FPS di laptop pemain hanya karena bloom dan blur, atau warnanya tampak pucat dan langitnya terpotong putih karena tone mapping salah diatur. Kode game tidak akan menunjukkan masalah ini. Petunjuknya ada di urutan efek layar penuh dan biaya masing-masing efek."
 kind: lesson
 minutes: 30
 status: draf
@@ -481,8 +481,6 @@ Cara menghemat:
 Ingat juga bahwa objek transparan bertumpuk menambah beban per piksel sebelum post-processing dimulai ([Overdraw](/kamus/performa/overdraw/)). Keduanya menghabiskan anggaran yang sama.
 
 ## Kesalahan umum
-
-Sebagian besar kesalahan berikut tidak memunculkan error. Game tetap berjalan, hanya tampilannya salah atau frame-nya lebih lambat.
 
 ### Efek tidak muncul sama sekali
 
