@@ -1,0 +1,563 @@
+---
+title: "Post-processing"
+description: "Render target, rangkaian efek layar penuh, HDR dan tone mapping, bloom, color grading dengan LUT, anti-aliasing, urutan efek, dan biayanya bagi GPU."
+fundamental: "Game yang tampak bagus di PC kerja bisa turun ke 30 FPS di laptop pemain hanya karena bloom dan blur, atau warnanya tampak pucat dan langitnya terpotong putih karena tone mapping salah diatur. Masalah seperti ini tidak terlihat di kode game, dan baru bisa diperbaiki kalau kamu tahu urutan efek layar penuh dijalankan dan berapa biaya setiap efek."
+kind: lesson
+minutes: 30
+status: draf
+lastReviewed: 2026-10-30
+terms:
+  - render-target
+  - hdr
+  - tone-mapping
+  - color-space
+  - bloom
+  - antialias
+  - glitch
+  - fill-rate
+  - overdraw
+krekit:
+  gambaran-besar: "Post-processing itu seperti filter foto, tapi dijalankan ulang di setiap frame. Enam puluh kali per detik."
+  render-target-menggambar-ke-tekstur: "Scene-nya tidak langsung ke layar. Ia mampir dulu ke tekstur yang tidak kelihatan."
+  rangkaian-efek-sebagai-pass-layar-penuh: "Setiap efek membaca seluruh layar lalu menulis seluruh layar lagi. Itu yang membuatnya mahal."
+  hdr-dan-tone-mapping: "Kalau langitmu putih rata tanpa detail, cek tone mapping dulu sebelum menyalahkan lampunya."
+  bloom: "Bloom yang pas membuat lampu terasa terang. Bloom yang berlebihan membuat semuanya berkabut."
+  color-grading-dan-lut: "Satu tekstur kecil bisa mengubah suasana seluruh game. Coba bandingkan scene yang sama dengan LUT siang dan LUT senja."
+  anti-aliasing: "Tepi bergerigi dan kilau yang berkedip itu dua masalah berbeda. Tidak semua teknik AA bisa mengatasi keduanya."
+  depth-of-field-motion-blur-dan-vignette: "Efek kamera seperti ini enak dilihat di trailer, tapi sebagian pemain pusing karenanya. Sediakan tombol untuk mematikannya."
+  urutan-efek: "Urutan itu penting. Efek yang sama di posisi berbeda bisa memberi hasil yang sangat lain."
+  biaya-fill-rate-dan-bandwidth: "Hitung piksel dulu, baru tambah efek. Di layar 4K, setiap efek empat kali lebih berat dibanding di 1080p."
+  kesalahan-umum: "Kesalahan pertama paling sering terjadi di Unity: Volume sudah dipasang, tapi kameranya belum diizinkan memakai post-processing."
+sidebar:
+  order: 6
+  label: "6 · Post-processing"
+quiz:
+  - q: "Bloom diaktifkan dengan ambang (threshold) 1, tetapi HDR dimatikan. Lampu neon dan dinding putih di scene sama-sama berpendar. Kenapa?"
+    options:
+      - "Ambang bloom harus selalu di bawah 0,5"
+      - "Tanpa HDR, nilai di atas 1 terpotong, sehingga lampu dan dinding putih sama-sama bernilai 1 dan tidak bisa dibedakan"
+      - "Bloom hanya bekerja pada material emissive"
+      - "Dinding putih memantulkan cahaya lampu"
+    answer: 1
+    explain: "Buffer 8-bit hanya menyimpan 0 sampai 1. Lampu yang seharusnya bernilai 5 ikut terpotong menjadi 1, sama dengan dinding putih. Ambang bloom tidak punya cara untuk membedakan keduanya."
+  - q: "Rangkaian post-processing-mu terdiri dari 5 pass layar penuh dan berjalan lancar di 1920×1080. Kira-kira berapa kali lipat jumlah piksel yang diproses rangkaian yang sama di 3840×2160 (4K)?"
+    options:
+      - "2 kali"
+      - "4 kali"
+      - "5 kali"
+      - "Sama saja, karena jumlah efeknya tetap"
+    answer: 1
+    explain: "Lebar dan tinggi sama-sama dua kali lipat, jadi jumlah pikselnya empat kali lipat (sekitar 8,3 juta dibanding 2 juta). Setiap pass layar penuh ikut menjadi kira-kira empat kali lebih berat."
+  - q: "Lantai logam mengilap tampak berkedip-kedip saat kamera bergerak, padahal MSAA 4x sudah aktif. Teknik mana yang paling mungkin membantu?"
+    options:
+      - "MSAA 8x"
+      - "TAA, atau upscaler temporal yang punya anti-aliasing sendiri"
+      - "Menaikkan intensitas bloom"
+      - "Mematikan tone mapping"
+    answer: 1
+    explain: "MSAA hanya menambah sampel di tepi segitiga, jadi tidak memperbaiki kilau (specular aliasing) di tengah permukaan. Teknik temporal menggabungkan beberapa frame dan paling efektif melawan kedipan seperti ini, dengan risiko gambar sedikit buram saat bergerak."
+  - q: "Di Unity URP, kamu menambahkan Global Volume dengan override Bloom dan Vignette, tetapi tidak ada perubahan apa pun di Game view. Apa yang pertama kali perlu diperiksa?"
+    options:
+      - "Apakah opsi Post Processing pada komponen Camera sudah dicentang"
+      - "Apakah scene memakai lebih dari satu lampu"
+      - "Apakah Volume diberi Collider"
+      - "Apakah game berjalan di atas 60 FPS"
+    answer: 0
+    explain: "Dokumentasi URP menyebut scene baru tidak memakai post-processing secara bawaan. Kamera harus diizinkan lewat opsi Post Processing di Inspector. Volume Global tidak butuh Collider, karena berlaku tanpa batas."
+  - q: "Kamu menulis efek kustom yang mencari piksel lebih terang dari 3 untuk dijadikan percikan cahaya, lalu memasangnya setelah tone mapping. Hasilnya tidak ada piksel yang terpilih. Kenapa?"
+    options:
+      - "Efek kustom tidak boleh membaca layar"
+      - "Setelah tone mapping, semua nilai sudah dipetakan ke 0 sampai 1, jadi tidak ada lagi piksel yang lebih terang dari 3"
+      - "Tone mapping membuat gambar menjadi hitam putih"
+      - "Ambang harus ditulis dalam persen"
+    answer: 1
+    explain: "Efek yang butuh tahu seberapa terang sesuatu harus dijalankan sebelum tone mapping, saat nilai HDR masih utuh. Setelah tone mapping, rentangnya sudah dimampatkan untuk layar."
+sources:
+  - title: "Add post-processing in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/post-processing-and-full-screen-effects/urp/add-post-processing"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Post-processing in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/post-processing-and-full-screen-effects/urp/integration-with-post-processing"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Volume component reference for URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/post-processing-and-full-screen-effects/urp/volumes-landing-page/volume-component-reference"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Post-processing Volume Overrides reference for URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/post-processing-and-full-screen-effects/urp/effect-list"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Tonemapping Volume Override reference for URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/post-processing-and-full-screen-effects/urp/effect-list/tonemapping"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Color Lookup Volume Override reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/post-processing-and-full-screen-effects/urp/effect-list/color-lookup"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Universal Render Pipeline Asset reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/render-pipelines/universal-render-pipeline/urp-reference/universalrp-asset"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Anti-aliasing in URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/render-pipelines/universal-render-pipeline/anti-aliasing"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Full Screen Pass Renderer Feature reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/post-processing-and-full-screen-effects/urp/custom-post-processing/renderer-feature-full-screen-pass"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Understand volumes (HDRP)"
+    url: "https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@17.0/manual/understand-volumes.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Environment and post-processing"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/environment_and_post_processing.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Environment"
+    url: "https://docs.godotengine.org/en/stable/classes/class_environment.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "CameraAttributesPractical"
+    url: "https://docs.godotengine.org/en/stable/classes/class_cameraattributespractical.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "3D antialiasing"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/3d_antialiasing.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Resolution scaling"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/resolution_scaling.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Custom post-processing"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/custom_postprocessing.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menjelaskan bagaimana scene digambar ke render target lalu diproses oleh rangkaian efek layar penuh.
+- Menjelaskan kenapa HDR dan tone mapping dibutuhkan, dan di mana bloom serta color grading masuk.
+- Memilih teknik anti-aliasing yang cocok dan tahu kelemahan masing-masing.
+- Menyusun urutan efek yang masuk akal.
+- Memperkirakan biaya sebuah efek dari jumlah piksel dan jumlah pass.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: kamar gelap fotografer">
+Fotografer tidak langsung mencetak hasil jepretan ke dinding pameran. Negatifnya dibawa dulu ke kamar gelap, lalu diproses beberapa tahap: kecerahan disesuaikan, warnanya diatur, bagian tertentu dibuat lebih lembut. Baru setelah itu hasil akhirnya dicetak. Setiap tahap bekerja pada seluruh lembar foto, bukan pada benda di dalam foto.
+</Aside>
+
+Di [Pelajaran 1](/belajar/fondasi-engine/01-frame/), satu frame selesai saat GPU menggambar semua objek lalu gambarnya ditukar ke layar. Di game modern, ada satu tahap lagi di antaranya. Scene tidak digambar langsung ke layar, tetapi ke sebuah tekstur. Tekstur itu lalu diproses oleh beberapa efek yang bekerja pada seluruh gambar, seperti filter foto. Tahap ini disebut **post-processing** (pemrosesan setelah render).
+
+```text title="Pseudocode: satu frame dengan post-processing"
+gambar_scene(ke: buffer_hdr)          // semua mesh, material, cahaya, bayangan
+
+untuk setiap efek di rangkaian:
+    jalankan_shader_layar_penuh(efek, baca: buffer_masuk, tulis: buffer_keluar)
+
+gambar_ui(ke: layar)                  // HUD dan teks, setelah semua efek
+tampilkan()
+```
+
+Efek yang dibahas di pelajaran ini tidak tahu apa-apa tentang mesh atau lampu. Yang mereka lihat hanya piksel, dan kadang data tambahan per piksel seperti kedalaman. Itulah sebabnya efek yang sama bisa dipasang di scene apa pun.
+
+Setiap engine punya tempat untuk menyusun efek bawaan:
+
+<EngineTabs>
+<div slot="unity">
+
+URP memakai **Volume framework**. Dokumentasi Unity menyebut scene baru di URP tidak memakai post-processing secara bawaan. Langkahnya:
+
+1. Pilih Camera, lalu centang **Post Processing** di Inspector.
+2. Tambahkan **GameObject → Volume → Global Volume**.
+3. Di komponen Volume, klik **New** untuk membuat **Volume Profile**.
+4. Klik **Add Override**, lalu pilih efek, misalnya **Bloom**.
+
+Volume dengan Mode **Global** berlaku untuk semua kamera tanpa batas. Mode **Local** hanya berlaku di dalam Collider milik Volume, dengan **Blend Distance** untuk transisi yang halus saat kamera masuk. Jika beberapa Volume mengatur properti yang sama, Volume dengan **Priority** tertinggi yang dipakai. HDRP memakai sistem Volume yang sama, dan di sana Volume juga mengatur langit, kabut, dan exposure.
+
+</div>
+<div slot="unreal">
+
+Efek bawaan diatur di **Post Process Volume**. Volume berlaku saat kamera berada di dalamnya. Untuk efek yang berlaku di seluruh level, aktifkan **Infinite Extent (Unbound)** pada volume tersebut. Efek kustom ditulis sebagai Material dengan **Material Domain: Post Process**, lalu dipasang di bagian **Blendables**.
+
+</div>
+<div slot="godot">
+
+Sebagian besar efek bawaan ada di resource **Environment**, yang dipasang di node **WorldEnvironment** (hanya satu per scene tree yang aktif) atau langsung di **Camera3D**. Environment di Camera3D menang atas pengaturan lain. Depth of field dan auto exposure ada di resource terpisah, **CameraAttributes**.
+
+</div>
+</EngineTabs>
+
+## Render target: menggambar ke tekstur
+
+Tujuan gambar yang bukan layar disebut [render target](/kamus/post/render-target/). Isinya adalah tekstur biasa, jadi shader lain bisa membacanya seperti membaca tekstur di material (tekstur dan material dibahas di [Pelajaran 3](/belajar/fondasi-engine/03-permukaan/)). Engine membuat dan mengelola render target untuk post-processing secara otomatis. Kamu biasanya baru membuatnya sendiri untuk keperluan lain, seperti layar CCTV, cermin, atau minimap.
+
+Render target punya **format**, yaitu cara setiap piksel disimpan. Dua yang paling sering kamu temui:
+
+| Format | Isi per kanal | Rentang nilai | Ukuran per piksel (RGBA) |
+| --- | --- | --- | --- |
+| 8-bit (RGBA8) | bilangan bulat 0 sampai 255 | 0 sampai 1 | 4 byte |
+| 16-bit float (RGBA16F, *half float*) | bilangan pecahan | jauh di atas 1 | 8 byte |
+
+Format float dibutuhkan untuk HDR, yang dibahas dua bagian lagi. Harganya memori dan *bandwidth* (jumlah data yang dipindahkan antara GPU dan memorinya) dua kali lipat.
+
+Selain warna, banyak efek juga membaca **depth buffer**, yaitu kedalaman setiap piksel dari kamera ([Depth Buffer](/kamus/geometri/depth-buffer/)). Depth of field memakainya untuk tahu mana yang dekat dan mana yang jauh. Motion blur dan TAA juga butuh **motion vector**: seberapa jauh setiap piksel bergeser dibanding frame sebelumnya.
+
+## Rangkaian efek sebagai pass layar penuh
+
+Satu efek dijalankan dengan menggambar satu bidang yang menutupi seluruh layar. Fragment shader bidang itu berjalan sekali untuk setiap piksel (fragment shader dibahas di [Pelajaran 4](/belajar/fondasi-engine/04-shader/)). Shader ini membaca render target sebelumnya, menghitung warna baru, lalu menulisnya ke render target berikutnya. Satu putaran baca-tulis seluruh layar ini disebut satu **pass**.
+
+```text title="Pseudocode: fragment shader untuk vignette"
+fragment(uv):
+    warna = baca(buffer_masuk, uv)
+    jarak = panjang(uv - (0.5, 0.5))          // 0 di tengah layar, ±0.7 di sudut
+    gelap = smoothstep(0.4, 0.8, jarak)       // 0 di tengah, naik ke 1 di tepi
+    return warna * (1 - gelap * kekuatan)
+```
+
+Karena satu pass tidak boleh membaca dan menulis tekstur yang sama sekaligus, engine memakai dua buffer secara bergantian: pass pertama membaca A dan menulis B, pass kedua membaca B dan menulis A, dan seterusnya. Teknik ini sering disebut *ping-pong*.
+
+Beberapa efek butuh lebih dari satu pass. Blur yang lebar misalnya dipecah menjadi blur horizontal lalu blur vertikal, karena dua pass sempit jauh lebih murah daripada satu pass yang membaca banyak sekali tetangga sekaligus. Bloom bahkan memakai belasan pass kecil. Engine juga sering menggabungkan beberapa efek ringan (tone mapping, color grading, vignette) ke dalam satu pass agar tidak membaca dan menulis layar berkali-kali.
+
+Efek yang tidak tersedia bawaan bisa ditulis sendiri. [Glitch & Chromatic Aberration](/kamus/post/glitch/) di Kamus memakai contoh ini.
+
+<EngineTabs>
+<div slot="unity">
+
+URP: tambahkan **Full Screen Pass Renderer Feature** ke Renderer, lalu isi **Pass Material** dengan material buatanmu. **Injection Point** menentukan kapan efek dijalankan: sebelum objek transparan, sebelum post-processing bawaan, atau setelahnya (bawaan). Opsi **Requirements** meminta tekstur tambahan seperti depth, normal, atau motion vector.
+
+</div>
+<div slot="unreal">
+
+Material dengan **Material Domain: Post Process** membaca layar lewat node **SceneTexture**, lalu dipasang di **Blendables** pada Post Process Volume. Posisi efek dalam rangkaian diatur dengan **Blendable Location**, misalnya sebelum atau sesudah tone mapping.
+
+</div>
+<div slot="godot">
+
+Cara paling sederhana: **CanvasLayer** berisi **ColorRect** selebar layar (anchor Full Rect) dengan ShaderMaterial. Shader-nya membaca gambar yang sudah dirender lewat `hint_screen_texture` dan `SCREEN_UV`. Untuk efek beberapa pass, tumpuk beberapa CanvasLayer, dan setiap lapisan membaca hasil lapisan sebelumnya. Dokumentasi Godot memakai blur dua arah (X lalu Y) sebagai contoh.
+
+</div>
+</EngineTabs>
+
+## HDR dan tone mapping
+
+Di Pelajaran 3 dan 5, cahaya dihitung dengan angka yang mengikuti dunia nyata. Langit siang bisa bernilai puluhan, lampu bernilai 5, dan sudut ruangan 0,05. Layar biasa hanya bisa menampilkan 0 sampai 1. Kalau semua yang di atas 1 dipotong begitu saja, langit, lampu, dan dinding putih menjadi putih rata yang sama.
+
+Solusinya dua langkah:
+
+1. **Render dalam [HDR](/kamus/post/hdr/)** (*High Dynamic Range*). Scene digambar ke render target float, sehingga nilai di atas 1 tetap tersimpan.
+2. **[Tone mapping](/kamus/cahaya/tone-mapping/)** di akhir. Kurva yang halus memetakan rentang besar itu ke 0 sampai 1. Bagian gelap dan menengah hampir tidak berubah, bagian terang dimampatkan perlahan, sehingga detail awan atau cahaya lampu masih terlihat.
+
+```text title="Pseudocode: tone mapping sederhana (Reinhard)"
+warna = warna * exposure             // seperti bukaan kamera
+warna = warna / (1 + warna)          // 0 tetap 0, 1 menjadi 0.5, 100 menjadi ±0.99
+```
+
+Kurva Reinhard di atas yang paling sederhana. Engine menyediakan kurva yang lebih baik, seperti ACES (kontras sinematik) atau AgX dan Neutral (warna lebih terjaga). Sebelum kurva itu diterapkan, **exposure** menaikkan atau menurunkan kecerahan keseluruhan. Auto exposure mengubahnya otomatis, meniru mata yang menyesuaikan diri saat keluar dari gua.
+
+Setelah tone mapping, warna masih harus diubah dari ruang linear ke sRGB agar tampil benar di layar ([Color Space](/kamus/cahaya/color-space/)). Engine melakukannya otomatis di langkah terakhir.
+
+<EngineTabs>
+<div slot="unity">
+
+URP: **HDR** dicentang di aset URP (bagian Quality). Dokumentasi Unity menyarankan mematikannya untuk perangkat kelas bawah demi performa. **HDR Precision** bawaannya 32 bit, dan pilihan 64 bit mengurangi *banding* (gradasi warna yang bertingkat) dengan biaya bandwidth lebih besar.
+
+Tone mapping adalah override **Tonemapping** di Volume, dengan Mode **None**, **Neutral**, atau **ACES**. Menurut dokumentasi Unity, Neutral cocok sebagai titik awal sebelum color grading yang banyak, sedangkan ACES lebih kontras dan ikut mengubah hue serta saturasi.
+
+</div>
+<div slot="unreal">
+
+Unreal merender dalam HDR, dan tone mapper bergaya filmic aktif secara bawaan. Exposure dan eye adaptation diatur di bagian **Exposure** pada Post Process Volume.
+
+</div>
+<div slot="godot">
+
+Resource **Environment → Tonemap → Mode**: Linear, Reinhard, Filmic, ACES, atau AgX. Nilai bawaan resource Environment adalah **Linear**, yang tidak memampatkan bagian terang, jadi pilih kurva lain jika langit atau lampu terpotong putih. **Exposure** mengatur kecerahan sebelum tone mapping, dan **White** menentukan nilai yang dianggap putih penuh.
+
+Auto exposure ada di **CameraAttributes** dan hanya didukung renderer Forward+.
+
+</div>
+</EngineTabs>
+
+## Bloom
+
+[Bloom](/kamus/post/bloom/) membuat piksel yang sangat terang berpendar ke sekitarnya, seperti cahaya lampu yang menyebar di lensa. Efek ini memberi tahu mata bahwa sesuatu benar-benar terang, karena layar sendiri tidak bisa menampilkan cahaya seterang lampu sungguhan.
+
+```text title="Pseudocode: bloom"
+terang = ambil_piksel_di_atas(buffer_hdr, ambang)      // hanya bagian sangat terang
+
+tingkat[0] = perkecil(terang)                           // 1/2 resolusi
+untuk i = 1 sampai 5:
+    tingkat[i] = blur(perkecil(tingkat[i-1]))           // 1/4, 1/8, ... makin kecil
+
+pendar = gabungkan_sambil_memperbesar(tingkat)
+hasil  = buffer_hdr + pendar * intensitas
+```
+
+Dua hal penting dari alur ini:
+
+- **Ambang hanya berarti dalam HDR.** Tanpa HDR, lampu dan dinding putih sama-sama bernilai 1, sehingga keduanya ikut berpendar. Karena itu bloom dijalankan sebelum tone mapping.
+- **Blur dihitung di resolusi kecil.** Pada 1/4 resolusi, jumlah pikselnya hanya 1/16. Pendar yang lebar didapat dari tingkat terkecil, dengan biaya yang jauh lebih rendah daripada blur lebar di resolusi penuh.
+
+<EngineTabs>
+<div slot="unity">
+
+Override **Bloom** di Volume. Dokumentasi URP menyebut Bloom termasuk efek yang ramah ponsel jika **High Quality Filtering** dimatikan.
+
+</div>
+<div slot="unreal">
+
+Bagian **Bloom** di Post Process Volume, dengan **Intensity** dan **Threshold**. Method **Standard** adalah yang murah, sedangkan **Convolution** memakai tekstur kernel untuk bentuk pendar yang lebih sinematik dengan biaya lebih tinggi.
+
+</div>
+<div slot="godot">
+
+Disebut **Glow**, di Environment. **HDR Threshold** adalah ambangnya, dan nilai 1,0 sama dengan nilai White milik tone mapper. **Levels** memilih tingkat blur yang dipakai: level kecil memberi pendar rapat di sekitar objek, level besar memberi kabut cahaya selebar layar. **Blend Mode** menentukan cara pendar digabung: Additive, Screen, Softlight, Replace, atau Mix. Renderer Compatibility memakai implementasi lain, dan sebagian properti ini tidak tersedia di sana.
+
+</div>
+</EngineTabs>
+
+## Color grading dan LUT
+
+**Color grading** mengatur warna dan suasana gambar: lebih hangat, lebih dingin, lebih kontras, atau lebih pudar. Pengaturan dasarnya mirip aplikasi edit foto, seperti brightness, contrast, saturation, white balance, dan kurva warna.
+
+Cara yang lebih fleksibel adalah **LUT** (*Look-Up Table*, tabel pencarian warna). LUT adalah tekstur kecil yang memetakan setiap warna masukan ke warna keluaran. Isinya disimpan sebagai kubus warna 3D, misalnya 32×32×32, yang sering dibentangkan menjadi satu gambar strip 2D. Shader cukup memakai warna piksel sebagai koordinat untuk membaca tekstur itu.
+
+```text title="Pseudocode: color grading dengan LUT"
+warna_baru = baca_3d(lut, warna.r, warna.g, warna.b)   // r, g, b sebagai koordinat x, y, z
+```
+
+Alur kerjanya ramah untuk artist. Ambil tangkapan layar game beserta LUT netral (LUT yang tidak mengubah apa-apa), atur warnanya di aplikasi edit foto, lalu terapkan pengaturan yang sama ke gambar LUT. Hasilnya dipakai di engine. Satu operasi baca tekstur per piksel bisa menggantikan puluhan pengaturan warna sekaligus, sehingga biayanya tetap kecil berapa pun rumitnya grading yang dibuat.
+
+Yang perlu diperhatikan adalah **di mana LUT diterapkan**. LUT yang dibuat dari tangkapan layar hasil tone mapping harus diterapkan setelah tone mapping. Kalau diterapkan pada warna HDR, hasilnya tidak sesuai dengan yang dilihat artist di aplikasi edit foto.
+
+<EngineTabs>
+<div slot="unity">
+
+URP menyediakan beberapa override grading, misalnya **Color Adjustments**, **White Balance**, **Color Curves**, dan **Lift, Gamma, and Gain**. LUT dipasang lewat override **Color Lookup**, dengan **Contribution** untuk mengatur seberapa kuat hasilnya dicampur dengan gambar asli.
+
+Aset URP punya **Grading Mode**. Mode **High Dynamic Range** menerapkan color grading sebelum tone mapping, sedangkan **Low Dynamic Range** menerapkannya setelah tone mapping dengan rentang yang lebih terbatas. **LUT Size** bawaannya 32, dan dokumentasi Unity menyarankan memilih ukurannya sebelum mulai grading karena ukuran yang berbeda tidak bisa dicampur.
+
+</div>
+<div slot="unreal">
+
+Bagian **Color Grading** di Post Process Volume berisi pengaturan seperti saturation, contrast, dan gamma, serta slot untuk tekstur LUT.
+
+</div>
+<div slot="godot">
+
+Bagian **Adjustments** di Environment: Brightness, Contrast, Saturation, dan **Color Correction**. Color Correction menerima gradasi 1D atau LUT 3D. Untuk LUT 3D, atur mode impor teksturnya ke **Texture3D** di dock Import, dengan jumlah irisan horizontal yang sesuai (misalnya 33). Dokumentasi Godot menyebut Adjustments dan Color Correction diterapkan setelah tone mapping.
+
+</div>
+</EngineTabs>
+
+## Anti-aliasing
+
+Layar terdiri dari kotak-kotak piksel, sehingga tepi miring tampak bergerigi seperti tangga (*jaggies*), dan detail kecil yang mengilap bisa berkedip saat kamera bergerak. Keduanya disebut **aliasing**. [Antialiasing](/kamus/post/antialias/) adalah teknik untuk menghaluskannya. Ada tiga keluarga:
+
+| Teknik | Cara kerja | Kelebihan | Kelemahan |
+| --- | --- | --- | --- |
+| **MSAA** (*multisample*) | GPU mengambil beberapa sampel di tepi segitiga saat menggambar | tepi tajam tanpa buram | tidak memperbaiki kilau dan tekstur, mahal di renderer deferred |
+| **FXAA, SMAA** | mencari tepi pada gambar jadi, lalu menghaluskannya dalam satu pass | sangat murah | sedikit buram, kurang efektif melawan kilau |
+| **TAA** (*temporal*) | menggabungkan frame ini dengan beberapa frame sebelumnya | paling efektif melawan kedipan | buram saat bergerak, bisa meninggalkan bayangan objek (*ghosting*) |
+
+MSAA berbeda dari dua keluarga lainnya karena bekerja saat scene digambar, bukan pada gambar jadi. FXAA, SMAA, dan TAA adalah pass post-processing.
+
+TAA bekerja dengan menggeser posisi kamera sedikit (kurang dari satu piksel) di setiap frame, lalu mencampur hasilnya dengan frame-frame sebelumnya. Supaya objek yang bergerak tidak mencampur warna dari tempat yang salah, TAA memakai motion vector untuk mencari di mana piksel itu berada di frame sebelumnya. Saat data itu tidak cocok, misalnya objek cepat di depan latar yang kontras, muncul ghosting.
+
+**Upscaler** temporal memakai ide yang sama dengan TAA untuk tujuan lain: scene dirender di resolusi lebih rendah, lalu informasi dari beberapa frame dipakai untuk merekonstruksi gambar beresolusi penuh. Contohnya TSR di Unreal, STP di Unity, dan FSR 2 dari AMD. DLSS dari NVIDIA bekerja dengan prinsip serupa di kartu grafis NVIDIA. Karena jumlah piksel yang dirender turun drastis, upscaler adalah salah satu cara paling efektif untuk menghemat [fill rate](/kamus/performa/fill-rate/). Upscaler juga sekaligus berfungsi sebagai anti-aliasing.
+
+<EngineTabs>
+<div slot="unity">
+
+URP: **FXAA**, **SMAA**, dan **TAA** dipilih per kamera di **Camera → Rendering → Anti-aliasing**. **MSAA** diatur di aset URP (**Quality → Anti Aliasing (MSAA)**) dengan pilihan 2x, 4x, atau 8x. TAA tidak bisa dipakai bersama MSAA, Camera Stacking, atau Dynamic Resolution. Dokumentasi Unity menyarankan FXAA untuk ponsel.
+
+Upscaling diatur di aset URP: **Render Scale** di bawah 1 merender scene di resolusi lebih kecil, sementara UI tetap di resolusi asli. **Upscaling Filter** menyediakan antara lain **FidelityFX Super Resolution 1.0** dan **Spatial-Temporal Post-Processing (STP)**. Memilih STP otomatis memaksa anti-aliasing kamera menjadi TAA.
+
+</div>
+<div slot="unreal">
+
+Pilihannya **TSR** (bawaan), **TAAU**, **FXAA**, dan **MSAA**, diatur di **Project Settings → Engine → Rendering**. MSAA hanya tersedia dengan Forward Renderer.
+
+</div>
+<div slot="godot">
+
+**Project Settings → Rendering → Anti Aliasing → Quality**:
+
+- **MSAA 3D** (2×, 4×, 8×): tersedia di semua renderer.
+- **TAA**: hanya renderer Forward+.
+- **Screen Space AA**: FXAA atau SMAA, di Forward+ dan Mobile.
+
+Upscaling ada di **Rendering → Scaling 3D**: Bilinear, FSR 1.0, atau FSR 2.2. Kedua mode FSR hanya tersedia di Forward+, dan FSR 2.2 juga memberi anti-aliasing temporal sendiri. Scale di atas 1,0 dengan mode Bilinear menghasilkan supersampling (SSAA), dengan kualitas tertinggi dan biaya yang sangat tinggi.
+
+</div>
+</EngineTabs>
+
+## Depth of field, motion blur, dan vignette
+
+Ketiga efek ini meniru sifat kamera sungguhan.
+
+- **Depth of field (DoF):** objek di luar jarak fokus dibuat buram. Efek ini membaca depth buffer untuk tahu seberapa jauh setiap piksel dari titik fokus. Bagus untuk cutscene dan mode foto, tetapi termasuk efek mahal karena memakai blur yang lebar.
+- **Motion blur:** piksel diburamkan searah gerakannya, memakai motion vector. Membuat gerakan cepat terasa lebih mulus, tetapi juga bisa membuat gambar sulit dibaca saat kamera berputar cepat.
+- **Vignette:** tepi layar digelapkan agar perhatian terpusat ke tengah. Ini salah satu efek termurah, karena hanya butuh satu perkalian per piksel.
+
+Sebagian pemain merasa pusing karena motion blur dan efek lensa yang kuat. Dokumentasi URP menyarankan menghindari lens distortion, chromatic aberration, dan motion blur di VR, dan justru memakai vignette untuk mengurangi rasa mual. Untuk game biasa pun, sediakan opsi mematikan efek seperti ini di menu pengaturan.
+
+<EngineTabs>
+<div slot="unity">
+
+Override **Depth of Field**, **Motion Blur**, dan **Vignette** di Volume. Untuk perangkat kelas bawah, dokumentasi URP menyarankan DoF mode **Gaussian**, dan mode **Bokeh** untuk konsol dan desktop.
+
+</div>
+<div slot="unreal">
+
+Bagian **Depth of Field**, **Motion Blur**, dan **Vignette** pada Post Process Volume.
+
+</div>
+<div slot="godot">
+
+Depth of field ada di **CameraAttributesPractical** (blur dekat dan jauh, masing-masing dengan jarak dan transisi), didukung Forward+ dan Mobile. Dokumentasi Godot menyarankan memasang CameraAttributes di Camera3D, bukan di WorldEnvironment. Environment tidak punya pengaturan vignette atau motion blur, jadi keduanya ditulis sendiri sebagai shader layar penuh.
+
+</div>
+</EngineTabs>
+
+## Urutan efek
+
+Setiap efek bekerja pada hasil efek sebelumnya, jadi urutannya menentukan hasil akhir. Prinsipnya sederhana: **efek yang butuh tahu seberapa terang sesuatu dijalankan sebelum tone mapping, efek gaya dijalankan sesudahnya.**
+
+```text title="Urutan umum (bisa berbeda per engine)"
+scene HDR (float)
+  → TAA / upscaler temporal      butuh data mentah frame ini dan sebelumnya
+  → depth of field, motion blur  butuh depth dan motion vector
+  → bloom                        butuh nilai di atas 1
+  → exposure + tone mapping      HDR menjadi 0..1
+  → color grading (LUT)          bekerja pada gambar yang sudah dipetakan
+  → vignette, film grain, dsb.   efek gaya, murah
+  → FXAA / SMAA                  menghaluskan tepi gambar akhir
+  → UI / HUD                     digambar terakhir agar tetap tajam
+```
+
+Beberapa konsekuensi dari urutan ini:
+
+- **UI digambar terakhir.** Kalau HUD ikut diproses, teks bisa ikut buram oleh DoF atau FXAA, dan ikut berpendar oleh bloom.
+- **FXAA ditaruh dekat akhir** agar ia melihat tepi yang sama dengan yang dilihat pemain.
+- **Efek kustom harus tahu posisinya.** Efek yang mencari piksel terang harus berjalan sebelum tone mapping. Efek yang memberi warna akhir, seperti filter monokrom saat karakter mati, lebih mudah diatur setelah tone mapping.
+
+Engine tidak selalu memakai urutan yang persis sama. Unity misalnya bisa menerapkan color grading sebelum tone mapping (Grading Mode High Dynamic Range). Yang penting kamu tahu apakah sebuah efek melihat nilai HDR atau nilai 0..1.
+
+## Biaya: fill rate dan bandwidth
+
+Setiap pass layar penuh menjalankan fragment shader untuk **setiap piksel**, tanpa peduli seberapa sederhana scene-nya. Biayanya hampir tidak bergantung pada jumlah objek, tetapi sangat bergantung pada resolusi. Inilah yang disebut biaya [fill rate](/kamus/performa/fill-rate/).
+
+```text title="Hitungan kasar"
+1920 × 1080           ≈ 2,1 juta piksel
+3840 × 2160 (4K)      ≈ 8,3 juta piksel     → 4× lebih berat per pass
+
+satu buffer RGBA16F di 1080p = 2,1 juta × 8 byte ≈ 16,6 MB
+satu pass baca + tulis       ≈ 33 MB
+× 60 frame per detik         ≈ 2 GB per detik, untuk SATU pass sederhana
+```
+
+Angka di atas hanya ilustrasi, karena GPU punya cache dan kompresi. Tetapi skalanya menunjukkan kenapa sepuluh efek kecil bisa lebih berat daripada menambah ratusan objek. Di laptop dan ponsel, batas pertama yang tercapai biasanya *bandwidth* memori, bukan kecepatan hitung.
+
+Cara menghemat:
+
+- **Ukur dulu.** Matikan efek satu per satu dan lihat waktu GPU dengan alat dari [Pelajaran 1](/belajar/fondasi-engine/01-frame/#anggaran-167-milidetik). Jika waktu GPU turun jauh saat sebuah efek dimatikan, efek itu kandidat pertama untuk diperingan.
+- **Turunkan resolusi efek.** Bloom, DoF, dan SSAO sering cukup dihitung di setengah atau seperempat resolusi.
+- **Turunkan resolusi render** lalu pakai upscaler. UI tetap digambar di resolusi asli.
+- **Pilih efek yang murah untuk target lemah.** FXAA lebih murah daripada TAA, DoF Gaussian lebih murah daripada Bokeh, dan vignette hampir gratis.
+- **Sediakan pengaturan kualitas** agar pemain bisa mematikan efek mahal di perangkatnya.
+
+Ingat juga bahwa objek transparan bertumpuk menambah beban per piksel sebelum post-processing dimulai ([Overdraw](/kamus/performa/overdraw/)). Keduanya menghabiskan anggaran yang sama.
+
+## Kesalahan umum
+
+Sebagian besar kesalahan berikut tidak memunculkan error. Game tetap berjalan, hanya tampilannya salah atau frame-nya lebih lambat.
+
+### Efek tidak muncul sama sekali
+
+```text title="✗ Keliru (Unity URP)"
+Global Volume + override Bloom
+Camera: Post Processing = tidak dicentang
+```
+
+```text title="✓ Benar"
+Global Volume + override Bloom
+Camera: Post Processing = dicentang
+```
+
+Periksa juga **Volume Mask** pada kamera: efek dari sebuah Volume hanya berlaku jika layer Volume itu termasuk dalam mask kamera.
+
+### Bloom tanpa HDR
+
+```text title="✗ Keliru"
+HDR mati, bloom ambang 1     // semua yang putih ikut berpendar
+```
+
+```text title="✓ Benar"
+HDR aktif, bloom ambang ≥ 1  // hanya lampu dan emissive yang benar-benar terang
+```
+
+Kalau seluruh layar tampak berkabut, cek HDR dulu, baru turunkan intensitas atau naikkan ambang.
+
+### Efek kustom di posisi yang salah
+
+```text title="✗ Keliru"
+tone mapping → efek_cari_piksel_terang(ambang = 3)   // tidak ada nilai di atas 1 lagi
+```
+
+```text title="✓ Benar"
+efek_cari_piksel_terang(ambang = 3) → tone mapping
+```
+
+Tentukan dulu apakah efekmu butuh nilai HDR atau nilai 0..1, lalu pilih posisinya (Injection Point di Unity, Blendable Location di Unreal).
+
+### HUD ikut diproses
+
+```text title="✗ Keliru"
+gambar_scene → gambar_hud → post-processing   // teks ikut buram dan berpendar
+```
+
+```text title="✓ Benar"
+gambar_scene → post-processing → gambar_hud
+```
+
+Di sebagian besar engine, UI layar sudah digambar setelah post-processing. Masalah ini biasanya muncul saat UI ditaruh di dunia 3D atau digambar ke kamera yang sama dengan scene.
+
+### Menumpuk efek tanpa mengukur
+
+```text title="✗ Keliru"
+bloom + DoF bokeh + motion blur + SSAO + TAA, semua di resolusi penuh, diuji di PC kerja
+```
+
+```text title="✓ Benar"
+ukur waktu GPU per efek di perangkat target, lalu sediakan preset kualitas
+```
+
+PC kerja biasanya jauh lebih kuat daripada perangkat pemain. Efek yang memakan 0,5 ms di sana bisa memakan beberapa milidetik di laptop.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan di engine pilihanmu. Siapkan scene sederhana dengan beberapa kubus, satu objek dengan material emissive yang terang, dan langit atau lampu yang kuat.
+
+1. Aktifkan post-processing seperti di bagian Gambaran besar. Tambahkan tone mapping, lalu bandingkan mode yang tersedia (misalnya Neutral dan ACES di Unity, atau Linear, Filmic, dan AgX di Godot). Perhatikan bagian langit dan objek emissive.
+2. Tambahkan bloom. Naikkan dan turunkan ambangnya. Pada nilai berapa dinding biasa mulai ikut berpendar? Lalu matikan HDR (Unity) dan ulangi.
+3. Ubah suasana scene menjadi senja hanya dengan color grading, tanpa mengubah lampu. Jika engine-mu mendukung LUT, coba buat satu LUT dari tangkapan layar.
+4. Bandingkan FXAA, MSAA, dan TAA pada pagar tipis atau lantai mengilap sambil kamera bergerak. Teknik mana yang paling stabil, dan mana yang paling tajam?
+5. Ukur waktu GPU dengan semua efek aktif, lalu matikan efek satu per satu. Catat efek mana yang paling mahal. Ulangi di resolusi yang lebih tinggi atau dengan render scale yang lebih kecil, dan bandingkan perubahannya.

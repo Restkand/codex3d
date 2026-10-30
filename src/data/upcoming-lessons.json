@@ -1,26 +1,6 @@
 {
   "fondasi-engine": [
     {
-      "num": 3,
-      "title": "Mesh, Material, dan Cahaya",
-      "subtitle": "Segitiga, normal, PBR, jenis cahaya, dan cara kerja shadow map."
-    },
-    {
-      "num": 4,
-      "title": "Shader: Program Kecil di GPU",
-      "subtitle": "Vertex & fragment shader, uniform, dan bahasa shader di tiap engine."
-    },
-    {
-      "num": 5,
-      "title": "Bayangan & Pencahayaan Global",
-      "subtitle": "Shadow map, baking, light probe, dan GI real-time."
-    },
-    {
-      "num": 6,
-      "title": "Post-processing",
-      "subtitle": "Bloom, tone mapping, anti-aliasing, dan biaya efek layar penuh."
-    },
-    {
       "num": 7,
       "title": "Animasi",
       "subtitle": "Dari tween dan easing sampai skeletal animation dan blend tree."

@@ -1,0 +1,554 @@
+---
+title: "Mesh, Material, dan Cahaya"
+description: "Segitiga dan data per titik, normal, material PBR, jenis cahaya, dan cara kerja shadow map di Unity, Unreal, dan Godot."
+fundamental: "Material dan lampu bawaan engine sudah membuat scene tampak lumayan tanpa disetel. Saat model impor tampak hitam di satu sisi, logam terlihat kusam, atau bayangan tidak muncul padahal lampunya menyala, kamu perlu tahu apakah masalahnya ada di normal, di nilai material, atau di pengaturan lampu."
+kind: lesson
+minutes: 30
+status: draf
+lastReviewed: 2026-10-30
+terms:
+  - mesh
+  - geometry
+  - vertex
+  - triangle
+  - uv
+  - normal
+  - dot
+  - flat-shading
+  - material
+  - pbr
+  - roughness
+  - metalness
+  - normal-map
+  - emissive
+  - directional-light
+  - ambient-light
+  - shadow-map
+  - shadow-acne
+  - draw-call
+krekit:
+  gambaran-besar: "Bentuk, cat, dan lampu. Kalau satu dari tiga ini salah, warnanya ikut salah."
+  mesh-titik-dan-segitiga: "Kubus punya 8 sudut, tapi engine sering mencatat 24 titik. Alasannya ada di bagian normal."
+  normal-ke-mana-permukaan-menghadap: "Putar lampunya di demo. Sisi yang membelakangi lampu langsung gelap."
+  material-dan-pbr: "Pindah dari Godot ke Unity? Roughness 0,2 berarti Smoothness 0,8. Kebalik."
+  satu-material-banyak-objek: "Mau mengubah warna satu musuh, malah semua musuh ikut merah. Ini sebabnya."
+  jenis-cahaya: "Matahari tidak peduli kamu taruh di mana. Yang dihitung cuma arahnya."
+  bayangan-cara-kerja-shadow-map: "Di Godot, bayangan lampu mati secara bawaan. Banyak yang mengira bayangannya rusak."
+  kesalahan-umum: "Hampir semua kesalahan di sini tidak memunculkan error. Scene tetap jalan, hanya tampilannya salah."
+sidebar:
+  order: 3
+  label: "3 · Mesh, Material, dan Cahaya"
+quiz:
+  - q: "Sebuah kubus punya 8 sudut, tetapi statistik engine menunjukkan 24 vertex. Kenapa?"
+    options:
+      - "Engine menghitung setiap vertex tiga kali untuk keamanan"
+      - "Setiap sudut dipakai tiga sisi yang menghadap arah berbeda, jadi sudut itu dipecah menjadi tiga vertex dengan normal masing-masing"
+      - "Kubus selalu dipecah menjadi 24 segitiga"
+      - "Statistiknya salah hitung"
+    answer: 1
+    explain: "Satu vertex hanya bisa membawa satu normal. Agar setiap sisi kubus tampak rata dengan tepi yang tegas, setiap sudut dipecah menjadi tiga vertex: 8 × 3 = 24."
+  - q: "Model yang baru diimpor tampak hitam di sisi yang jelas-jelas menghadap lampu, dan terang di sisi yang membelakanginya. Apa penyebab yang paling mungkin?"
+    options:
+      - "Lampunya terlalu terang"
+      - "Normal model terbalik, menunjuk ke dalam"
+      - "Roughness terlalu tinggi"
+      - "Model belum diberi UV"
+    answer: 1
+    explain: "Terang dihitung dari dot product normal dan arah ke lampu. Jika normal menunjuk ke dalam, hasilnya negatif di sisi yang menghadap lampu sehingga dipotong menjadi gelap."
+  - q: "Material di Godot punya roughness 0,2. Kamu ingin membuat permukaan yang sama di Unity dengan shader URP Lit. Berapa nilai Smoothness-nya?"
+    options:
+      - "0,2"
+      - "0,8"
+      - "2,0"
+      - "0,5, karena itu nilai bawaan"
+    answer: 1
+    explain: "Smoothness adalah kebalikan roughness: smoothness = 1 − roughness. Roughness 0,2 (cukup licin) setara dengan Smoothness 0,8."
+  - q: "Di Unity, dua puluh musuh memakai material yang sama. Kamu menulis renderer.sharedMaterial.color = Color.red pada satu musuh. Apa yang terjadi?"
+    options:
+      - "Hanya musuh itu yang berubah merah"
+      - "Semua objek yang memakai material itu berubah merah, dan aset material di proyek ikut berubah"
+      - "Tidak terjadi apa-apa sampai scene dimuat ulang"
+      - "Unity menolak perubahan karena material sedang dipakai"
+    answer: 1
+    explain: "sharedMaterial adalah material bersama itu sendiri. Untuk mengubah satu objek saja, pakai renderer.material, yang membuat salinan khusus untuk renderer tersebut."
+  - q: "Di Godot, kamu menambahkan OmniLight3D di dekat sebuah kotak. Kotaknya jadi terang, tetapi tidak ada bayangan di lantai. Apa yang paling mungkin terlupa?"
+    options:
+      - "Kotak belum diberi material"
+      - "shadow_enabled pada lampu masih false, nilai bawaannya"
+      - "Lantai harus berupa DirectionalLight3D"
+      - "OmniLight3D tidak bisa memberi bayangan"
+    answer: 1
+    explain: "Semua jenis Light3D di Godot punya shadow_enabled = false secara bawaan. Bayangan harus dinyalakan per lampu."
+sources:
+  - title: "Lit Shader material Inspector window reference for URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/built-in/shaders-in-universalrp/reference/lit-shader"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Lit.shader (Universal Render Pipeline, kode sumber)"
+    url: "https://github.com/Unity-Technologies/Graphics/blob/master/Packages/com.unity.render-pipelines.universal/Shaders/Lit.shader"
+    publisher: "Unity Technologies (GitHub)"
+    accessed: 2026-10-30
+  - title: "Light component Inspector window reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/lighting-overview/lighting/light-component"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Mesh Renderer component reference"
+    url: "https://docs.unity.com/en-us/engine/current/manual/assets-and-media/asset-types/mesh/components-reference/class-mesh-renderer"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Lighting window reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/lighting-overview/lighting-reference/lighting-window"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Normal Map texture Import Settings window reference"
+    url: "https://docs.unity.com/en-us/engine/current/manual/materials-and-shaders/textures/textures-reference/texture-type-normal-map"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Renderer.material"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/renderer/material"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Renderer.sharedMaterial"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/renderer/sharedmaterial"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Material.color"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/material/color"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Rendering.IndexFormat"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/rendering/indexformat"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "LightShadows"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/lightshadows"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Standard Material 3D and ORM Material 3D"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "BaseMaterial3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_basematerial3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "MeshInstance3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_meshinstance3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "ArrayMesh"
+    url: "https://docs.godotengine.org/en/stable/classes/class_arraymesh.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "GeometryInstance3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_geometryinstance3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Resources"
+    url: "https://docs.godotengine.org/en/stable/tutorials/scripting/resources.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Resource"
+    url: "https://docs.godotengine.org/en/stable/classes/class_resource.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Light3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_light3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "3D lights and shadows"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/lights_and_shadows.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+---
+
+import Aside from '~/components/Aside.astro'
+import Demo from '~/components/Demo.astro'
+import Quiz from '~/components/Quiz.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+import MeshDiagram from '~/components/diagrams/MeshDiagram.astro'
+import ShadowDiagram from '~/components/diagrams/ShadowDiagram.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menjelaskan isi sebuah mesh: titik, segitiga, dan data yang dibawa setiap titik.
+- Menjelaskan peran normal dalam perhitungan terang dan gelap.
+- Membaca nilai material PBR (warna dasar, roughness, metalness) di Unity, Unreal, dan Godot.
+- Mengubah material satu objek tanpa ikut mengubah objek lain.
+- Memilih jenis cahaya yang tepat dan menjelaskan cara kerja shadow map.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: patung tanah liat di bawah lampu meja">
+Patung tanah liat punya **bentuk**. Setelah dicat atau diglasir, patung itu punya **permukaan**: doff, mengilap, atau berkilau seperti logam. Lalu kamu menyalakan lampu meja dan memutarnya. Bentuk dan catnya tetap sama, tetapi sisi yang terang dan gelap berubah. Warna yang kamu lihat selalu hasil pertemuan ketiganya.
+</Aside>
+
+Di [Pelajaran 2](/belajar/fondasi-engine/02-ruang/), kamu menempatkan objek di ruang 3D. Pelajaran ini menjawab pertanyaan berikutnya: **seperti apa** objek itu terlihat. Jawabannya selalu tersusun dari tiga bagian yang sama di semua engine:
+
+- **Mesh**: bentuknya, berupa kumpulan titik dan segitiga.
+- **Material**: aturan bagaimana permukaan bereaksi terhadap cahaya.
+- **Cahaya**: dari mana terang datang, seberapa kuat, dan apa yang menghalanginya.
+
+<MeshDiagram />
+
+Diagram di atas memakai istilah Three.js, yang menyebut gabungan bentuk dan material sebagai *mesh*. Di Unity, Unreal, dan Godot, kata **mesh** biasanya hanya berarti data bentuknya. Objek yang terlihat di scene adalah komponen atau node yang memegang mesh itu beserta materialnya. Detailnya ada di bagian berikut.
+
+Untuk setiap piksel yang ditutupi sebuah objek, GPU menjalankan perhitungan yang kira-kira seperti ini:
+
+```text title="Pseudocode: warna satu piksel"
+N     = normal permukaan di piksel ini      // dari mesh
+warna = ambient * warna_dasar
+
+untuk setiap lampu yang mengenai objek:
+    L      = arah dari permukaan ke lampu
+    terang = max(dot(N, L), 0) * intensitas_lampu
+    jika piksel ini tertutup bayangan dari lampu itu:
+        terang = 0
+    warna += pantulan(material, terang)     // warna dasar, roughness, metalness
+
+tulis warna ke layar
+```
+
+Program kecil yang menjalankan perhitungan ini disebut [shader](/kamus/shader/shader/), dan akan dibahas di [Pelajaran 4](/belajar/fondasi-engine/04-shader/). Di pelajaran ini, fokusnya adalah data yang masuk ke perhitungan itu.
+
+## Mesh: titik dan segitiga
+
+Semua bentuk 3D di game, dari kotak kayu sampai wajah karakter, disimpan sebagai daftar [titik](/kamus/geometri/vertex/) (*vertex*, jamaknya *vertices*) dan daftar [segitiga](/kamus/geometri/triangle/) yang menghubungkannya. Segitiga dipakai karena tiga titik selalu membentuk bidang datar. Empat titik bisa saja tidak sebidang, sehingga permukaannya terlipat dan tidak jelas harus digambar bagaimana. Bentuk bulat pun sebenarnya kumpulan segitiga datar yang cukup kecil sehingga tampak mulus.
+
+Setiap titik membawa lebih dari sekadar posisi:
+
+- **Posisi**: letak titik, relatif terhadap titik pusat objek (ruang lokal, seperti di Pelajaran 2).
+- **Normal**: arah hadap permukaan di titik itu. Dibahas di bagian berikutnya.
+- **[UV](/kamus/geometri/uv/)**: koordinat 2D yang menunjuk ke bagian mana dari sebuah [tekstur](/kamus/geometri/texture/) (gambar) yang ditempel di titik itu.
+- Kadang juga warna per titik, atau data tambahan untuk animasi.
+
+Segitiga ditulis sebagai **indeks**: tiga nomor yang menunjuk ke daftar titik. Dengan cara ini, titik yang dipakai beberapa segitiga cukup disimpan sekali.
+
+```text title="Pseudocode: persegi dari dua segitiga"
+titik   = [ (0,0,0), (1,0,0), (1,1,0), (0,1,0) ]   // 4 titik
+indeks  = [ 0,1,2,   0,2,3 ]                        // 2 segitiga, 6 indeks
+```
+
+Jumlah segitiga (sering disebut *poly count*) memengaruhi kerja GPU, tetapi jarang menjadi satu-satunya penyebab game lambat. Pelajaran 8 membahas cara mengukurnya.
+
+<EngineTabs>
+<div slot="unity">
+
+Aset **Mesh** berisi bentuknya. Di GameObject, komponen **Mesh Filter** memegang mesh itu, dan **Mesh Renderer** di GameObject yang sama menggambarnya dengan material yang dipasang.
+
+Secara bawaan, indeks mesh disimpan dalam format 16 bit, sehingga satu mesh hanya bisa punya sampai 65.535 vertex. Untuk mesh yang lebih besar, ubah `Mesh.indexFormat` ke `IndexFormat.UInt32`. Dokumentasi Unity mengingatkan bahwa tidak semua GPU mendukung indeks 32 bit.
+
+</div>
+<div slot="unreal">
+
+Aset **Static Mesh** berisi bentuk dan slot material bawaannya. Di level, aset itu ditampilkan lewat **Static Mesh Component**, yang bisa menimpa material per slot. Mesh yang punya tulang untuk animasi memakai **Skeletal Mesh**.
+
+</div>
+<div slot="godot">
+
+Resource **Mesh** berisi bentuk dan material per *surface* (bagian mesh). Node **MeshInstance3D** menampilkannya di scene. Untuk membuat mesh dari kode, pakai `ArrayMesh`: isi larik titik ke slot `Mesh.ARRAY_VERTEX`, lalu panggil `add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)`.
+
+</div>
+</EngineTabs>
+
+Satu mesh bisa terdiri dari beberapa bagian dengan material berbeda, misalnya karakter dengan material kulit, baju, dan mata. Unity menyebutnya *submesh*, Unreal *material slot*, Godot *surface*. Setiap bagian biasanya menjadi satu [draw call](/kamus/performa/draw-call/) tersendiri.
+
+## Normal: ke mana permukaan menghadap
+
+[Normal](/kamus/geometri/normal/) adalah panah sepanjang 1 yang tegak lurus permukaan dan menunjuk ke luar. Normal tidak terlihat di layar, tetapi tanpanya cahaya tidak bisa dihitung, karena engine harus tahu apakah permukaan menghadap lampu atau membelakanginya.
+
+Perhitungan paling dasar disebut **model Lambert**: terang = `max(dot(N, L), 0)` × intensitas lampu. N adalah normal, L adalah arah dari permukaan menuju lampu. Untuk dua panah sepanjang 1, [dot product](/kamus/ruang/dot/) bernilai 1 jika searah (permukaan menghadap langsung ke lampu), 0 jika tegak lurus (cahaya hanya menyerempet), dan negatif jika permukaan membelakangi lampu. `max(..., 0)` memotong nilai negatif menjadi gelap.
+
+<Demo name="lambert" caption="Putar arah cahaya dan atur ambient. Perhitungan inilah yang dijalankan GPU untuk setiap piksel." />
+
+Tanpa ambient, sisi yang membelakangi lampu menjadi hitam total. Material PBR di engine menghitung versi yang jauh lebih lengkap, termasuk kilap, tetapi dot product antara normal dan arah lampu tetap menjadi dasarnya.
+
+### Flat dan smooth shading
+
+Satu titik hanya bisa membawa satu normal. Pada sudut kubus, tiga sisi bertemu dan masing-masing menghadap arah berbeda. Agar setiap sisi tampak rata dengan tepi yang tegas, sudut itu dipecah menjadi tiga titik di posisi yang sama, masing-masing dengan normal sisinya sendiri. Itu sebabnya kubus dengan 8 sudut biasanya tercatat sebagai 24 vertex.
+
+Pada bola, normal di titik yang dipakai bersama dihaluskan (dirata-rata dari segitiga di sekitarnya), sehingga terang berubah perlahan dan bentuknya tampak bulat walaupun tersusun dari segitiga datar. Dua gaya ini disebut [flat shading dan smooth shading](/kamus/geometri/flat-shading/). Di aplikasi 3D seperti Blender, pilihannya diatur per tepi (*hard edge* atau *soft edge*), dan importer engine membaca normal hasilnya.
+
+Detail kecil seperti goresan atau baut biasanya tidak dibuat dari segitiga tambahan. Arah normalnya disimpan di tekstur khusus bernama [normal map](/kamus/geometri/normal-map/), sehingga permukaan rata tampak bertekstur saat terkena cahaya.
+
+## Material dan PBR
+
+[Material](/kamus/geometri/material/) adalah kumpulan nilai yang menentukan bagaimana permukaan bereaksi terhadap cahaya: warna, kilap, tekstur, dan transparansi. Hampir semua engine modern memakai [PBR](/kamus/geometri/pbr/) (*Physically Based Rendering*), model yang meniru cara cahaya memantul di dunia nyata. Keuntungannya, material yang dibuat sekali tetap tampak meyakinkan di siang hari maupun di dalam gua, tanpa perlu disetel ulang untuk setiap adegan.
+
+Material PBR punya tiga nilai utama:
+
+- **Warna dasar** (*base color* atau *albedo*): warna permukaan tanpa bayangan atau kilap yang dilukis.
+- [Roughness](/kamus/geometri/roughness/): seberapa kasar permukaan. Permukaan kasar menyebarkan pantulan ke banyak arah, sehingga kilapnya lebar dan redup (roughness 1). Permukaan licin memantulkan rapi, sehingga kilapnya kecil dan tajam (roughness 0).
+- [Metalness](/kamus/geometri/metalness/): logam atau bukan. Nilainya hampir selalu 0 atau 1. Logam hampir tidak punya warna dasar sendiri: yang terlihat adalah pantulan lingkungannya, diwarnai oleh warna dasar.
+
+Nama nilai-nilai ini sedikit berbeda di setiap engine:
+
+| | Warna dasar | Kekasaran | Logam |
+| --- | --- | --- | --- |
+| Unity (URP Lit) | Base Map | **Smoothness** (= 1 − roughness) | Metallic |
+| Unreal (Default Lit) | Base Color | Roughness | Metallic |
+| Godot (StandardMaterial3D) | Albedo | Roughness | Metallic |
+
+<EngineTabs>
+<div slot="unity">
+
+Shader **Lit** di URP (*Universal Render Pipeline*, pipeline render Unity untuk berbagai platform) punya **Workflow Mode**: **Metallic** atau **Specular**. Pilih Metallic untuk alur yang sama dengan engine lain. Perhatikan bahwa Unity memakai **Smoothness**, kebalikan dari roughness: 0 menghasilkan kilap lebar dan kasar, 1 menghasilkan kilap kecil dan tajam. Nilai bawaannya 0,5 untuk Smoothness dan 0 untuk Metallic.
+
+Untuk permukaan yang tidak terpengaruh cahaya sama sekali, pakai shader **Unlit**.
+
+</div>
+<div slot="unreal">
+
+Material dengan Shading Model **Default Lit** sudah memakai PBR, dengan input **Base Color**, **Metallic**, **Roughness**, dan **Specular**. Untuk permukaan yang tidak terpengaruh cahaya, ganti Shading Model menjadi **Unlit**.
+
+</div>
+<div slot="godot">
+
+`StandardMaterial3D` punya `albedo_color` (bawaan putih), `metallic` (bawaan 0), dan `roughness` (bawaan 1, jadi material baru tampak doff). Ada juga **Specular**, yang menurut dokumentasi Godot sebaiknya dibiarkan di 0,5.
+
+Untuk permukaan yang tidak terpengaruh cahaya, atur **Shading Mode** ke **Unshaded**. Mode ini paling murah, tetapi semua interaksi dengan cahaya mati, termasuk bayangan.
+
+</div>
+</EngineTabs>
+
+Dua nilai lain yang sering dipakai: [emissive](/kamus/geometri/emissive/), warna yang dipancarkan permukaan itu sendiri sehingga tetap terang tanpa lampu (layar monitor, lampu neon), dan normal map dari bagian sebelumnya. Hampir setiap nilai bisa diisi dengan angka tetap atau dengan tekstur, sehingga satu bagian permukaan bisa berkarat sementara bagian lain mengilap.
+
+<Aside type="tip" title="Logam yang tampak kusam">
+Karena logam memantulkan lingkungannya, objek metallic 1 di scene tanpa langit atau [reflection probe](/kamus/cahaya/reflection-probe/) akan tampak gelap, kecuali di titik kilapnya. Sebelum menyetel ulang material, periksa dulu apakah ada lingkungan yang bisa dipantulkan.
+</Aside>
+
+## Satu material, banyak objek
+
+Material dibuat sekali dan biasanya dipakai banyak objek. Dua puluh musuh bisa memakai satu material yang sama, dan ini menguntungkan: engine bisa menggambar objek-objek dengan material yang sama secara berurutan tanpa berganti pengaturan. Akibatnya, mengubah material bersama berarti mengubah tampilan **semua** objek yang memakainya.
+
+Jika hanya satu objek yang perlu berubah (misalnya musuh yang terkena serangan menyala merah), objek itu perlu salinan materialnya sendiri:
+
+<EngineTabs>
+<div slot="unity">
+
+```csharp title="KenaSerang.cs"
+using UnityEngine;
+
+public class KenaSerang : MonoBehaviour
+{
+    public void Kena()
+    {
+        Renderer r = GetComponent<Renderer>();
+
+        // Hanya objek ini yang berubah. Unity membuat salinan material
+        // khusus untuk renderer ini saat .material dipakai.
+        r.material.color = Color.red;
+
+        // Semua objek yang memakai material ini ikut berubah,
+        // termasuk aset material di proyek:
+        // r.sharedMaterial.color = Color.red;
+    }
+}
+```
+
+`material.color` menulis ke warna utama shader. Pada shader URP Lit, warna utama itu adalah `_BaseColor`. Salinan yang dibuat `.material` menjadi tanggung jawabmu: dokumentasi Unity menyarankan menghapusnya dengan `Destroy()` saat objek dihancurkan.
+
+</div>
+<div slot="unreal">
+
+```cpp title="Musuh.cpp"
+// Mesh adalah UStaticMeshComponent* milik Actor ini.
+// Membuat Material Instance Dynamic: salinan yang parameternya bisa diubah saat game berjalan.
+// "Warna" harus berupa parameter yang sudah dibuat di material induknya.
+UMaterialInstanceDynamic* Mat = Mesh->CreateAndSetMaterialInstanceDynamic(0);
+Mat->SetVectorParameterValue(TEXT("Warna"), FLinearColor::Red);
+```
+
+Di editor, variasi material biasanya dibuat sebagai **Material Instance**: anak dari satu Material induk yang hanya mengubah nilai parameternya.
+
+</div>
+<div slot="godot">
+
+```gdscript title="musuh.gd"
+extends MeshInstance3D
+
+func kena() -> void:
+    # Material adalah resource yang dipakai bersama. Duplikat dulu,
+    # lalu pasang salinannya hanya di node ini.
+    var mat := get_active_material(0).duplicate() as StandardMaterial3D
+    mat.albedo_color = Color.RED
+    set_surface_override_material(0, mat)
+```
+
+Resource seperti mesh dan material hanya dimuat sekali dan dipakai bersama oleh semua instance scene. Alternatifnya, aktifkan **Local to Scene** (`resource_local_to_scene`) pada material, sehingga setiap instance scene mendapat salinannya sendiri.
+
+</div>
+</EngineTabs>
+
+Salinan material ada harganya. Objek dengan material berbeda tidak bisa lagi digambar bersama objek lain dengan pengaturan yang sama, sehingga jumlah draw call bisa naik. Untuk efek sementara, kembalikan objek ke material bersama setelah efeknya selesai.
+
+## Jenis cahaya
+
+Hampir semua engine punya jenis lampu yang sama:
+
+| Jenis | Bentuk sinar | Contoh |
+| --- | --- | --- |
+| [Directional](/kamus/cahaya/directional-light/) | sejajar, satu arah, tanpa batas jangkauan | matahari, bulan |
+| Point | dari satu titik ke segala arah | bohlam, obor, ledakan |
+| Spot | kerucut dari satu titik | senter, lampu panggung |
+| Area | dari sebuah bidang | jendela, panel lampu |
+
+Lampu directional dianggap sangat jauh, sehingga posisinya tidak berpengaruh. Yang dihitung hanya arahnya, yang diambil dari rotasi objek lampu. Point dan spot melemah seiring jarak dan punya batas jangkauan (*range*). Lampu dengan jangkauan kecil lebih murah, karena hanya objek di dalam jangkauannya yang perlu dihitung ulang.
+
+Selain lampu, ada [ambient light](/kamus/cahaya/ambient-light/): cahaya merata dari segala arah yang mencegah sisi gelap menjadi hitam total. Engine modern biasanya mengambilnya dari langit, sehingga sisi atas objek mendapat warna langit dan sisi bawah mendapat warna tanah.
+
+<EngineTabs>
+<div slot="unity">
+
+Komponen **Light** dengan **Type**: Directional, Point, Spot, atau Area. Jika Type diatur ke Area, Mode lampu otomatis menjadi **Baked**, jadi lampu area hanya berpengaruh lewat cahaya yang dihitung sebelumnya (dibahas di [Pelajaran 5](/belajar/fondasi-engine/05-bayangan-gi/)).
+
+Ambient diatur di **Window → Rendering → Lighting**, bagian **Environment Lighting → Source**: **Skybox** (bawaan), **Gradient**, atau **Color**.
+
+</div>
+<div slot="unreal">
+
+Aktor **Directional Light**, **Point Light**, **Spot Light**, dan **Rect Light** (lampu area). Tidak ada aktor ambient khusus. Perannya diambil **Sky Light**, yang menangkap langit dan memakainya sebagai cahaya dari segala arah.
+
+</div>
+<div slot="godot">
+
+Node `DirectionalLight3D`, `OmniLight3D` (point), dan `SpotLight3D`. Kekuatan lampu diatur lewat `light_energy` (bawaan 1). Ambient diatur di resource **Environment** pada node `WorldEnvironment`, bagian **Ambient Light**.
+
+Renderer Mobile dan Compatibility membatasi 8 OmniLight dan 8 SpotLight per mesh. Renderer Forward+ tidak punya batas per mesh, selama performanya masih cukup.
+
+</div>
+</EngineTabs>
+
+Setiap lampu tambahan yang mengenai sebuah objek menambah kerja di perhitungan per piksel tadi. Satu lampu directional untuk matahari, ditambah beberapa lampu kecil berjangkauan pendek, biasanya lebih murah daripada banyak lampu besar yang saling tumpang tindih.
+
+## Bayangan: cara kerja shadow map
+
+GPU tidak punya konsep "bayangan". Hampir semua engine memakai trik dua tahap yang disebut [shadow map](/kamus/cahaya/shadow-map/):
+
+<ShadowDiagram />
+
+Ada dua jenis sakelar yang harus menyala agar bayangan muncul:
+
+1. **Lampunya** harus diatur untuk memberi bayangan.
+2. **Objeknya** harus diatur untuk memberi bayangan (*cast*), dan permukaan tempat bayangan jatuh harus menerimanya (*receive*).
+
+<EngineTabs>
+<div slot="unity">
+
+Light → **Shadow Type**: tanpa bayangan, **Hard Shadows**, atau **Soft Shadows**. Lewat kode, `Light.shadows` bernilai `LightShadows.None`, `Hard`, atau `Soft`. Dokumentasi Unity menyebut soft shadows memberi hasil lebih realistis dengan biaya performa yang signifikan.
+
+Mesh Renderer → **Cast Shadows**: **On**, **Off**, **Two-sided**, atau **Shadows Only** (memberi bayangan tetapi objeknya tidak terlihat). Di URP, sakelar **Receive Shadows** ada di material.
+
+</div>
+<div slot="unreal">
+
+Centang **Cast Shadows** pada lampu dan pada komponen mesh yang perlu memberi bayangan.
+
+</div>
+<div slot="godot">
+
+Aktifkan `shadow_enabled` pada lampu. **Bawaannya mati** untuk semua jenis lampu. Pada objek, `cast_shadow` (dari `GeometryInstance3D`) bawaannya menyala, dengan pilihan Off, On, Double-Sided, dan Shadows Only.
+
+Saat bayangan `DirectionalLight3D` diaktifkan, mode bawaannya adalah PSSM dengan 4 *split*: area di dekat kamera mendapat shadow map yang lebih tajam daripada area yang jauh.
+
+</div>
+</EngineTabs>
+
+Shadow map punya resolusi terbatas, sama seperti tekstur. Akibatnya bisa muncul dua masalah. Jika presisinya kurang, permukaan "membayangi dirinya sendiri" dan muncul pola garis-garis yang disebut [shadow acne](/kamus/cahaya/shadow-acne/). Engine menggeser titik perbandingan sedikit lewat nilai **bias** untuk mengatasinya. Jika bias terlalu besar, bayangan malah tampak terlepas dari kaki objek (*peter panning*). Dokumentasi Godot menyarankan menaikkan **Normal Bias** lebih dulu sebelum **Bias**.
+
+Biayanya juga perlu diingat: setiap objek pemberi bayangan digambar lagi di tahap shadow map. Dokumentasi Godot memberi contoh objek besar yang melintasi keempat split bayangan directional: objek itu digambar lima kali per frame. Mematikan cast shadow pada objek kecil yang bayangannya tidak terlihat adalah penghematan yang murah. Bayangan yang dihitung sebelumnya dan cahaya pantulan dibahas di Pelajaran 5.
+
+## Kesalahan umum
+
+Hampir semua kesalahan berikut tidak memunculkan error. Scene tetap berjalan, hanya tampilannya salah.
+
+### Model tampak hitam dari arah lampu
+
+```text title="✗ Keliru"
+normal = (0, 0, -1)   // menunjuk ke dalam objek
+```
+
+```text title="✓ Benar"
+normal = (0, 0, 1)    // menunjuk ke luar
+```
+
+Jika normal terbalik, dot product dengan arah lampu menjadi negatif di sisi yang menghadap lampu. Perbaiki di aplikasi 3D (di Blender: Recalculate Outside), lalu ekspor ulang.
+
+### Semua objek ikut berubah warna
+
+```csharp title="✗ Keliru (Unity)"
+GetComponent<Renderer>().sharedMaterial.color = Color.red;
+```
+
+```csharp title="✓ Benar"
+GetComponent<Renderer>().material.color = Color.red;
+```
+
+Material bersama dipakai semua objek. Di Godot, duplikat materialnya dulu, seperti di bagian Satu material, banyak objek.
+
+### Menyalin roughness ke Smoothness
+
+```text title="✗ Keliru"
+// Godot roughness 0.2  →  Unity Smoothness 0.2
+```
+
+```text title="✓ Benar"
+// Godot roughness 0.2  →  Unity Smoothness 0.8
+```
+
+Smoothness adalah kebalikan roughness. Permukaan licin di satu engine menjadi kasar di engine lain jika angkanya disalin begitu saja.
+
+### Normal map dibaca sebagai gambar biasa
+
+```text title="✗ Keliru"
+tekstur_normal.jenis = warna     // diimpor seperti foto biasa
+```
+
+```text title="✓ Benar"
+tekstur_normal.jenis = normal_map
+```
+
+Isi normal map adalah data arah, dan engine perlu tahu itu agar nilainya tidak diolah seperti warna. Di Unity, ubah **Texture Type** menjadi **Normal map** di Import Settings. Unity dan Godot memakai format Y+ (gaya OpenGL), jadi normal map gaya DirectX perlu dibalik kanal hijaunya.
+
+### Bayangan tidak muncul di Godot
+
+```gdscript title="✗ Keliru (Godot)"
+var lampu := OmniLight3D.new()
+add_child(lampu)                 # shadow_enabled masih false
+```
+
+```gdscript title="✓ Benar"
+var lampu := OmniLight3D.new()
+lampu.shadow_enabled = true
+add_child(lampu)
+```
+
+### Semua lampu memberi bayangan
+
+```text title="✗ Keliru"
+untuk setiap lampu: lampu.bayangan = aktif
+```
+
+```text title="✓ Benar"
+matahari.bayangan = aktif
+lampu_dekat_pemain.bayangan = aktif
+lampu_hiasan_lain.bayangan = mati
+```
+
+Setiap lampu berbayangan membutuhkan tahap shadow map sendiri. Pilih lampu yang bayangannya benar-benar terlihat.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan di engine pilihanmu. Buat scene dengan lantai, satu kubus, satu bola, dan satu lampu directional.
+
+1. Putar lampu directional, lalu geser posisinya jauh ke samping. Mana yang mengubah terang dan gelap, dan mana yang tidak?
+2. Buat tiga bola dengan roughness 0, 0,5, dan 1 (di Unity: Smoothness 1, 0,5, dan 0). Bandingkan ukuran kilapnya. Lalu atur metallic ke 1 dan matikan langit atau ambient. Apa yang terjadi pada bola logam?
+3. Nyalakan mode tampilan wireframe di viewport, lalu lihat statistik vertex di engine-mu. Berapa vertex yang tercatat untuk kubus bawaan engine, dan kenapa?
+4. Duplikat kubus sepuluh kali. Pasang skrip dari bagian Satu material, banyak objek pada salah satunya, jalankan `Kena()` (Godot: `kena()`), dan pastikan hanya satu kubus yang berubah. Lalu ganti ke versi material bersama dan amati bedanya.
+5. Tambahkan lampu point (Godot: OmniLight3D) dengan bayangan. Bandingkan waktu GPU per frame dengan dan tanpa bayangan, memakai alat dari [Pelajaran 1](/belajar/fondasi-engine/01-frame/).
