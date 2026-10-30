@@ -307,6 +307,34 @@ a {
   border-color: rgba(255, 204, 51, 0.4);
 }
 
+/* ---------- Kotak "Kenapa tetap perlu dipahami" di awal pelajaran ---------- */
+
+.lfund {
+  margin-top: 32px;
+  padding: 18px 20px;
+  background: rgba(255, 204, 51, 0.05);
+  border: 1px solid rgba(255, 204, 51, 0.25);
+  border-left: 3px solid var(--sl-color-accent, #ffcc33);
+  border-radius: 10px;
+}
+
+.lfund__title {
+  margin: 0;
+  font-family: var(--sl-font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffe08a;
+}
+
+.lfund__text {
+  margin: 8px 0 0;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--sl-color-white);
+}
+
 /* ---------- Isi pelajaran ---------- */
 
 .lcontent {

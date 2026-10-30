@@ -106,10 +106,10 @@ const progressItems = docs
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>{SITE.name} · Belajar cara game dibuat</title>
     <!-- Judul hero ("Lewat celah ini...") butuh visual; pratinjau tautan memakai kalimat yang lugas -->
-    <meta name="description" content="Selesai main? Intip cara game dibuat: engine dan shader, desain, produksi, sampai bisnis studio indie." />
+    <meta name="description" content="Pahami fundamental di balik sebuah game: engine dan shader, desain, produksi, sampai bisnis studio indie." />
     <SocialMeta
       title={`${SITE.name} · Belajar cara game dibuat`}
-      description="Selesai main? Intip cara game dibuat: engine dan shader, desain, produksi, sampai bisnis studio indie."
+      description="Pahami fundamental di balik sebuah game: engine dan shader, desain, produksi, sampai bisnis studio indie."
     />
     <!-- Kelas "js" menyembunyikan teks sampai animasi masuk siap (mencegah kedipan) -->
     <script is:inline>document.documentElement.classList.add('js')</script>
@@ -149,12 +149,13 @@ const progressItems = docs
       <section id="mulai" class="section section--split hero" data-section>
         <div class="hero__text">
           <h1 class="display display--hero" aria-label="Lewat celah ini, kelihatan cara game dibuat." data-hero-title>Lewat celah ini, <span class="accent" data-hero-wire>kelihatan cara game dibuat.</span></h1>
-          <p class="lead">Krekit sudah mengintip duluan. Ikuti dia: dari engine dan shader, desain dan produksi, sampai bisnis studio indie.</p>
+          <p class="lead">Teknologi membuat game makin cepat jadi. Krekit mengajakmu memahami apa yang ada di baliknya: engine dan shader, desain, produksi, sampai bisnis studio indie.</p>
           <div class="actions">
             <a class="btn btn--primary" href={withBase('/belajar/')} data-krekit-say="Pelajaran 1 tidak butuh pengetahuan 3D sebelumnya."><span class="btn__label">Mulai belajar →</span></a>
             <a class="btn btn--ghost" href={withBase('/lab/')} data-krekit-say="Scene ini dibedah di Bab Tambahan Web & Three.js. Tekan H di sana untuk membuka panel pengaturan."><span class="btn__label">Buka Lab 3D</span></a>
           </div>
-          <p class="scroll-hint"><span class="only-pointer">Scroll untuk mengikuti Krekit · klik Krekit</span><span class="only-touch">Geser ke atas untuk mengikuti Krekit · ketuk Krekit</span></p>
+          <!-- Satu teks di HTML; versi layar sentuh dipasang landing.js agar tidak terbaca ganda -->
+          <p class="scroll-hint" data-touch-text="Geser ke atas untuk mengikuti Krekit · ketuk Krekit">Scroll untuk mengikuti Krekit · klik Krekit</p>
         </div>
         <div class="krekit-spot krekit-spot--hero" data-krekit-spot>
           <!-- Layar sempit: tahap render diorama Krekit (landing.js). Disembunyikan di layar lebar. -->
@@ -207,12 +208,13 @@ const progressItems = docs
         </div>
         <div class="section__inner">
           <p class="eyebrow" data-reveal>01 · Kenapa situs ini ada</p>
-          <h2 class="display display--md" data-reveal>Belajar berurutan,<br /><span class="accent">dari engine sampai bisnis.</span></h2>
-          <p class="lead" data-reveal>Media game meliput apa yang terjadi: rilis, ulasan, rumor. Di sini kita mempelajari cara industrinya bekerja: bagaimana engine merender dunia, dan bagaimana game diproduksi, didanai, lalu sampai ke pemain.</p>
-          <ul class="facts">
-            <li data-reveal data-krekit-say="Kalau ada istilah yang belum dijelaskan, berarti kami yang salah. Laporkan saja."><b>Bertahap</b><span>Materi disusun sebagai jalur belajar, dari pelajaran pertama sampai terakhir.</span></li>
-            <li data-reveal data-krekit-say="Aku juga dibuat dari kode yang sama. Suatu saat kamu bisa membongkarku."><b>Praktik</b><span>Bedah kode, demo interaktif, kuis, dan latihan.</span></li>
-          </ul>
+          <h2 class="display display--md" data-reveal>Bisa berjalan<br /><span class="accent">belum tentu hidup.</span></h2>
+          <p class="lead" data-reveal>Teknologi sekarang membuat game makin cepat jadi, tapi rasa yang membuatnya hidup tetap lahir dari pemahaman. Di sini kita mempelajari fundamentalnya, dari cara engine merender dunia sampai bagaimana game diproduksi, didanai, dan sampai ke tangan pemain.</p>
+          <!-- Ajakan yang bisa langsung ditanggapi: mulai dari pelajaran pertama -->
+          <div class="start" data-reveal>
+            <a class="btn btn--primary btn--wire" href={withBase('/belajar/fondasi-engine/01-frame/')} data-krekit-say="Pelajaran 1 tidak butuh pengetahuan 3D sebelumnya."><span class="btn__label">Mulai dari Pelajaran 1 →</span></a>
+            <p class="start__note">Setiap pelajaran punya demo yang bisa dicoba dan kuis singkat.</p>
+          </div>
         </div>
       </section>
 
@@ -279,7 +281,7 @@ const progressItems = docs
           <h2 class="display display--md" data-reveal><span data-count={termCount}>{termCount}</span> istilah,<br /><span class="accent">tarik satu kartu.</span></h2>
           <p class="lead" data-reveal>Setiap kartu berisi satu istilah teknis dengan penjelasan singkat. Di Kamus, setiap istilah punya analogi, demo, dan tautan ke istilah lain yang berkaitan.</p>
           <div class="actions" data-reveal>
-            <a class="btn btn--ghost" href={withBase('/kamus/')} data-krekit-say="Di halaman Kamus ada pencarian. Ketik saja istilah yang membuatmu bingung.">Buka Kamus →</a>
+            <a class="btn btn--ghost btn--wire" href={withBase('/kamus/')} data-krekit-say="Di halaman Kamus ada pencarian. Ketik saja istilah yang membuatmu bingung."><span class="btn__label">Buka Kamus →</span></a>
           </div>
         </div>
         <!--
@@ -290,7 +292,7 @@ const progressItems = docs
           <div class="draw__deck">
             <div class="krekit-spot krekit-spot--deck" data-krekit-spot aria-hidden="true"></div>
             <div class="draw__stack" data-draw-stack aria-hidden="true"><span>KREKIT</span></div>
-            <button type="button" class="btn btn--primary draw__btn" data-draw-btn>Tarik kartu</button>
+            <button type="button" class="btn btn--primary btn--wire draw__btn" data-draw-btn><span class="btn__label">Tarik kartu</span></button>
             <p class="draw__count" data-draw-count>{DECK.length} kartu di tumpukan</p>
           </div>
           <div class="draw__slot">
@@ -364,7 +366,7 @@ const progressItems = docs
             ))}
           </ol>
           <div class="actions" data-reveal>
-            <a class="btn btn--ghost" href={withBase('/kontribusi/standar-konten/')}>Baca standar konten</a>
+            <a class="btn btn--ghost btn--wire" href={withBase('/kontribusi/standar-konten/')}><span class="btn__label">Baca standar konten</span></a>
           </div>
         </div>
       </section>
@@ -382,41 +384,40 @@ const progressItems = docs
         <div class="credits-stage" data-reveal>
           <div class="krekit-spot krekit-spot--credits" data-krekit-spot aria-hidden="true"></div>
           <div class="credits" data-credits>
+            <!-- Hanya satu daftar di HTML; salinan untuk putaran animasi dibuat landing.js (tidak terbaca ganda) -->
             <div class="credits__roll">
-              {[false, true].map((copy) => (
-                <div class="credits__list" aria-hidden={copy ? 'true' : undefined}>
-                  <p class="credits__logo">KREKIT</p>
-                  {CREDITS.map((group) => (
-                    <div class="credits__group">
-                      <small>{group.role}</small>
-                      {group.slot ? (
-                        <a class="credits__slot" href={withBase('/kontribusi/')} tabindex={copy ? -1 : undefined}>Namamu bisa di sini</a>
-                      ) : (
-                        <>
-                          <b>{group.name}</b>
-                          {group.note && <span>{group.note}</span>}
-                        </>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              ))}
+              <div class="credits__list">
+                <p class="credits__logo">KREKIT</p>
+                {CREDITS.map((group) => (
+                  <div class="credits__group">
+                    <small>{group.role}</small>
+                    {group.slot ? (
+                      <a class="credits__slot" href={withBase('/kontribusi/')}>Namamu bisa di sini</a>
+                    ) : (
+                      <>
+                        <b>{group.name}</b>
+                        {group.note && <span>{group.note}</span>}
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
           <!-- Menu penutup di bawah kredit, seperti menu layar akhir game -->
           <div class="credits__menu">
             <ShareButton
               title={`${SITE.name} · Belajar cara game dibuat`}
-              text="Intip cara game dibuat: engine dan shader, desain, produksi, sampai bisnis studio indie."
+              text="Pahami fundamental di balik sebuah game: engine dan shader, desain, produksi, sampai bisnis studio indie."
             />
-            <button type="button" class="btn btn--ghost credits__replay" data-replay>Main lagi ↺</button>
+            <button type="button" class="btn btn--ghost btn--wire credits__replay" data-replay><span class="btn__label">Main lagi ↺</span></button>
           </div>
         </div>
         <div class="end-body">
-          <p class="lead" data-reveal>Daftar kreditnya masih pendek. Programmer, artist, desainer, produser, dan pelaku bisnis bisa ikut mengisinya: koreksi fakta, tulis artikel, bagikan studi kasus, atau tinjau konten di bidang Anda.</p>
+          <p class="lead" data-reveal>Daftar kreditnya masih pendek. Programmer, artist, desainer, produser, dan pelaku bisnis bisa ikut mengisinya: koreksi fakta, tulis artikel, bagikan studi kasus, atau tinjau konten di bidangmu.</p>
           <div class="actions" data-reveal>
-            <a class="btn btn--primary" href={withBase('/kontribusi/')} data-krekit-say="Koreksi satu kalimat pun sudah membantu.">Cara berkontribusi →</a>
-            <a class="btn btn--ghost" href={SITE.repo} data-krekit-say="Semua kodenya terbuka, termasuk kodeku.">Repositori GitHub</a>
+            <a class="btn btn--primary btn--wire" href={withBase('/kontribusi/')} data-krekit-say="Koreksi satu kalimat pun sudah membantu."><span class="btn__label">Cara berkontribusi →</span></a>
+            <a class="btn btn--ghost btn--wire" href={SITE.repo} data-krekit-say="Semua kodenya terbuka, termasuk kodeku."><span class="btn__label">Repositori GitHub</span></a>
           </div>
           <footer class="site-foot" data-reveal>
             Konten <a href={withBase('/lisensi/')}>CC BY-NC-SA 4.0</a> · Kode MIT · <a href={withBase('/kemitraan/')}>Kemitraan</a> · <a href={withBase('/tentang/')}>Tentang proyek</a>

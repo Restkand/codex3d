@@ -45,6 +45,8 @@ export const collections = {
       level: z.number().int().min(1).max(3).optional(),
       aka: z.string().optional(),
       minutes: z.number().optional(),
+      /** Pelajaran: kenapa materi ini tetap perlu dipahami walau alat makin canggih (kotak di awal pelajaran) */
+      fundamental: z.string().optional(),
       /** id istilah di Kamus yang dibahas pelajaran ini (untuk tautan "Dibahas di") */
       terms: z.array(z.string()).optional(),
       quiz: z.array(quizItem).optional(),

@@ -1,6 +1,7 @@
 ---
 title: "Bagaimana Sebuah Frame Lahir"
 description: "Scene, kamera, renderer, dan render loop: kerangka yang sama di setiap aplikasi 3D."
+fundamental: "Contoh kode Three.js bisa disalin dan langsung berjalan. Tanpa memahami render loop, scene yang lancar di laptopmu bisa berat di HP, gepeng saat jendela diubah ukurannya, atau bergerak dengan kecepatan berbeda di setiap monitor."
 kind: lesson
 minutes: 20
 status: draf
@@ -39,7 +40,7 @@ quiz:
       - "172,8"
     answer: 1
     explain: "Dengan delta, refresh rate tidak berpengaruh: 0,6 × 2 detik = 1,2 radian. Jawaban 2,88 adalah hasil jika memakai +0,01 per frame (144 × 2 × 0,01)."
-  - q: "FPS di perangkat Anda tepat 30, sementara panel Performance menunjukkan CPU time hanya 1,5 ms. Apa kesimpulan paling masuk akal?"
+  - q: "FPS di perangkatmu tepat 30, sementara panel Performance menunjukkan CPU time hanya 1,5 ms. Apa kesimpulan paling masuk akal?"
     options:
       - "JavaScript proyek terlalu berat"
       - "Bukan JavaScript: GPU melewati anggaran, atau browser membatasi frame rate"
@@ -63,7 +64,7 @@ import Quiz from '~/components/Quiz.astro'
 import SetupLoopDiagram from '~/components/diagrams/SetupLoopDiagram.astro'
 import BudgetDiagram from '~/components/diagrams/BudgetDiagram.astro'
 
-<Aside type="note" title="Setelah pelajaran ini Anda bisa">
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
 - Menjelaskan peran Scene, Camera, dan Renderer dengan bahasa sendiri.
 - Memahami pembagian kerja CPU dan GPU dalam satu frame.
 - Mengerti kenapa ada batas 16,7 ms dan apa akibatnya jika terlewati.
@@ -77,13 +78,13 @@ import BudgetDiagram from '~/components/diagrams/BudgetDiagram.astro'
 Bayangkan sebuah studio. [Scene](/kamus/dasar/scene/) adalah panggungnya, berisi properti dan lampu. [Camera](/kamus/dasar/camera/) menentukan dari mana panggung itu difoto. [Renderer](/kamus/dasar/renderer/) adalah fotografer yang menekan tombol rana dan mencetak hasilnya ke `<canvas>`. Animasi muncul karena fotografer memotret **berulang kali**, dan sebelum setiap jepretan properti di panggung digeser sedikit.
 </Aside>
 
-Seluruh aplikasi Three.js, sesederhana atau serumit apa pun, mengikuti pola yang sama: **siapkan sekali**, lalu **ulangi terus**. Jika pola ini sudah dipahami, kode 3D mana pun akan lebih mudah dibaca, karena Anda tahu harus mencari bagian "persiapan" dan bagian "loop".
+Seluruh aplikasi Three.js, sesederhana atau serumit apa pun, mengikuti pola yang sama: **siapkan sekali**, lalu **ulangi terus**. Jika pola ini sudah dipahami, kode 3D mana pun akan lebih mudah dibaca, karena kamu tahu harus mencari bagian "persiapan" dan bagian "loop".
 
 <SetupLoopDiagram />
 
 ## Siapa mengerjakan apa: CPU dan GPU
 
-Komputer punya dua prosesor yang bekerja sama ([CPU vs GPU](/kamus/dasar/gpu-cpu/)). JavaScript Anda berjalan di **CPU**. CPU sebenarnya tidak menggambar piksel. Tugasnya menyiapkan data dan mengirim perintah ke GPU seperti "gambar mesh ini dengan material ini". Setiap perintah itu disebut [draw call](/kamus/performa/draw-call/).
+Komputer punya dua prosesor yang bekerja sama ([CPU vs GPU](/kamus/dasar/gpu-cpu/)). Kode JavaScript-mu berjalan di **CPU**. CPU sebenarnya tidak menggambar piksel. Tugasnya menyiapkan data dan mengirim perintah ke GPU seperti "gambar mesh ini dengan material ini". Setiap perintah itu disebut [draw call](/kamus/performa/draw-call/).
 
 **GPU** menerima perintah itu lalu menjalankan pipa grafis. Setiap titik diposisikan oleh [Vertex Shader](/kamus/shader/vertex-shader/), segitiga diubah menjadi kumpulan piksel ([rasterisasi](/kamus/shader/pipeline-raster/)), setiap piksel diwarnai oleh [Fragment Shader](/kamus/shader/fragment-shader/), lalu [Depth Buffer](/kamus/geometri/depth-buffer/) memastikan objek yang dekat menutupi objek yang jauh.
 
@@ -93,7 +94,7 @@ Komputer punya dua prosesor yang bekerja sama ([CPU vs GPU](/kamus/dasar/gpu-cpu
 4. **Browser · menampilkan:** gambar jadi ditampilkan saat layar melakukan refresh berikutnya.
 
 <Aside type="tip">
-Anda tidak perlu menulis shader untuk membuat scene biasa. Setiap material Three.js, seperti `MeshStandardMaterial`, sudah berisi shader buatan Three.js. Pelajaran shader nanti hanya "membuka kap mesin" itu.
+Kamu tidak perlu menulis shader untuk membuat scene biasa. Setiap material Three.js, seperti `MeshStandardMaterial`, sudah berisi shader buatan Three.js. Pelajaran shader nanti hanya "membuka kap mesin" itu.
 </Aside>
 
 ## Bedah kode: persiapan di setup.js
@@ -128,7 +129,7 @@ export function createSetup(canvas) {
 - **L15 sampai 16** · Scene dibuat dan diberi warna latar. Warna ini yang terlihat di area yang tidak tertutup objek apa pun.
 - **L18** · [Fog](/kamus/cahaya/fog/) `(warna, near, far)`: objek mulai memudar pada jarak 8 unit dari kamera dan hilang total pada jarak 20. Warnanya sengaja sama dengan latar, sehingga ujung lantai "larut" ke latar.
 - **L24** · Kamera: fov 45°, aspect diambil dari ukuran jendela, near 0,1, far 100. Jangan membuat rentang antara near dan far terlalu ekstrem (mis. 0.0001 sampai 100000), karena presisi depth buffer akan terbagi ke rentang yang sangat lebar dan permukaan yang berdekatan bisa berkedip (z-fighting).
-- **L25** · Kamera mundur 6 unit ke arah +Z (ke arah Anda) dan naik 0,6. Objek ada di titik 0,0,0, jadi kamera berada di depannya. Koordinat dibahas di Pelajaran 2.
+- **L25** · Kamera mundur 6 unit ke arah +Z (ke arahmu) dan naik 0,6. Objek ada di titik 0,0,0, jadi kamera berada di depannya. Koordinat dibahas di Pelajaran 2.
 - **L26** · Menambahkan kamera ke scene sebenarnya opsional. Ini baru diperlukan jika kamera punya anak (misalnya lampu yang menempel di kamera).
 - **L28** · Renderer memakai `<canvas>` yang sudah ada di halaman (`src/pages/eksperimen.astro`), bukan membuat kanvas baru. `antialias` menghaluskan tepi bergerigi.
 - **L30 sampai 34** · Pengaturan global: bayangan dan [Tone Mapping](/kamus/cahaya/tone-mapping/). Diatur sekali di sini dan berlaku untuk semua objek. Keduanya dibahas di Pelajaran 3.
@@ -139,7 +140,7 @@ Monitor 60 Hz menyegarkan gambarnya 60 kali per detik, berarti 1000 ÷ 60 ≈ **
 
 <BudgetDiagram />
 
-Jika satu frame butuh 18 ms, gambarnya belum siap saat layar refresh, sehingga layar menampilkan gambar lama sekali lagi. Jika itu terjadi terus-menerus, gambar baru hanya muncul setiap refresh kedua. Akibatnya FPS tidak turun ke 55, tetapi **langsung jatuh ke sekitar 30**. Angka "tepat 30" yang Anda lihat saat laptop memakai baterai berasal dari mekanisme yang sama: browser sengaja hanya mengambil separuh refresh layar untuk menghemat daya.
+Jika satu frame butuh 18 ms, gambarnya belum siap saat layar refresh, sehingga layar menampilkan gambar lama sekali lagi. Jika itu terjadi terus-menerus, gambar baru hanya muncul setiap refresh kedua. Akibatnya FPS tidak turun ke 55, tetapi **langsung jatuh ke sekitar 30**. Angka "tepat 30" yang kamu lihat saat laptop memakai baterai berasal dari mekanisme yang sama: browser sengaja hanya mengambil separuh refresh layar untuk menghemat daya.
 
 - **Waktu CPU habis** karena JavaScript yang berat, atau terlalu banyak objek terpisah (setiap objek minimal satu draw call).
 - **Waktu GPU habis** karena terlalu banyak piksel ([Pixel Ratio](/kamus/web/pixel-ratio/) tinggi), shader yang berat, atau efek layar penuh (post-processing).
@@ -310,7 +311,7 @@ Renderer hanya menggambar yang ada di dalam scene. Three.js tidak memberi pering
 
 ## Cek pemahaman
 
-Pilih satu jawaban. Penjelasan muncul setelah Anda menjawab, jadi bacalah juga penjelasan untuk jawaban yang benar.
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi bacalah juga penjelasan untuk jawaban yang benar.
 
 <Quiz />
 

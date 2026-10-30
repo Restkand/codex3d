@@ -254,11 +254,13 @@ main [data-krekit-say] {
   transition: inset 0.2s;
 }
 
-/* Ter-render */
+/* Ter-render. Setelah Pos 0 dunianya sudah "jadi", jadi tombol di section lain tampil seperti tombol
+   Pos 0 yang sudah ter-render: terisi warna dengan siku di pojok, dan tetap glitch saat disorot */
 :is(.hero .btn, .btn--wire):hover,
 :is(.hero .btn, .btn--wire):focus-visible,
 :is(.hero .btn, .btn--wire):active,
-.hero__text.is-rendered .btn {
+.hero__text.is-rendered .btn,
+.section:not(.hero) .btn--wire {
   color: var(--ink);
   background: var(--tone);
   border-style: solid;
@@ -269,7 +271,8 @@ main [data-krekit-say] {
 :is(.hero .btn--ghost, .btn--wire.btn--ghost):hover,
 :is(.hero .btn--ghost, .btn--wire.btn--ghost):focus-visible,
 :is(.hero .btn--ghost, .btn--wire.btn--ghost):active,
-.hero__text.is-rendered .btn--ghost {
+.hero__text.is-rendered .btn--ghost,
+.section:not(.hero) .btn--wire.btn--ghost {
   color: var(--text);
   background: color-mix(in srgb, var(--tone) 14%, transparent);
 }
@@ -468,21 +471,6 @@ main [data-krekit-say] {
   color: var(--accent);
 }
 
-/* Teks berbeda untuk perangkat ber-kursor dan layar sentuh */
-.only-touch {
-  display: none;
-}
-
-@media (hover: none) {
-  .only-pointer {
-    display: none;
-  }
-
-  .only-touch {
-    display: inline;
-  }
-}
-
 .scroll-hint {
   margin: 40px 0 0;
   font-family: var(--mono);
@@ -491,37 +479,22 @@ main [data-krekit-say] {
   color: rgba(242, 242, 245, 0.45);
 }
 
-/* ---------- Fakta & prinsip ---------- */
+/* ---------- Pos 1 · Ajakan mulai ---------- */
 
-.facts,
-.principles {
-  list-style: none;
-  margin: 32px 0 0;
-  padding: 0;
-  display: grid;
-  gap: 14px;
+.start {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+  margin-top: 32px;
 }
 
-.facts li,
-.principles li {
-  display: grid;
-  gap: 4px;
-  padding: 16px 18px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-left: 3px solid var(--accent);
-  border-radius: 10px;
-}
-
-.facts b,
-.principles b {
-  font-size: 17px;
-}
-
-.facts span,
-.principles span {
+.start__note {
+  max-width: 32ch;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
   color: var(--muted);
-  line-height: 1.55;
 }
 
 /* ---------- Pos 1 · Jalur produksi ----------
@@ -1514,16 +1487,8 @@ main [data-krekit-say] {
     margin-top: clamp(14px, 2.6vh, 32px);
   }
 
-  .facts,
-  .principles {
+  .start {
     margin-top: clamp(14px, 2.6vh, 32px);
-    gap: clamp(8px, 1.4vh, 14px);
-  }
-
-  .facts li,
-  .principles li {
-    padding-top: clamp(10px, 1.6vh, 16px);
-    padding-bottom: clamp(10px, 1.6vh, 16px);
   }
 
   /* Pos 1: ban berjalan butuh ruang, agar stasiun sebelum dan sesudahnya ikut terlihat */
@@ -1652,6 +1617,15 @@ main [data-krekit-say] {
   animation-play-state: paused;
 }
 
+/* Tanpa putaran (tanpa JavaScript atau "kurangi gerakan"): daftar bisa di-scroll di dalam jendela */
+.credits:not(.is-looping) {
+  overflow-y: auto;
+}
+
+.credits:not(.is-looping) .credits__roll {
+  animation: none;
+}
+
 @keyframes credits-roll {
   to {
     transform: translateY(-50%);
@@ -1775,9 +1749,19 @@ main [data-krekit-say] {
     display: none;
   }
 
-  /* Ban berjalan Pos 1 tetap tampil di atas judul dan digeser dengan jari; telur 2D menggantikan Krekit */
-  .section--split > .krekit-spot--scene {
-    margin-bottom: 12px;
+  /* Ban berjalan Pos 1 digeser dengan jari; telur 2D menggantikan Krekit. Urutannya: judul dan paragraf
+     dulu, lalu ban, lalu tombol mulai (kolom teks dileburkan agar bagiannya bisa diurutkan) */
+  .section--belt .section__inner {
+    display: contents;
+  }
+
+  .section--split.section--belt > .krekit-spot--scene {
+    order: 1;
+    margin: 20px 0 4px;
+  }
+
+  .section--belt .start {
+    order: 2;
   }
 
   .belt {
@@ -1822,8 +1806,21 @@ main [data-krekit-say] {
   /* Chat Pos 4: tanpa ruang Krekit di samping (Krekit berjaga di pojok). Tinggi mengikuti isi,
      jadi jawaban muncul di tempat tanpa scroll di dalam kotak */
   .chat {
-    margin-bottom: 18px;
+    margin: 20px 0 4px;
     padding-left: 0;
+  }
+
+  /* Urutan Pos 4 di HP: judul, chat, lalu paragraf, chip aturan, dan tombol */
+  .section--chat .section__inner {
+    display: contents;
+  }
+
+  .section--chat .chat {
+    order: 1;
+  }
+
+  .section--chat :is(.lead, .rule-chips, .actions) {
+    order: 2;
   }
 
   .chat__window {
