@@ -5,7 +5,7 @@ kind: term
 level: 2
 aka: "vertical sync, vsync, screen tearing, frame cap, target frame rate, max FPS"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "QualitySettings.vSyncCount"
     url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/qualitysettings/vsynccount"
@@ -14,6 +14,14 @@ sources:
   - title: "Application.targetFrameRate"
     url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/application/targetframerate"
     publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Quality project settings reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity-editor/editor-settings-reference/comp-manager-group/class-quality-settings"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "ProjectSettings"
+    url: "https://docs.godotengine.org/en/stable/classes/class_projectsettings.html"
+    publisher: "Godot Engine Documentation"
     accessed: 2026-10-30
   - title: "DisplayServer"
     url: "https://docs.godotengine.org/en/stable/classes/class_displayserver.html"
@@ -54,7 +62,7 @@ Bus yang berangkat dari halte setiap 16,7 menit tepat. Penumpang (frame) yang te
 <EngineTabs>
 <div slot="unity">
 
-`QualitySettings.vSyncCount`, di editor **Project Settings → Quality → VSync Count**. Nilai 0 berarti V-Sync mati, 1 (bawaan) berarti sinkron dengan setiap refresh, 2 berarti setiap refresh kedua (30 FPS di layar 60 Hz), dan seterusnya sampai 4.
+`QualitySettings.vSyncCount`, di editor **Project Settings → Quality**, bagian **Rendering → VSync Count**. Nilai 0 berarti V-Sync mati, 1 (bawaan) berarti sinkron dengan setiap refresh, 2 berarti setiap refresh kedua (30 FPS di layar 60 Hz), dan seterusnya sampai 4.
 
 Untuk batas frame rate, pakai `Application.targetFrameRate` (bawaan -1). Nilai ini diabaikan di desktop dan web selama `vSyncCount` lebih dari 0. Sebaliknya, Android dan iOS selalu mengabaikan `vSyncCount`, sehingga di sana `targetFrameRate` yang dipakai. Dengan nilai bawaan, game mobile berjalan di 30 FPS untuk menghemat baterai, jadi atur `targetFrameRate` jika ingin 60. Dokumentasi Unity menyarankan `vSyncCount` bila memungkinkan, karena `targetFrameRate` bisa menimbulkan *microstutter*.
 
@@ -68,7 +76,7 @@ V-Sync bisa dinyalakan lewat pengaturan grafis game (**Game User Settings**) ata
 
 **Project Settings → Display → Window → V-Sync → V-Sync Mode** (`display/window/vsync/vsync_mode`), bawaan **Enabled**. Pilihan lainnya: **Disabled**, **Adaptive** (V-Sync mati sementara saat FPS di bawah refresh rate, sehingga tidak jatuh ke 30), dan **Mailbox** (tanpa tearing, FPS tidak dibatasi). Di renderer Compatibility, Adaptive dan Mailbox berperilaku seperti Enabled.
 
-Batas frame rate: **Application → Run → Max FPS** (`Engine.max_fps`), bawaan 0 yang berarti tanpa batas. Saat V-Sync Enabled atau Adaptive, FPS tetap tidak bisa melebihi refresh rate monitor.
+Batas frame rate: **Application → Run → Max FPS** (`application/run/max_fps`, atau `Engine.max_fps` saat game berjalan), bawaan 0 yang berarti tanpa batas. Saat V-Sync Enabled atau Adaptive, FPS tetap tidak bisa melebihi refresh rate monitor.
 
 </div>
 </EngineTabs>

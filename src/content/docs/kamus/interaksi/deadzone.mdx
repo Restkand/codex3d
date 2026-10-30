@@ -5,12 +5,16 @@ kind: term
 level: 2
 aka: "deadzone, stick drift, analog input"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Processors"
     url: "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.11/manual/Processors.html"
     publisher: "Unity Input System Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
+  - title: "Input settings"
+    url: "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.11/manual/Settings.html"
+    publisher: "Unity Input System Documentation"
+    accessed: 2026-10-30
   - title: "Input"
     url: "https://docs.godotengine.org/en/stable/classes/class_input.html"
     publisher: "Godot Engine Documentation"
@@ -41,7 +45,7 @@ Bentuk dead zone juga penting. Dead zone **per sumbu** (X dan Y dicek terpisah) 
 <EngineTabs>
 <div slot="unity">
 
-Input System: processor **Stick Deadzone** (radial, memakai panjang vektor) dan **Axis Deadzone** (satu sumbu), masing-masing dengan parameter `min` dan `max`. Stik gamepad sudah memakai Stick Deadzone secara bawaan.
+Input System: processor **Stick Deadzone** (radial, memakai panjang vektor) dan **Axis Deadzone** (satu sumbu), masing-masing dengan parameter `min` dan `max`. Jika `min` atau `max` tidak diisi, processor memakai **Default Deadzone Min** dan **Default Deadzone Max** dari pengaturan Input System. Stik gamepad sudah memakai Stick Deadzone secara bawaan.
 
 </div>
 <div slot="unreal">

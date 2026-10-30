@@ -5,8 +5,12 @@ kind: term
 level: 1
 aka: "action mapping, key binding, rebinding, polling vs event"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
+  - title: "Responding to Actions"
+    url: "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.11/manual/RespondingToActions.html"
+    publisher: "Unity Input System Documentation"
+    accessed: 2026-10-30
   - title: "Actions"
     url: "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.11/manual/Actions.html"
     publisher: "Unity Input System Documentation"
@@ -51,7 +55,7 @@ Ada dua cara membaca input, dan keduanya biasa dipakai bersamaan:
 <EngineTabs>
 <div slot="unity">
 
-Paket **Input System**: **Action** (tujuan, misalnya "Jump") dihubungkan ke tombol lewat **binding**. Action dikelompokkan dalam **Action Map** (misalnya "Gameplay" dan "Menu") dan disimpan di aset Input Actions. Action selain yang project-wide harus diaktifkan dulu dengan `Enable()`.
+Paket **Input System**: **Action** (tujuan, misalnya "Jump") dihubungkan ke tombol lewat **binding**. Action dikelompokkan dalam **Action Map** (misalnya "Gameplay" dan "Menu") dan disimpan di aset Input Actions. Action selain yang project-wide harus diaktifkan dulu dengan `Enable()`. Setiap Action punya jenis **Value** (bawaan, untuk nilai yang terus berubah seperti stik), **Button** (untuk tombol yang memicu aksi sekali per tekan), atau **Pass-Through**. Untuk cara event, setiap Action punya callback `started`, `performed`, dan `canceled`.
 
 </div>
 <div slot="unreal">

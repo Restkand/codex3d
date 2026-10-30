@@ -27,6 +27,10 @@ sources:
     url: "https://docs.godotengine.org/en/stable/classes/class_noisetexture2d.html"
     publisher: "Godot Engine Documentation"
     accessed: 2026-10-28
+  - title: "Built-in shader functions"
+    url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shader_functions.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
 sidebar:
   order: 12
 ---
@@ -42,7 +46,7 @@ Shader tidak punya fungsi acak seperti `Random.Range` di kode game. Setiap pikse
 acak(p) = fract(sin(dot(p, (12.9898, 78.233))) * 43758.5453)
 ```
 
-Hasilnya seperti bintik TV rusak: setiap piksel berbeda tanpa pola. Kelemahannya, ketelitian `sin` berbeda antar-GPU, sehingga polanya bisa sedikit berbeda di perangkat lain. Karena itu engine modern mulai menyediakan hash yang tidak memakai `sin`.
+Hasilnya seperti bintik TV rusak: setiap piksel berbeda tanpa pola. Kelemahannya, hasilnya bergantung pada ketelitian perhitungan `sin` di GPU, sehingga polanya bisa sedikit berbeda di perangkat lain. Shader Graph Unity, misalnya, kini memakai hash yang hasilnya sama di semua platform sebagai bawaan, dan menyimpan hash berbasis `sin` sebagai pilihan lama.
 
 **2. Noise:** acak yang **halus**, berubah perlahan antar-tetangga. Contohnya value noise, Perlin (gradient) noise, dan Voronoi (Worley) noise yang membentuk pola sel. Dipakai untuk awan, api, permukaan air, efek larut (*dissolve*), atau medan. Noise bisa dihitung di shader, tetapi dalam produksi sering dibaca dari **tekstur noise** yang sudah disiapkan, karena satu kali membaca tekstur biasanya lebih murah daripada menghitung noise berlapis.
 

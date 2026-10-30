@@ -5,16 +5,20 @@ kind: term
 level: 3
 aka: "morph target, blend shape, shape key"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "SkinnedMeshRenderer.SetBlendShapeWeight"
     url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/skinnedmeshrenderer/setblendshapeweight"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
+  - title: "Work with blend shapes"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/animation-section/animation-mecanim/animation-clips/animation-editor-guide/blend-shapes"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
   - title: "MeshInstance3D"
     url: "https://docs.godotengine.org/en/stable/classes/class_meshinstance3d.html"
     publisher: "Godot Engine Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
 sidebar:
   order: 13
 ---
@@ -40,7 +44,7 @@ Disebut **BlendShapes**, diatur di komponen **Skinned Mesh Renderer**. Lewat kod
 skinnedMeshRenderer.SetBlendShapeWeight(indeks, 100f);
 ```
 
-Rentang bobotnya mengikuti batas minimum dan maksimum yang tersimpan di model. Untuk model hasil impor biasa, rentangnya umumnya 0 sampai 100, bukan 0 sampai 1.
+Rentang bobotnya mengikuti batas minimum dan maksimum yang tersimpan di model. Untuk blend shape dari file FBX hasil impor, 0 berarti blend shape tidak berpengaruh dan 100 berarti pengaruhnya penuh. Jadi skalanya 0 sampai 100, tidak 0 sampai 1.
 
 </div>
 <div slot="unreal">
@@ -57,7 +61,7 @@ var i := find_blend_shape_by_name("Senyum")
 set_blend_shape_value(i, 1.0)
 ```
 
-Nilai 0 berarti bentuk asli dan 1 berarti bentuk B penuh. `find_blend_shape_by_name` mengembalikan `-1` jika namanya tidak ditemukan.
+Nilai 0 berarti blend shape tidak berpengaruh, dan makin besar nilainya makin kuat pengaruhnya. `find_blend_shape_by_name` mengembalikan `-1` jika namanya tidak ditemukan.
 
 </div>
 </EngineTabs>

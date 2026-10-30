@@ -120,6 +120,18 @@ sources:
     url: "https://docs.godotengine.org/en/stable/classes/class_visibleonscreenenabler3d.html"
     publisher: "Godot Engine Documentation"
     accessed: 2026-10-30
+  - title: "AnimationCurve.EaseInOut"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/animationcurve/easeinout"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Quaternion.SlerpUnclamped"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/quaternion/slerpunclamped"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "MonoBehaviour.OnAnimatorIK"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/monobehaviour/onanimatorik"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
   - title: "Animator component"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/animation-section/animation-mecanim/class-animator"
     publisher: "Unity Documentation"
@@ -404,7 +416,7 @@ Setiap transisi biasanya punya **durasi**: selama beberapa saat, klip lama memud
 
 Pengaturan transisi ini sangat menentukan rasa kontrol:
 
-- **Durasi transisi** adalah jeda sebelum pose baru benar-benar terlihat. Crossfade 0,4 detik untuk serangan berarti pemain melihat ayunan pedangnya baru jelas hampir setengah detik setelah menekan tombol. Untuk aksi yang harus responsif, durasi pendek (sekitar 0,05 sampai 0,15 detik) biasanya lebih baik, sedangkan perpindahan santai seperti diam ke jalan boleh lebih panjang.
+- **Durasi transisi** adalah jeda sebelum pose baru benar-benar terlihat. Crossfade 0,4 detik untuk serangan berarti pemain melihat ayunan pedangnya baru jelas hampir setengah detik setelah menekan tombol. Untuk aksi yang harus responsif, durasi pendek biasanya lebih baik. Sebagai titik awal (angka ilustrasi, setel ulang sesuai rasa di game-mu), coba 0,05 sampai 0,15 detik, sedangkan perpindahan santai seperti diam ke jalan boleh lebih panjang.
 - **Menunggu klip selesai.** Transisi yang hanya boleh terjadi setelah klip lama mencapai titik tertentu membuat input "tertahan". Ini berguna untuk klip yang memang tidak boleh dipotong, seperti mendarat dari lompatan tinggi, dan merugikan untuk klip yang harus bisa dibatalkan.
 - **Interupsi.** Bisakah transisi yang sedang berjalan dipotong transisi lain? Jika tidak, pemain yang menekan tombol menghindar di tengah crossfade harus menunggu crossfade selesai.
 

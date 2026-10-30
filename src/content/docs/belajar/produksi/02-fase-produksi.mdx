@@ -124,6 +124,14 @@ sources:
     url: "https://www.routledge.com/The-Game-Production-Toolbox/Chandler/p/book/9781138341708"
     publisher: "Heather Maxwell Chandler, CRC Press (2019)"
     accessed: 2026-10-30
+  - title: "Certification Tested XBOX Requirements for XBOX Games"
+    url: "https://learn.microsoft.com/en-us/gaming/gdk/docs/store/policies/console/console-certification-requirements-and-tests"
+    publisher: "Microsoft Learn"
+    accessed: 2026-10-30
+  - title: "Best Practices for Game Localization v2.2 (IGDA Localization SIG)"
+    url: "https://igda-website.s3.us-east-2.amazonaws.com/wp-content/uploads/2021/04/09142137/Best-Practices-for-Game-Localization-v22.pdf"
+    publisher: "IGDA"
+    accessed: 2026-10-30
 ---
 
 import Aside from '~/components/Aside.astro'
@@ -258,7 +266,7 @@ Fase rilis mengubah build yang sudah stabil menjadi produk yang bisa dibeli atau
 Keluaran dan pekerjaan yang umum:
 
 - **Release candidate**: build yang akan dirilis kalau tidak ditemukan masalah serius. Kalau masih ada, bug diperbaiki dan dibuat release candidate baru.
-- **Review atau sertifikasi platform.** Setiap platform memeriksa game sebelum rilis, dengan aturan dan kedalaman yang berbeda. Di konsol, prosesnya biasa disebut sertifikasi: build diuji terhadap daftar persyaratan teknis pemilik platform. Detail persyaratan itu umumnya hanya bisa dibaca developer yang terdaftar di program platform tersebut, jadi rencanakan waktunya sejak awal dan baca dokumen resminya begitu kamu punya akses.
+- **Review atau sertifikasi platform.** Setiap platform memeriksa game sebelum rilis, dengan aturan dan kedalaman yang berbeda. Di konsol, prosesnya biasa disebut sertifikasi: build diuji terhadap daftar persyaratan teknis pemilik platform. Microsoft, misalnya, menerbitkan XBOX Requirements (XR) beserta test case sertifikasinya di Microsoft Learn: kebijakan dan persyaratan teknis yang wajib dipenuhi semua game Xbox. Sebagian dokumen platform lain hanya bisa dibaca developer yang terdaftar di program platform tersebut, jadi rencanakan waktunya sejak awal dan baca dokumen resminya begitu kamu punya akses.
 - **Halaman toko**: deskripsi, screenshot, trailer, tanggal rilis, dan harga.
 - **Build rilis** yang diunggah ke setiap toko, plus rencana untuk patch hari pertama.
 
@@ -271,7 +279,7 @@ Sebagai contoh yang dokumentasinya terbuka, Steam memeriksa halaman toko dan bui
 
 Aturan platform bisa berubah, jadi periksa dokumentasi resminya saat kamu benar-benar bersiap rilis.
 
-**Patch hari pertama** (*day-one patch*) adalah update yang dirilis bersamaan atau sangat dekat dengan tanggal rilis. Patch ini biasanya ada karena tim terus memperbaiki bug selama build rilis sedang direview atau diproduksi. Patch hari pertama yang direncanakan berbeda dengan patch darurat karena build rilis ternyata tidak layak.
+**Patch hari pertama** (*day-one patch*) adalah update yang dirilis bersamaan atau sangat dekat dengan tanggal rilis. Salah satu penyebab yang umum: selama build rilis sedang direview atau diproduksi, tim tetap memperbaiki bug, dan perbaikan itu baru bisa dikirim sebagai update. Patch hari pertama yang direncanakan berbeda dengan patch darurat karena build rilis ternyata tidak layak.
 
 Yang paling sibuk: produser yang mengatur jadwal dan pengajuan, programmer yang menyiapkan build, QA, serta orang yang mengurus marketing dan komunitas.
 

@@ -5,16 +5,28 @@ kind: term
 level: 3
 aka: "memory leak, unload, garbage collection, VRAM, dispose"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Resources.UnloadUnusedAssets"
     url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/resources/unloadunusedassets"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
+  - title: "Renderer.material"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/renderer/material"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
   - title: "Resource"
     url: "https://docs.godotengine.org/en/stable/classes/class_resource.html"
     publisher: "Godot Engine Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
+  - title: "Object"
+    url: "https://docs.godotengine.org/en/stable/classes/class_object.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "Node"
+    url: "https://docs.godotengine.org/en/stable/classes/class_node.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
 sidebar:
   order: 8
 ---
@@ -37,7 +49,7 @@ Cara melihatnya: amati angka memori di profiler sambil berpindah level bolak-bal
 <EngineTabs>
 <div slot="unity">
 
-`Destroy(objek)` menghapus GameObject. Aset yang tidak lagi direferensikan dari hierarki atau variabel static bisa dibebaskan dengan `Resources.UnloadUnusedAssets()`. Aset akan dimuat lagi saat dipakai berikutnya, jadi ada biaya muat ulang. Material yang dibuat dari kode (misalnya lewat `renderer.material`) perlu di-`Destroy` sendiri.
+`Destroy(objek)` menghapus GameObject. Aset yang tidak lagi direferensikan dari hierarki atau variabel static bisa dibebaskan dengan `Resources.UnloadUnusedAssets()`. Aset akan dimuat lagi saat dipakai berikutnya, jadi ada biaya muat ulang. Mengakses `renderer.material` membuat salinan material khusus untuk renderer itu, dan menurut dokumentasi Unity kamu yang bertanggung jawab menghancurkannya dengan `Destroy` saat objeknya dihancurkan.
 
 </div>
 <div slot="unreal">
@@ -47,14 +59,14 @@ Objek turunan `UObject` dibersihkan oleh **garbage collector** Unreal saat tidak
 </div>
 <div slot="godot">
 
-Resource (mesh, tekstur, material) bersifat **reference-counted**: otomatis dibebaskan saat tidak ada lagi yang mereferensikannya. Resource yang dimuat juga disimpan di cache berdasarkan path, dan keluar dari cache saat semua referensinya dilepas. Node di scene **tidak** otomatis dibebaskan, hapus dengan `queue_free()`.
+Resource (mesh, tekstur, material) bersifat **reference-counted**: otomatis dibebaskan saat tidak ada lagi yang mereferensikannya. Resource yang dimuat juga disimpan di cache berdasarkan path, dan keluar dari cache saat semua referensinya dilepas. Node **tidak** dihitung referensinya, jadi node yang tidak dipakai lagi harus dihapus sendiri dengan `queue_free()`. Node dihapus di akhir frame, dan semua anaknya ikut terhapus.
 
 </div>
 </EngineTabs>
 
 ## Pelajari lebih dalam
 
-Jangan membuat dan menghapus objek terus-menerus untuk hal yang sering muncul, seperti peluru, percikan, atau angka damage. Selain beban memori, pembuatan dan penghapusan objek memicu pembersihan memori (*garbage collection*) yang bisa menyebabkan patah-patah sesaat. Solusinya **object pooling**: siapkan sejumlah objek di awal, lalu pakai ulang dengan menyembunyikan dan menampilkannya kembali.
+Jangan membuat dan menghapus objek terus-menerus untuk hal yang sering muncul, seperti peluru, percikan, atau angka damage. Selain beban memori, di engine yang memakai garbage collector, pembuatan dan penghapusan objek bisa memicu pembersihan memori (*garbage collection*) yang bisa menyebabkan patah-patah sesaat. Solusinya **object pooling**: siapkan sejumlah objek di awal, lalu pakai ulang dengan menyembunyikan dan menampilkannya kembali.
 
 <Aside type="note" title="Di Lab (Three.js)">
 Di Three.js, geometri, material, dan tekstur di GPU tidak dibersihkan otomatis oleh garbage collector JavaScript. Panggil `geometry.dispose()`, `material.dispose()`, dan `texture.dispose()` saat objek dibuang permanen. Angka geometries/textures di [panel Performance](/kamus/web/perf-monitor/) yang terus naik adalah tanda kebocoran.

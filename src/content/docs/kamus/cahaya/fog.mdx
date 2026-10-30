@@ -5,7 +5,7 @@ kind: term
 level: 1
 aka: "kabut, distance fog, height fog, volumetric fog"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Lighting window reference"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/lighting-overview/lighting-reference/lighting-window"
@@ -18,11 +18,15 @@ sources:
   - title: "Environment"
     url: "https://docs.godotengine.org/en/stable/classes/class_environment.html"
     publisher: "Godot Engine Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
   - title: "Volumetric fog and fog volumes"
     url: "https://docs.godotengine.org/en/stable/tutorials/3d/volumetric_fog.html"
     publisher: "Godot Engine Documentation"
     accessed: 2026-10-28
+  - title: "Light3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_light3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
 sidebar:
   order: 5
 ---
@@ -56,7 +60,7 @@ Aktor **Exponential Height Fog**. Centang **Volumetric Fog** untuk kabut yang be
 
 Resource **Environment** (di node `WorldEnvironment`) → **Fog**. Mode **Exponential** (bawaan) diatur lewat kepadatan, sedangkan mode **Depth** memakai jarak mulai dan akhir dengan kurva sendiri. Height fog diatur dengan `fog_height` dan `fog_height_density`.
 
-**Volumetric Fog** juga ada di Environment, dan hanya didukung renderer Forward+ (bukan Mobile atau Compatibility). Node `FogVolume` bisa menambah atau mengurangi kabut di area tertentu, dan setiap lampu punya **Volumetric Fog Energy** untuk mengatur seberapa kuat ia menerangi kabut.
+**Volumetric Fog** juga ada di Environment (`volumetric_fog_enabled`, bawaan mati), dan hanya didukung renderer Forward+ (bukan Mobile atau Compatibility). Node `FogVolume` bisa menambah atau mengurangi kabut di area tertentu, dan setiap lampu punya **Volumetric Fog Energy** untuk mengatur seberapa kuat ia menerangi kabut.
 
 </div>
 </EngineTabs>

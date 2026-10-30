@@ -1,9 +1,20 @@
 ---
 title: "Pixel Ratio"
-description: "Perbandingan piksel fisik layar dengan piksel CSS. Laptop/HP modern sering 2 sampai 3. Kanvas 1000px CSS dengan DPR 2 dirender 2000px fisik, yaitu 4x jumlah piksel. Proyek ini membatasi DPR ke 1,5 agar stabil."
+description: "Perbandingan piksel fisik layar dengan piksel CSS. Di layar beresolusi tinggi nilainya lebih dari 1, dan zoom halaman ikut mengubahnya. Kanvas 1000×500 piksel CSS dengan DPR 2 dirender 2000×1000 piksel fisik, yaitu 4x jumlah piksel. Proyek ini membatasi DPR ke 1,5 agar stabil."
 kind: term
 level: 2
 aka: "devicePixelRatio, DPR"
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "Window: devicePixelRatio property"
+    url: "https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio"
+    publisher: "MDN Web Docs"
+    accessed: 2026-10-30
+  - title: "WebGLRenderer (setSize, setPixelRatio)"
+    url: "https://threejs.org/docs/pages/WebGLRenderer.html"
+    publisher: "three.js docs"
+    accessed: 2026-10-30
 sidebar:
   order: 4
 ---
@@ -11,13 +22,13 @@ sidebar:
 import Aside from '~/components/Aside.astro'
 import Demo from '~/components/Demo.astro'
 
-Perbandingan piksel fisik layar dengan piksel CSS. Laptop/HP modern sering 2 sampai 3. Kanvas 1000px CSS dengan DPR 2 dirender 2000px fisik, yaitu 4x jumlah piksel. Proyek ini membatasi DPR ke 1,5 agar stabil.
+Perbandingan piksel fisik layar dengan piksel CSS. Di layar beresolusi tinggi nilainya lebih dari 1, dan zoom halaman ikut mengubahnya. Kanvas 1000×500 piksel CSS dengan DPR 2 dirender 2000×1000 piksel fisik, yaitu 4x jumlah piksel. Proyek ini membatasi DPR ke 1,5 agar stabil.
 
 ## Pelajari lebih dalam
 
-Elemen `<canvas>` punya dua ukuran: atribut `width/height` (resolusi gambar, jumlah piksel yang dirender) dan ukuran CSS (seberapa besar ditampilkan). `renderer.setSize(w, h)` mengatur ukuran CSS = w × h dan resolusi = w × h × pixelRatio.
+Elemen `<canvas>` punya dua ukuran: atribut `width/height` (resolusi gambar, jumlah piksel yang dirender) dan ukuran CSS (seberapa besar ditampilkan). `renderer.setSize(w, h)` mengatur ukuran CSS = w × h dan resolusi = w × h × pixelRatio (dibulatkan ke bawah).
 
-Teknik lanjutan: **adaptive resolution**. Pantau FPS; jika turun di bawah target selama beberapa detik, turunkan pixel ratio sedikit demi sedikit. Jika stabil, naikkan lagi. Banyak situs dan game web memakai teknik ini agar tetap lancar di perangkat lemah.
+Teknik lanjutan: **adaptive resolution**. Pantau FPS; jika turun di bawah target selama beberapa detik, turunkan pixel ratio sedikit demi sedikit. Jika stabil, naikkan lagi. Cara ini membantu aplikasi tetap lancar di perangkat lemah.
 
 ## Demo
 

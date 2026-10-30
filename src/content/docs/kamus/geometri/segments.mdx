@@ -5,7 +5,7 @@ kind: term
 level: 2
 aka: "subdivisi, tessellation, detail, LOD"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "LOD Group component reference"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/graphics-performance-profiling/simplifying-distant-meshes-with-level-of-detail-lod/class-lodgroup"
@@ -31,6 +31,10 @@ sources:
     url: "https://docs.godotengine.org/en/stable/classes/class_resourceimporterscene.html"
     publisher: "Godot Engine Documentation"
     accessed: 2026-10-28
+  - title: "ResourceImporterScene"
+    url: "https://docs.godotengine.org/en/stable/classes/class_resourceimporterscene.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
 sidebar:
   order: 5
 ---
@@ -57,7 +61,7 @@ Static Mesh bisa membuat LOD otomatis di Static Mesh Editor. Mesh yang mengaktif
 </div>
 <div slot="godot">
 
-Bentuk dasar punya properti segmen, misalnya `radial_segments` (bawaan 64) dan `rings` (bawaan 32) di `SphereMesh`, atau `subdivide_width`, `subdivide_height`, `subdivide_depth` (bawaan 0) di `BoxMesh`. Scene 3D yang diimpor (glTF, .blend, FBX, dan lainnya) otomatis dibuatkan LOD lewat opsi impor `meshes/generate_lods` (bawaan aktif), yang bisa dimatikan di dock Import. Perpindahan LOD terjadi otomatis berdasarkan ukuran objek di layar.
+Bentuk dasar punya properti segmen, misalnya `radial_segments` (bawaan 64) dan `rings` (bawaan 32) di `SphereMesh`, atau `subdivide_width`, `subdivide_height`, `subdivide_depth` (bawaan 0) di `BoxMesh`. Scene 3D yang diimpor (glTF, .blend, FBX, dan lainnya) otomatis dibuatkan LOD lewat opsi impor `meshes/generate_lods` (bawaan aktif), yang bisa dimatikan untuk seluruh scene di dock Import, atau per mesh lewat dialog **Advanced Import Settings**. Perpindahan LOD terjadi otomatis berdasarkan ukuran objek di layar.
 
 </div>
 </EngineTabs>

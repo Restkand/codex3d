@@ -114,6 +114,10 @@ sources:
     url: "https://www.gamedeveloper.com/design/game-feel-the-secret-ingredient"
     publisher: "Steve Swink, Game Developer (2007)"
     accessed: 2026-10-30
+  - title: "Fix Your Timestep! (Glenn Fiedler)"
+    url: "https://gafferongames.com/post/fix_your_timestep/"
+    publisher: "Gaffer On Games"
+    accessed: 2026-10-30
 ---
 
 import Aside from '~/components/Aside.astro'
@@ -269,7 +273,7 @@ Swink memecah game feel menjadi enam bagian: input, respons, konteks, polesan, m
 
 Di titik ini, konsep dari Fondasi Engine menjadi bagian dari desain:
 
-- **Respons yang sama di semua perangkat.** Susunan level bergantung pada ukuran lompatan. Jika gerak karakter dihitung per frame, atau [delta time](/kamus/dasar/delta-time/) hanya dipakai di sebagian rumus, tinggi dan jauh lompatan berubah mengikuti frame rate. Pijakan yang disetel di PC-mu bisa tidak terjangkau di laptop yang lebih lambat. Bahkan dengan delta time, langkah yang panjangnya berubah-ubah membuat puncak lompatan sedikit bergeser. Itu salah satu alasan physics karakter sering dijalankan dengan [langkah waktu tetap](/kamus/fisika/fixed-timestep/). Keduanya dibahas di [Pelajaran 1 Fondasi Engine](/belajar/fondasi-engine/01-frame/).
+- **Respons yang sama di semua perangkat.** Susunan level bergantung pada ukuran lompatan. Jika gerak karakter dihitung per frame, atau [delta time](/kamus/dasar/delta-time/) hanya dipakai di sebagian rumus, tinggi dan jauh lompatan berubah mengikuti frame rate. Pijakan yang disetel di PC-mu bisa tidak terjangkau di laptop yang lebih lambat. Bahkan dengan delta time, Glenn Fiedler dalam "Fix Your Timestep!" menjelaskan bahwa hasil simulasi physics tetap bergantung pada panjang langkah yang dipakai, sehingga puncak lompatan bisa sedikit bergeser. Kamu bisa memeriksanya sendiri di Latihan 4. Itu salah satu alasan physics karakter sering dijalankan dengan [langkah waktu tetap](/kamus/fisika/fixed-timestep/). Keduanya dibahas di [Pelajaran 1 Fondasi Engine](/belajar/fondasi-engine/01-frame/).
 - **Umpan balik yang bergerak dengan kurva.** Debu saat mendarat, angka panen yang melayang naik, tombol yang membesar saat ditekan: semuanya biasanya [tween](/kamus/animasi/tween/) pendek dengan [easing](/kamus/animasi/easing/). Ease out cocok untuk sesuatu yang datang lalu berhenti, seperti karakter yang mendarat. Cara memilih kurva dan durasinya ada di [Pelajaran 7 Fondasi Engine](/belajar/fondasi-engine/07-animasi/).
 - **Jeda antara tombol dan reaksi.** Pemain menilai kontrol dari jeda ini. Transisi animasi yang menunggu klip selesai bisa menambah jeda yang tidak pernah diminta desainer. Contohnya ada di bagian Kesalahan umum Pelajaran 7.
 

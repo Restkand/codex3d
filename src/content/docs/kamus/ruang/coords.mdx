@@ -5,7 +5,7 @@ kind: term
 level: 1
 aka: "coordinate system, handedness"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Introduction to 3D"
     url: "https://docs.godotengine.org/en/stable/tutorials/3d/introduction_to_3d.html"
@@ -19,13 +19,25 @@ sources:
     url: "https://docs.godotengine.org/en/stable/classes/class_node3d.html"
     publisher: "Godot Engine Documentation"
     accessed: 2026-10-28
-  - title: "Quaternion and Euler rotations in Unity"
+  - title: "Rotation and orientation in Unity"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/working-with-gameobjects/gameobject-fundamentals/rotation-orientation/quaternion-and-euler-rotations-in-unity"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
-  - title: "Transform component"
+  - title: "Transforms"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/working-with-gameobjects/gameobject-fundamentals/class-transform"
     publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Model tab Import Settings reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/assets-and-media/asset-types/models/importing/fbximporter-model"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Object3D"
+    url: "https://threejs.org/docs/pages/Object3D.html"
+    publisher: "three.js docs"
+    accessed: 2026-10-30
+  - title: "Camera"
+    url: "https://threejs.org/docs/pages/Camera.html"
+    publisher: "three.js docs"
     accessed: 2026-10-30
   - title: "Vector3.forward"
     url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/vector3/forward"
@@ -45,7 +57,7 @@ Setiap titik di dunia 3D ditulis dengan tiga angka: X, Y, dan Z. Sistem koordina
 
 | | Sumbu atas | Sumbu depan | Tangan | Satu unit |
 | --- | --- | --- | --- | --- |
-| Unity | +Y | +Z | kiri | 1 meter |
+| Unity | +Y | +Z | kiri | 1 meter (asumsi physics) |
 | Unreal | +Z | +X | kiri | 1 sentimeter |
 | Godot | +Y | −Z | kanan | 1 meter |
 | Three.js | +Y | −Z (arah tatap kamera) | kanan | bebas |
@@ -64,7 +76,7 @@ Godot memakai sistem tangan kanan dengan Y ke atas, dan menyatakan 1 unit = 1 me
 
 ## Pelajari lebih dalam
 
-Perbedaan ini paling terasa saat memindahkan aset dan data antar-engine. Model 3D dari Blender (Z ke atas, tangan kanan) yang diimpor ke Unity perlu diputar atau dikonversi, dan biasanya importer engine melakukannya otomatis. Angka posisi yang disalin dari Unity ke Unreal perlu dikali 100 (meter ke sentimeter) dan sumbunya ditukar.
+Perbedaan ini paling terasa saat memindahkan aset dan data antar-engine. Model 3D dari aplikasi lain, misalnya Blender, sering memakai aturan sumbu yang berbeda, sehingga perlu diputar atau dikonversi saat diimpor. Biasanya importer engine melakukannya otomatis; di Unity, tab Model pada Import Settings punya opsi **Bake Axis Conversion** untuk ini. Angka posisi yang disalin dari Unity ke Unreal perlu dikali 100 (meter ke sentimeter) dan sumbunya ditukar.
 
 Satuan sebenarnya hanya kesepakatan, tetapi tetap penting. Simulasi physics mengasumsikan gravitasi dalam satuan engine itu, dan nilai-nilai bawaan (jarak cahaya, kabut, near/far kamera) disesuaikan dengan skala tersebut. Karakter setinggi 2 unit di Unity berarti 2 meter, tetapi di Unreal hanya 2 sentimeter. Dokumentasi Unity juga mengingatkan bahwa objek yang dibuat terlalu besar akan tampak jatuh "dalam gerak lambat", karena gravitasinya tetap dihitung dalam meter.
 

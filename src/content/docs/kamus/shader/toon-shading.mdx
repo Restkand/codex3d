@@ -5,8 +5,12 @@ kind: term
 level: 3
 aka: "cel shading, toon shader, NPR, ramp shading"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
+  - title: "Unlit shader graph reference for URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/built-in/shaders-in-universalrp/prebuilt-shader-graphs-urp/unlit"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
   - title: "Spatial shaders"
     url: "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/spatial_shader.html"
     publisher: "Godot Engine Documentation"
@@ -24,7 +28,7 @@ import EngineTabs from '~/components/EngineTabs.astro'
 
 Gaya pencahayaan yang meniru gambar kartun atau anime. Pada material biasa, terang permukaan berubah halus dari sisi yang menghadap lampu ke sisi yang membelakanginya. Toon shading (*cel shading*) **memotong** gradasi itu menjadi beberapa pita warna tegas, misalnya hanya "terang" dan "bayangan".
 
-Dasarnya tetap rumus cahaya biasa: [dot product](/kamus/ruang/dot/) antara [normal](/kamus/geometri/normal/) permukaan dan arah ke lampu. Bedanya, hasilnya tidak dipakai langsung, melainkan dipotong dulu.
+Dasarnya tetap rumus cahaya biasa: [dot product](/kamus/ruang/dot/) antara [normal](/kamus/geometri/normal/) permukaan dan arah ke lampu. Bedanya, hasilnya dipotong dulu sebelum dipakai.
 
 ```text title="Pseudocode"
 terang = dot(normal, arah_ke_lampu)        // -1..1, halus
@@ -42,7 +46,7 @@ Toon shading biasanya dipasangkan dengan **garis tepi** (*outline*). Cara yang s
 <EngineTabs>
 <div slot="unity">
 
-URP tidak punya material toon bawaan. Pilihannya: paket **Unity Toon Shader** (UTS3, masih berstatus preview) yang mendukung Built-in, URP, dan HDRP, atau membuat sendiri di Shader Graph dengan material Unlit, lalu menghitung `dot(normal, arah lampu)` dan memotongnya dengan node **Step**, **Smoothstep**, atau tekstur ramp.
+URP tidak punya material toon bawaan. Pilihannya: paket **Unity Toon Shader** (UTS3, masih berstatus preview) yang mendukung Built-in, URP, dan HDRP, atau membuat sendiri di Shader Graph jenis Unlit, lalu menghitung `dot(normal, arah lampu)` dan memotongnya dengan node **Step**, **Smoothstep**, atau tekstur ramp.
 
 </div>
 <div slot="unreal">

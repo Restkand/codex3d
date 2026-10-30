@@ -15,6 +15,10 @@ sources:
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/physics-section/physics-overview/collision-section/collider-types-introduction"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
+  - title: "Introduction to rigid body physics"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/physics-section/physics-overview/rigidbody/rigidbodies-overview"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
   - title: "RigidBody3D"
     url: "https://docs.godotengine.org/en/stable/classes/class_rigidbody3d.html"
     publisher: "Godot Engine Documentation"
@@ -59,7 +63,7 @@ Node terpisah untuk setiap peran: **StaticBody3D** (tidak digerakkan physics), *
 
 ## Pelajari lebih dalam
 
-Objek dynamic yang diam cukup lama akan **tidur** (*sleep*): physics engine berhenti menghitungnya sampai ada yang menyentuh. Inilah sebabnya ratusan peti diam di level tidak membebani CPU. Dokumentasi Unity juga menyebut bahwa mengganti objek antara dynamic dan kinematic saat game berjalan bisa menjadi cara menghemat performa.
+Objek dynamic yang diam atau bergerak sangat lambat akan **tidur** (*sleep*): physics engine berhenti menghitungnya sampai ada tabrakan atau gaya yang membangunkannya. Di Unity, batas kecepatannya diatur lewat **Sleep Threshold** di Project Settings bagian Physics. Inilah sebabnya ratusan peti diam di level tidak membebani CPU. Dokumentasi Unity juga menyebut bahwa mengganti objek antara dynamic dan kinematic saat game berjalan bisa menjadi cara menghemat performa.
 
 ## Terkait
 

@@ -5,7 +5,7 @@ kind: term
 level: 3
 aka: "z-buffer, depth write, depth test, z-fighting"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "ZWrite command in ShaderLab reference"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/shaders/reference/sl-reference/sl-commands/sl-zwrite"
@@ -19,6 +19,10 @@ sources:
     url: "https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html"
     publisher: "Godot Engine Documentation"
     accessed: 2026-10-28
+  - title: "ZTest command in ShaderLab reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/shaders/reference/sl-reference/sl-commands/sl-ztest"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
 sidebar:
   order: 16
 ---
@@ -40,7 +44,7 @@ Objek transparan biasanya **tidak menulis** depth (depth write mati) agar tidak 
 <EngineTabs>
 <div slot="unity">
 
-Material transparan bawaan URP umumnya tidak menulis depth. Di shader tulisan sendiri (ShaderLab), atur dengan perintah `ZWrite On` / `ZWrite Off` dan `ZTest`.
+Menurut dokumentasi ShaderLab, ZWrite biasanya aktif untuk objek opak dan mati untuk objek semi-transparan. Di shader tulisan sendiri, atur penulisan depth dengan `ZWrite On` / `ZWrite Off`, dan syarat lolos uji depth dengan `ZTest` (bawaan `LEqual`: lolos jika lebih dekat atau sama jauh; ada juga `Less`, `Greater`, `Always`, dan lainnya).
 
 </div>
 <div slot="unreal">

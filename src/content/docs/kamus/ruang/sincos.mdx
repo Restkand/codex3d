@@ -5,7 +5,7 @@ kind: term
 level: 1
 aka: "sin, cos"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Mathf.Sin"
     url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/mathf/sin"
@@ -18,7 +18,7 @@ sources:
   - title: "Time"
     url: "https://docs.godotengine.org/en/stable/classes/class_time.html"
     publisher: "Godot Engine Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
 sidebar:
   order: 9
 ---
@@ -57,7 +57,7 @@ posisi.z = sin(waktu) * jari_jari
 </div>
 <div slot="godot">
 
-`sin(Time.get_ticks_msec() / 1000.0 * 1.5)`. `Time.get_ticks_msec()` adalah milidetik sejak engine dimulai. Jika gerakan perlu ikut berhenti saat game dijeda atau diperlambat, simpan sendiri waktu yang terus ditambah `delta` di `_process`.
+`sin(Time.get_ticks_msec() / 1000.0 * 1.5)`. `Time.get_ticks_msec()` adalah milidetik sejak engine dimulai, sehingga nilainya terus bertambah walaupun game dijeda. Jika gerakan perlu ikut berhenti saat game dijeda atau diperlambat, simpan sendiri waktu yang terus ditambah `delta` di `_process`.
 
 </div>
 </EngineTabs>

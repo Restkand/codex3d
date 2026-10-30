@@ -1,15 +1,30 @@
 ---
 title: "OutputPass"
-description: "Pass terakhir di composer: menerapkan tone mapping dan konversi ke sRGB. Saat render langsung ke layar, renderer melakukannya sendiri; saat memakai composer, tugas itu berpindah ke OutputPass."
+description: "Pass terakhir di composer: menerapkan tone mapping dan konversi ke color space keluaran renderer (bawaannya sRGB), dengan pengaturan yang diambil dari renderer. Saat render langsung ke layar, renderer melakukannya sendiri; saat memakai composer, tugas itu berpindah ke OutputPass."
 kind: term
 level: 3
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "OutputPass"
+    url: "https://threejs.org/docs/pages/OutputPass.html"
+    publisher: "three.js docs"
+    accessed: 2026-10-30
+  - title: "WebGLRenderer"
+    url: "https://threejs.org/docs/pages/WebGLRenderer.html"
+    publisher: "three.js docs"
+    accessed: 2026-10-30
+  - title: "WebGLPrograms.js (r187)"
+    url: "https://github.com/mrdoob/three.js/blob/r187/src/renderers/webgl/WebGLPrograms.js"
+    publisher: "three.js (kode sumber)"
+    accessed: 2026-10-30
 sidebar:
   order: 15
 ---
 
 import Aside from '~/components/Aside.astro'
 
-Pass terakhir di composer: menerapkan tone mapping dan konversi ke sRGB. Saat render langsung ke layar, renderer melakukannya sendiri; saat memakai composer, tugas itu berpindah ke OutputPass.
+Pass terakhir di composer: menerapkan tone mapping dan konversi ke color space keluaran renderer (bawaannya sRGB), dengan pengaturan yang diambil dari renderer. Saat render langsung ke layar, renderer melakukannya sendiri. Saat memakai composer, scene digambar ke render target, tempat renderer tidak menerapkan keduanya, sehingga tugas itu berpindah ke OutputPass.
 
 **Di proyek ini:** `src/experiment/post.js`
 

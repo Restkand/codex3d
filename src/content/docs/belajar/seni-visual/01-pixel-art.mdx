@@ -163,6 +163,22 @@ sources:
     url: "https://www.aseprite.org/docs/frame-duration/"
     publisher: "Aseprite Documentation"
     accessed: 2026-10-30
+  - title: "Sprite Swap: Animator limitations (2D Animation 10.2)"
+    url: "https://docs.unity3d.com/Packages/com.unity.2d.animation@10.2/manual/SpriteSwapIntro.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "MonoBehaviour.LateUpdate"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/monobehaviour/lateupdate"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Project Settings (Advanced project settings)"
+    url: "https://docs.godotengine.org/en/stable/tutorials/editor/project_settings.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
+  - title: "GPU optimization (2D batching)"
+    url: "https://docs.godotengine.org/en/stable/tutorials/performance/gpu_optimization.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-30
 ---
 
 import Aside from '~/components/Aside.astro'
@@ -327,7 +343,7 @@ gambar_pemain_di(round(pemain.posisi * ppu) / ppu)
 kamera_tampil = round(kamera.posisi * ppu) / ppu
 ```
 
-Urutannya juga penting. Jika kamera dihitung sebelum pemain bergerak, kamera selalu tertinggal satu frame, dan selisihnya berubah-ubah mengikuti panjang frame.
+Urutannya juga penting. Jika kamera dihitung sebelum pemain bergerak, kamera mengikuti posisi pemain dari frame sebelumnya, dan selisihnya berubah-ubah mengikuti panjang frame. Script reference Unity untuk `LateUpdate` menyarankan hal yang sama: kamera yang mengikuti objek sebaiknya diperbarui di `LateUpdate`, setelah semua `Update` selesai.
 
 Pembulatan punya efek samping. Lapisan latar **[parallax](/kamus/2d/parallax/)** yang bergerak setengah kecepatan kamera akan bergeser setengah piksel seni setiap kali kamera bergeser satu piksel. Setelah dibulatkan, lapisan itu bergeser satu piksel setiap dua langkah kamera, dan gerakannya tampak tersendat dibanding lapisan depan. Dokumentasi Godot juga mencatat bahwa snapping membuat gambar lebih tajam dengan harga gerakan yang kurang mulus, terutama saat smoothing Camera2D aktif.
 
@@ -450,7 +466,7 @@ Untuk layar penuh, pakai mode jendela **Exclusive Fullscreen**. Mode **Fullscree
 
 Tekstur pixel art kecil, jadi memori jarang menjadi masalah pertama. Biaya yang lebih mudah membengkak adalah **jumlah** gambar terpisah. Engine hanya bisa menggabungkan objek yang memakai tekstur dan material yang sama, jadi setiap tekstur berbeda biasanya berarti [draw call](/kamus/performa/draw-call/) terpisah ([Pelajaran 8 Fondasi Engine](/belajar/fondasi-engine/08-profiling/#draw-call-dan-batching)). Level dengan ratusan sprite dari ratusan file PNG bisa membuat CPU sibuk mengirim perintah, walaupun GPU hampir tidak bekerja.
 
-Solusinya adalah menggabungkan banyak sprite ke satu tekstur besar, yang disebut **[sprite atlas](/kamus/2d/sprite-atlas/)**. Dokumentasi Unity menyebut Unity hanya perlu satu draw call untuk semua sprite dalam satu sprite atlas. Sprite sheet dan tileset memakai prinsip yang sama, karena semua frame atau tile ada di satu gambar. Dalam praktik, batch bisa terpotong jika urutan gambar menyelipkan sprite dari tekstur lain di antaranya. Periksa hasilnya dengan **Frame Debugger** di Unity, atau jumlah draw call di **Debugger → Monitors** di Godot.
+Solusinya adalah menggabungkan banyak sprite ke satu tekstur besar, yang disebut **[sprite atlas](/kamus/2d/sprite-atlas/)**. Dokumentasi Unity menyebut Unity hanya perlu satu draw call untuk semua sprite dalam satu sprite atlas. Sprite sheet dan tileset memakai prinsip yang sama, karena semua frame atau tile ada di satu gambar. Satu atlas belum menjamin satu draw call. Sprite digambar menurut urutan sorting, jadi jika sprite dari tekstur lain terselip di tengah urutan itu, engine kemungkinan perlu memulai batch baru. Periksa hasilnya dengan **Frame Debugger** di Unity, atau jumlah draw call di **Debugger → Monitors** di Godot.
 
 Atlas punya dua jebakan untuk pixel art:
 

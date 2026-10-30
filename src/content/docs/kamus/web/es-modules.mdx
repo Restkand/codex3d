@@ -1,16 +1,23 @@
 ---
 title: "ES Modules"
-description: "Setiap file adalah modul dengan cakupan sendiri; hanya yang di-export yang bisa dipakai file lain. Proyek ini memecah kode per tanggung jawab: setup, cahaya, objek, interaksi, dll."
+description: "Setiap file modul punya cakupan sendiri: variabelnya tidak menjadi global, dan hanya yang di-export yang bisa di-import file lain. Proyek ini memecah kode per tanggung jawab: setup, cahaya, objek, interaksi, dll."
 kind: term
 level: 1
 aka: "import / export"
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "JavaScript modules"
+    url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules"
+    publisher: "MDN Web Docs"
+    accessed: 2026-10-30
 sidebar:
   order: 18
 ---
 
 import Aside from '~/components/Aside.astro'
 
-Setiap file adalah modul dengan cakupan sendiri; hanya yang di-`export` yang bisa dipakai file lain. Proyek ini memecah kode per tanggung jawab: setup, cahaya, objek, interaksi, dll.
+Setiap file modul punya cakupan sendiri: variabelnya tidak menjadi global, dan hanya yang di-`export` yang bisa di-`import` file lain. Proyek ini memecah kode per tanggung jawab: setup, cahaya, objek, interaksi, dll.
 
 **Di proyek ini:** `src/experiment/main.js`
 

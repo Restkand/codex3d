@@ -5,18 +5,14 @@ kind: term
 level: 3
 aka: "depth bias, normal bias, peter panning"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Light component Inspector window reference for URP"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/lighting-overview/lighting/light-component"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
-  - title: "Universal Render Pipeline Asset reference"
+  - title: "Universal Render Pipeline asset reference for URP"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/render-pipelines/universal-render-pipeline/urp-reference/universalrp-asset"
-    publisher: "Unity Documentation"
-    accessed: 2026-10-30
-  - title: "Light component reference (Built-In Render Pipeline)"
-    url: "https://docs.unity.com/en-us/engine/6000.0/manual/lighting-overview/lighting-birp/class-light"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
   - title: "3D lights and shadows"
@@ -49,8 +45,6 @@ Bias terlalu besar menimbulkan masalah sebaliknya: bayangan terlepas dari kaki o
 <div slot="unity">
 
 URP: komponen Light → **Realtime Shadows → Bias**. Pilihan **Use Pipeline Settings** memakai **Depth Bias** dan **Normal Bias** dari bagian Shadows di aset URP. Pilihan **Custom** memunculkan slider **Depth** dan **Normal** khusus untuk lampu itu.
-
-Built-in Render Pipeline: komponen Light langsung punya **Bias** (bawaan 0,05) dan **Normal Bias** (bawaan 0,4).
 
 </div>
 <div slot="unreal">

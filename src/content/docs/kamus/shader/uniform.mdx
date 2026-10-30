@@ -5,8 +5,12 @@ kind: term
 level: 2
 aka: "material parameter, shader property"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
+  - title: "Shader.PropertyToID"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/shader/propertytoid"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
   - title: "ShaderMaterial"
     url: "https://docs.godotengine.org/en/stable/classes/class_shadermaterial.html"
     publisher: "Godot Engine Documentation"
@@ -61,7 +65,7 @@ Dideklarasikan di blok `Properties` (atau Blackboard di Shader Graph). Diubah da
 material.SetFloat("_Kekuatan", 0.8f);
 ```
 
-Jika nilainya diubah setiap frame, simpan dulu ID-nya dengan `Shader.PropertyToID("_Kekuatan")`, lalu pakai versi `SetFloat(int nameID, float value)` agar Unity tidak mencari nama berupa teks berulang kali.
+Jika nilainya diubah setiap frame, simpan dulu ID-nya dengan `Shader.PropertyToID("_Kekuatan")`, lalu pakai versi `SetFloat(int nameID, float value)` karena memakai ID lebih efisien daripada mengirim nama berupa teks setiap kali.
 
 Waktu tersedia otomatis sebagai `_Time` (`_Time.y` adalah waktu dalam detik). Di Shader Graph, pakai node **Time**, yang juga menyediakan Sine Time, Cosine Time, dan Delta Time.
 

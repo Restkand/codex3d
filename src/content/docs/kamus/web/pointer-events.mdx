@@ -1,15 +1,26 @@
 ---
 title: "Pointer Events"
-description: "pointermove, click, dll. pointer* menyatukan mouse, pen, dan sentuhan dalam satu API. Koordinatnya (clientX/Y) dalam piksel, sehingga perlu dinormalisasi agar logikanya sama di semua ukuran layar."
+description: "pointermove, pointerdown, dll. Event pointer* menyatukan mouse, pen, dan sentuhan dalam satu model event. Koordinatnya (clientX/Y) dalam piksel CSS relatif terhadap viewport, sehingga perlu dinormalisasi agar logikanya sama di semua ukuran layar."
 kind: term
 level: 1
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "Pointer events"
+    url: "https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events"
+    publisher: "MDN Web Docs"
+    accessed: 2026-10-30
+  - title: "MouseEvent: clientX property"
+    url: "https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/clientX"
+    publisher: "MDN Web Docs"
+    accessed: 2026-10-30
 sidebar:
   order: 12
 ---
 
 import Aside from '~/components/Aside.astro'
 
-`pointermove`, `click`, dll. `pointer*` menyatukan mouse, pen, dan sentuhan dalam satu API. Koordinatnya (`clientX/Y`) dalam piksel, sehingga perlu dinormalisasi agar logikanya sama di semua ukuran layar.
+`pointermove`, `pointerdown`, dll. Event `pointer*` menyatukan mouse, pen, dan sentuhan dalam satu model event. Koordinatnya (`clientX/Y`) dalam piksel CSS relatif terhadap viewport, sehingga perlu dinormalisasi agar logikanya sama di semua ukuran layar.
 
 **Di proyek ini:** `src/experiment/interaction.js`
 

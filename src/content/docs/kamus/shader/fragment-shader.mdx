@@ -5,8 +5,16 @@ kind: term
 level: 2
 aka: "pixel shader, surface shader"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
+  - title: "Unlit shader graph reference for URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/built-in/shaders-in-universalrp/prebuilt-shader-graphs-urp/unlit"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
+  - title: "Graph Settings tab"
+    url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Graph-Settings-Tab.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-30
   - title: "Master Stack"
     url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Master-Stack.html"
     publisher: "Unity Documentation"
@@ -35,7 +43,7 @@ Di engine, kamu jarang menulis warna akhir secara langsung. Yang kamu isi biasan
 <EngineTabs>
 <div slot="unity">
 
-Shader Graph: konteks **Fragment** di Master Stack. Blok yang umum dipakai: Base Color, Normal (Tangent Space), Metallic, Smoothness, Emission, Ambient Occlusion, Alpha, dan Alpha Clip Threshold. Blok mana yang aktif bergantung pada pengaturan di Graph Settings. Jika ingin menentukan warna akhir sendiri tanpa perhitungan cahaya, pakai material jenis **Unlit**.
+Shader Graph: konteks **Fragment** di Master Stack. Blok yang umum dipakai: Base Color, Normal (Tangent Space), Metallic, Smoothness, Emission, Ambient Occlusion, Alpha, dan Alpha Clip Threshold. Blok mana yang aktif bergantung pada pengaturan di Graph Settings. Jika ingin menentukan warna akhir sendiri tanpa perhitungan cahaya, pilih **Unlit** di opsi Material pada Graph Settings.
 
 </div>
 <div slot="unreal">

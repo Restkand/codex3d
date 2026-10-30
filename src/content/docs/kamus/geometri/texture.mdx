@@ -5,13 +5,13 @@ kind: term
 level: 2
 aka: "tekstur, texture map"
 status: draf
-lastReviewed: 2026-10-28
+lastReviewed: 2026-10-30
 sources:
   - title: "Draw a texture in a shader in URP"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/shaders/writing-custom-shaders-urp/writing-shaders-urp/unlit-texture"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
-  - title: "Sample Texture 2D Node"
+  - title: "Sample Texture 2D node"
     url: "https://docs.unity3d.com/Packages/com.unity.shadergraph@17.0/manual/Sample-Texture-2D-Node.html"
     publisher: "Unity Documentation"
     accessed: 2026-10-28
@@ -22,11 +22,11 @@ sources:
   - title: "VisualShaderNodeTexture"
     url: "https://docs.godotengine.org/en/stable/classes/class_visualshadernodetexture.html"
     publisher: "Godot Engine Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
   - title: "ResourceImporterTexture"
     url: "https://docs.godotengine.org/en/stable/classes/class_resourceimportertexture.html"
     publisher: "Godot Engine Documentation"
-    accessed: 2026-10-28
+    accessed: 2026-10-30
 sidebar:
   order: 8
 ---
@@ -65,7 +65,7 @@ Bahasa shader Godot: deklarasikan `uniform sampler2D nama_tekstur;`, lalu baca d
 
 ## Pelajari lebih dalam
 
-Tekstur adalah pemakai VRAM terbesar di kebanyakan game. Gambar 2048×2048 RGBA tanpa kompresi memakan sekitar 16 MB. Karena itu engine mengompres tekstur ke format khusus GPU (misalnya BC/DXT di PC, ASTC di ponsel) yang bisa dibaca langsung tanpa dibuka dulu. Di Godot, ini mode impor **VRAM Compressed**.
+Tekstur adalah pemakai VRAM terbesar di kebanyakan game. Gambar 2048×2048 RGBA tanpa kompresi memakan sekitar 16 MB. Karena itu engine mengompres tekstur ke format khusus GPU (misalnya BC/DXT di PC, ASTC atau ETC2 di ponsel) yang bisa dibaca langsung tanpa dibuka dulu. Di Godot, ini mode impor **VRAM Compressed**.
 
 Engine juga bisa membuat **mipmap**: salinan tekstur yang makin kecil. Mipmap menambah sekitar sepertiga ukuran memori. Penjelasannya ada di [Texture Filtering & Mipmap](/kamus/geometri/texture-filtering/).
 

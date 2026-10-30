@@ -1,17 +1,24 @@
 ---
 title: "toggleActions & onToggle"
-description: "Kebalikan dari scrub: animasi dipicu saat elemen masuk/keluar area, lalu berjalan dengan durasinya sendiri. Format: \"onEnter onLeave onEnterBack onLeaveBack\", contohnya \"play none none reverse\"."
+description: "Kebalikan dari scrub: animasi dipicu saat elemen masuk/keluar area, lalu berjalan dengan durasinya sendiri. Format: \"onEnter onLeave onEnterBack onLeaveBack\" (bawaannya \"play none none none\"), contohnya \"play none none reverse\". onToggle dipanggil saat ScrollTrigger berganti antara aktif dan tidak aktif."
 kind: term
 level: 2
+status: draf
+lastReviewed: 2026-10-30
+sources:
+  - title: "ScrollTrigger (toggleActions, onToggle)"
+    url: "https://gsap.com/docs/v3/Plugins/ScrollTrigger/"
+    publisher: "GSAP Docs"
+    accessed: 2026-10-30
 sidebar:
   order: 9
 ---
 
 import Aside from '~/components/Aside.astro'
 
-Kebalikan dari scrub: animasi dipicu saat elemen masuk/keluar area, lalu berjalan dengan durasinya sendiri. Format: `"onEnter onLeave onEnterBack onLeaveBack"`, contohnya `"play none none reverse"`.
+Kebalikan dari scrub: animasi dipicu saat elemen masuk/keluar area, lalu berjalan dengan durasinya sendiri. Format: `"onEnter onLeave onEnterBack onLeaveBack"` (bawaannya `"play none none none"`), contohnya `"play none none reverse"`. Callback `onToggle` dipanggil saat ScrollTrigger berganti dari tidak aktif ke aktif atau sebaliknya.
 
-**Di proyek ini:** `src/experiment/transitions.js`
+**Di proyek ini:** `src/experiment/scroll.js` (`toggleActions`), `src/experiment/transitions.js` (`onToggle`)
 
 ## Terkait
 
