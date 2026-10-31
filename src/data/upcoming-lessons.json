@@ -2,22 +2,12 @@
   "fondasi-engine": [],
   "lanskap-engine": [
     {
-      "num": 4,
-      "title": "Kriteria Memilih Engine",
-      "subtitle": "Genre, platform, tim, kebutuhan grafis, ekosistem, dan komunitas lokal."
-    },
-    {
       "num": 5,
       "title": "Pindah Engine",
       "subtitle": "Biaya tersembunyi migrasi dan cara mengurangi ketergantungan."
     }
   ],
   "desain-game": [
-    {
-      "num": 4,
-      "title": "Level Design",
-      "subtitle": "Alur, ritme, mengajar tanpa tutorial, dan penempatan tantangan."
-    },
     {
       "num": 5,
       "title": "Ekonomi dan Progres",
@@ -36,11 +26,6 @@
   ],
   "produksi": [
     {
-      "num": 4,
-      "title": "Alat Kerja",
-      "subtitle": "Version control untuk kode dan aset besar, pelacak tugas, build otomatis."
-    },
-    {
       "num": 5,
       "title": "Kualitas dan Rilis",
       "subtitle": "Strategi QA, sertifikasi platform, dan rencana patch."
@@ -52,11 +37,6 @@
     }
   ],
   "bisnis-indie": [
-    {
-      "num": 4,
-      "title": "Marketing",
-      "subtitle": "Kapan mulai, halaman toko, wishlist, festival, kreator konten, dan komunitas."
-    },
     {
       "num": 5,
       "title": "Platform",
@@ -75,22 +55,12 @@
   ],
   "industri-karier": [
     {
-      "num": 4,
-      "title": "Portofolio",
-      "subtitle": "Apa yang dicari studio dari setiap peran, dan cara menunjukkan proses berpikir."
-    },
-    {
       "num": 5,
       "title": "Studi Kasus dan Postmortem",
       "subtitle": "Kisah studio dan game, ditulis atau ditinjau oleh pelakunya langsung."
     }
   ],
   "seni-visual": [
-    {
-      "num": 4,
-      "title": "Aset 3D untuk Game",
-      "subtitle": "Low-poly sampai stylized, modeling, UV, tekstur, rigging, dan impor."
-    },
     {
       "num": 5,
       "title": "Dari Aplikasi ke Engine",

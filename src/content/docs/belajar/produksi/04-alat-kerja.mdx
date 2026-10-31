@@ -1,0 +1,625 @@
+---
+title: "Alat Kerja"
+description: "Version control untuk kode dan aset besar, Git LFS dan penguncian file, alternatif yang umum di game, pengaturan per engine, pelacak tugas, build otomatis, dan cadangan."
+fundamental: "Version control, pelacak tugas, dan build otomatis menjawab pertanyaan yang sama di setiap proyek: versi mana yang sedang kita kerjakan, siapa mengerjakan apa, dan apakah game-nya masih bisa dimainkan. Game punya file biner besar dan scene yang sulit digabung, jadi alatnya perlu diatur sejak awal. Kalau kamu paham alasan di balik setiap pengaturan, kamu bisa memindahkannya ke alat apa pun yang dipakai timmu."
+kind: lesson
+minutes: 35
+status: draf
+lastReviewed: 2026-10-31
+krekit:
+  gambaran-besar: "Folder bernama final_v3_benar_yang_ini sudah cukup jadi tanda kamu butuh version control."
+  version-control-konsep-dasar: "Commit kecil dengan pesan yang jelas lebih berguna daripada satu commit raksasa di akhir minggu."
+  kenapa-game-lebih-sulit: "Dua orang mengubah scene yang sama di hari yang sama biasanya berakhir dengan satu orang mengulang pekerjaannya."
+  git-dan-git-lfs: "Pasang LFS sebelum commit pertama. Memindahkan riwayat lama ke LFS jauh lebih repot."
+  alternatif-yang-dipakai-di-game: "Coba dulu dengan proyek kecil sebelum memindahkan seluruh tim ke alat baru."
+  pengaturan-per-engine: "Pengaturan kecil di engine sering menentukan apakah merge berjalan lancar atau berantakan."
+  file-yang-tidak-perlu-disimpan: "Kalau engine bisa membuat ulang sebuah folder, folder itu biasanya tidak perlu masuk repositori."
+  pelacak-tugas: "Tugas tanpa nama orang dan tanpa kriteria selesai biasanya pindah-pindah kolom tanpa pernah selesai."
+  build-otomatis: "Build yang dibuat mesin setiap malam memberi tahu kamu masalah sebelum playtester menemukannya."
+  cadangan: "Repositori di satu server belum tentu cadangan. Coba pulihkan sekali untuk membuktikannya."
+  contoh-sari-dan-dimas-menyiapkan-repositori-papan-dan-build-otomatis: "Kejadiannya karangan. Perhatikan urutan mereka memasang setiap alat."
+  kesalahan-umum: "Kesalahan yang paling mahal biasanya file besar yang masuk ke riwayat Git tanpa LFS."
+sidebar:
+  order: 4
+  label: "4 · Alat Kerja"
+quiz:
+  - q: "Dua anggota tim mengedit file tekstur PSD yang sama di hari yang sama, lalu keduanya mencoba push. Kenapa situasi ini lebih bermasalah dibanding dua orang mengedit file skrip yang sama?"
+    options:
+      - "Karena Git tidak bisa menyimpan file PSD"
+      - "Karena file biner tidak bisa digabung baris per baris seperti teks, sehingga salah satu perubahan biasanya harus dibuang atau dikerjakan ulang"
+      - "Karena file PSD selalu lebih dari 100 MiB"
+      - "Karena file skrip tidak pernah mengalami konflik"
+    answer: 1
+    explain: "Git punya alat untuk menggabungkan perubahan di file teks. Wiki Git LFS mencatat bahwa konflik merge di file biner besar sangat sulit diselesaikan. Karena itu file seperti ini biasanya dikunci sebelum diedit."
+  - q: "Apa yang sebenarnya disimpan Git LFS di dalam repositori Git untuk file yang dilacaknya?"
+    options:
+      - "Salinan file yang sudah dikompresi"
+      - "Pointer file kecil berisi versi spesifikasi, ID unik (oid), dan ukuran file, sedangkan isi file disimpan di server LFS"
+      - "Hanya nama file tanpa isi"
+      - "Seluruh riwayat file dalam satu arsip ZIP"
+    answer: 1
+    explain: "Menurut GitHub Docs, Git LFS membuat pointer file yang menjadi referensi ke file aslinya di tempat lain. Pointer itu mencatat versi Git LFS, oid berbasis SHA-256, dan ukuran file."
+  - q: "Timmu memakai Unity dan Git. Pengaturan apa yang membantu agar scene dan prefab bisa dibandingkan dan digabung?"
+    options:
+      - "Mode Version Control Hidden Meta Files dan Asset Serialization Force Binary"
+      - "Mode Version Control Visible Meta Files dan Asset Serialization Force Text"
+      - "Menghapus semua file .meta sebelum commit"
+      - "Menyimpan folder Library di repositori"
+    answer: 1
+    explain: "Manual Unity 6000.0 menyebut Visible Meta Files sebagai mode untuk version control yang tidak diintegrasikan langsung oleh Unity, dan Force Text menyimpan aset dalam format teks untuk membantu merge. Keduanya adalah nilai bawaan di Unity 6.0, tetapi tetap layak diperiksa di proyek lama."
+  - q: "Di proyek Godot 4.1 atau lebih baru, folder mana yang menurut dokumentasi Godot sebaiknya dikecualikan dari version control?"
+    options:
+      - "Folder scenes/"
+      - "Folder .godot/, yang berisi data cache proyek"
+      - "File project.godot"
+      - "Semua file .tscn"
+    answer: 1
+    explain: "Dokumentasi Godot menyebut .godot/ menyimpan data cache proyek dan dibuat ulang oleh editor, jadi folder itu dimasukkan ke daftar abaikan. File .tscn dan project.godot justru perlu disimpan."
+  - q: "Apa tujuan utama smoke test di build otomatis?"
+    options:
+      - "Menguji seluruh game sampai tamat di setiap build"
+      - "Memeriksa dengan cepat bahwa build bisa dibuat dan game bisa berjalan, sehingga build yang rusak ketahuan sebelum dibagikan"
+      - "Mengukur performa di semua perangkat"
+      - "Menggantikan playtest dengan pemain"
+    answer: 1
+    explain: "Smoke test adalah pemeriksaan singkat yang murah dijalankan setiap kali. Tujuannya menangkap kerusakan besar sedini mungkin. Pengujian yang lebih dalam tetap diperlukan."
+  - q: "Menurut aturan 3-2-1 di panduan US-CERT, apa arti angka 1?"
+    options:
+      - "Satu cadangan sudah cukup"
+      - "Simpan satu salinan di luar lokasi kerja (offsite)"
+      - "Buat cadangan satu kali sebulan"
+      - "Gunakan satu jenis media saja"
+    answer: 1
+    explain: "Aturan 3-2-1 di panduan itu: tiga salinan file penting (satu utama dan dua cadangan), di dua jenis media berbeda, dan satu salinan disimpan di luar lokasi, misalnya di luar rumah atau kantor."
+sources:
+  - title: "Getting Started: About Version Control"
+    url: "https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control"
+    publisher: "Scott Chacon dan Ben Straub, Pro Git (git-scm.com)"
+    accessed: 2026-10-31
+  - title: "Git Large File Storage"
+    url: "https://git-lfs.com/"
+    publisher: "Proyek Git LFS"
+    accessed: 2026-10-31
+  - title: "File Locking"
+    url: "https://github.com/git-lfs/git-lfs/wiki/File-Locking"
+    publisher: "Wiki proyek Git LFS di GitHub"
+    accessed: 2026-10-31
+  - title: "About Git Large File Storage"
+    url: "https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-git-large-file-storage"
+    publisher: "GitHub Docs"
+    accessed: 2026-10-31
+  - title: "About large files on GitHub"
+    url: "https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-large-files-on-github"
+    publisher: "GitHub Docs"
+    accessed: 2026-10-31
+  - title: "Git Large File Storage billing"
+    url: "https://docs.github.com/en/billing/concepts/product-billing/git-lfs"
+    publisher: "GitHub Docs"
+    accessed: 2026-10-31
+  - title: "Collaboration with Git Large File Storage"
+    url: "https://docs.github.com/en/repositories/working-with-files/managing-large-files/collaboration-with-git-large-file-storage"
+    publisher: "GitHub Docs"
+    accessed: 2026-10-31
+  - title: "Perforce P4: Version Control that Scales With Your Team"
+    url: "https://www.perforce.com/products/helix-core"
+    publisher: "Perforce Software"
+    accessed: 2026-10-31
+  - title: "File type modifiers"
+    url: "https://help.perforce.com/helix-core/server-apps/cmdref/current/Content/CmdRef/file.types.synopsis.modifiers.html"
+    publisher: "Perforce Software, P4 CLI Documentation 2026.1"
+    accessed: 2026-10-31
+  - title: "Unity Version Control (previously Plastic SCM)"
+    url: "https://docs.unity.com/en-us/unity-version-control"
+    publisher: "Unity Technologies, Unity Docs"
+    accessed: 2026-10-31
+  - title: "Unity Version Control"
+    url: "https://unity.com/solutions/version-control"
+    publisher: "Unity Technologies"
+    accessed: 2026-10-31
+  - title: "Version Control project settings reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-VersionControlSettings.html"
+    publisher: "Unity Technologies, Manual Unity 6000.0"
+    accessed: 2026-10-31
+  - title: "Editor project settings reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/class-EditorManager.html"
+    publisher: "Unity Technologies, Manual Unity 6000.0"
+    accessed: 2026-10-31
+  - title: "Smart merge"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/SmartMerge.html"
+    publisher: "Unity Technologies, Manual Unity 6000.0"
+    accessed: 2026-10-31
+  - title: "Editor command line arguments reference"
+    url: "https://docs.unity3d.com/6000.0/Documentation/Manual/EditorCommandLineArguments.html"
+    publisher: "Unity Technologies, Manual Unity 6000.0"
+    accessed: 2026-10-31
+  - title: "Version control systems"
+    url: "https://docs.godotengine.org/en/stable/tutorials/best_practices/version_control_systems.html"
+    publisher: "Dokumentasi Godot Engine (stable)"
+    accessed: 2026-10-31
+  - title: "TSCN file format"
+    url: "https://docs.godotengine.org/en/stable/engine_details/file_formats/tscn.html"
+    publisher: "Dokumentasi Godot Engine (stable)"
+    accessed: 2026-10-31
+  - title: "Command line tutorial"
+    url: "https://docs.godotengine.org/en/stable/tutorials/editor/command_line_tutorial.html"
+    publisher: "Dokumentasi Godot Engine (stable)"
+    accessed: 2026-10-31
+  - title: "github/gitignore: A collection of useful .gitignore templates"
+    url: "https://github.com/github/gitignore"
+    publisher: "GitHub"
+    accessed: 2026-10-31
+  - title: "The Scrum Guide (2020)"
+    url: "https://scrumguides.org/scrum-guide.html"
+    publisher: "Ken Schwaber dan Jeff Sutherland"
+    accessed: 2026-10-31
+  - title: "Kanban boards"
+    url: "https://www.atlassian.com/agile/kanban/boards"
+    publisher: "Atlassian"
+    accessed: 2026-10-31
+  - title: "About milestones"
+    url: "https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/about-milestones"
+    publisher: "GitHub Docs"
+    accessed: 2026-10-31
+  - title: "Continuous Integration"
+    url: "https://martinfowler.com/articles/continuousIntegration.html"
+    publisher: "Martin Fowler (2024)"
+    accessed: 2026-10-31
+  - title: "Understanding GitHub Actions"
+    url: "https://docs.github.com/en/actions/get-started/understand-github-actions"
+    publisher: "GitHub Docs"
+    accessed: 2026-10-31
+  - title: "Events that trigger workflows"
+    url: "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows"
+    publisher: "GitHub Docs"
+    accessed: 2026-10-31
+  - title: "GitHub Actions billing"
+    url: "https://docs.github.com/en/billing/concepts/product-billing/github-actions"
+    publisher: "GitHub Docs"
+    accessed: 2026-10-31
+  - title: "Data Backup Options"
+    url: "https://www.cisa.gov/sites/default/files/publications/data_backup_options.pdf"
+    publisher: "Paul Ruggiero dan Matthew A. Heckathorn, US-CERT (2012), diterbitkan ulang oleh CISA"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menjelaskan commit, branch, merge, dan riwayat, serta kenapa file game lebih sulit dikelola daripada kode.
+- Menyiapkan Git LFS dan penguncian file untuk aset biner, dan mengenali kapan alternatif lain layak dipertimbangkan.
+- Mengatur Unity, Godot, atau Unreal supaya bekerja baik dengan version control, termasuk daftar file yang diabaikan.
+- Menyusun papan tugas dengan backlog, definition of done, dan hubungan ke milestone.
+- Merancang build otomatis sederhana dengan smoke test dan jadwal harian.
+- Menerapkan aturan cadangan 3-2-1 untuk file proyek.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: buku catatan bengkel">
+Bengkel motor yang rapi punya buku catatan: motor siapa, apa yang diganti, oleh montir siapa, kapan. Kalau motor kembali dengan keluhan, montir bisa membuka catatan dan melihat perubahan terakhir. Bengkel itu juga punya papan pekerjaan di dinding dan selalu mencoba motor sebentar sebelum diserahkan ke pemiliknya. Version control adalah buku catatannya, pelacak tugas adalah papan di dinding, dan build otomatis adalah uji jalan singkat sebelum motor diserahkan.
+</Aside>
+
+Tiga pelajaran sebelumnya membahas apa yang dikerjakan dan kapan: [scope dan milestone](/belajar/produksi/01-scope-vertical-slice/), [fase produksi](/belajar/produksi/02-fase-produksi/), dan [siapa memegang apa](/belajar/produksi/03-peran-tim-kecil/). Pelajaran ini membahas alat yang membuat rencana itu bisa dijalankan setiap hari tanpa kehilangan pekerjaan.
+
+Ketiga alat di pelajaran ini saling terkait. Tugas di papan merujuk ke perubahan di repositori. Perubahan di repositori memicu build. Hasil build menunjukkan apakah tugas itu benar-benar selesai. Kalau salah satunya tidak ada, tim kembali mengandalkan ingatan dan pesan chat.
+
+Isi pelajaran ini:
+
+- Konsep dasar version control, dan kenapa game lebih sulit.
+- Git dengan Git LFS, penguncian file, dan alternatif yang umum di industri game.
+- Pengaturan per engine dan file yang tidak perlu disimpan.
+- Pelacak tugas, build otomatis, dan cadangan.
+
+## Version control: konsep dasar
+
+Buku *Pro Git* mendefinisikan version control sebagai sistem yang mencatat perubahan pada satu file atau sekumpulan file dari waktu ke waktu, sehingga kamu bisa memanggil kembali versi tertentu nanti. Dengan sistem ini kamu bisa mengembalikan file atau seluruh proyek ke keadaan sebelumnya, membandingkan perubahan, dan melihat siapa yang terakhir mengubah sesuatu.
+
+### Commit dan riwayat
+
+**Commit** adalah satu titik simpan yang berisi sekumpulan perubahan, nama pembuatnya, waktu, dan pesan singkat. Deretan commit membentuk **riwayat** proyek. Kalau sebuah bug muncul minggu ini, kamu bisa melihat commit apa saja yang masuk sejak build terakhir yang masih baik.
+
+Commit paling berguna kalau kecil dan punya satu tujuan. Pesan "Perbaiki lompatan ganda saat menempel di dinding" bisa dicari dan dipahami tiga bulan kemudian. Pesan "update" tidak.
+
+### Branch dan merge
+
+**Branch** adalah jalur kerja terpisah. Kamu bisa mencoba fitur baru di branch sendiri tanpa mengganggu versi utama yang dipakai tim. **Merge** menggabungkan perubahan dari satu branch ke branch lain. Kalau dua branch mengubah bagian yang sama dari file yang sama, terjadi **konflik**, dan seseorang harus memutuskan versi mana yang dipakai.
+
+Untuk tim kecil, pola sederhana biasanya cukup: satu branch utama yang selalu bisa di-build, dan branch pendek untuk setiap fitur atau perbaikan yang digabung kembali dalam beberapa hari. Branch yang hidup berminggu-minggu cenderung menumpuk konflik.
+
+### Terpusat dan terdistribusi
+
+Ada dua model besar. Di sistem **terpusat**, riwayat utama ada di satu server, dan setiap orang mengambil versi yang sedang dikerjakannya. Di sistem **terdistribusi** seperti Git, menurut *Pro Git*, setiap salinan (clone) berisi seluruh riwayat repositori, sehingga salinan mana pun bisa dipakai untuk memulihkan server. Kedua model dipakai di industri game. Perbedaannya terasa terutama saat menangani file besar dan penguncian, yang dibahas di bagian berikutnya.
+
+## Kenapa game lebih sulit
+
+Version control awalnya dirancang dengan kode sebagai contoh utama: file teks kecil yang perubahannya bisa dibandingkan baris per baris. Proyek game berbeda di dua hal.
+
+**File biner yang besar.** Tekstur, model 3D, audio, video, dan file sumber dari aplikasi seperti PSD sering berukuran puluhan sampai ratusan megabyte. Setiap kali file ini diubah, versi barunya disimpan utuh. Repositori bisa membengkak dengan cepat, dan clone pertama bisa memakan waktu lama.
+
+**File yang sulit digabung.** Wiki Git LFS mencatat bahwa konflik merge di file biner besar sangat sulit diselesaikan. Kalau dua orang mengubah tekstur yang sama, biasanya tidak ada cara otomatis untuk menggabungkan keduanya. Salah satu perubahan harus dibuang atau dikerjakan ulang. Scene, prefab, dan level juga rawan. Walaupun sebagian engine menyimpannya sebagai teks, isinya berupa struktur data yang dibuat editor, sehingga merge baris per baris bisa menghasilkan file yang rusak secara makna walaupun tampak berhasil.
+
+Dari dua masalah ini muncul dua kebutuhan: tempat penyimpanan khusus untuk file besar, dan cara untuk mengunci file yang tidak bisa digabung. Engine juga perlu diatur supaya file yang bisa disimpan sebagai teks benar-benar disimpan sebagai teks.
+
+## Git dan Git LFS
+
+Git adalah sistem terdistribusi yang paling banyak dibahas di dokumentasi engine dan layanan hosting. Untuk aset besar, Git biasanya dipasangkan dengan **Git LFS** (Large File Storage).
+
+### Cara kerja LFS
+
+Menurut situs resminya, Git LFS adalah ekstensi Git open source yang mengganti file besar seperti sampel audio, video, dataset, dan grafis dengan pointer teks di dalam Git, sedangkan isi filenya disimpan di server jarak jauh. GitHub Docs menjelaskan bahwa pointer itu mencatat versi spesifikasi Git LFS, ID unik file (oid), dan ukuran file. Saat kamu clone, pointer itu dipakai sebagai peta untuk mengambil file aslinya.
+
+Langkah dasarnya, menurut situs Git LFS:
+
+```bash title="Menyiapkan Git LFS"
+# Sekali per akun pengguna di komputermu
+git lfs install
+
+# Di setiap repositori: pilih jenis file yang dikelola LFS
+git lfs track "*.psd"
+git lfs track "*.wav"
+
+# Pengaturan ini tersimpan di .gitattributes, jadi file itu ikut di-commit
+git add .gitattributes
+```
+
+Setelah itu kamu commit dan push seperti biasa. Ada satu hal yang perlu diperhatikan: situs Git LFS menyebut bahwa menentukan jenis file tidak otomatis mengubah file yang sudah ada di commit atau branch sebelumnya. Untuk itu ada perintah `git lfs migrate`. Dokumentasi Godot menyarankan menyiapkan LFS sebelum commit apa pun. Kalau file besar terlanjur masuk, salah satu cara yang disebutnya adalah membuat repositori baru dengan LFS dan `.gitattributes` yang benar, lalu menyalin file dari repositori lama.
+
+GitHub Docs juga mengingatkan bahwa anggota tim yang belum memasang Git LFS hanya akan mendapat pointer file saat clone, tanpa isi file aslinya. Pastikan semua orang memasangnya, termasuk freelancer yang diberi akses.
+
+### Batas ukuran dan kuota di GitHub
+
+Setiap layanan hosting punya aturannya sendiri. Sebagai contoh, berikut ketentuan GitHub menurut dokumentasinya per 31 Oktober 2026:
+
+- Git memberi peringatan untuk file di atas 50 MiB, dan GitHub memblokir file di atas 100 MiB. File di atas batas itu harus memakai Git LFS.
+- GitHub menyarankan repositori tetap kecil, idealnya di bawah 1 GB, dan sangat disarankan di bawah 5 GB.
+- Batas ukuran per file di Git LFS adalah 2 GB untuk GitHub Free dan Pro, 4 GB untuk Team, dan 5 GB untuk Enterprise Cloud.
+- Kuota gratis Git LFS untuk GitHub Free, Pro, dan Free untuk organisasi adalah 10 GiB penyimpanan dan 10 GiB bandwidth. Untuk Team dan Enterprise Cloud, 250 GiB masing-masing.
+
+Cara penghitungannya penting untuk tim game. Menurut halaman billing GitHub, setiap push ke file LFS menyimpan versi baru file itu secara utuh. Mengubah 1 byte di file 500 MB lalu push lagi berarti memakai 500 MB penyimpanan tambahan. Setiap unduhan file LFS, termasuk oleh GitHub Actions, dihitung sebagai bandwidth pemilik repositori. Tekstur yang sering diubah dan build otomatis yang sering clone bisa menghabiskan kuota lebih cepat dari perkiraan. Angka dan aturan ini bisa berubah, jadi periksa halaman resminya sebelum memutuskan, dan bandingkan dengan layanan hosting lain yang mendukung LFS.
+
+### Mengunci file biner
+
+Wiki Git LFS menjelaskan **file locking**: fitur untuk mengunci file yang sedang kamu ubah supaya orang lain tidak mengubahnya di saat yang sama. Jenis file yang perlu dikunci ditandai sebagai *lockable*:
+
+```bash title="Menandai dan mengunci file"
+# Simpan file .psd di LFS dan tandai sebagai lockable
+git lfs track "*.psd" --lockable
+
+# Sebelum mengedit: kunci file atas namamu di server
+git lfs lock art/kurir_jalan.psd
+
+# Lihat siapa mengunci apa
+git lfs locks
+
+# Setelah selesai dan sudah push: lepas kuncinya
+git lfs unlock art/kurir_jalan.psd
+```
+
+Menurut wiki itu, file yang ditandai lockable dibuat read-only di komputer setiap orang sampai dikunci, sehingga orang tidak mengedit tanpa sengaja. Saat push, Git LFS memeriksa bahwa kamu tidak mengubah file yang dikunci orang lain. Ada dua catatan dari wiki yang sama. Pertama, tidak semua server LFS mendukung API penguncian, dan kalau server tidak mendukungnya, push tetap berjalan tanpa pemeriksaan. Kedua, aturan siapa boleh membuka kunci milik orang lain bisa berbeda antar server. Periksa dukungan layanan hosting-mu sebelum mengandalkan fitur ini.
+
+Penguncian hanya bekerja kalau tim memakainya dengan disiplin. Kesepakatan sederhana seperti "kunci sebelum membuka file, lepas setelah push" perlu ditulis dan diikuti semua orang.
+
+## Alternatif yang dipakai di game
+
+Git dengan LFS bukan satu-satunya pilihan. Dua sistem lain sering disebut di konteks game. Keduanya diringkas dari halaman resmi pembuatnya, jadi klaim kinerja di halaman itu adalah klaim vendor.
+
+### Perforce P4 (sebelumnya Helix Core)
+
+Dokumentasi Perforce mencatat bahwa Helix Core sekarang bernama P4. Halaman produknya menyebut P4 dipakai untuk melacak kode sumber dan aset 3D, dengan fitur seperti penguncian file eksklusif, server proxy dan edge untuk tim di banyak lokasi, dan Streams untuk mengatur branch. Di dokumentasi CLI-nya, modifier tipe file `+l` membuat file hanya bisa dibuka untuk diedit oleh satu orang pada satu waktu. Dokumentasi itu menyebutnya berguna untuk file biner seperti grafis, karena menggabungkan perubahan dari beberapa orang tidak masuk akal untuk file seperti itu. Halaman produk juga menyebut integrasi dengan Unity dan Unreal Engine.
+
+### Unity Version Control (sebelumnya Plastic SCM)
+
+Menurut Unity Docs, Unity Version Control (UVCS) dulu bernama Plastic SCM. Unity menggambarkannya sebagai alat version control untuk pengembangan game dan 3D real-time yang bisa dipakai dengan engine apa pun, dengan alur kerja untuk artist dan programmer serta penanganan file besar dan biner. Halaman produknya menyebut fitur branching, merge, dan penguncian (termasuk Smart Locks yang memeriksa versi terbaru di branch lain sebelum file bisa dikunci), Gluon sebagai alur kerja ringan untuk artist, serta pilihan server cloud atau on-premises.
+
+### Cara memilih
+
+Pakai kriteria yang sama untuk setiap pilihan:
+
+| Pertanyaan | Kenapa penting |
+| --- | --- |
+| Berapa besar aset proyekmu, dan seberapa sering berubah? | Menentukan kebutuhan penyimpanan dan bandwidth |
+| Siapa saja yang perlu mengakses, dan apakah mereka nyaman dengan command line? | Artist dan freelancer butuh alur yang bisa mereka jalankan tanpa bantuan |
+| Apakah penguncian file didukung di server yang akan kamu pakai? | Aset biner hampir selalu butuh penguncian |
+| Apakah engine-mu punya integrasi untuk sistem itu? | Integrasi di editor mengurangi langkah manual |
+| Di mana server berada, dan siapa yang merawatnya? | Server sendiri butuh waktu perawatan; layanan cloud butuh biaya berlangganan |
+| Berapa biayanya untuk ukuran timmu? | Periksa halaman harga resmi, karena paket dan kuota sering berubah |
+
+Untuk tim yang baru mulai, pilihan yang paling mudah dipakai semua anggota biasanya lebih berguna daripada pilihan dengan fitur paling banyak. Coba dulu di proyek kecil, termasuk alur artist mengunci dan mengirim satu aset, sebelum memindahkan proyek utama.
+
+## Pengaturan per engine
+
+Setiap engine menyimpan proyek dengan caranya sendiri. Pilih tab engine yang kamu pakai.
+
+<EngineTabs>
+<div slot="unity">
+
+Di Unity, setiap aset punya file `.meta` pasangan yang menyimpan pengaturan impor dan ID aset. File `.meta` harus ikut di-commit bersama asetnya. Kalau hilang, referensi antar aset bisa putus.
+
+Dua pengaturan di **Edit > Project Settings** (Manual Unity 6000.0):
+
+- **Version Control > Mode: Visible Meta Files.** Menurut manual, mode ini dipakai untuk version control yang tidak diintegrasikan langsung oleh Unity, dan merupakan nilai bawaan.
+- **Editor > Asset Serialization > Mode: Force Text.** Menurut manual, Unity bisa menyimpan scene dalam format teks untuk membantu merge. Force Text mengubah semua aset ke mode teks, termasuk aset baru, dan merupakan nilai bawaan.
+
+Nilai bawaan ini tetap layak diperiksa, terutama di proyek yang dibuat dengan versi lama atau pernah diubah pengaturannya.
+
+Unity juga menyediakan **UnityYAMLMerge** (smart merge). Menurut manual, alat ini menggabungkan file scene (`.unity`), prefab (`.prefab`), dan `.meta` dengan memahami strukturnya. Merge seperti ini berguna kalau dua orang mengubah scene atau prefab yang sama secara paralel, misalnya di branch berbeda. Manual yang sama mencatat bahwa kalau timmu mengunci file scene dan prefab, dua orang tidak bisa mengedit file yang sama sekaligus, sehingga smart merge tidak dibutuhkan untuk file tersebut. Kalau memakai Git, alat ini dijalankan lewat `git mergetool` setelah diatur.
+
+</div>
+<div slot="unreal">
+
+{/* Belum diverifikasi ke dokumentasi Epic (situs Epic diblokir proxy saat ditulis, 2026-10-31): aset Unreal (.uasset) dan level (.umap) disimpan dalam format biner; editor Unreal punya integrasi source control (antara lain Perforce dan Git lewat plugin) yang mendukung check out dan penguncian; tim Unreal umumnya mengandalkan penguncian file. Periksa halaman "Source Control" dan "Using Git/Perforce as Source Control" di dev.epicgames.com sebelum status ditinjau. */}
+
+Di Unreal, sebagian besar aset (`.uasset`) dan level (`.umap`) disimpan sebagai file biner. Akibatnya, perubahan dari dua orang pada aset atau level yang sama tidak bisa digabung seperti teks, dan tim biasanya mengunci aset sebelum mengeditnya. Kalau memakai Git, tandai jenis file ini sebagai lockable di Git LFS. Baca panduan source control di dokumentasi Unreal untuk versi engine-mu sebelum menyiapkan proyek.
+
+</div>
+<div slot="godot">
+
+Dokumentasi Godot menyebut bahwa Godot dirancang ramah version control dan sebagian besar file yang dibuatnya bisa dibaca dan digabung. Scene disimpan sebagai `.tscn` dan resource sebagai `.tres`. Menurut dokumentasi format TSCN, file ini sebagian besar bisa dibaca manusia dan mudah dikelola version control, berbeda dengan format biner `.scn`.
+
+Pengaturan yang disebut dokumentasi Godot:
+
+- **Generate Version Control Metadata.** Saat membuat proyek baru dengan opsi Git, project manager membuat `.gitignore` dan `.gitattributes`. Di proyek yang sudah ada, pilih **Project > Version Control > Generate Version Control Metadata**.
+- **Akhir baris di Windows.** Banyak klien Git for Windows memakai `core.autocrlf` bernilai `true`, sehingga file bisa tampak berubah hanya karena akhir baris. Dokumentasi menyarankan `git config --global core.autocrlf input`, kecuali kamu sudah membuat metadata di atas, karena `.gitattributes` buatan Godot sudah memaksa akhir baris LF.
+- **Plugin Git resmi** tersedia kalau kamu ingin memakai Git dari dalam editor.
+
+</div>
+</EngineTabs>
+
+## File yang tidak perlu disimpan
+
+Engine membuat banyak file yang bisa dibuat ulang: cache, hasil impor, file proyek IDE, dan hasil build. File ini memperbesar repositori, sering berubah tanpa alasan yang berarti, dan memicu konflik. Daftarkan file seperti ini di `.gitignore`.
+
+Prinsip umumnya: simpan semua yang dibutuhkan untuk membuka proyek dan membuat ulang build, dan abaikan semua yang bisa dibuat ulang oleh engine atau IDE.
+
+GitHub merawat kumpulan templat `.gitignore` di repositori [github/gitignore](https://github.com/github/gitignore), termasuk untuk Unity, Godot, dan Unreal Engine. Isinya kurang lebih seperti ini (ringkasan per 31 Oktober 2026; ambil versi terbarunya dari repositori itu):
+
+| Engine | Contoh yang diabaikan | Catatan |
+| --- | --- | --- |
+| Unity | `Library/`, `Temp/`, `Obj/`, `Build/`, `Builds/`, `Logs/`, `UserSettings/`, file `.csproj` dan `.sln` | Folder `Assets/`, `Packages/`, dan `ProjectSettings/` tetap disimpan, begitu juga file `.meta` |
+| Godot | `.godot/`, `*.translation`, `export_credentials.cfg` | Dokumentasi Godot menyebut `.godot/` berisi cache proyek, dan `*.translation` adalah hasil impor biner dari CSV |
+| Unreal | `Binaries/`, `Intermediate/`, `Saved/`, `DerivedDataCache/`, `Build/` (dengan beberapa pengecualian) | Folder `Content/`, `Config/`, `Source/`, dan file `.uproject` tetap disimpan |
+
+Catatan untuk Godot: dokumentasinya menegaskan bahwa daftar ini berlaku untuk Godot 4.1 ke atas. Godot 3.x dan 4.0 bisa menyimpan kredensial sensitif di `export_presets.cfg`, jadi daftarnya berbeda. Kalau memakai versi lama, baca dokumentasi untuk versi tersebut.
+
+Tambahkan juga file khusus sistem operasi dan editor yang kamu pakai, dan jangan pernah commit kata sandi, kunci API, atau file keystore. Hal yang sama dibahas di bagian [bus factor](/belajar/produksi/03-peran-tim-kecil/#bus-factor-dan-dokumentasi) pelajaran sebelumnya: akses penting dibagikan lewat pengelola kata sandi, tidak lewat repositori.
+
+## Pelacak tugas
+
+Pelajaran [Peran dalam Tim Kecil](/belajar/produksi/03-peran-tim-kecil/#ritme-komunikasi) menyarankan satu pelacak tugas sebagai sumber kebenaran. Bagian ini membahas cara menyusunnya. Konsepnya sama di alat apa pun. Contoh alat yang banyak dipakai antara lain Trello, Jira, GitHub Projects, Codecks, HacknPlan, atau spreadsheet biasa. Urutan penyebutan ini tidak menunjukkan peringkat.
+
+### Papan dan backlog
+
+**Papan** menampilkan tugas sebagai kartu di kolom yang mewakili status. Panduan kanban dari Atlassian menyebut komponen utamanya: kolom untuk tahap kerja, kartu untuk setiap tugas, dan batas pekerjaan yang sedang berjalan (*WIP limit*) supaya tim tidak kewalahan. Kartu bergerak dari kiri ke kanan.
+
+Papan sederhana untuk tim kecil:
+
+| Backlog | Siap dikerjakan | Dikerjakan | Perlu dicek | Selesai |
+| --- | --- | --- | --- | --- |
+| Semua ide dan tugas yang belum dijadwalkan | Tugas untuk sprint atau minggu ini, sudah jelas | Satu atau dua kartu per orang | Menunggu diuji di build | Lolos definition of done |
+
+**Backlog** adalah daftar semua pekerjaan yang belum dijadwalkan. Scrum Guide menyebut Product Backlog sebagai daftar berurutan yang terus berkembang tentang apa yang dibutuhkan untuk memperbaiki produk, dan menjadi satu-satunya sumber pekerjaan tim. Kata kuncinya *berurutan*: item paling atas adalah yang paling penting, dan item besar dipecah menjadi tugas kecil sebelum diambil.
+
+Kartu yang baik punya judul yang menjelaskan hasilnya, satu nama penanggung jawab, dan cukup detail supaya orang lain paham tanpa bertanya. "Animasi lompat kurir, 6 frame, sesuai referensi di kartu" lebih jelas daripada "animasi".
+
+### Definition of done
+
+Scrum Guide mendefinisikan *Definition of Done* sebagai deskripsi formal tentang keadaan hasil kerja ketika sudah memenuhi ukuran kualitas yang dibutuhkan produk. Tujuannya memberi semua orang pemahaman yang sama tentang apa yang sudah selesai. Item yang belum memenuhinya tidak boleh dirilis dan kembali ke backlog.
+
+Contoh definition of done untuk tugas di proyek game kecil:
+
+- Perubahan sudah di-commit ke branch utama dan build otomatis berhasil.
+- Fitur bisa dicoba di build terbaru, tidak hanya di editor pembuatnya.
+- Aset mengikuti aturan penamaan dan ukuran yang disepakati.
+- Satu orang lain sudah mencoba dan tidak menemukan masalah besar.
+- Kunci file sudah dilepas.
+
+Daftar ini sebaiknya pendek dan bisa diperiksa. Kalau terlalu panjang, orang mulai melewatinya.
+
+### Menghubungkan tugas dengan milestone
+
+Milestone dari pelajaran [Scope dan Vertical Slice](/belajar/produksi/01-scope-vertical-slice/) perlu terlihat di papan. Caranya bergantung pada alat: label, epic, atau fitur milestone. GitHub Docs, misalnya, menjelaskan bahwa milestone bisa dihubungkan dengan issue dan pull request, dan halamannya menampilkan tanggal tenggat, persentase selesai, serta jumlah issue yang terbuka dan tertutup.
+
+Dengan hubungan ini, pertanyaan "apakah vertical slice selesai tepat waktu?" bisa dijawab dengan melihat sisa kartu, tanpa perlu menebak. Kalau sisa kartu tidak turun sesuai laju kerja, itu tanda untuk menghitung ulang scope seperti di pelajaran pertama. Banyak alat juga bisa menghubungkan kartu dengan commit, misalnya dengan menulis nomor tugas di pesan commit, sehingga dari satu kartu kamu bisa melihat perubahan apa yang menyelesaikannya.
+
+## Build otomatis
+
+**Build** adalah versi game yang bisa dijalankan di luar editor. Pelajaran [Fase Produksi](/belajar/produksi/02-fase-produksi/#produksi) menyarankan build berkala yang bisa dimainkan, dan pelajaran Peran dalam Tim Kecil menunjukkan risikonya kalau cara membuat build hanya diketahui satu orang. Build otomatis menjawab keduanya: langkahnya ditulis sebagai skrip dan dijalankan mesin.
+
+### Dari build manual ke build otomatis
+
+Martin Fowler mendefinisikan *Continuous Integration* (CI) sebagai praktik di mana setiap anggota tim menggabungkan perubahannya ke basis kode bersama setidaknya setiap hari, dan setiap penggabungan diverifikasi oleh build otomatis, termasuk pengujian, untuk mendeteksi masalah integrasi secepat mungkin. Di antara praktik yang ia tulis: mengotomatiskan build, membuat build bisa menguji dirinya sendiri, dan memperbaiki build yang rusak secepatnya.
+
+Langkah bertahap yang realistis untuk tim kecil:
+
+1. **Tulis langkah build manual** sampai orang lain bisa mengikutinya tanpa bertanya.
+2. **Ubah langkah itu menjadi satu skrip** yang bisa dijalankan dengan satu perintah di komputer siapa pun.
+3. **Jalankan skrip itu di mesin terpisah** setiap kali ada perubahan di branch utama, atau setiap malam. Mesin ini bisa komputer lama di kantor atau layanan CI.
+4. **Simpan hasil build dan laporannya** di tempat yang bisa dibuka semua orang.
+
+### Smoke test
+
+**Smoke test** adalah pemeriksaan singkat yang memastikan build tidak rusak secara mendasar: build berhasil dibuat, game bisa dibuka, scene pertama termuat, dan tidak ada error fatal di log. Tes ini tidak mencari semua bug. Tujuannya mencegah build yang rusak sampai ke tangan playtester atau anggota tim lain. Pengujian yang lebih dalam akan dibahas di pelajaran Kualitas dan Rilis di jalur ini, yang masih dalam rencana.
+
+Contoh smoke test sederhana: jalankan build tanpa jendela selama beberapa ratus frame, lalu periksa apakah prosesnya keluar dengan kode sukses dan log-nya bebas dari error.
+
+### Build harian
+
+**Build harian** (*nightly build*) adalah build yang dibuat otomatis setiap malam dari versi terbaru di branch utama. Paginya, tim punya build yang bisa langsung dicoba, dan kalau build gagal, perubahan kemarin jadi tersangka utama. Untuk proyek yang build-nya lama, build harian bisa menjadi pelengkap build per perubahan yang lebih ringan.
+
+Sebagai contoh, GitHub Actions adalah platform CI/CD yang menjalankan *workflow* dari file YAML di folder `.github/workflows`. Menurut dokumentasinya, workflow bisa dipicu oleh event di repositori, dijalankan manual, atau dijadwalkan dengan sintaks cron. Jadwal berjalan dalam UTC secara bawaan, hanya di branch utama (*default branch*), dan bisa tertunda saat beban tinggi, terutama di awal setiap jam. Di repositori publik, workflow terjadwal dinonaktifkan otomatis kalau tidak ada aktivitas selama 60 hari. Untuk biaya, halaman billing GitHub per 31 Oktober 2026 menyebut runner standar di repositori publik gratis, sedangkan di repositori privat pemakaiannya dihitung dari kuota bulanan paketmu. Layanan CI lain seperti GitLab CI/CD, Jenkins, atau TeamCity bekerja dengan konsep serupa: pemicu, langkah-langkah, dan hasil yang disimpan.
+
+```yaml title=".github/workflows/build-harian.yml (kerangka)"
+name: Build harian
+on:
+  schedule:
+    - cron: "0 19 * * *"   # 19.00 UTC, sekitar pukul 02.00 WIB
+  workflow_dispatch:        # bisa juga dijalankan manual
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true         # ambil file LFS, ingat ini memakai kuota bandwidth
+      # Langkah memasang engine dan export template bergantung pada engine-mu.
+      # Lihat dokumentasi engine dan contoh dari komunitas.
+      - run: ./tools/build.sh
+      - run: ./tools/smoke-test.sh
+```
+
+Kerangka ini hanya menunjukkan bentuknya. Langkah memasang engine, lisensi (untuk Unity), dan cara mengunggah hasil build perlu disesuaikan dengan engine dan layanan yang kamu pakai.
+
+### Contoh perintah build per engine
+
+Inti dari skrip build adalah perintah yang menjalankan engine tanpa interaksi manusia.
+
+<EngineTabs>
+<div slot="unity">
+
+Menurut referensi argumen command line di Manual Unity 6000.0:
+
+- `-batchmode` menjalankan Unity tanpa interaksi manusia dan menahan dialog yang membutuhkan respons. Manual menyarankan selalu memakainya saat menjalankan Unity dari command line.
+- `-projectPath <path>` membuka proyek di path tersebut.
+- `-executeMethod <Kelas.Metode>` menjalankan metode statis setelah proyek dibuka, misalnya untuk CI, unit test, atau membuat build. Skripnya harus berada di folder `Editor`.
+- `-buildWindows64Player <path>` membuat build Windows 64-bit. Ada juga `-build <path>` yang memakai build profile aktif.
+- `-logFile <path>` menentukan lokasi log. Tanda `-` mengarahkan log ke konsol.
+- `-quit` menutup editor setelah perintah lain selesai.
+
+```bash title="Build Windows dari command line (contoh)"
+Unity -batchmode -quit \
+  -projectPath ./KurirKota \
+  -buildWindows64Player ./Builds/Windows/KurirKota.exe \
+  -logFile ./Builds/unity-build.log
+```
+
+Nama dan lokasi file program Unity berbeda di setiap sistem operasi dan versi yang dipasang lewat Unity Hub. Kalau terjadi error, menurut manual Unity keluar dengan kode selain nol, sehingga layanan CI bisa menandai build sebagai gagal.
+
+</div>
+<div slot="unreal">
+
+{/* Belum diverifikasi ke dokumentasi Epic (situs Epic diblokir proxy saat ditulis, 2026-10-31): Unreal membuat build dari command line lewat Unreal Automation Tool (RunUAT, perintah BuildCookRun). Periksa dokumentasi "BuildCookRun" / "Unreal Automation Tool" di dev.epicgames.com sebelum menambahkan contoh perintah. */}
+
+Unreal juga bisa membuat build dari command line. Perintah dan argumennya ada di panduan otomatisasi build di dokumentasi Unreal untuk versi engine-mu.
+
+</div>
+<div slot="godot">
+
+Menurut tutorial command line di dokumentasi Godot:
+
+- `--headless` menjalankan Godot tanpa jendela dan tanpa audio. Mode ini wajib di platform tanpa akses GPU, seperti kebanyakan mesin CI.
+- `--path <folder>` menunjuk folder yang berisi `project.godot`.
+- `--export-release <preset> <path>` mengekspor proyek dengan preset dari `export_presets.cfg`. Ada juga `--export-debug` dan `--export-pack`.
+- Perintah harus dijalankan dengan binary editor Godot, dan export template harus sudah terpasang.
+
+```bash title="Ekspor build Windows dari command line (contoh)"
+godot --headless --path ./kurir-kota \
+  --export-release "Windows Desktop" builds/windows/KurirKota.exe
+```
+
+Nama preset harus sama persis dengan yang ada di `export_presets.cfg`, dan diberi tanda kutip kalau mengandung spasi. Dokumentasi juga mengingatkan bahwa path relatif dihitung dari folder berisi `project.godot`, tidak dari folder tempat perintah dijalankan, dan folder tujuannya harus sudah ada.
+
+Untuk smoke test sederhana, opsi `--quit-after <N>` menutup game setelah N iterasi, sehingga kamu bisa menjalankan proyek tanpa jendela selama beberapa saat lalu memeriksa log-nya.
+
+</div>
+</EngineTabs>
+
+## Cadangan
+
+Version control menyimpan riwayat, tetapi belum tentu menjadi cadangan yang lengkap. GitHub Docs sendiri menyebut bahwa Git tidak dirancang sebagai alat cadangan. Server bisa bermasalah, akun bisa terkunci, dan file di luar repositori (rekaman audio mentah, file proyek DAW, kontrak, dokumen desain) sering tidak ikut tersimpan. Clone Git berisi seluruh riwayat, tetapi hanya untuk file yang sudah diambil. File LFS yang belum diunduh ke komputer siapa pun hanya ada di server.
+
+Panduan *Data Backup Options* yang diterbitkan US-CERT menyarankan **aturan 3-2-1**:
+
+- **3** salinan dari setiap file penting: satu utama dan dua cadangan.
+- **2** jenis media yang berbeda, supaya terlindung dari jenis bahaya yang berbeda.
+- **1** salinan disimpan di luar lokasi, misalnya di luar rumah atau kantor.
+
+Panduan yang sama mengingatkan bahwa cadangan yang terus ditimpa (*rolling backup*) bisa ikut menyalin file yang rusak atau terkena malware. Untuk tim kecil, penerapannya bisa sederhana: repositori di layanan hosting, salinan lengkap (termasuk file LFS) di hard disk eksternal yang diperbarui setiap minggu, dan salinan ketiga di layanan penyimpanan cloud yang berbeda. Coba pulihkan proyek dari cadangan sesekali. Cadangan yang belum pernah dipulihkan belum terbukti bisa dipakai.
+
+## Contoh: Sari dan Dimas menyiapkan repositori, papan, dan build otomatis
+
+<Aside type="caution" title="Ilustrasi, bukan data">
+Kejadian, angka, dan pilihan alat di bagian ini dibuat untuk menunjukkan cara berpikir, tidak berasal dari proyek nyata. Pilihan alat di sini tidak berarti alat lain kurang cocok.
+</Aside>
+
+Sari (programmer dan desain) dan Dimas (art dan audio) adalah tim dua orang dari [contoh di pelajaran sebelumnya](/belajar/produksi/03-peran-tim-kecil/#contoh-sari-dimas-dan-satu-freelancer-selama-sebulan). Mereka membuat platformer 2D tentang kurir di kota bertingkat, dan dalam ilustrasi ini mereka memakai Godot. Sejak awal, Sari menyimpan kode di Git. Art dan audio Dimas ada di folder bersama yang disinkronkan, terpisah dari repositori. Tugas dicatat di chat.
+
+**Pemicunya.** Di bulan keenam, setelah Sari sakit tiga hari dan tidak ada yang bisa membuat build, mereka sepakat memakai satu minggu untuk merapikan alat kerja. Ada dua masalah lain yang sudah lama terasa. Dimas dua kali menimpa versi tilemap yang sedang diubah Sari, karena folder bersama tidak memberi tahu siapa sedang membuka apa. Pertanyaan "tugas ini sudah selesai belum?" juga sering muncul di chat.
+
+**Hari 1: repositori dan LFS.** Sari mencatat jenis file besar di proyek: `.psd` dan `.aseprite` untuk art, `.wav` untuk audio, dan `.ogg` untuk musik dari Raka. Karena file art belum pernah masuk repositori, mereka memasang Git LFS lebih dulu, menandai jenis file itu, dan menandai `.psd` serta `.aseprite` sebagai lockable. Baru setelah itu Dimas memindahkan folder art ke repositori. Mereka juga menjalankan Generate Version Control Metadata di Godot dan mencocokkan `.gitignore` buatan Godot dengan templat dari github/gitignore.
+
+```text title=".gitattributes (sebagian)"
+*.psd       filter=lfs diff=lfs merge=lfs -text lockable
+*.aseprite  filter=lfs diff=lfs merge=lfs -text lockable
+*.wav       filter=lfs diff=lfs merge=lfs -text
+*.ogg       filter=lfs diff=lfs merge=lfs -text
+```
+
+**Hari 1: aturan kerja.** Mereka menulis tiga aturan di README repositori. Branch utama harus selalu bisa di-build. Setiap fitur dikerjakan di branch pendek dan digabung paling lama tiga hari. File lockable dikunci sebelum dibuka dan dilepas setelah push. Tilemap level (`.tscn` dan `.tres`) memang berbentuk teks, tetapi mereka sepakat hanya satu orang mengubah satu level pada satu waktu, dan nama orangnya ditulis di kartu tugas.
+
+**Hari 2: papan.** Sari memindahkan semua tugas dari chat ke papan dengan lima kolom: backlog, siap dikerjakan, dikerjakan, perlu dicek, selesai. Setiap kartu diberi label milestone (alpha atau rilis) dan satu nama. Mereka sepakat maksimal dua kartu per orang di kolom "dikerjakan". Definition of done mereka lima baris, sama dengan contoh di atas. Hasil pertamanya langsung terlihat: 14 kartu ternyata tidak punya pemilik, dan 3 di antaranya sudah diam-diam dikerjakan berdua.
+
+**Hari 3 dan 4: skrip build.** Sari menulis `tools/build.sh` yang menjalankan `godot --headless --export-release` untuk Windows dan Linux, lalu `tools/smoke-test.sh` yang menjalankan build Linux tanpa jendela selama 600 iterasi dan memeriksa apakah log berisi kata "ERROR". Dimas mencoba menjalankan keduanya di laptopnya hanya dari README. Ia menemukan satu langkah yang terlewat: export template belum terpasang di laptopnya. Langkah itu ditambahkan ke README.
+
+**Hari 5: build harian.** Mereka menjalankan skrip yang sama sebagai workflow terjadwal setiap malam. Karena repositori mereka privat, Sari memeriksa kuota menit CI dan bandwidth LFS di halaman billing layanan hosting-nya. Ia menghitung bahwa clone dengan semua file LFS setiap malam akan menghabiskan bandwidth dengan cepat. Mereka memutuskan build harian hanya berjalan kalau ada commit baru hari itu, dan memakai cache supaya file LFS tidak diunduh ulang setiap kali.
+
+**Hari 5: cadangan.** Dimas membuat jadwal cadangan mingguan ke hard disk eksternal (termasuk semua file LFS dan folder kontrak), dan salinan ketiga ke layanan penyimpanan cloud yang berbeda dari layanan hosting repositori. Akhir bulan, mereka mencoba memulihkan proyek dari hard disk itu ke laptop kosong. Proyek bisa dibuka dan di-build.
+
+**Hasil setelah sebulan.** Build harian gagal empat kali. Tiga di antaranya karena file yang lupa di-commit dan satu karena nama preset ekspor diganti. Semua ketahuan pagi harinya, sebelum ada yang membagikan build. Tidak ada lagi aset yang tertimpa. Mereka juga mencatat dua hal untuk diperbaiki: pesan commit Dimas masih sering berbunyi "update art", dan kartu di kolom "perlu dicek" menumpuk karena tidak ada jadwal untuk mengeceknya. Mereka menambahkan sesi cek 30 menit setiap Rabu dan Jumat.
+
+## Kesalahan umum
+
+### File besar masuk ke Git tanpa LFS
+
+```text title="✗ Keliru"
+git add Art/   # 2 GB file PSD dan WAV langsung masuk riwayat Git
+```
+
+```text title="✓ Benar"
+git lfs install
+git lfs track "*.psd" --lockable
+git lfs track "*.wav"
+git add .gitattributes
+git add Art/
+```
+
+File yang sudah masuk riwayat tetap ada di riwayat walaupun dihapus di commit berikutnya. Memindahkannya ke LFS belakangan butuh `git lfs migrate` atau membuat repositori baru. Pasang LFS sebelum commit aset pertama.
+
+### Dua orang mengedit aset biner yang sama
+
+Tanpa penguncian, salah satu dari mereka akan kehilangan pekerjaannya saat push. Tandai jenis file biner sebagai lockable, periksa bahwa server mendukung penguncian, dan sepakati aturan kunci sebelum mengedit.
+
+### Folder cache dan hasil build ikut di-commit
+
+Folder seperti `Library/` di Unity atau `.godot/` di Godot membuat repositori besar dan memicu konflik yang tidak berarti. Pakai templat `.gitignore` sejak awal dan periksa `git status` sebelum commit pertama.
+
+### Build hanya bisa dibuat di satu laptop
+
+Kalau langkah build hanya ada di kepala satu orang, build berhenti saat orang itu tidak ada. Tulis langkahnya sebagai skrip, minta orang lain menjalankannya, lalu jalankan di mesin terpisah.
+
+### Papan tugas yang tidak dirawat
+
+Kartu tanpa pemilik, kartu yang sudah selesai tetapi masih di kolom "dikerjakan", dan tugas baru yang masih dibahas di chat membuat papan tidak bisa dipercaya. Setelah itu orang berhenti membukanya. Rapikan papan di setiap check-in mingguan.
+
+### Menganggap repositori sebagai cadangan
+
+Repositori di satu layanan hosting adalah satu salinan. File di luar repositori dan file LFS yang belum diunduh siapa pun tidak punya salinan lain. Terapkan 3-2-1 dan uji pemulihannya.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan dengan proyekmu sendiri, atau buat proyek kosong di engine yang kamu pakai.
+
+1. Buat daftar jenis file di proyekmu. Tandai mana yang teks, mana yang biner, dan mana yang besar (di atas beberapa megabyte). Dari daftar itu, tulis isi `.gitattributes` untuk Git LFS dan tentukan jenis file mana yang perlu lockable.
+2. Ambil templat `.gitignore` untuk engine-mu dari repositori github/gitignore. Bandingkan dengan isi folder proyekmu, lalu jelaskan dengan kata-katamu sendiri kenapa setiap folder yang diabaikan bisa dibuat ulang.
+3. Periksa pengaturan engine-mu: Visible Meta Files dan Force Text di Unity, atau Generate Version Control Metadata dan `core.autocrlf` di Godot. Catat pengaturan yang ternyata berbeda dari saran di pelajaran ini.
+4. Susun papan dengan lima kolom untuk proyekmu. Isi minimal sepuluh kartu, masing-masing dengan satu nama dan label milestone. Tulis definition of done paling banyak lima baris.
+5. Tulis langkah build manual proyekmu, lalu ubah menjadi satu perintah atau skrip. Minta orang lain menjalankannya hanya dari catatanmu, dan tambahkan langkah yang ternyata terlewat.
+6. Tulis rencana cadangan 3-2-1 untuk proyekmu: apa saja yang dicadangkan (termasuk file di luar repositori), di mana tiga salinannya, seberapa sering diperbarui, dan kapan kamu akan mencoba memulihkannya.

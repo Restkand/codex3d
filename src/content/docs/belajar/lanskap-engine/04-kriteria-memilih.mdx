@@ -1,0 +1,389 @@
+---
+title: "Kriteria Memilih Engine"
+description: "Proses memilih engine untuk satu proyek dan satu tim: syarat mutlak, kebutuhan proyek, keahlian tim, biaya, ekosistem, dan risiko jangka panjang, lalu matriks skor berbobot dan prototipe pembanding sebelum keputusan diambil."
+fundamental: "Engine yang cocok untuk satu proyek bisa menjadi beban di proyek lain, karena kebutuhan genre, platform, dan keahlian tim berbeda-beda. Saat ketidakcocokan itu baru ketahuan di tengah produksi, pilihannya tinggal bertahan dengan alat yang menghambat atau membayar mahal untuk pindah. Proses memilih yang menuliskan syarat, bobot, dan hasil uji membuat keputusan itu bisa diperiksa ulang oleh seluruh tim sebelum produksi dimulai."
+kind: lesson
+minutes: 30
+status: draf
+lastReviewed: 2026-10-31
+terms:
+  - pixel-perfect
+  - cpu-gpu-bound
+krekit:
+  gambaran-besar: "Jawaban yang benar untuk timmu bisa salah untuk tim sebelah. Yang perlu kamu bawa pulang adalah caranya."
+  mulai-dari-syarat-mutlak: "Syarat mutlak itu sedikit. Kalau daftarmu panjang, sebagian besar sebenarnya keinginan."
+  kebutuhan-proyek: "Tulis kebutuhan proyeknya dulu sebelum membuka situs engine mana pun."
+  tim: "Hitung juga waktu belajar. Satu bulan belajar untuk tim lima orang sama dengan lima bulan kerja."
+  biaya-dan-lisensi: "Hitungannya ada di Pelajaran 3. Di sini hasilnya cukup jadi satu baris di matriks."
+  ekosistem: "Coba cari jawaban untuk satu masalah yang pasti kamu temui. Dari situ terlihat seberapa membantu ekosistemnya."
+  risiko: "Catat versi engine dan sampai kapan versi itu didukung, lalu pasang pengingat di kalender tim."
+  matriks-skor-berbobot: "Angka di matriks hanya merangkum pendapat tim. Diskusi saat mengisinya sama pentingnya dengan totalnya."
+  menguji-sebelum-memutuskan: "Seminggu prototipe jauh lebih murah daripada pindah engine di bulan kedelapan."
+  kesalahan-umum: "Kesalahan ketiga paling sering baru ketahuan saat game sudah hampir selesai."
+sidebar:
+  order: 4
+  label: "4 · Kriteria Memilih"
+quiz:
+  - q: "Tim kamu wajib merilis game di Nintendo Switch. Engine X tidak punya jalur ekspor ke Switch dalam bentuk apa pun, tetapi skor totalnya di matriks paling tinggi. Apa langkah yang tepat?"
+    options:
+      - "Pilih Engine X karena skornya paling tinggi"
+      - "Coret Engine X sebelum menghitung skor, karena rilis di Switch adalah syarat mutlak"
+      - "Naikkan bobot kriteria platform supaya skor Engine X turun"
+      - "Pilih Engine X lalu cari cara ekspor ke Switch menjelang rilis"
+    answer: 1
+    explain: "Syarat mutlak dipakai sebagai saringan sebelum matriks. Engine yang tidak memenuhinya tidak ikut dinilai, berapa pun skornya di kriteria lain. Matriks hanya membandingkan pilihan yang sudah lolos saringan."
+  - q: "Di ilustrasi pelajaran ini, Engine Kenari dan Engine Rajawali mendapat 74% dan 75% untuk Proyek Lentik. Apa arti selisih sekecil itu?"
+    options:
+      - "Engine Rajawali pasti lebih baik untuk proyek itu"
+      - "Matriksnya salah dan harus diisi ulang sampai selisihnya besar"
+      - "Matriks belum bisa memutuskan, jadi keduanya perlu diuji dengan prototipe yang sama"
+      - "Tim boleh memilih engine yang paling populer"
+    answer: 2
+    explain: "Selisih satu poin persentase lebih kecil dari ketidakpastian skor yang diisi berdasarkan perkiraan. Uji kepekaan di ilustrasi juga menunjukkan urutannya berbalik saat satu bobot diturunkan. Prototipe pembanding memberi data yang lebih kuat daripada perkiraan."
+  - q: "Kenapa skor sebuah engine untuk kriteria yang sama bisa berbeda antara dua proyek?"
+    options:
+      - "Karena skor diisi secara acak"
+      - "Karena skor menilai kecocokan engine dengan kebutuhan proyek dan tim itu, dan kebutuhannya berbeda"
+      - "Karena vendor mengubah engine-nya di antara dua proyek"
+      - "Skor seharusnya selalu sama; perbedaan berarti ada kesalahan"
+    answer: 1
+    explain: "Skor di matriks menjawab pertanyaan seberapa cocok engine ini untuk proyek dan tim ini. Alat 2D yang lengkap bernilai tinggi untuk game pixel art dan bernilai rendah untuk game 3D. Engine-nya sama, kebutuhannya yang berbeda."
+  - q: "Menurut halaman dukungan rilis Unity 6 per 31 Oktober 2026, berapa lama rilis LTS Unity didukung untuk pengguna umum?"
+    options:
+      - "Enam bulan"
+      - "Satu tahun"
+      - "Dua tahun, dengan tambahan satu tahun untuk pengguna Unity Enterprise dan Unity Industry"
+      - "Selamanya, selama proyek masih aktif"
+    answer: 2
+    explain: "Halaman itu menyebut rilis LTS keluar setahun sekali dan didukung dua tahun, dengan tambahan satu tahun dukungan untuk pengguna Unity Enterprise dan Unity Industry. Halaman yang sama menyebut Unity 6.0 LTS didukung sampai Oktober 2026 dan Unity 6.3 LTS sampai Desember 2027."
+  - q: "Saat menguji dua engine dengan prototipe pembanding, apa yang paling penting dijaga?"
+    options:
+      - "Prototipe di setiap engine boleh berbeda isinya, asalkan sama-sama menarik"
+      - "Isi prototipe, waktu yang diberikan, dan cara mencatat hasilnya sama untuk kedua engine"
+      - "Prototipe cukup dijalankan di editor, tanpa build ke perangkat target"
+      - "Prototipe dikerjakan oleh orang yang sudah ahli di salah satu engine saja"
+    answer: 1
+    explain: "Perbandingan hanya adil kalau tugas, waktu, dan catatannya sama. Build ke perangkat target juga termasuk tugasnya, karena banyak masalah platform dan performa baru muncul di sana."
+  - q: "Tim tiga orang menguasai C# dan memilih engine dengan bahasa lain hanya karena showreel grafisnya mengesankan. Kesalahan apa yang paling mungkin terjadi?"
+    options:
+      - "Tidak ada, karena bahasa pemrograman mudah dipelajari dalam beberapa hari"
+      - "Keahlian tim yang sudah ada diabaikan, dan grafis showreel belum tentu bisa dicapai tim seukuran mereka"
+      - "Engine dengan grafis bagus selalu lebih mahal"
+      - "Showreel selalu dibuat dengan engine lain"
+    answer: 1
+    explain: "Showreel biasanya dibuat oleh tim dengan banyak artis dan waktu yang panjang. Biaya belajar bahasa dan alur kerja baru dikalikan dengan jumlah anggota tim, dan sering lebih besar dari perkiraan."
+sources:
+  - title: "Unity 6 release support"
+    url: "https://unity.com/releases/unity-6/support"
+    publisher: "Unity"
+    accessed: 2026-10-31
+  - title: "Godot release policy"
+    url: "https://docs.godotengine.org/en/stable/about/release_policy.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "GameMaker Release Notes"
+    url: "https://releases.gamemaker.io/"
+    publisher: "GameMaker"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Memisahkan syarat mutlak dari keinginan, lalu memakai syarat mutlak untuk menyaring pilihan engine.
+- Menyusun kriteria pemilihan dari kebutuhan proyek, kondisi tim, biaya, ekosistem, dan risiko.
+- Mengisi matriks skor berbobot dan membaca hasilnya, termasuk saat selisihnya terlalu kecil untuk memutuskan.
+- Merancang prototipe pembanding satu minggu untuk dua engine.
+- Mengenali kesalahan yang sering terjadi saat memilih engine.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: memilih kendaraan untuk usaha">
+Pedagang sayur keliling dan jasa pindahan sama-sama butuh kendaraan, tetapi pilihannya berbeda. Pedagang sayur memikirkan muatan harian dan jalan gang yang sempit, sedangkan jasa pindahan memikirkan kapasitas bak dan jumlah awak. Mereka juga memikirkan siapa yang bisa menyetir, di mana bengkel terdekat, dan apakah suku cadangnya mudah dicari. Lembar spesifikasi kendaraan baru berguna setelah kebutuhan usahanya ditulis.
+</Aside>
+
+Di [Pelajaran 2](/belajar/lanskap-engine/02-profil-engine/) kamu membaca lembar spesifikasi beberapa engine, dan di [Pelajaran 3](/belajar/lanskap-engine/03-lisensi/) kamu belajar menghitung biayanya. Pelajaran ini menggabungkan keduanya dengan kebutuhan proyek dan kondisi timmu menjadi satu proses keputusan.
+
+Prosesnya punya empat langkah:
+
+```text title="Alur memilih engine"
+1. Tulis syarat mutlak       →  coret engine yang tidak memenuhinya
+2. Tulis kriteria dan bobot  →  dari proyek, tim, biaya, ekosistem, risiko
+3. Isi matriks skor          →  baca totalnya, lalu uji kepekaannya
+4. Uji dengan prototipe      →  dua kandidat teratas, tugas yang sama, waktu yang sama
+```
+
+Pelajaran ini tidak menyebut engine mana yang paling cocok untuk genre atau ukuran tim tertentu. Fakta tentang setiap engine ada di profilnya di Pelajaran 2. Ilustrasi di bawah memakai dua engine karangan supaya yang terlihat adalah cara menimbangnya.
+
+## Mulai dari syarat mutlak
+
+Syarat mutlak adalah kebutuhan yang, kalau tidak terpenuhi, membuat proyek tidak bisa berjalan sesuai rencana. Contohnya:
+
+- Game harus bisa dirilis di platform tertentu, misalnya Nintendo Switch atau browser.
+- Game harus bisa dikerjakan dengan bahasa yang dikuasai programmer satu-satunya di tim.
+- Biaya lisensi pada skenario pendapatan yang direncanakan harus muat di anggaran.
+- Tim harus bisa membaca atau mengubah kode engine, karena proyeknya butuh perubahan di tingkat engine.
+
+Syarat mutlak dipakai sebagai saringan. Engine yang tidak memenuhi salah satunya dicoret dan tidak ikut dinilai, sebagus apa pun nilainya di bagian lain. Hal yang hanya diinginkan, misalnya "editornya nyaman" atau "punya banyak aset siap pakai", masuk ke matriks sebagai kriteria berbobot.
+
+Tulis syarat mutlak dengan kalimat yang bisa dicek ya atau tidak. "Harus bisa rilis di Switch" bisa dicek di dokumentasi engine dan di program pengembang Nintendo. "Harus bagus untuk konsol" tidak bisa dicek.
+
+## Kebutuhan proyek
+
+### Genre, 2D, dan 3D
+
+Mulailah dari apa yang paling sering dikerjakan tim setiap hari. Game platformer pixel art banyak bekerja dengan sprite, tilemap, dan tampilan [pixel perfect](/kamus/2d/pixel-perfect/). Game balap 3D banyak bekerja dengan model, material, cahaya, dan physics kendaraan. Game strategi dengan ribuan unit butuh cara mengolah banyak objek sekaligus, seperti ECS yang dibahas di [Pelajaran 1](/belajar/lanskap-engine/01-apa-itu-engine/#ecs-entitas-komponen-sistem).
+
+Pertanyaan yang berguna di sini adalah apakah alat yang dibutuhkan sudah disediakan engine, tersedia lewat plugin, atau harus dibuat sendiri. Baris "2D dan 3D" di Pelajaran 2 juga membedakan engine yang ditujukan untuk satu jenis dari engine yang menyediakan keduanya.
+
+### Platform target
+
+Tulis semua platform yang direncanakan, termasuk yang baru akan dituju setelah rilis pertama. Lalu periksa tiga hal untuk setiap platform:
+
+1. **Apakah engine bisa membuat build untuk platform itu?** Cek halaman platform di dokumentasi resmi untuk versi engine yang akan kamu pakai.
+2. **Apa yang dibutuhkan untuk membuka ekspornya?** Di sebagian engine, ekspor konsol ada di paket berbayar tertentu ([Pelajaran 3](/belajar/lanskap-engine/03-lisensi/#platform-dan-fitur-tambahan)) atau lewat pihak ketiga ([profil Godot di Pelajaran 2](/belajar/lanskap-engine/02-profil-engine/#godot)).
+3. **Izin apa yang harus diurus ke pemilik platform?** Untuk konsol, studio harus disetujui pemilik platform apa pun engine-nya, seperti dibahas di [Pelajaran 2](/belajar/lanskap-engine/02-profil-engine/#sembilan-kriteria).
+
+Untuk web, periksa juga apakah semua bagian proyekmu ikut bisa diekspor ke browser. Contoh di Pelajaran 2: Godot 4 mendukung ekspor web, tetapi proyek Godot 4 yang memakai C# belum bisa diekspor ke web. Syarat seperti ini baru terlihat saat bahasa dan platform dibaca bersama.
+
+### Performa dan grafis
+
+Tentukan perangkat paling lemah yang ingin kamu dukung, lalu tentukan target frame rate di perangkat itu. Dua angka ini lebih berguna daripada "grafisnya harus bagus". Game 2D sederhana untuk PC dan game 3D untuk ponsel kelas bawah punya batasan yang sangat berbeda, dan [Fondasi 8 tentang profiling](/belajar/fondasi-engine/08-profiling/) menjelaskan cara mengukurnya. Apakah sebuah game [CPU-bound atau GPU-bound](/kamus/performa/cpu-gpu-bound/) bergantung pada isi game-nya, jadi performa sebuah engine baru bisa dinilai dengan membuat build berisi konten yang mirip game-mu, lalu menjalankannya di perangkat target.
+
+Untuk grafis, tulis gaya visual yang dituju dengan kata-kata yang bisa diperiksa, misalnya "pixel art 320 × 180 dengan cahaya 2D" atau "3D low poly dengan bayangan real-time". Lalu cek apakah engine menyediakan fitur itu, dan apakah artis di timmu bisa membuat asetnya dengan alur kerja engine tersebut.
+
+### Fitur online
+
+Kalau game-mu butuh multiplayer, papan skor, simpanan di cloud, atau pembelian dalam game, tulis kebutuhannya secara terpisah. Sebagian engine menyediakan alat jaringan sendiri, dan sebagian kebutuhan dipenuhi layanan pihak ketiga yang punya biaya dan dukungan platformnya sendiri. Cek juga apakah engine bisa membuat build server khusus kalau game-mu membutuhkannya. Fitur online menambah pekerjaan dan risiko yang besar, jadi masukkan ke prototipe pembanding kalau fitur ini termasuk syarat mutlak.
+
+## Tim
+
+### Bahasa dan keahlian yang sudah ada
+
+Keahlian tim adalah salah satu kriteria dengan bobot terbesar, karena keahlian menentukan seberapa cepat tim bisa mulai produktif. Tulis untuk setiap anggota: bahasa pemrograman yang dikuasai, engine yang pernah dipakai, dan alat yang biasa dipakai untuk membuat aset.
+
+Waktu belajar engine baru selalu ada, dan biayanya dikalikan dengan jumlah orang yang harus belajar. Hitung juga anggota yang tidak menulis kode. Artis dan desainer level bekerja setiap hari di editor, jadi alur kerja impor aset dan penyusunan level ikut menentukan kecepatan mereka.
+
+Keahlian yang sudah ada tidak selalu menang. Kalau engine yang dikuasai tim tidak memenuhi syarat mutlak, belajar engine baru adalah biaya yang harus dibayar. Yang penting, biaya itu masuk ke perkiraan jadwal.
+
+### Ukuran tim
+
+Ukuran tim memengaruhi pilihan engine lewat beberapa jalur:
+
+- **Biaya per kursi.** Di lisensi berlangganan, setiap orang yang memakai editor bisa dihitung sebagai satu kursi ([Pelajaran 3](/belajar/lanskap-engine/03-lisensi/#kursi)).
+- **Bekerja bersamaan.** Makin banyak orang, makin sering dua orang mengubah file yang sama. Cek bagaimana engine menyimpan scene dan aset, dan apakah perubahannya mudah digabung di sistem kontrol versi.
+- **Pembagian pekerjaan.** Tim kecil butuh alat yang bisa dipakai satu orang untuk banyak peran. Tim yang lebih besar butuh alat yang memisahkan pekerjaan programmer, artis, dan desainer dengan jelas. Pelajaran [Peran dalam Tim Kecil](/belajar/produksi/03-peran-tim-kecil/) membahas sisi organisasinya.
+
+### Mencari anggota baru
+
+Kalau tim berencana menambah orang, pertimbangkan seberapa mudah mencari orang yang sudah menguasai engine dan bahasanya, atau seberapa cepat orang baru bisa mempelajarinya dari dokumentasi dan bahan belajar yang ada. Pertanyaan ini juga menyangkut [bus factor](/belajar/produksi/03-peran-tim-kecil/#bus-factor-dan-dokumentasi): kalau hanya satu orang yang paham engine atau alat buatan sendiri, kepergiannya bisa menghentikan proyek. Pasar kerja berbeda di setiap kota dan berubah dari tahun ke tahun, jadi cek lowongan dan komunitas di tempatmu sendiri pada saat keputusan diambil.
+
+## Biaya dan lisensi
+
+Cara membaca lisensi dan menghitung biaya engine sudah dibahas lengkap di [Pelajaran 3](/belajar/lanskap-engine/03-lisensi/). Di proses ini, hasilnya dipakai di dua tempat:
+
+1. **Sebagai syarat mutlak**, kalau biaya pada skenario pendapatan yang realistis tidak muat di anggaran, atau kalau ada kewajiban yang tidak bisa dipenuhi tim.
+2. **Sebagai satu kriteria berbobot**, untuk membandingkan engine yang sama-sama lolos saringan.
+
+Gunakan [delapan pertanyaan di akhir Pelajaran 3](/belajar/lanskap-engine/03-lisensi/#pertanyaan-sebelum-memilih), lalu hitung biaya untuk skenario sepi, sedang, dan laris dengan jumlah anggota timmu. Masukkan juga biaya yang tidak tertulis di lisensi engine, seperti jasa port konsol pihak ketiga, layanan online, atau aset dan plugin berbayar.
+
+## Ekosistem
+
+### Toko aset dan plugin
+
+Toko aset dan plugin bisa menghemat banyak waktu, terutama untuk alat yang tidak terkait langsung dengan keunikan game-mu, seperti sistem dialog atau integrasi layanan toko. Saat menilai ekosistem, cek hal berikut untuk aset atau plugin yang kemungkinan besar kamu pakai:
+
+- Apakah masih diperbarui untuk versi engine yang akan kamu pakai?
+- Lisensinya apa, dan boleh dipakai di game komersial atau tidak?
+- Apakah mendukung semua platform targetmu, termasuk konsol dan web?
+- Kalau pembuatnya berhenti merawat, apakah kodenya bisa kamu perbaiki sendiri?
+
+Jumlah aset di sebuah toko hanya berguna kalau aset yang kamu butuhkan ada di sana dan memenuhi pertanyaan-pertanyaan tadi.
+
+### Kualitas dokumentasi
+
+Dokumentasi yang lengkap mengurangi waktu yang terbuang untuk menebak. Cara menilainya: ambil tiga tugas yang pasti kamu kerjakan, misalnya mengimpor sprite sheet, menyimpan data pemain, dan membuat build untuk platform target. Cari cara mengerjakannya hanya di dokumentasi resmi untuk versi engine yang akan kamu pakai. [Pelajaran 1](/belajar/lanskap-engine/01-apa-itu-engine/#membaca-dokumentasi-engine) punya urutan membaca dokumentasi yang bisa dipakai untuk latihan ini.
+
+### Komunitas dan bahan belajar berbahasa Indonesia
+
+Komunitas membantu saat dokumentasi tidak menjawab: forum resmi, server diskusi, dan tanya jawab yang sudah terkumpul bertahun-tahun. Untuk tim di Indonesia, komunitas lokal punya nilai tambah. Meetup kota, komunitas kampus, dan grup online berbahasa Indonesia memudahkan anggota baru bertanya tanpa hambatan bahasa, dan sering menjadi tempat mencari rekan kerja. Bahan belajar berbahasa Indonesia, seperti video, artikel, dan kelas, juga membantu anggota tim yang belum nyaman membaca dokumentasi berbahasa Inggris.
+
+Jumlah dan keaktifan komunitas lokal berbeda untuk setiap engine dan setiap kota, dan cepat berubah. Pelajaran [Ekosistem Indonesia](/belajar/industri-karier/03-ekosistem-indonesia/#media-kreator-dan-komunitas) di jalur Industri dan Karier membahas bentuk-bentuk komunitas yang umum dan cara menemukannya. Untuk matriks, nilai komunitas dengan mencarinya sendiri: apakah ada pertanyaan yang dijawab dalam beberapa hari terakhir, dan apakah ada pertemuan di kotamu.
+
+## Risiko
+
+### Ketergantungan pada vendor
+
+Memakai engine berarti bergantung pada keputusan pembuatnya: harga, ketentuan lisensi, platform yang didukung, dan fitur yang dipertahankan atau dihapus. Pelajaran 3 membahas apa yang terjadi [saat ketentuan berubah](/belajar/lanskap-engine/03-lisensi/#saat-ketentuan-berubah). Akses ke kode sumber juga mengubah risiko ini. Kalau ada bug di engine yang menghambat rilis, tim yang bisa membaca dan mengubah kode engine punya pilihan tambahan selain menunggu perbaikan dari vendor. Baris akses kode sumber di [Pelajaran 2](/belajar/lanskap-engine/02-profil-engine/#tabel-perbandingan) menjelaskan pilihan yang ada untuk setiap engine.
+
+### Biaya pindah engine
+
+Makin jauh produksi berjalan, makin mahal pindah engine. Kode gameplay harus ditulis ulang, scene dan level harus disusun ulang, aset harus diimpor ulang, dan tim harus belajar lagi. Biaya ini dibahas di Pelajaran 5, Pindah engine. Untuk proses memilih, pertanyaannya: seberapa banyak data proyekmu yang tersimpan dalam format terbuka yang bisa dibaca alat lain, dan seberapa banyak yang hanya bisa dibuka di satu engine?
+
+### Kebijakan dukungan versi
+
+Proyek yang berjalan bertahun-tahun butuh versi engine yang tetap mendapat perbaikan bug dan pembaruan platform selama produksi dan setelah rilis. Sebagian engine punya kebijakan tertulis tentang ini. Per 31 Oktober 2026:
+
+- **Unity.** Halaman dukungan rilis Unity 6 menyebut rilis LTS (*long-term support*) keluar setahun sekali dan didukung dua tahun, dengan tambahan satu tahun untuk pengguna Unity Enterprise dan Unity Industry. Rilis Update keluar beberapa kali setahun dan didukung sampai rilis berikutnya terbit. Halaman yang sama menyebut Unity 6.0 LTS didukung sampai Oktober 2026 dan Unity 6.3 LTS sampai Desember 2027.
+- **Godot.** Halaman kebijakan rilis Godot menyebut cabang stabil didukung setidaknya sampai cabang stabil berikutnya rilis dan mendapat pembaruan patch pertamanya, dan dalam praktiknya didukung sebisa mungkin selama masih ada pengguna yang membutuhkan. Saat versi mayor baru rilis, cabang stabil sebelumnya dijadikan rilis dukungan jangka panjang.
+- **GameMaker.** Halaman catatan rilis GameMaker menyebut jalur LTS hampir tidak menerima fitur baru dan hanya mendapat perbaikan bug penting, dengan pembaruan yang jarang. Saat ini halaman itu merekomendasikan LTS2026.
+
+{/* Belum diverifikasi ke dokumentasi Epic (situs Epic diblokir proxy saat ditulis, 2026-10-31): kebijakan dukungan versi Unreal Engine (berapa lama satu versi mayor atau minor menerima hotfix, dan apakah ada jalur LTS) sengaja tidak ditulis. Sumber yang perlu dicek: dokumentasi dan catatan rilis Unreal Engine di dev.epicgames.com dan unrealengine.com. */}
+
+Untuk engine lain, cari halaman kebijakan rilis atau dukungan versinya. Kalau tidak ada kebijakan tertulis, catat itu sebagai risiko di matriks. Lalu bandingkan masa dukungan dengan jadwal proyekmu: versi yang dukungannya berakhir sebelum game rilis berarti tim harus pindah versi di tengah produksi.
+
+## Matriks skor berbobot
+
+Matriks skor berbobot mengubah pertimbangan yang tersebar menjadi satu tabel yang bisa dibaca seluruh tim. Caranya:
+
+1. **Tulis kriteria** dari bagian-bagian sebelumnya. Lima sampai delapan kriteria biasanya cukup. Kriteria yang sudah menjadi syarat mutlak tidak perlu dimasukkan lagi.
+2. **Beri bobot setiap kriteria**, misalnya 1 sampai 5, sesuai pentingnya untuk proyek ini. Sepakati bobot sebelum menilai engine, supaya bobot tidak disesuaikan diam-diam untuk memenangkan engine favorit.
+3. **Beri skor setiap engine** untuk setiap kriteria, misalnya 1 sampai 5. Skor menjawab pertanyaan seberapa cocok engine ini untuk proyek dan tim ini. Tulis alasan dan sumber di samping setiap skor.
+4. **Kalikan skor dengan bobot**, lalu jumlahkan. Bagi dengan total maksimum supaya hasilnya mudah dibandingkan dalam persen.
+5. **Uji kepekaan.** Ubah satu bobot yang paling diperdebatkan, lalu lihat apakah urutannya berubah.
+
+### Ilustrasi: dua proyek, dua engine karangan
+
+<Aside type="caution" title="Ilustrasi, bukan rekomendasi">
+Engine Kenari dan Engine Rajawali adalah engine karangan, dan semua skor di bawah dikarang untuk menunjukkan cara menimbang. Skornya tidak menggambarkan engine sungguhan mana pun. Untuk keputusan nyata, isi matriks dengan kriteria, bobot, dan skor dari proyek dan timmu sendiri, berdasarkan sumber resmi dan hasil prototipe.
+</Aside>
+
+**Proyek Lentik** adalah game platformer pixel art untuk PC dan Nintendo Switch, dikerjakan dua orang: satu programmer yang terbiasa dengan bahasa yang dipakai Engine Rajawali, dan satu artis. **Proyek Arus** adalah game balap 3D untuk ponsel, dikerjakan lima orang. Kedua tim sudah memastikan Kenari dan Rajawali lolos semua syarat mutlak mereka, termasuk jalur rilis ke Switch untuk Proyek Lentik.
+
+Proyek Lentik:
+
+| Kriteria | Bobot | Kenari | Rajawali |
+| --- | --- | --- | --- |
+| Alat untuk genre (2D, pixel art) | 5 | 5 → 25 | 3 → 15 |
+| Keahlian tim saat ini | 4 | 2 → 8 | 5 → 20 |
+| Biaya dan lisensi | 3 | 4 → 12 | 3 → 9 |
+| Ekosistem aset dan plugin | 2 | 3 → 6 | 5 → 10 |
+| Komunitas dan bahan belajar | 2 | 3 → 6 | 4 → 8 |
+| Risiko jangka panjang | 3 | 4 → 12 | 3 → 9 |
+| Performa di perangkat target | 3 | 4 → 12 | 4 → 12 |
+| **Total (maksimum 110)** | | **81 (74%)** | **83 (75%)** |
+
+Proyek Arus:
+
+| Kriteria | Bobot | Kenari | Rajawali |
+| --- | --- | --- | --- |
+| Alat untuk genre (3D, kendaraan) | 4 | 2 → 8 | 4 → 16 |
+| Keahlian tim saat ini | 5 | 2 → 10 | 4 → 20 |
+| Biaya dan lisensi | 3 | 4 → 12 | 3 → 9 |
+| Ekosistem aset dan plugin | 4 | 2 → 8 | 5 → 20 |
+| Komunitas dan bahan belajar | 2 | 3 → 6 | 4 → 8 |
+| Risiko jangka panjang | 3 | 4 → 12 | 3 → 9 |
+| Performa di ponsel kelas bawah | 5 | 3 → 15 | 4 → 20 |
+| **Total (maksimum 130)** | | **71 (55%)** | **102 (78%)** |
+
+Beberapa hal bisa dibaca dari dua tabel ini.
+
+**Bobot mengikuti proyek.** Tim Arus memberi bobot 5 untuk keahlian tim karena lima orang yang harus belajar ulang berarti biaya lima kali lipat. Mereka juga memberi bobot 5 untuk performa karena target perangkatnya ponsel kelas bawah. Tim Lentik memberi bobot tertinggi untuk alat 2D karena hampir semua pekerjaan harian mereka ada di sana.
+
+**Skor juga mengikuti proyek.** Kenari mendapat 5 untuk alat genre di Proyek Lentik dan 2 di Proyek Arus. Engine-nya sama; yang berubah adalah kebutuhan yang dinilai.
+
+**Selisih kecil belum memutuskan apa pun.** Di Proyek Lentik, selisihnya hanya dua poin. Skor diisi dari perkiraan, dan perkiraan bisa meleset satu angka di beberapa baris sekaligus. Hasil seperti ini artinya kedua engine perlu diuji dengan prototipe.
+
+### Uji kepekaan
+
+Tim Lentik memperdebatkan bobot keahlian tim. Artisnya berpendapat programmer mereka cepat belajar, jadi bobotnya cukup 3. Dengan bobot 3, total Kenari menjadi 79 dan Rajawali menjadi 78, sehingga urutannya berbalik. Hasil yang berbalik hanya karena satu bobot bergeser satu angka menunjukkan bahwa matriks ini belum bisa memilih, dan perdebatan tentang waktu belajar itu sendiri perlu dijawab dengan data dari prototipe.
+
+Di Proyek Arus, menurunkan bobot mana pun satu angka tidak mengubah urutannya. Tim Arus tetap perlu menguji kandidat teratasnya di perangkat target, tetapi matriksnya sudah memberi arah yang jelas untuk proyek dan tim mereka.
+
+## Menguji sebelum memutuskan
+
+Matriks berisi perkiraan. Prototipe pembanding mengganti sebagian perkiraan itu dengan pengalaman langsung. Caranya: buat potongan game yang sama di dua engine kandidat teratas, dengan waktu yang sama, misalnya satu minggu untuk setiap engine.
+
+Potongan ini bisa disebut *vertical slice* mini: satu bagian kecil game yang menyentuh semua lapisan yang penting, seperti dijelaskan di pelajaran [Scope dan Vertical Slice](/belajar/produksi/01-scope-vertical-slice/#vertical-slice). Ukurannya jauh lebih kecil dari vertical slice produksi. Tujuannya menguji engine, jadi kualitas aset tidak perlu mendekati final.
+
+Isi yang disarankan untuk prototipe pembanding:
+
+- Satu mekanik inti, misalnya gerak dan lompat karakter, atau kendali mobil.
+- Aset yang diimpor dengan alur kerja artis yang sebenarnya, dari aplikasi yang biasa mereka pakai.
+- Satu layar UI sederhana dan satu suara.
+- Simpan dan muat data.
+- Build ke perangkat target yang paling sulit, misalnya ponsel kelas bawah atau, kalau sudah ada akses, perangkat pengembangan konsol.
+- Fitur yang menjadi syarat mutlak, misalnya koneksi multiplayer sederhana.
+
+Catat hasilnya dengan format yang sama untuk kedua engine:
+
+```text title="Catatan prototipe pembanding"
+engine dan versi:
+hari 1 sampai 5: apa yang dikerjakan, apa yang menghambat, berapa jam
+pertanyaan yang dijawab dokumentasi resmi / komunitas / tidak terjawab:
+waktu sampai pertama kali bisa dimainkan:
+build ke perangkat target: berhasil atau tidak, masalahnya apa
+frame rate di perangkat target:
+pendapat setiap anggota tim (programmer, artis, desainer):
+```
+
+Setelah dua minggu, perbarui skor di matriks dengan hasil prototipe, lalu putuskan. Tulis keputusannya beserta alasannya di dokumen tim, termasuk versi engine yang dipilih dan sampai kapan versi itu didukung. Catatan ini berguna saat tim ingin mengevaluasi ulang pilihannya di kemudian hari.
+
+Ada satu jebakan saat membandingkan: anggota tim yang sudah menguasai satu engine akan lebih cepat di engine itu. Itu memang bagian dari kriteria keahlian tim, tetapi catat secara terpisah mana hambatan yang datang dari engine dan mana yang datang dari belum terbiasa.
+
+## Kesalahan umum
+
+### Memilih karena popularitas
+
+```text title="✗ Keliru"
+engine X paling sering dibicarakan  →  pasti cocok untuk proyek kami
+```
+
+```text title="✓ Benar"
+tulis syarat mutlak dan kriteria proyek  →  nilai engine X dengan ukuran yang sama seperti engine lain
+```
+
+Engine yang sering dibicarakan punya kelebihan nyata, misalnya banyak tutorial dan jawaban di forum. Kelebihan itu masuk ke kriteria ekosistem dan komunitas, sebagai satu baris di antara baris lainnya.
+
+### Memilih dari showreel grafis
+
+```text title="✗ Keliru"
+video demo engine terlihat memukau  →  game kami juga akan terlihat seperti itu
+```
+
+```text title="✓ Benar"
+tulis gaya visual dan perangkat target  →  cek fitur yang dibutuhkan  →  uji dengan aset buatan tim sendiri
+```
+
+Showreel dan demo teknologi biasanya dibuat oleh tim besar, dengan waktu panjang, untuk perangkat kelas atas. Tampilan game-mu ditentukan oleh artis di timmu, waktu yang kalian punya, dan perangkat target.
+
+### Mengabaikan syarat ekspor konsol atau platform lain
+
+```text title="✗ Keliru"
+engine bisa membuat build konsol  →  urus konsol menjelang rilis
+```
+
+```text title="✓ Benar"
+awal proyek:  cek jalur ekspor, paket lisensi yang dibutuhkan, dan syarat pemilik platform
+              →  daftar sebagai pengembang  →  uji build sedini mungkin
+```
+
+Kesalahan ini juga berlaku untuk web dan ponsel. Cek kombinasi bahasa, plugin, dan platform, seperti contoh C# dan web di Godot 4. Kalau ketahuan di akhir, pilihannya tinggal menunda rilis atau membuang platform itu.
+
+### Mengabaikan keahlian tim
+
+```text title="✗ Keliru"
+engine Y lebih cocok di atas kertas  →  tim akan belajar sambil jalan, tanpa tambahan waktu
+```
+
+```text title="✓ Benar"
+hitung waktu belajar  ×  jumlah orang  →  masukkan ke jadwal dan ke matriks
+```
+
+Belajar engine baru bisa sepadan, tetapi biayanya nyata. Masukkan waktu belajar ke jadwal, dan pakai prototipe pembanding untuk mengukurnya.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+1. Tulis syarat mutlak untuk game yang sedang atau ingin kamu buat, dengan kalimat yang bisa dicek ya atau tidak. Cocokkan dengan profil di Pelajaran 2, lalu coret engine yang tidak memenuhinya. Tulis sumber untuk setiap coretan.
+2. Susun matriks skor berbobot untuk dua atau tiga engine yang tersisa. Sepakati bobot dengan anggota timmu sebelum mengisi skor, lalu tulis alasan untuk setiap skor.
+3. Lakukan uji kepekaan pada matriksmu. Bobot mana yang, kalau digeser satu angka, membalik urutannya?
+4. Cari halaman kebijakan dukungan versi untuk engine yang kamu pertimbangkan. Sampai kapan versi yang akan kamu pakai didukung, dan apakah itu lebih lama dari jadwal proyekmu?
+5. Rancang prototipe pembanding satu minggu: tulis isi potongan game-nya, perangkat target untuk build, dan format catatannya. Kalau memungkinkan, jalankan untuk dua engine dan perbarui matriksmu dengan hasilnya.
