@@ -1,0 +1,431 @@
+---
+title: "Pindah Engine"
+description: "Apa yang ikut pindah dan apa yang tertinggal saat sebuah proyek berganti engine, biaya tersembunyi migrasi di tengah produksi, cara menimbang kapan pindah masuk akal, dan kebiasaan yang mengurangi ketergantungan pada satu engine: memisahkan aturan game dari kode engine, menyimpan data di format terbuka, dan membungkus layanan engine."
+fundamental: "Proyek game menyimpan pekerjaannya di banyak bentuk, dan hanya sebagian yang bisa dibuka di luar engine tempat ia dibuat. Kalau kamu tahu bagian mana yang terikat pada satu engine, biaya pindah engine bisa diperkirakan sebelum keputusan diambil. Kebiasaan yang sama, yaitu memisahkan aturan game dan data dari kode khusus engine, juga membuat proyek lebih mudah dirawat walaupun tim tidak pernah pindah."
+kind: lesson
+minutes: 30
+status: draf
+lastReviewed: 2026-10-31
+terms:
+  - shader
+  - material
+  - scene
+krekit:
+  gambaran-besar: "Sebelum bertanya engine mana yang lebih baik, tanya dulu berapa banyak pekerjaanmu yang bisa dibawa."
+  apa-yang-ikut-pindah: "Coba hitung isi folder proyekmu per baris tabel ini. Hasilnya sering mengejutkan."
+  biaya-tersembunyi: "Biaya terbesar sering ada di bagian yang tidak terlihat di daftar tugas: rasa, cahaya, dan kebiasaan."
+  kapan-pindah-masuk-akal: "Masalah yang bisa diselesaikan di engine sekarang hampir selalu lebih murah daripada pindah."
+  mengurangi-ketergantungan: "Kebiasaan di bagian ini tetap berguna walaupun kamu tidak pernah pindah engine."
+  format-pertukaran-dan-data-terbuka: "Simpan file sumbernya. File hasil impor bisa dibuat ulang, file sumber tidak."
+  ilustrasi-tim-kecil-menimbang-pindah: "Perhatikan bagaimana keputusan berubah setelah mereka menuliskan daftar yang harus dikerjakan ulang."
+  kesalahan-umum: "Kesalahan kedua paling sering baru terasa di bulan kedua setelah pindah."
+sidebar:
+  order: 5
+  label: "5 · Pindah Engine"
+quiz:
+  - q: "Tim kamu pindah dari satu engine ke engine lain di tengah produksi. Bagian mana yang paling mungkin bisa dipakai lagi hampir tanpa perubahan?"
+    options:
+      - "Scene dan level yang sudah disusun di editor"
+      - "Skrip gameplay yang memanggil API engine lama"
+      - "File sumber art dan audio, misalnya file Blender, PSD, dan WAV, serta dokumen desain"
+      - "Shader dan material yang dibuat dengan editor shader engine lama"
+    answer: 2
+    explain: "File sumber art dan audio disimpan dalam format aplikasi pembuatnya, dan dokumen desain tidak bergantung pada engine. Scene, skrip yang memanggil API engine, serta shader dan material disimpan dalam bentuk yang hanya dipahami engine lama, jadi harus disusun atau ditulis ulang."
+  - q: "File scene Godot (.tscn) dan file scene Unity dalam mode teks sama-sama bisa dibaca sebagai teks. Apakah itu berarti scene-nya bisa dipindahkan antarengine?"
+    options:
+      - "Ya, semua file teks bisa dibuka di engine mana pun"
+      - "Tidak. Format teks memudahkan version control dan dibaca alat, tetapi isinya tetap memakai jenis objek dan aturan engine masing-masing"
+      - "Ya, asalkan ekstensi filenya diganti"
+      - "Tidak, karena file teks selalu lebih lambat dimuat"
+    answer: 1
+    explain: "Dokumentasi Godot dan Unity menyebut manfaat format teks untuk version control. Isi file itu tetap menyebut jenis node, komponen, dan properti milik engine yang membuatnya. Engine lain tidak mengenal jenis-jenis itu, jadi scene-nya harus disusun ulang."
+  - q: "Menurut halaman glTF di situs Khronos per 31 Oktober 2026, apa itu glTF?"
+    options:
+      - "Format model milik satu vendor engine"
+      - "Spesifikasi bebas royalti untuk mengirim dan memuat scene dan model 3D secara efisien oleh engine dan aplikasi"
+      - "Format gambar pengganti PNG"
+      - "Bahasa shader untuk GPU"
+    answer: 1
+    explain: "Khronos menyebut glTF sebagai spesifikasi bebas royalti untuk transmisi dan pemuatan scene serta model 3D yang efisien oleh engine dan aplikasi. Halaman yang sama menyebut glTF 2.0 dirilis sebagai standar internasional ISO/IEC 12113:2022."
+  - q: "Di ilustrasi pelajaran ini, kenapa tim Kopi Pagi akhirnya memutuskan tidak pindah engine walaupun engine tujuan punya fitur yang mereka inginkan?"
+    options:
+      - "Karena engine tujuan lebih mahal"
+      - "Karena mereka tidak suka engine tujuan"
+      - "Karena masalah yang mendorong pindah bisa diselesaikan di engine sekarang dengan biaya jauh lebih kecil daripada mengulang tujuh bulan pekerjaan"
+      - "Karena mereka sudah terlanjur menerbitkan game-nya"
+    answer: 2
+    explain: "Setelah menulis daftar yang harus dikerjakan ulang dan menguji solusi di engine sekarang, tim melihat masalahnya punya jalan keluar yang lebih murah. Pindah engine tetap pilihan yang sah, tetapi harus dibandingkan dengan pilihan untuk bertahan dan memperbaiki."
+  - q: "Kenapa aturan game, misalnya rumus damage, sebaiknya ditulis terpisah dari kode yang memanggil API engine?"
+    options:
+      - "Supaya game berjalan lebih cepat"
+      - "Supaya aturan itu bisa diuji tanpa membuka editor dan dibawa ke engine lain dengan perubahan kecil"
+      - "Karena engine melarang rumus di dalam skrip"
+      - "Supaya tidak perlu menulis dokumentasi"
+    answer: 1
+    explain: "Kode yang hanya berisi perhitungan dan data tidak bergantung pada API engine. Kode seperti itu bisa diuji dengan tes biasa, dan saat pindah engine hanya lapisan penghubungnya yang perlu ditulis ulang."
+  - q: "Halaman referensi format model di manual Unity 6.0 menyarankan apa tentang file proprietary seperti .blend dan .max di produksi?"
+    options:
+      - "Selalu simpan file proprietary di proyek supaya lebih cepat"
+      - "Hindari file proprietary di produksi dan ekspor ke .fbx bila memungkinkan, karena file seperti .blend gagal diimpor kalau aplikasinya tidak terpasang"
+      - "Ubah semua model menjadi .obj"
+      - "Unity tidak bisa membaca model dari aplikasi lain"
+    answer: 1
+    explain: "Halaman itu menyebut praktik terbaiknya memakai .fbx dan tidak memakai format proprietary di produksi. File .ma, .mb, .max, .c4d, atau .blend gagal diimpor kalau aplikasi pembuatnya tidak terpasang, sehingga semua anggota tim harus memasangnya."
+sources:
+  - title: "glTF: Runtime 3D Asset Delivery"
+    url: "https://www.khronos.org/gltf/"
+    publisher: "The Khronos Group"
+    accessed: 2026-10-31
+  - title: "glTF 2.0 Specification"
+    url: "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html"
+    publisher: "The Khronos Group"
+    accessed: 2026-10-31
+  - title: "Available 3D formats"
+    url: "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "TSCN file format"
+    url: "https://docs.godotengine.org/en/stable/engine_details/file_formats/tscn.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "Model file formats reference (Unity 6.0)"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/assets-and-media/asset-types/models/creating-dccassets/3d-formats"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Text-based scene files (Unity 6.0)"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/working-with-scenes/text-scene-format"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Unity glTFast Documentation 6.0"
+    url: "https://docs.unity3d.com/Packages/com.unity.cloud.gltfast@6.0/manual/index.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Memilah isi proyek game menjadi bagian yang bisa dibawa ke engine lain dan bagian yang harus dibuat ulang.
+- Menyebut biaya pindah engine yang jarang masuk perkiraan, seperti menyetel ulang rasa permainan dan cahaya.
+- Menimbang kapan pindah engine masuk akal, dengan membandingkannya terhadap pilihan bertahan dan memperbaiki.
+- Menerapkan kebiasaan yang mengurangi ketergantungan pada satu engine: memisahkan aturan game, memakai format terbuka, dan membungkus layanan engine.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: pindah rumah">
+Saat pindah rumah, sebagian barang tinggal dimasukkan ke kardus: baju, buku, perabot lepas. Sebagian lain menempel di bangunan: lemari tanam, instalasi listrik, tanaman di halaman. Barang yang menempel harus dibuat ulang di rumah baru, dan ukurannya belum tentu cocok. Ada juga hal yang tidak berwujud: hafal letak sakelar, tahu warung terdekat. Kebiasaan itu dibangun lagi dari awal, dan butuh waktu.
+</Aside>
+
+Pindah engine bekerja dengan cara yang mirip. File sumber art, audio, dan dokumen desain ibarat barang lepas. Scene, skrip yang memanggil API engine, shader, dan pengaturan build ibarat barang yang menempel di bangunan. Kebiasaan dan keahlian tim adalah hal yang tidak berwujud.
+
+Di [Pelajaran 4](/belajar/lanskap-engine/04-kriteria-memilih/#biaya-pindah-engine), biaya pindah engine muncul sebagai salah satu risiko saat memilih. Pelajaran ini membahasnya dari dua arah:
+
+```text title="Dua pertanyaan pelajaran ini"
+1. Proyek sudah berjalan  →  kalau pindah sekarang, apa saja yang harus dikerjakan ulang?
+2. Proyek baru dimulai    →  kebiasaan apa yang membuat pindah nanti lebih murah?
+```
+
+Pelajaran ini tidak menyarankan untuk pindah atau bertahan di engine tertentu. Contoh dari Unity dan Godot dipakai karena dokumentasinya bisa dibaca dan dikutip. Hal yang sama berlaku untuk engine lain.
+
+## Apa yang ikut pindah
+
+Isi proyek game bisa dipilah menurut seberapa terikat ia pada engine. Tabel berikut memakai tiga tingkat: **ikut** (bisa dipakai lagi hampir tanpa perubahan), **sebagian** (bisa dibawa, tetapi perlu disesuaikan), dan **dibuat ulang** (hanya engine lama yang memahaminya).
+
+| Isi proyek | Tingkat | Alasannya |
+| --- | --- | --- |
+| File sumber art: .blend, .psd, .kra, file vektor | Ikut | Disimpan dalam format aplikasi pembuatnya, terlepas dari engine |
+| Tekstur dan gambar (PNG), audio (WAV, OGG) | Ikut | Format umum yang dibaca hampir semua engine |
+| Dokumen desain, naskah dialog, catatan keseimbangan | Ikut | Tidak bergantung pada engine sama sekali |
+| Data game dalam JSON atau CSV | Ikut | Format teks umum; kode pembacanya yang perlu ditulis ulang |
+| Model 3D yang diekspor (glTF, FBX) | Sebagian | Mesh, tulang, dan animasi umumnya terbawa; [material](/kamus/geometri/material/) biasanya perlu disetel ulang |
+| Animasi dan state machine animasi | Sebagian | Klipnya terbawa lewat file model; graf transisi dan pengaturannya dibuat ulang |
+| Skrip dan kode gameplay | Sebagian sampai dibuat ulang | Bergantung pada bahasa dan seberapa banyak kode memanggil API engine |
+| [Scene](/kamus/dasar/scene/), level, dan prefab | Dibuat ulang | Disimpan memakai jenis objek dan aturan engine itu |
+| [Shader](/kamus/shader/shader/) dan graf material | Dibuat ulang | Bahasa shader dan editor node berbeda di setiap engine |
+| UI yang disusun di editor | Dibuat ulang | Sistem UI setiap engine berbeda |
+| Alat editor buatan tim dan plugin dari toko aset | Dibuat ulang | Ditulis untuk API editor satu engine; plugin toko aset terikat pada ekosistemnya |
+| Pengaturan build, platform, dan proyek | Dibuat ulang | Disimpan di format pengaturan engine itu |
+| Keahlian tim | Sebagian | Konsep dasar terbawa; nama, menu, dan kebiasaan harus dipelajari lagi |
+
+### Scene dan level
+
+Scene adalah bagian yang paling sering dikira bisa dibawa. Dokumentasi Godot menyebut format TSCN mewakili satu pohon scene, dan bisa dibaca manusia serta mudah dikelola version control. Manual Unity 6.0 juga menyebut Unity menyediakan format teks untuk data scene, yang lebih mudah digabung di version control daripada format biner dan bisa dibaca alat lain.
+
+Format teks memang memudahkan, tetapi isinya tetap menyebut jenis node, komponen, dan properti milik engine yang membuatnya. Pohon node Godot tidak punya padanan satu lawan satu dengan GameObject Unity, seperti dibahas di [Pelajaran 1](/belajar/lanskap-engine/01-apa-itu-engine/#cara-engine-menyusun-isi-dunia). Engine tujuan tidak tahu harus berbuat apa dengan file itu, jadi level harus disusun ulang. Yang bisa dibantu adalah datanya: posisi objek, daftar musuh per level, atau peta tile bisa diekspor ke format umum dengan skrip, lalu dibaca lagi di engine baru.
+
+### Kode
+
+Kode gameplay biasanya bercampur dua jenis isi. Ada **aturan game**: rumus damage, aturan giliran, isi inventori, logika misi. Ada juga **kode penghubung** yang memanggil API engine: membaca input, memutar animasi, membuat objek di scene, mendeteksi tabrakan.
+
+Aturan game hanya berisi perhitungan, jadi bisa diterjemahkan ke bahasa lain dengan relatif mudah, dan kalau bahasanya sama, kadang bisa dipakai hampir apa adanya. Kode penghubung harus ditulis ulang, karena nama fungsi, urutan pemanggilan, dan cara kerja setiap subsistem berbeda. Makin bercampur kedua jenis isi ini di satu file, makin banyak kode yang harus ditulis ulang.
+
+Bahasa juga berpengaruh. Kalau engine lama dan engine baru sama-sama memakai bahasa yang dikuasai tim, aturan game bisa disalin dan diuji ulang. Kalau bahasanya berbeda, misalnya dari GDScript ke C# atau dari Blueprint ke kode teks, aturan game ikut diterjemahkan baris demi baris.
+
+### Shader dan material
+
+[Fondasi 4](/belajar/fondasi-engine/04-shader/) membahas shader sebagai program kecil di GPU. Konsepnya sama di semua engine, tetapi bahasa shader, nama variabel bawaan, dan editor node-nya berbeda. Material yang tampak sama di dua engine juga bisa dihitung dengan model cahaya yang sedikit berbeda. Akibatnya, setiap shader ditulis ulang dan setiap material dicek ulang secara visual, satu per satu.
+
+## Biaya tersembunyi
+
+Daftar "yang dibuat ulang" di tabel tadi adalah biaya yang terlihat. Ada biaya lain yang jarang masuk perkiraan, karena tidak muncul sebagai tugas yang jelas di papan kerja.
+
+### Menyetel ulang rasa permainan
+
+Gerak karakter yang terasa enak adalah hasil banyak penyetelan kecil: percepatan, gesekan, gravitasi, waktu toleransi lompat, kurva kamera. Angka-angka ini disetel terhadap physics engine lama. Engine baru punya physics, urutan update, dan cara membaca input yang berbeda, seperti dibahas di [Fondasi 1](/belajar/fondasi-engine/01-frame/). Angka yang sama bisa menghasilkan rasa yang berbeda, sehingga penyetelan harus diulang sambil terus memainkan game-nya.
+
+### Menyetel ulang cahaya dan tampilan
+
+Cahaya, bayangan, [global illumination](/kamus/cahaya/global-illumination/), dan post-processing dihitung dengan cara yang berbeda di setiap engine ([Fondasi 5](/belajar/fondasi-engine/05-bayangan-gi/) dan [6](/belajar/fondasi-engine/06-post-processing/)). Level yang sudah disetel cahayanya di engine lama harus disetel ulang di engine baru supaya suasananya kembali sama. Pekerjaan ini butuh mata artis, dan sulit dipercepat dengan skrip.
+
+### Mengimpor ulang dan memeriksa aset
+
+Model dan tekstur memang bisa diimpor ulang, tetapi setiap aset perlu dicek: skala, arah sumbu, pengaturan kompresi, material, tabrakan, dan animasi. Untuk ratusan aset, pemeriksaan ini sendiri sudah menjadi pekerjaan berminggu-minggu. Kalau tim hanya punya file hasil impor dan tidak menyimpan file sumbernya, sebagian aset mungkin harus dibuat ulang.
+
+### Belajar ulang
+
+Waktu belajar dikalikan dengan jumlah orang, seperti dihitung di [Pelajaran 4](/belajar/lanskap-engine/04-kriteria-memilih/#bahasa-dan-keahlian-yang-sudah-ada). Di tengah produksi, biaya ini lebih berat daripada di awal proyek, karena tim sekaligus harus mengejar jadwal. Selama beberapa minggu pertama, pekerjaan yang dulu selesai dalam satu jam bisa memakan sehari, dan kesalahan yang dulu sudah dihindari muncul lagi dalam bentuk baru.
+
+### Pipeline build dan platform
+
+Proses build ke setiap platform, sertifikat penandatanganan aplikasi, integrasi layanan toko, papan skor, dan pembelian dalam game sudah disiapkan dan diuji untuk engine lama. Semuanya harus disiapkan lagi. Untuk konsol, jalur ekspor dan izin pemilik platform juga perlu dicek ulang untuk engine baru, seperti dibahas di [Pelajaran 4](/belajar/lanskap-engine/04-kriteria-memilih/#platform-target).
+
+### Waktu tanpa konten baru
+
+Selama migrasi, tim mengerjakan ulang hal yang sudah pernah selesai. Pemain atau publisher tidak melihat kemajuan, dan semangat tim bisa turun karena bulan-bulan itu terasa berjalan di tempat. Biaya ini tidak tercatat sebagai baris anggaran, tetapi tetap dibayar dengan jadwal rilis yang mundur.
+
+## Kapan pindah masuk akal
+
+Pertanyaan yang lebih berguna daripada "engine mana yang lebih baik" adalah: apa masalah yang ingin diselesaikan dengan pindah, dan adakah cara yang lebih murah untuk menyelesaikannya?
+
+### Di tahap prototipe
+
+Di tahap prototipe, isi proyek masih sedikit dan kode prototipe memang biasanya dibuang ([Scope dan Vertical Slice](/belajar/produksi/01-scope-vertical-slice/#prototipe)). Kalau prototipe menunjukkan bahwa engine yang dipakai tidak cocok, misalnya tidak bisa mencapai frame rate di perangkat target atau alurnya terlalu lambat untuk artis, pindah di tahap ini relatif murah. Tujuan prototipe pembanding di Pelajaran 4 justru menemukan ketidakcocokan seperti ini sebelum produksi dimulai.
+
+### Di tengah produksi
+
+Di tengah produksi, hampir semua baris di tabel "apa yang ikut pindah" sudah terisi. Pindah tetap bisa masuk akal kalau ada syarat mutlak yang tidak bisa dipenuhi engine sekarang, misalnya:
+
+- Platform yang wajib dituju tidak didukung, dan tidak ada jalur lain untuk mencapainya.
+- Ketentuan lisensi berubah sehingga biayanya tidak lagi muat di anggaran ([Pelajaran 3](/belajar/lanskap-engine/03-lisensi/#saat-ketentuan-berubah)).
+- Versi engine yang dipakai berhenti didukung sebelum rilis, dan pindah versi sama mahalnya dengan pindah engine.
+- Ada masalah teknis yang menghambat rilis, sudah diuji dengan serius, dan tidak bisa diselesaikan di engine sekarang.
+
+Alasan yang lebih lemah antara lain "engine lain sedang ramai dibicarakan", "fitur X di engine lain lebih bagus" padahal fitur X bukan inti game-nya, atau rasa frustrasi terhadap masalah yang sebenarnya bisa diperbaiki dengan memperbaiki arsitektur kode sendiri.
+
+### Pertanyaan sebelum memutuskan
+
+Tulis jawabannya di dokumen tim, sama seperti keputusan memilih engine di Pelajaran 4:
+
+1. **Masalah apa persisnya yang ingin diselesaikan?** Tulis dalam kalimat yang bisa dicek ya atau tidak.
+2. **Apakah masalah itu sudah dicoba diselesaikan di engine sekarang?** Termasuk bertanya di forum resmi, membaca dokumentasi versi yang dipakai, atau memakai plugin.
+3. **Berapa banyak isi proyek yang harus dibuat ulang?** Pakai tabel di bagian sebelumnya, lalu isi dengan jumlah nyata: berapa scene, berapa shader, berapa baris kode penghubung.
+4. **Apakah engine tujuan benar-benar menyelesaikan masalahnya?** Buktikan dengan prototipe kecil yang menguji masalah itu secara langsung.
+5. **Apa yang terjadi pada jadwal dan anggaran?** Hitung waktu migrasi, termasuk biaya tersembunyi, lalu bandingkan dengan jadwal rilis dan dana yang tersisa.
+6. **Apa rencana kalau migrasi berhenti di tengah jalan?** Proyek yang setengah pindah adalah posisi paling mahal.
+
+## Mengurangi ketergantungan
+
+Kebiasaan di bagian ini tidak membuat pindah engine menjadi gratis. Tujuannya memperbesar bagian proyek yang termasuk "ikut" dan "sebagian" di tabel tadi. Kebanyakan kebiasaan ini juga membuat proyek lebih mudah diuji dan dirawat, jadi tetap berguna walaupun tim tidak pernah pindah.
+
+### Pisahkan aturan game dari kode engine
+
+Tulis aturan game di kode yang tidak memanggil API engine sama sekali, lalu biarkan kode penghubung yang tipis menyambungkannya ke engine.
+
+```text title="✗ Bercampur"
+// skrip pada objek musuh
+saat_kena_peluru(peluru):
+    damage = peluru.kekuatan * 1.5 - baju_besi
+    nyawa -= damage
+    putar_animasi("kena")             // API engine
+    jika nyawa <= 0:
+        hapus_dari_scene(diri)        // API engine
+```
+
+```text title="✓ Terpisah"
+// aturan.txt: tidak memanggil API engine apa pun
+hitung_damage(kekuatan, baju_besi):
+    kembalikan maks(0, kekuatan * 1.5 - baju_besi)
+
+// skrip penghubung pada objek musuh
+saat_kena_peluru(peluru):
+    nyawa -= hitung_damage(peluru.kekuatan, baju_besi)
+    putar_animasi("kena")
+    jika nyawa <= 0:
+        hapus_dari_scene(diri)
+```
+
+Dengan cara kedua, `hitung_damage` bisa diuji dengan tes biasa tanpa membuka editor. Saat pindah engine, yang ditulis ulang hanya skrip penghubungnya. Untuk game yang aturannya banyak, seperti game strategi, kartu, atau RPG, bagian aturan ini bisa menjadi porsi kode yang besar.
+
+Jangan berlebihan. Kode yang memang erat dengan engine, seperti efek visual, kendali kamera, atau penyetelan physics, tidak perlu dipaksa dipisah. Pemisahan paling berguna untuk logika yang tidak ada hubungannya dengan tampilan.
+
+### Data game di luar kode
+
+Statistik musuh, daftar item, teks dialog, tabel level, dan pengaturan keseimbangan bisa disimpan sebagai file data, misalnya JSON atau CSV. Desainer bisa mengubahnya di spreadsheet atau editor teks tanpa menyentuh kode, dan file yang sama bisa dibaca engine lain dengan kode pembaca yang pendek.
+
+```text title="musuh.csv"
+id,nama,nyawa,kekuatan,kecepatan
+slime,Slime Hijau,20,3,1.5
+kelelawar,Kelelawar Gua,12,4,3.0
+golem,Golem Batu,80,10,0.8
+```
+
+Setiap engine juga punya format data sendiri, seperti resource di Godot atau ScriptableObject di Unity, yang nyaman dipakai di editor. Pilihan ini sah. Kalau datanya penting dan banyak, pertimbangkan alur dua arah: data utama disimpan di format umum, lalu skrip impor mengubahnya menjadi format engine.
+
+### File sumber art di luar proyek engine
+
+Simpan file sumber, seperti file Blender, PSD, atau proyek audio, di folder atau repositori terpisah dari proyek engine, lalu ekspor hasilnya ke proyek. Dengan begitu, file sumber tidak hilang saat proyek engine dibersihkan, dan bisa diekspor ulang ke engine mana pun. Pelajaran [Alat Kerja](/belajar/produksi/04-alat-kerja/) membahas cara menyimpan file besar seperti ini di version control.
+
+Pisahkan juga tekstur sumber dari tekstur hasil kompresi engine. Engine biasanya mengompresi tekstur saat impor untuk setiap platform. File hasil kompresi itu terikat pada engine dan platform, sedangkan PNG sumbernya tidak.
+
+### Pembungkus tipis untuk layanan engine
+
+Untuk layanan yang dipakai di banyak tempat, seperti menyimpan data pemain, memutar suara, atau mengirim data analitik, buat satu pintu masuk milik tim sendiri.
+
+```text title="Pembungkus tipis"
+// simpanan.txt: satu-satunya file yang memanggil API simpan milik engine
+simpan_progres(data):
+    teks = ubah_ke_json(data)
+    engine.tulis_file("user://progres.json", teks)   // hanya di sini
+
+muat_progres():
+    teks = engine.baca_file("user://progres.json")
+    kembalikan baca_json(teks)
+```
+
+Kode game lain cukup memanggil `simpan_progres()`. Saat pindah engine, hanya isi file ini yang diganti. Pembungkus seperti ini juga memudahkan saat engine yang sama mengubah API-nya di versi baru.
+
+Batasnya jelas: bungkus layanan yang dipanggil dari banyak tempat, dengan antarmuka sesederhana mungkin. Membungkus seluruh engine dengan lapisan abstraksi buatan sendiri sama saja dengan mulai membangun engine di atas engine, dengan semua biaya yang dibahas di [Pelajaran 1](/belajar/lanskap-engine/01-apa-itu-engine/#engine-buatan-sendiri).
+
+## Format pertukaran dan data terbuka
+
+Format pertukaran adalah format file yang dirancang untuk dibaca banyak aplikasi. Memakainya di pipeline aset membuat bagian "sebagian" di tabel lebih dekat ke "ikut".
+
+### glTF
+
+Situs Khronos Group menyebut glTF sebagai spesifikasi bebas royalti untuk transmisi dan pemuatan scene serta model 3D yang efisien oleh engine dan aplikasi. Menurut halaman yang sama, inti glTF adalah file JSON yang menjelaskan susunan scene, yang bisa juga disimpan sebagai satu file biner (.glb). Isinya mencakup scene dan node, kamera, mesh, buffer, material, tekstur, skin, dan animasi. Halaman itu juga menyebut glTF 2.0 dirilis sebagai standar internasional ISO/IEC 12113:2022. Material di glTF memakai model [PBR](/kamus/geometri/pbr/) yang dijelaskan di spesifikasinya.
+
+Dukungan di engine, per 31 Oktober 2026:
+
+- **Godot.** Halaman format 3D di dokumentasi Godot menandai glTF 2.0 sebagai format yang direkomendasikan, dalam bentuk teks (.gltf) maupun biner (.glb). Halaman yang sama menyebut impor file .blend bekerja dengan memanggil Blender untuk mengekspor ke glTF, sehingga anggota tim yang membuka proyek perlu memasang Blender.
+- **Unity.** Paket resmi Unity glTFast menyebut dukungan penuh untuk spesifikasi glTF 2.0, untuk impor dan ekspor, baik di editor maupun saat game berjalan. Halaman referensi format model di manual Unity 6.0 tidak mencantumkan glTF di daftar format standar yang dibaca Unity tanpa paket tambahan.
+
+{/* Belum diverifikasi ke dokumentasi Epic (situs Epic diblokir proxy saat ditulis, 2026-10-31): dukungan impor dan ekspor glTF di Unreal Engine (importer glTF bawaan atau plugin, versi engine yang mendukung), serta Datasmith sebagai jalur impor dari aplikasi lain. Sumber yang perlu dicek: dokumentasi Unreal Engine di dev.epicgames.com. */}
+
+### FBX
+
+FBX banyak dipakai untuk memindahkan model dan animasi dari aplikasi 3D ke engine. Halaman referensi format model di manual Unity 6.0 menyebut Unity bisa membaca .fbx, .dae (Collada), .dxf, dan .obj, dan menyarankan memakai .fbx bila memungkinkan serta tidak memakai format proprietary aplikasi 3D di produksi. Alasannya, file .ma, .mb, .max, .c4d, atau .blend gagal diimpor kalau aplikasi pembuatnya tidak terpasang, jadi semua anggota tim harus memasangnya. Dokumentasi Godot menyebut FBX didukung lewat library ufbx, dan menjelaskan bahwa alur impor FBX sebelumnya membutuhkan program luar yang terhubung dengan FBX SDK yang proprietary.
+
+Untuk tujuan mengurangi ketergantungan, perbedaannya penting: glTF adalah spesifikasi terbuka dari konsorsium standar, sedangkan FBX banyak didukung tetapi SDK resminya proprietary. Keduanya jauh lebih mudah dibawa daripada file scene engine.
+
+### Gambar, audio, dan data
+
+Untuk tekstur, simpan sumbernya sebagai PNG atau format lain tanpa kompresi yang merusak kualitas, lalu biarkan engine mengompresinya untuk setiap platform. Untuk audio, simpan sumber dalam WAV dan biarkan engine membuat versi terkompresinya. Untuk data, JSON dan CSV dibaca hampir semua bahasa pemrograman. Prinsipnya sama untuk semuanya: file sumber disimpan di format umum dengan kualitas penuh, file hasil olahan dibuat oleh engine dan bisa dibuat ulang kapan saja.
+
+### Yang tetap tidak terbawa
+
+Format pertukaran membawa aset. Perilakunya tidak ikut, jadi cara objek bereaksi, susunan level, graf animasi, shader khusus, dan UI tetap harus dibuat ulang. Material juga sering hanya terbawa sebagian: warna dasar dan tekstur biasanya ikut, sedangkan efek yang memakai shader khusus engine tidak. Saat menilai seberapa mudah proyekmu dipindah, hitung kedua sisi ini.
+
+## Ilustrasi: tim kecil menimbang pindah
+
+<Aside type="caution" title="Ilustrasi, bukan data">
+Studio Kopi Pagi, Engine Kenari, dan Engine Rajawali adalah karangan. Jumlah bulan, scene, dan perkiraan di bawah dikarang untuk menunjukkan cara menimbang, dan tidak menggambarkan engine sungguhan mana pun.
+</Aside>
+
+**Studio Kopi Pagi** terdiri dari tiga orang: satu programmer, satu artis, dan satu desainer yang juga mengurus audio. Mereka sedang membuat game petualangan 2D dengan Engine Kenari, sudah tujuh bulan berjalan dari rencana empat belas bulan. Sudah ada 18 level, 40 jenis musuh, 6 shader buatan sendiri untuk efek air dan kabut, dan build untuk PC yang sudah diuji pemain.
+
+Programmernya ingin pindah ke Engine Rajawali. Alasannya: sistem cahaya 2D di Rajawali terlihat lebih bagus, dan kabut di Kenari membuat frame rate turun di laptop kelas bawah.
+
+**Langkah 1: tulis masalahnya.** Setelah didiskusikan, masalah yang bisa dicek hanya satu: "Game harus berjalan 60 fps di laptop target dengan efek kabut menyala." Cahaya yang lebih bagus ternyata masuk daftar keinginan.
+
+**Langkah 2: isi daftar pekerjaan ulang.**
+
+| Isi proyek | Jumlah | Perkiraan pekerjaan ulang di Rajawali |
+| --- | --- | --- |
+| Level | 18 | Disusun ulang; data posisi musuh bisa diekspor dengan skrip |
+| Jenis musuh | 40 | Statistik di CSV ikut; perilaku dan animasi disambung ulang |
+| Shader | 6 | Ditulis ulang semua |
+| Kode gameplay | Aturan game sebagian sudah terpisah | Aturan diterjemahkan ke bahasa Rajawali; kode penghubung ditulis ulang |
+| Gerak karakter | 1 karakter pemain | Disetel ulang sampai terasa sama |
+| Build dan integrasi toko | PC | Disiapkan ulang |
+| Keahlian tim | 3 orang | Ketiganya belum pernah memakai Rajawali |
+
+Perkiraan kasar mereka: tiga sampai lima bulan sebelum game kembali ke kondisi sekarang. Artinya, rilis mundur paling sedikit tiga bulan, sementara dana mereka cukup untuk tujuh bulan lagi.
+
+**Langkah 3: uji masalahnya di engine sekarang.** Programmer memakai profiler ([Fondasi 8](/belajar/fondasi-engine/08-profiling/)) dan menemukan shader kabut menggambar ulang seluruh layar beberapa kali per frame. Setelah shader itu digabung menjadi satu lapis dan resolusinya diturunkan, game mencapai target di laptop yang sama. Pekerjaannya selesai dalam empat hari.
+
+**Langkah 4: putuskan dan catat.** Tim memutuskan bertahan di Kenari. Mereka mencatat alasannya, dan menambahkan dua kebiasaan untuk sisa produksi: aturan game yang belum terpisah dipindahkan ke file sendiri, dan data level diekspor ke JSON setiap kali ada perubahan besar. Kalau suatu hari mereka membuat game berikutnya dengan engine lain, sebagian pekerjaan ini akan terbawa.
+
+Keputusannya bisa berbeda kalau hasil langkah 3 juga berbeda. Kalau kabut itu tetap tidak bisa mencapai target setelah dioptimasi, tim punya pilihan lain sebelum pindah: menyederhanakan efeknya, atau menurunkan target perangkat. Pindah engine tetap ada di daftar, sebagai pilihan dengan biaya yang sudah dihitung.
+
+## Kesalahan umum
+
+### Menganggap scene bisa dikonversi otomatis
+
+```text title="✗ Keliru"
+scene dan level sudah ada  →  tinggal dikonversi ke engine baru
+```
+
+```text title="✓ Benar"
+hitung jumlah scene, prefab, dan UI  →  anggap semuanya disusun ulang
+→  ekspor data yang bisa diekspor (posisi, daftar objek) ke format umum
+```
+
+Alat konversi pihak ketiga kadang ada, tetapi hasilnya tetap perlu diperiksa dan dirapikan satu per satu. Untuk perkiraan, anggap scene dibuat ulang, lalu anggap alat bantu apa pun sebagai bonus.
+
+### Melupakan biaya rasa dan cahaya
+
+```text title="✗ Keliru"
+perkiraan migrasi = tulis ulang kode + impor ulang aset
+```
+
+```text title="✓ Benar"
+perkiraan migrasi = tulis ulang kode + impor dan periksa aset
+                  + setel ulang gerak, kamera, dan cahaya
+                  + belajar ulang × jumlah orang + siapkan ulang build
+```
+
+Setelah kode dan aset dipindah, game bisa jalan tetapi terasa berbeda. Penyetelan untuk mengembalikan rasa itu sering memakan waktu lebih lama dari perkiraan, karena hanya bisa dikerjakan sambil memainkan game.
+
+### Pindah untuk menyelesaikan masalah yang bisa diperbaiki di tempat
+
+```text title="✗ Keliru"
+frame rate turun  →  engine ini lambat  →  pindah engine
+```
+
+```text title="✓ Benar"
+frame rate turun  →  profil di perangkat target  →  temukan penyebabnya
+→  coba perbaiki di engine sekarang  →  baru timbang pindah kalau tidak bisa
+```
+
+Banyak masalah performa dan arsitektur datang dari cara proyek dibangun. Masalah seperti itu ikut terbawa ke engine baru kalau penyebabnya tidak dipahami.
+
+### Menyimpan aset hanya di dalam proyek engine
+
+```text title="✗ Keliru"
+model dan tekstur diedit lalu disimpan hanya sebagai aset hasil impor di proyek engine
+```
+
+```text title="✓ Benar"
+file sumber (.blend, .psd, .wav) di folder sumber  →  ekspor ke glTF, FBX, PNG, WAV
+→  impor ke proyek engine
+```
+
+File hasil impor dibuat untuk satu engine dan sering untuk satu platform. Tanpa file sumber, aset tidak bisa diekspor ulang dengan kualitas penuh, baik untuk engine lain maupun untuk versi engine yang sama di masa depan.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+1. Ambil proyek yang sedang atau pernah kamu kerjakan. Isi tabel "apa yang ikut pindah" dengan jumlah nyata: berapa scene, shader, file data, dan file sumber art. Bagian mana yang paling besar di kolom "dibuat ulang"?
+2. Cari satu fungsi di kodemu yang mencampur aturan game dengan pemanggilan API engine. Pisahkan aturannya ke fungsi tersendiri, lalu tulis satu tes untuk fungsi itu tanpa membuka editor.
+3. Pilih satu jenis data di game-mu, misalnya statistik musuh atau daftar item, lalu pindahkan ke file CSV atau JSON. Tulis kode pendek untuk membacanya di engine yang kamu pakai.
+4. Ekspor satu model dari aplikasi 3D ke glTF, lalu impor ke dua engine yang berbeda. Catat apa yang terbawa dengan baik dan apa yang perlu disetel ulang, terutama material dan animasi.
+5. Tulis jawaban untuk enam pertanyaan di bagian "Kapan pindah masuk akal" untuk satu alasan pindah engine yang pernah kamu dengar atau pikirkan.
+
+Pelajaran ini menutup rencana isi jalur Lanskap Engine. Kembali ke [halaman jalur](/belajar/lanskap-engine/) untuk melihat daftar pelajaran dan mengulang bagian yang ingin kamu dalami.

@@ -1,0 +1,395 @@
+---
+title: "Studi Kasus dan Postmortem"
+description: "Cara membaca postmortem dan studi kasus buatan developer lain: format yang umum, cara membacanya dengan kritis, tempat mencarinya, empat ringkasan kasus dari tulisan pembuatnya sendiri (developer solo di Malaysia, tim dua orang dari game jam, studio kecil di Surabaya, dan studio 40 orang), serta lembar baca yang bisa kamu pakai ulang."
+fundamental: "Postmortem adalah catatan pembuat game tentang apa yang terjadi selama proyek dan apa yang akan mereka lakukan berbeda. Membacanya memberimu pengalaman orang lain tanpa harus mengulang semua kesalahannya, asal kamu ingat bahwa tulisan itu disusun setelah hasilnya diketahui dan dari sudut pandang penulisnya. Kalau kamu membaca beberapa postmortem dengan pertanyaan yang sama, pola yang berulang lebih mudah terlihat daripada kalau kamu hanya mengingat cerita yang paling menarik."
+kind: lesson
+minutes: 30
+status: draf
+lastReviewed: 2026-10-31
+krekit:
+  gambaran-besar: "Postmortem itu catatan pengalaman orang lain. Kamu tetap perlu menimbang apakah keadaannya mirip dengan keadaanmu."
+  apa-itu-postmortem: "Postmortem ditulis setelah hasilnya diketahui. Ingat itu setiap kali penulisnya bilang sebuah keputusan 'jelas benar'."
+  format-yang-umum: "Daftar 'berjalan baik' dan 'berjalan buruk' memudahkan perbandingan antarproyek. Yang tidak masuk daftar juga perlu kamu perhatikan."
+  membaca-dengan-kritis: "Postmortem dari game yang gagal jarang ditulis. Karena itu, yang ada perlu dibaca dengan teliti."
+  di-mana-mencari: "Cek siapa penulisnya sebelum membaca. Postmortem dari tim berbeda dengan artikel yang ditulis orang luar tentang tim itu."
+  tentang-studi-kasus-di-halaman-ini: "Ringkasan di bawah ini mengikuti apa yang ditulis atau dikatakan pembuatnya. Untuk detail lengkap, buka sumber aslinya."
+  concealed-intent-developer-solo-di-malaysia: "Perhatikan bagian keberuntungan di daftar 'berjalan baik'. Penulisnya sendiri yang menyebut faktor itu."
+  candy-raid-tim-dua-orang-dari-game-jam: "Game yang selesai dan disukai pemainnya bisa tetap sepi pembeli. Kedua hal itu perlu dinilai terpisah."
+  a-space-for-the-unbound-studio-kecil-di-surabaya: "Tulisan yang hampir semuanya positif juga bisa dipelajari. Coba cari pertanyaan yang tidak ditanyakan."
+  age-of-empires-ii-sekuel-di-studio-40-orang: "Pengalaman satu game besar tidak membuat game berikutnya otomatis lebih mudah."
+  membandingkan-keempat-kasus: "Kalau saran yang sama muncul dari developer solo dan dari studio 40 orang, saran itu layak kamu catat."
+  lembar-baca-postmortem: "Isi lembar ini sambil membaca. Setelah selesai membaca, biasanya kamu hanya ingat bagian yang paling dramatis."
+  kesalahan-umum: "Postmortem cocok dipakai untuk membuat daftar hal yang perlu dicek. Untuk menebak hasil proyekmu sendiri, postmortem tidak bisa diandalkan."
+sidebar:
+  order: 5
+  label: "5 · Studi Kasus dan Postmortem"
+quiz:
+  - q: "Kenapa postmortem yang terbit cenderung berasal dari game yang berhasil, dan apa akibatnya bagi pembaca?"
+    options:
+      - "Karena game yang gagal tidak punya pelajaran, jadi pembaca tidak kehilangan apa-apa"
+      - "Karena tim yang berhasil lebih sering diminta atau mau menulis, sehingga pembaca bisa mengira keputusan mereka pasti membawa hasil yang sama"
+      - "Karena media dilarang memuat postmortem game yang gagal"
+      - "Karena postmortem hanya boleh ditulis oleh studio besar"
+    answer: 1
+    explain: "Ini disebut survivorship bias. Tim lain mungkin mengambil keputusan yang sama lalu gagal, tetapi kisahnya tidak pernah ditulis. Postmortem seperti Candy Raid dan Concealed Intent, yang terus terang soal penjualan yang kecil, membantu menyeimbangkan gambaran itu."
+  - q: "Charles Cordingley memasukkan keberuntungan ke daftar 'berjalan baik' di postmortem Concealed Intent. Apa yang ia maksud?"
+    options:
+      - "Biaya hidup dasarnya ditanggung lewat pekerjaan pasangannya di Malaysia, sehingga ia bisa membuat game tanpa khawatir soal penghasilan"
+      - "Gamenya kebetulan ditampilkan di halaman depan Steam"
+      - "Ia memenangkan hibah pemerintah"
+      - "Publisher besar menawarkan kontrak setelah melihat prototipenya"
+    answer: 0
+    explain: "Ia menulis bahwa tanpa jaring pengaman itu, gamenya tidak akan pernah dimulai, dan meminta calon developer indie menimbang hal ini dengan hati-hati. Ini contoh konteks yang penting saat membaca postmortem: kondisi keuangan penulis memengaruhi keputusan yang bisa ia ambil."
+  - q: "Di postmortem Candy Raid: The Factory, apa yang ditulis Evan Hartshorn tentang masalah komunikasi di tim?"
+    options:
+      - "Tim terlalu sering rapat"
+      - "Ia tidak menjelaskan maksud aset art-nya secara rinci, sehingga level designer memakainya tidak sesuai maksudnya"
+      - "Tim memakai bahasa yang berbeda"
+      - "Kontraktor musik tidak pernah membalas pesan"
+    answer: 1
+    explain: "Ia memberi contoh tile dinding bagian dalam yang tidak dipakai karena maksudnya tidak dijelaskan. Pelajarannya menurut dia sendiri: biasakan mendokumentasikan apa fungsi setiap aset dan cara memakainya."
+  - q: "Menurut Matt Pritchard, kenapa rencana awal Age of Empires II dalam satu tahun tidak tercapai?"
+    options:
+      - "Engine game pertama hilang dan harus ditulis ulang dari nol"
+      - "Publisher meminta game dipindahkan ke konsol"
+      - "Sebagian besar tim keluar setelah game pertama rilis"
+      - "Tim mengira kode dan alat lama membuat sekuel lebih mudah, lalu menambahkan daftar fitur yang sangat panjang sampai desainnya kehilangan fokus"
+    answer: 3
+    explain: "Beberapa bulan kemudian tim menyadari desainnya melebar ke banyak arah. Mereka mengambil satu tahun tambahan dan membuat expansion pack untuk game pertama agar publisher tetap punya rilis di akhir 1998."
+  - q: "Postmortem Age of Empires II terbit tahun 2000. Bagaimana sebaiknya kamu memperlakukan bagian tentang DirectPlay, CPU 166 MHz, dan proses patch?"
+    options:
+      - "Abaikan seluruh postmortem karena sudah terlalu lama"
+      - "Terapkan apa adanya ke proyekmu"
+      - "Baca sebagai konteks zamannya, lalu cari prinsip yang masih berlaku, misalnya mendokumentasikan kebutuhan teknis lebih awal dan menyepakati siapa yang memutuskan rilis patch"
+      - "Anggap semua masalah itu sudah tidak mungkin terjadi lagi"
+    answer: 2
+    explain: "Alat dan perangkatnya sudah berubah, tetapi pertanyaan seperti siapa yang berwenang merilis patch, atau kapan kebutuhan teknis disampaikan ke tim lain, masih muncul di proyek sekarang. Membaca dengan memperhatikan era berarti memisahkan detail teknis zamannya dari prinsip yang bisa dipindahkan."
+  - q: "Saat membaca postmortem A Space for the Unbound, kamu menemukan bahwa hampir semua isinya positif. Langkah apa yang paling berguna?"
+    options:
+      - "Menyimpulkan bahwa proyek itu tidak punya masalah sama sekali"
+      - "Menganggap tulisannya tidak jujur"
+      - "Mencatat hal yang memang disebut sulit, lalu menulis pertanyaan yang belum terjawab, misalnya soal anggaran, jadwal, atau fitur yang dipotong"
+      - "Berhenti membaca dan mencari tulisan lain"
+    answer: 2
+    explain: "Dimas Novan D menyebut kesulitan menemukan format game di awal, dan ia ingin lebih baik dalam mengomunikasikan ide. Bentuk tulisannya wawancara, jadi isinya juga dibentuk oleh pertanyaan pewawancara. Mencatat apa yang tidak dibahas membantu kamu tahu apa yang masih perlu dicari dari sumber lain."
+sources:
+  - title: "Concealed Intent Development Postmortem (Charles Cordingley, 2 Agustus 2016)"
+    url: "https://www.gamedeveloper.com/business/concealed-intent-development-postmortem"
+    publisher: "Game Developer (blog komunitas)"
+    accessed: 2026-10-31
+  - title: "Candy Raid: The Factory Post Mortem (Kayne Ruse dan Evan Hartshorn, 10 Januari 2019)"
+    url: "https://www.gamedeveloper.com/production/candy-raid-the-factory-post-mortem"
+    publisher: "Game Developer (blog komunitas)"
+    accessed: 2026-10-31
+  - title: "Postmortem: Developing a Game With a Distinct Indonesian Identity (Dimas Novan D, 20 Maret 2024)"
+    url: "https://80.lv/articles/postmortem-developing-a-game-with-a-distinct-indonesian-identity"
+    publisher: "80 Level (wawancara oleh Arti Sergeev)"
+    accessed: 2026-10-31
+  - title: "Postmortem: Ensemble Studio's Age of Empires II: Age of Kings (Matthew Pritchard, 7 Maret 2000)"
+    url: "https://www.gamedeveloper.com/design/postmortem-ensemble-studio-s-age-of-empires-ii-age-of-kings"
+    publisher: "Game Developer"
+    accessed: 2026-10-31
+  - title: "GDC Vault"
+    url: "https://gdcvault.com/"
+    publisher: "GDC Vault"
+    accessed: 2026-10-31
+  - title: "Classic Game Postmortem: 'Deus Ex' (Warren Spector, GDC 2017)"
+    url: "https://gdcvault.com/play/1028676/Classic-Game-Postmortem-Deus-Ex"
+    publisher: "GDC Vault"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menjelaskan apa itu postmortem dan format "berjalan baik, berjalan buruk" yang sering dipakai.
+- Membaca postmortem dengan memperhatikan survivorship bias, hindsight, bagian yang tidak dibahas, serta konteks anggaran, ukuran tim, dan zamannya.
+- Menemukan postmortem yang ditulis langsung oleh pembuat game.
+- Menarik pelajaran dari kasus yang berbeda ukuran dan keadaannya, lalu membandingkannya.
+- Memakai lembar baca untuk mencatat postmortem secara konsisten.
+</Aside>
+
+<Aside type="caution" title="Tentang sumber di halaman ini">
+Empat ringkasan kasus di halaman ini disusun dari tulisan dan wawancara pembuat gamenya sendiri, dan setiap klaim merujuk ke sumber itu. Krekit akan mengundang orang-orang yang terlibat untuk meninjau ringkasan tentang proyek mereka. Sampai tinjauan itu ada, anggap ringkasan ini sebagai bacaan pengantar, lalu buka tulisan aslinya untuk detail dan nuansa yang tidak muat di sini.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: catatan pendaki">
+Bayangkan kamu akan mendaki gunung yang belum pernah kamu datangi. Sebelum berangkat, kamu membaca catatan perjalanan pendaki lain: jalur mana yang licin, di mana mereka kehabisan air, dan apa yang mereka sesali tidak dibawa. Catatan itu berguna, tetapi kamu tetap perlu tahu kapan mereka mendaki, berapa orang rombongannya, dan apakah mereka pendaki berpengalaman. Jalur yang aman di musim kemarau bisa berbahaya di musim hujan. Postmortem game bekerja dengan cara yang sama.
+</Aside>
+
+Di [Pelajaran 4](/belajar/industri-karier/04-portofolio/#format-studi-kasus), kamu menulis studi kasus tentang proyekmu sendiri untuk portofolio. Pelajaran ini membalik arahnya. Kamu membaca studi kasus dan postmortem yang ditulis developer lain, lalu belajar menarik pelajaran darinya tanpa menelan semuanya mentah-mentah.
+
+Halaman ini dibagi tiga. Bagian pertama membahas formatnya, cara membacanya dengan kritis, dan tempat mencarinya. Bagian kedua berisi empat ringkasan kasus dengan ukuran tim dan zaman yang berbeda. Bagian ketiga membandingkan keempatnya dan memberimu lembar baca untuk postmortem berikutnya.
+
+Jalur Produksi merencanakan pelajaran tentang cara menulis postmortem untuk timmu sendiri. Pelajaran ini fokus pada sisi pembaca.
+
+## Apa itu postmortem
+
+Dalam pengembangan game, postmortem adalah tulisan atau presentasi yang dibuat setelah sebuah proyek selesai atau mencapai tahap penting, misalnya rilis, keluar dari Early Access, atau dihentikan. Isinya evaluasi: apa yang terjadi, keputusan apa yang diambil, mana yang membantu, mana yang merugikan, dan apa yang akan dilakukan berbeda di proyek berikutnya.
+
+Postmortem bisa dibuat untuk kalangan internal tim atau untuk publik. Yang dibahas di sini adalah postmortem publik, yang terbit di situs seperti Game Developer, di blog studio, di media yang mewawancarai tim, atau sebagai talk di konferensi.
+
+Istilah studi kasus lebih luas. Studi kasus bisa ditulis oleh siapa saja tentang sebuah studio atau game, termasuk oleh peneliti atau jurnalis. Postmortem biasanya ditulis oleh orang yang terlibat langsung. Perbedaan ini penting: postmortem memberi akses ke pertimbangan di balik keputusan, sedangkan studi kasus dari pihak luar sering lebih berjarak tetapi bergantung pada apa yang bisa diamati atau diceritakan orang lain.
+
+## Format yang umum
+
+Banyak postmortem memakai format yang sama:
+
+| Bagian | Isi yang biasa ditemukan |
+| --- | --- |
+| Konteks | Game apa, siapa timnya, berapa lama, platform apa |
+| Yang berjalan baik (*what went right*) | Biasanya tiga sampai lima poin, masing-masing dengan cerita singkat |
+| Yang berjalan buruk (*what went wrong*) | Jumlah poin serupa, kadang disebut "yang kurang berjalan baik" |
+| Penutup atau pelajaran | Apa yang akan diubah, saran untuk pembaca |
+| Data proyek | Kadang berupa kotak berisi lama pengerjaan, ukuran tim, perangkat, dan software |
+
+Format ini dipakai di postmortem Age of Empires II yang dibahas di bawah, lengkap dengan kotak data proyeknya. Postmortem Concealed Intent memakai judul "What went well" dan "What went not so well". Postmortem Candy Raid menggabungkan cerita kronologis dengan bagian "What Went Well", "What Went Less Well", dan "What I learned" dari salah satu anggotanya.
+
+Format daftar ini memudahkan kamu membandingkan proyek yang berbeda. Kekurangannya, cerita yang rumit terpotong menjadi poin-poin, dan hal yang tidak cocok dimasukkan ke kategori "baik" atau "buruk" sering tidak muncul sama sekali.
+
+## Membaca dengan kritis
+
+Postmortem bukan laporan netral. Penulisnya punya ingatan yang terbatas, punya reputasi yang ingin dijaga, dan menulis setelah tahu hasil akhirnya. Empat hal berikut membantu kamu membacanya dengan lebih hati-hati.
+
+**Survivorship bias.** Tim yang gamenya berhasil lebih sering diminta menulis atau diundang berbicara. Akibatnya, kamu banyak membaca keputusan yang diikuti keberhasilan, padahal tim lain mungkin mengambil keputusan yang sama lalu gagal tanpa pernah menuliskannya. Postmortem dari game yang penjualannya kecil, seperti Candy Raid, jumlahnya lebih sedikit dan karena itu berharga.
+
+**Hindsight.** Setelah hasilnya diketahui, sebuah keputusan bisa terlihat jelas benar atau jelas salah, padahal saat diambil keadaannya belum pasti. Charles Cordingley, penulis postmortem Concealed Intent, menyebut ia mencoba mengingat kembali cara berpikirnya empat tahun sebelumnya. Tidak semua penulis melakukan itu. Saat membaca, tanyakan: informasi apa yang dimiliki tim saat keputusan itu diambil?
+
+**Yang tidak dibahas.** Postmortem jarang membahas konflik pribadi secara rinci, isi kontrak, angka keuangan, atau keputusan yang masih sensitif. Ada juga hal yang dilewati karena penulisnya hanya tahu sebagian proyek. Untuk tulisan berbentuk wawancara, isinya ikut dibentuk oleh pertanyaan yang dipilih pewawancara.
+
+**Konteks.** Sebelum menerapkan saran dari sebuah postmortem, cek empat hal ini:
+
+- **Anggaran dan keuangan.** Apakah tim dibayar, punya tabungan, punya publisher, atau bekerja sambil kerja lain?
+- **Ukuran tim.** Saran untuk studio 40 orang tidak selalu berlaku untuk tim dua orang, dan sebaliknya.
+- **Zaman.** Toko, alat, perangkat, dan kebiasaan pemain berubah. Postmortem dari tahun 2000 membahas masalah yang sebagian sudah tidak ada, tetapi juga masalah yang masih muncul dalam bentuk lain.
+- **Posisi penulis.** Programmer, artist, dan direktur melihat proyek yang sama dari sisi yang berbeda. Satu postmortem biasanya ditulis dari satu atau dua sudut pandang.
+
+## Di mana mencari
+
+Beberapa tempat yang memuat postmortem dari pembuatnya sendiri:
+
+- **Game Developer** (dulu bernama Gamasutra). Situs ini memuat arsip postmortem dari era majalah Game Developer, seperti postmortem Age of Empires II di bawah, dan juga blog komunitas tempat developer menulis sendiri, seperti postmortem Concealed Intent dan Candy Raid. Artikel blog komunitas ditandai sebagai tulisan anggota komunitas, jadi kamu bisa membedakannya dari artikel redaksi.
+- **GDC Vault.** Arsip rekaman dan materi talk dari Game Developers Conference. Situsnya membedakan konten gratis dan konten khusus anggota berbayar. Ada seri talk berjudul Classic Game Postmortem, misalnya talk Warren Spector tentang Deus Ex di GDC 2017. Halaman setiap talk mencantumkan nama pembicara, perusahaannya, dan ringkasan sesi.
+- **Blog dan devlog studio.** Banyak developer menulis postmortem di blog sendiri atau di halaman devlog game mereka. Postmortem Concealed Intent, misalnya, aslinya terbit di blog perusahaan penulisnya sebelum dimuat ulang di Game Developer.
+- **Wawancara berbentuk postmortem.** Beberapa media memuat wawancara yang disusun sebagai postmortem, seperti artikel tentang A Space for the Unbound di bawah. Jawabannya berasal dari pembuat game, tetapi pertanyaannya dari media.
+
+Saat menemukan sebuah tulisan, cek dulu siapa penulisnya. Tulisan dengan nama anggota tim sebagai penulis berbeda dengan artikel berita yang menceritakan ulang kisah sebuah studio. Catat juga tanggal terbitnya, karena isi postmortem selalu menggambarkan keadaan saat ditulis.
+
+## Tentang studi kasus di halaman ini
+
+Empat kasus berikut dipilih supaya ukuran tim, wilayah, dan zamannya berbeda:
+
+| Kasus | Tim | Tempat | Tahun tulisan |
+| --- | --- | --- | --- |
+| Concealed Intent | 1 orang, dibantu freelancer art | Malaysia | 2016 |
+| Candy Raid: The Factory | 2 orang dan 1 kontraktor musik | Komunitas daring | 2019 |
+| A Space for the Unbound | Mojiken Studio | Surabaya | 2024 |
+| Age of Empires II | Ensemble Studios, 40 orang | Dallas, Amerika Serikat | 2000 |
+
+Setiap kasus ditulis dengan urutan yang sama: konteks, apa yang menurut pembuatnya berjalan baik, apa yang tidak berjalan baik, apa yang bisa kamu ambil, dan sumbernya. Bagian "yang bisa kamu ambil" adalah tafsiran Krekit atas tulisan mereka. Bagian lain mengikuti apa yang mereka tulis atau katakan. Angka penjualan hanya disebut kalau pembuatnya sendiri menyebutnya, beserta tanggal tulisannya.
+
+## Concealed Intent: developer solo di Malaysia
+
+**Konteks.** Concealed Intent adalah game taktik pertempuran luar angkasa berbasis giliran simultan dengan unsur siluman, dimainkan di dunia 3D. Charles Cordingley mengerjakannya hampir sendirian selama hampir empat tahun di Malaysia, lalu menulis postmortem saat game keluar dari Early Access dan rilis penuh di Steam pada Agustus 2016. Sebelumnya ia bekerja 15 tahun di pengembangan software.
+
+**Yang berjalan baik menurut pembuatnya.**
+
+- **Keberuntungan.** Ia menaruh poin ini paling atas. Pasangannya mendapat pekerjaan di Malaysia dengan biaya hidup dasar yang ditanggung pemberi kerja, sehingga ia bisa membuat game tanpa memikirkan penghasilan. Ia menulis bahwa tanpa jaring pengaman itu gamenya tidak akan pernah dimulai, dan ia sulit menyarankan orang membuat game dengan harapan untung.
+- **Menyelesaikan.** Ia berkali-kali ingin berhenti. Yang membantunya adalah daftar tugas yang hanya melihat satu atau dua minggu ke depan.
+- **Bantuan profesional untuk art.** Ia mengerjakan semua yang bisa ia kerjakan sendiri karena anggarannya sangat kecil. Salah satu keputusan terbaiknya, menurut dia, adalah menyewa freelancer lokal untuk art 2D dan masukan desain grafis antarmuka. Setelah itu tanggapan pemain berubah jauh lebih positif, walaupun art 3D-nya hampir tidak berubah.
+- **Menjaga inti, mengubah sisanya.** Banyak penguji menyarankan perubahan besar, seperti menjadikannya 2D, real-time, atau membuang mekanik deteksi. Ia memakai satu aturan: hal yang menjadi inti konsep (3D penuh, berbasis giliran, deteksi ala kapal selam) tidak diubah, sedangkan hal lain boleh diubah. Simulasi fisika dan kontrol kapal yang awalnya rumit akhirnya disederhanakan.
+- **Early Access.** Ia menyebut Early Access tidak menghasilkan banyak uang baginya, tetapi memberi masukan yang sangat dibutuhkan gamenya, dan dari situ ia belajar hampir semua yang ia tahu tentang marketing.
+
+**Yang tidak berjalan baik.**
+
+- **Terlalu besar, terlalu lama.** Rencana awalnya 18 bulan. Setiap sistem dikerjakan ulang beberapa kali, dan banyak pekerjaan tidak terpikirkan di awal. Ia menulis bahwa waktu empat tahun kemungkinan membuat gamenya tidak menguntungkan setelah biaya hidupnya dihitung, dan menyimpulkan: "Come up with the smallest decent idea you can, then try to make it smaller."
+- **Sendirian dan belum berpengalaman.** Bekerja sendiri melipatgandakan kesulitan, baik dari sisi keterampilan maupun emosi. Ia menulis bahwa awalnya ia menganggap publisher yang menolak developer solo berpikiran pendek, tetapi kemudian menilai sikap itu bijak.
+- **Marketing.** Saat Early Access, ia mendapati tidak bisa mengerjakan pengembangan dan marketing bersamaan, lalu memilih menyelesaikan game dulu. Ia menggambarkan marketing sebagai pekerjaan yang terlalu berat untuk developer solo dengan game niche, tanpa kenalan, dan jauh dari komunitas indie besar.
+- **Kurang fokus.** Game ini punya kampanye satu pemain, pertempuran prosedural, dan multiplayer daring. Menurutnya, lebih baik mulai dari satu mode. Masukan Early Access menunjukkan mode prosedural paling disukai, padahal banyak tenaga sudah masuk ke mode lain.
+- **Gameplay niche dan rumit.** Ia menyebut gamenya "niche di dalam niche" dan sulit dijelaskan ke pemain, walaupun itu memang game yang ingin ia buat.
+
+Di akhir tulisan ia menambahkan beberapa catatan, antara lain soal hak cipta musik, penipu yang meminta key gratis, dan banyaknya pembeli Steam yang tidak berbahasa Inggris, sehingga ia menyarankan memikirkan lokalisasi sejak awal.
+
+**Yang bisa kamu ambil.**
+
+- Cara ia memisahkan inti konsep dari bagian lain bisa kamu pakai saat menerima masukan playtest. Tuliskan dulu dua atau tiga hal yang membuat gamemu menjadi gamemu, lalu nilai setiap masukan terhadap daftar itu.
+- Poin keberuntungan adalah konteks. Saran "kerjakan game impianmu selama empat tahun" punya arti yang berbeda kalau biaya hidupmu tidak ditanggung. Bandingkan dengan pembahasan pendanaan di jalur [Bisnis Studio Indie](/belajar/bisnis-indie/02-pendanaan/).
+- Masalah scope dan mode permainan yang terlalu banyak berkaitan dengan cara memotong scope di jalur [Produksi](/belajar/produksi/01-scope-vertical-slice/#memotong-scope).
+
+**Sumber.** Charles Cordingley, "Concealed Intent Development Postmortem", Game Developer (blog komunitas), 2 Agustus 2016. Tulisan ini aslinya terbit di blog Jarrah Technology.
+
+## Candy Raid: tim dua orang dari game jam
+
+**Konteks.** Candy Raid: The Factory adalah game puzzle pixel art dengan kamera dari atas. Kayne Ruse (pemrograman dan desain) dan Evan Hartshorn (art) bertemu di server Discord Game Dev Underground menjelang Ludum Dare 41 pada April 2018. Musik dan efek suara dikerjakan Luis Paez sebagai kontraktor berbayar. Versi game jam mereka mendapat peringkat ke-72 di kategori fun. Beberapa hari kemudian Kayne mengajak Evan mengembangkannya menjadi game penuh. Postmortem ditulis bersama, dengan bagian terpisah dari masing-masing, dan terbit Januari 2019.
+
+**Yang berjalan baik menurut pembuatnya.**
+
+- **Membangun ulang dengan jadwal yang jelas.** Mereka membangun ulang game dari awal sambil menjaga inti versi game jam. Pengerjaan direncanakan empat bulan, dibagi dalam periode 20 hari dengan evaluasi di akhir setiap periode.
+- **Memotong yang tidak cocok.** Area keempat, yang berisi pertarungan bos, dinilai tidak sesuai dengan inti game, jadi seluruh area itu dibuang dan waktunya dipakai untuk area lain.
+- **Rilis komersial pertama.** Kayne menulis bahwa ia menikmati prosesnya, merasa seperti developer sungguhan yang menjalankan studio sendiri, dan bangga dengan situs yang ia bangun untuk landing page, press kit, demo, dan prototipe. Proyek ini juga membuatnya mendirikan studio yang terdaftar resmi.
+- **Bekerja berdua.** Evan menulis bahwa bekerja dengan programmer memperluas jenis game yang bisa ia buat, dan bahwa Kayne ternyata pandai merancang level. Ia juga menyebut Unity memudahkannya mengubah hal kecil walaupun ia bukan ahli.
+
+**Yang tidak berjalan baik.**
+
+- **Penjualan.** Saat postmortem ditulis (Januari 2019), menurut mereka game ini baru terjual 14 kopi dalam dua bulan pertama, belum cukup untuk mencapai batas minimum pembayaran Steam. Mereka menyebutnya sukses secara kritik tetapi gagal secara komersial.
+- **Harga dan visibilitas.** Harga awal 12 dolar AS, mengikuti saran bahwa harga tinggi memberi kesan kualitas tinggi, lalu diturunkan ke 5 dolar. Kayne menulis bahwa ia tidak yakin harga lebih rendah akan membantu, dan menambahkan: "Steam is not a tool for visibility."
+- **Menunggu sebulan.** Tanggal rilis dipatok 1 Oktober karena tema Halloween, sebulan setelah code freeze. Kayne menyebut waktu tunggu itu seharusnya bisa dipakai untuk memoles game, dan ia tidak akan melakukannya lagi.
+- **Desain dan teknis.** Area pertama dirancang paling awal dan dipakai sebagai demo, dan ia menyesal tidak bisa mengubahnya dengan pengetahuan yang ia dapat kemudian. Tidak ada menu pause. Puzzle cahaya di area ketiga dibuat dengan mengakali sistem kabut alih-alih raycasting, sehingga puzzle itu bisa dilewati begitu saja.
+- **Biaya yang terbuang.** Mereka membayar empat lagu untuk empat area. Karena satu area dibuang, satu lagu tidak terpakai.
+- **Komunikasi.** Evan menulis bahwa ia tidak menjelaskan maksud aset art-nya dengan rinci, misalnya tile dinding bagian dalam, sehingga level designer membangun ruangan tanpa tile itu. Ia juga menulis bahwa ia tidak menyampaikan sejak awal jenis game yang ia inginkan, sehingga ia sulit mempromosikan game yang tidak terlalu ia sukai.
+
+**Yang bisa kamu ambil.**
+
+- Game yang dinilai bagus oleh pemainnya belum tentu ditemukan orang. Pembahasan wishlist dan visibilitas ada di pelajaran [Marketing](/belajar/bisnis-indie/04-marketing/#wishlist) jalur Bisnis Studio Indie.
+- Saran Evan untuk mendokumentasikan fungsi setiap aset bisa dicoba di proyek tim mana pun. Satu kalimat keterangan di samping setiap tileset sudah membantu.
+- Kesepakatan tentang game apa yang ingin dibuat bersama perlu dibicarakan di awal, karena orang yang tidak menyukai gamenya sendiri akan sulit mempromosikannya.
+- Tulisan ini contoh postmortem dari game yang penjualannya kecil. Bandingkan nadanya dengan postmortem game yang laris.
+
+**Sumber.** Kayne Ruse dan Evan Hartshorn, "Candy Raid: The Factory Post Mortem", Game Developer (blog komunitas), 10 Januari 2019.
+
+## A Space for the Unbound: studio kecil di Surabaya
+
+**Konteks.** A Space for the Unbound adalah game petualangan pixel art berlatar SMA di Indonesia, dengan unsur realisme magis. Gamenya rilis Januari 2023. Sumbernya wawancara berbentuk postmortem di 80 Level dengan Dimas Novan D, direktur game ini dan Supervising Artist di Mojiken Studio dan Toge Productions. Ia menyebut Mojiken berbasis di Surabaya, sudah berdiri lebih dari sepuluh tahun, dan baru bergabung dengan Toge Productions, yang sebelumnya menjadi publisher mereka.
+
+**Yang berjalan baik menurut pembuatnya.**
+
+- **Ide dari game jam internal.** Ide awalnya lahir dari game jam internal Mojiken tahun 2015 bernama Mojikencamp, dengan prototipe berjudul The Bridge. Prototipe dan trailer pertamanya, menurut Dimas, diterima dengan baik dari sisi arah art.
+- **Pixel art sesuai tema dan tim.** Pixel art dipilih karena cocok dengan tema nostalgia, dan karena tim lebih berpengalaman di bidang itu.
+- **Format yang membuat pengembangan efisien.** Setelah beberapa prototipe, tim memilih format game petualangan dengan mekanik *spacedive*, yaitu masuk ke pikiran atau hati karakter lain. Dimas menyebut format ini membuat pengembangan lebih efisien sambil tetap memberi ruang bereksperimen dengan puzzle, visual, dan cerita.
+- **Persiapan multiplatform sejak awal.** Game dirancang dengan kontroler sejak tahap awal untuk memudahkan rilis di banyak platform. Pengalaman porting sebelumnya dan mitra publishing Chorus Worldwide, yang menangani sebagian port, membantu proses ini.
+- **Komunitas sejak awal.** Dimas membagikan screenshot dan karya yang belum selesai untuk mengukur minat. Tim merilis demo prolog pada 2020 untuk menguji apakah game cukup menarik, lalu mengadakan beta test. Konten media sosial berfokus pada kehidupan sehari-hari para karakter, diselingi sisi supernatural sebagai kontras. Mereka juga ikut berbagai event untuk menambah wishlist dan pengikut.
+
+**Yang tidak berjalan baik.** Tulisan ini lebih banyak membahas hal yang berhasil. Kesulitan yang disebut Dimas:
+
+- **Mencari format.** Di awal ia banyak kesulitan menemukan format game dan struktur cerita yang cocok. Iterasi paling awal, menurutnya, tidak akan cukup kalau dikembangkan menjadi pengalaman yang lebih lengkap, sehingga tim membuat beberapa prototipe lagi.
+- **Risiko kelelahan.** Saat memberi saran, ia menyebut mengurus media sosial sambil mengembangkan game bisa membuat kelelahan, dan menyarankan jadwal kapan memposting dan kapan fokus mengembangkan.
+- **Hal yang ingin diperbaiki.** Ia menyebut masih ada ruang perbaikan tanpa merinci. Untuk proyek berikutnya, ia ingin memberi ruang eksperimen dengan risiko yang lebih terkendali dan lebih baik dalam mengomunikasikan ide ke orang lain.
+
+Pelajaran utama yang ia sebut adalah kemampuan menentukan cakupan dan mengarahkan proyek, yang menurutnya baru benar-benar didapat setelah menyelesaikan sesuatu. Ia juga membedakan membuat game dengan membuat studio: studio butuh sumber daya, kepemimpinan, manajemen, dan marketing supaya tim bisa terus membuat game. Kalimatnya: "Making a game and making a game studio are two different things."
+
+**Yang bisa kamu ambil.**
+
+- Seperti Candy Raid, game ini berawal dari game jam. Bedanya, prototipenya berkembang di dalam studio yang sudah punya pengalaman porting dan kemudian didukung publisher dengan komunitas yang sudah ada. Konteks ini perlu diingat saat membandingkan hasil keduanya.
+- Demo prolog dan beta test adalah cara menguji minat dan fungsi game sebelum rilis. Pembahasan demo ada di pelajaran [Marketing](/belajar/bisnis-indie/04-marketing/#demo).
+- Karena bentuknya wawancara, beberapa hal yang biasa ada di postmortem tidak dibahas, misalnya lama pengerjaan, ukuran tim, anggaran, atau fitur yang dipotong. Catat pertanyaan seperti ini di lembar bacamu, lalu cari jawabannya di sumber lain dari tim yang sama.
+- Ekosistem game di Indonesia, termasuk peran publisher lokal, dibahas di [Pelajaran 3](/belajar/industri-karier/03-ekosistem-indonesia/).
+
+**Sumber.** Dimas Novan D, "Postmortem: Developing a Game With a Distinct Indonesian Identity", wawancara oleh Arti Sergeev, 80 Level, 20 Maret 2024.
+
+## Age of Empires II: sekuel di studio 40 orang
+
+**Konteks.** Age of Empires II: The Age of Kings adalah game strategi real-time (RTS) untuk Windows yang rilis Oktober 1999. Postmortem-nya ditulis Matthew (Matt) Pritchard, programmer yang menulis engine grafis game pertama, dan terbit di Game Developer pada Maret 2000. Kotak data di akhir tulisan mencantumkan lama proyek 24 bulan dan ukuran tim 40 orang. Pritchard menulis bahwa sampai saat itu game pertama terjual sekitar tiga juta kopi, sehingga harapan terhadap sekuelnya tinggi. Publisher-nya Microsoft.
+
+Awalnya tim mengira kode dan alat dari game pertama akan membuat sekuel lebih mudah, sehingga mereka menargetkan satu tahun. Mereka juga mengumpulkan daftar keinginan fitur yang panjang. Beberapa bulan kemudian, menurut Pritchard, desainnya kehilangan fokus dan tidak mungkin selesai dalam setahun dengan kualitas yang diinginkan. Tim mengambil satu tahun tambahan dan membuat expansion pack untuk game pertama supaya publisher tetap punya rilis di akhir 1998.
+
+**Yang berjalan baik menurut pembuatnya.**
+
+- **Menjawab kritik terbesar game pertama.** Dua hal yang paling sering dikritik adalah AI lawan komputer dan pathfinding unit. AI lama dibuang dan diganti AI berbasis skrip yang dikerjakan programmer AI baru bersama tim desain. Untuk pathfinding, sistem pergerakan didesain ulang dengan tiga sistem pathfinding dan dua sistem halangan, dikerjakan lima orang di waktu yang berbeda-beda.
+- **Perbaikan di dalam genre.** Contohnya tombol mencari villager yang menganggur, hotkey yang bisa diatur, dan formasi otomatis. Sistem formasi awalnya dirancang rumit, lalu diganti versi yang lebih sederhana karena lebih cocok untuk gamenya.
+- **Pelacak bug dan jadwal crunch.** Di game pertama, laporan bug dari penguji di Microsoft diambil lewat satu komputer dengan modem lalu dicetak. Untuk sekuelnya, semua orang bisa membuka basis data bug lewat browser. Crunch di game pertama berlangsung terus-menerus di enam bulan terakhir dan menurut Pritchard berdampak buruk pada kesehatan dan keluarga sebagian orang. Untuk sekuelnya, crunch dijadwalkan jauh hari di beberapa titik: pukul 10 pagi sampai tengah malam, Senin sampai Jumat, Rabu selesai pukul 7 malam, dan akhir pekan libur.
+- **Alat dan pengujian otomatis.** Alat internal seperti ArtDesk mengonversi dan memeriksa data grafis. Alat analisis kode dipakai jauh lebih banyak dari sebelumnya, dan simulator perbandingan unit membantu desainer menyeimbangkan game. Satu kekurangan yang ia catat di bagian ini: belum ada alat manajemen aset art.
+- **Memenuhi spesifikasi minimum.** Optimasi di bulan-bulan terakhir dan pengaturan detail grafis membuat game bisa berjalan di Pentium 166 MHz dengan memori 32 MB, walaupun permainan multiplayer besar di peta besar butuh memori tambahan.
+
+**Yang tidak berjalan baik.**
+
+- **Belum ada proses patch.** Masalah ini sudah disebut di postmortem game pertama dan belum terselesaikan. Sebagai developer, Ensemble tidak memegang keputusan kapan patch dirilis. Bug yang dieksploitasi dan program cheat di multiplayer merusak reputasi tim di mata pemain.
+- **Versi belum jadi bocor.** Build sekuelnya beredar di jalur bajakan, hanya satu atau dua minggu di belakang build terbaru tim, dan sumber bocornya sulit dilacak.
+- **Playtest tidak terarah.** Tujuan sesi sering tidak jelas, apakah untuk mencari bug atau menguji keseruan. Yang bermain sering orang yang sama, multiplayer terlalu banyak diuji dibanding mode satu pemain, dan seorang penguji di pihak publisher ternyata menyalakan cheat selama lebih dari sebulan sehingga masukan dari kelompoknya tidak bisa dipakai.
+- **Tidak ada manajemen aset art.** Programmer punya source control dan desainer punya basis data game, tetapi artist tidak punya sistem yang setara untuk puluhan ribu frame grafis. Tidak ada cara mengetahui siapa mengerjakan apa, file mana yang dipakai, atau mengambil versi lama.
+- **Masalah API dan software pihak ketiga.** Pritchard menyebut ada bug di DirectPlay yang diketahui pembuatnya tetapi tidak didokumentasikan. DirectShow untuk sinematik tidak berhasil dipakai, dan software untuk layanan main daring datang terlambat. Ia mengakui sebagian masalah itu juga karena tim terlambat menyampaikan kebutuhannya.
+- **Keberhasilan membuat lengah.** Ia menulis bahwa sebagian orang di studio menjadi merasa tak terkalahkan setelah keberhasilan game pertama, dan ada yang bersikap memalukan di event industri. Studio kemudian menanganinya.
+
+**Yang bisa kamu ambil.**
+
+- Mengandalkan kode lama tidak otomatis memperpendek jadwal kalau daftar fiturnya ikut membengkak. Pola ini mirip dengan Concealed Intent, walaupun ukuran timnya sangat berbeda.
+- Playtest perlu tujuan yang jelas untuk setiap sesi. Tahap alpha dan beta dibahas di jalur [Produksi](/belajar/produksi/02-fase-produksi/#alpha-dan-beta).
+- Masalah aset art yang tidak terkelola sekarang biasanya ditangani dengan version control yang mendukung file besar, yang dibahas di pelajaran [Alat Kerja](/belajar/produksi/04-alat-kerja/#kenapa-game-lebih-sulit).
+- Soal siapa yang memutuskan rilis patch berkaitan dengan hubungan developer dan publisher yang dibahas di [Pelajaran 2](/belajar/industri-karier/02-peta-ekosistem/#publisher). Hal seperti ini lebih mudah disepakati sebelum rilis.
+- Jadwal crunch di tulisan ini disajikan sebagai perbaikan dibanding game pertama. Baca bagian itu sesuai zamannya, dan bandingkan dengan pembahasan jadwal di jalur Produksi.
+
+**Sumber.** Matthew Pritchard, "Postmortem: Ensemble Studio's Age of Empires II: Age of Kings", Game Developer, 7 Maret 2000.
+
+## Membandingkan keempat kasus
+
+Keempat kasus berbeda ukuran, tempat, dan zamannya, tetapi beberapa tema muncul lebih dari sekali:
+
+| Tema | Concealed Intent | Candy Raid | A Space for the Unbound | Age of Empires II |
+| --- | --- | --- | --- | --- |
+| Scope melebar atau perlu dipotong | Rencana 18 bulan jadi hampir 4 tahun; terlalu banyak mode | Satu area dibuang | Beberapa prototipe sebelum menemukan format | Target 1 tahun jadi 2 tahun |
+| Bantuan dan kerja sama | Freelancer art mengubah tanggapan pemain | Bekerja berdua memperluas kemampuan | Publisher dengan komunitas dan mitra porting | Menambah programmer, artist, dan desainer |
+| Komunikasi | Kesepian bekerja sendiri | Maksud aset art tidak dijelaskan | Ingin lebih baik mengomunikasikan ide | Kebutuhan teknis terlambat disampaikan |
+| Pemain dan marketing | Marketing terlalu berat untuk satu orang | Visibilitas di toko rendah | Demo prolog, beta, dan konten media sosial | Reputasi terganggu karena patch dan cheat |
+| Playtest dan masukan | Early Access memberi masukan | Tidak dibahas rinci | Demo dan beta test | Sesi playtest tidak terarah |
+
+Tema yang muncul di banyak kasus, seperti scope yang melebar, layak kamu catat sebagai hal yang perlu diawasi di proyekmu. Tema yang hanya muncul di satu kasus belum tentu salah, tetapi perlu dicek apakah keadaanmu mirip dengan keadaan tim itu.
+
+Perhatikan juga perbedaan nadanya. Postmortem dengan penjualan kecil (Candy Raid) dan game yang menurut penulisnya kemungkinan tidak menguntungkan (Concealed Intent) lebih banyak membahas kesalahan. Postmortem dari game yang diterima baik (A Space for the Unbound) lebih banyak membahas yang berhasil. Age of Empires II ditulis setelah game pertama laris, dan tetap memuat daftar masalah yang panjang. Nada tulisan dipengaruhi hasil akhir, dan ini salah satu bentuk hindsight.
+
+## Lembar baca postmortem
+
+Salin lembar ini ke catatanmu dan isi untuk setiap postmortem yang kamu baca. Mengisi pertanyaan yang sama untuk setiap tulisan memudahkan perbandingan.
+
+| Pertanyaan | Catatanmu |
+| --- | --- |
+| Judul, penulis, tanggal terbit, tempat terbit | |
+| Siapa penulisnya dan apa perannya di proyek? | |
+| Bentuknya apa: tulisan sendiri, talk, atau wawancara? | |
+| Game apa, genre apa, platform apa? | |
+| Ukuran tim, lama pengerjaan, sumber dana (kalau disebut) | |
+| Tahun proyek dan hal yang khas dari zaman itu | |
+| Tiga hal yang menurut penulis berjalan baik | |
+| Tiga hal yang menurut penulis berjalan buruk | |
+| Keputusan yang paling menarik dan informasi apa yang dimiliki tim saat itu | |
+| Hal yang tidak dibahas atau hanya disinggung | |
+| Angka yang disebut, beserta tanggal dan siapa yang menyebutnya | |
+| Satu pelajaran yang bisa dipindahkan ke proyekmu | |
+| Satu saran yang mungkin tidak berlaku untukmu, dan alasannya | |
+
+Dua baris terakhir paling penting. Baris "tidak berlaku untukmu" melatihmu memeriksa konteks, sehingga kamu tidak mengikuti semua saran begitu saja.
+
+## Kesalahan umum
+
+### Menganggap postmortem sebagai resep
+
+Keputusan yang berhasil di satu proyek belum tentu berhasil di proyekmu. Pakai postmortem untuk menyusun daftar hal yang perlu dicek, misalnya "apakah scope-ku realistis?", dan jangan memakainya sebagai urutan langkah yang dijamin berhasil.
+
+### Hanya membaca kisah sukses
+
+Kalau semua postmortem yang kamu baca berasal dari game laris, gambaranmu tentang industri akan miring. Sengaja cari juga postmortem dari game yang penjualannya kecil atau proyek yang dihentikan.
+
+### Mengabaikan tanggal dan zaman
+
+Saran tentang toko, harga, atau teknologi dari sepuluh tahun lalu bisa sudah tidak berlaku. Selalu catat tanggal terbit dan bedakan prinsip yang masih berlaku dari detail teknis zamannya.
+
+### Tidak membedakan penulis
+
+Artikel yang menceritakan ulang postmortem, atau ringkasan seperti di halaman ini, bukan tulisan aslinya. Kalau sebuah klaim penting untuk keputusanmu, baca sumber aslinya dan cek siapa yang mengatakannya.
+
+### Mengutip angka tanpa konteks
+
+Angka penjualan atau lama pengerjaan di postmortem berlaku pada tanggal tulisan itu dibuat. Kalau kamu mengutipnya, sertakan tanggal dan siapa yang menyebutnya.
+
+### Menilai orang dari postmortem-nya
+
+Postmortem yang jujur soal kesalahan menunjukkan bahwa penulisnya mau mengevaluasi diri. Tujuan membacanya adalah belajar dari keputusan dan keadaannya, dan tidak berguna untuk menilai siapa yang salah.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Latihan ini tidak butuh engine.
+
+1. Pilih satu dari empat sumber di halaman ini dan baca tulisan aslinya sampai habis. Isi lembar baca postmortem. Bandingkan catatanmu dengan ringkasan di halaman ini, lalu tulis satu hal penting yang tidak masuk ringkasan.
+2. Cari satu postmortem lain yang ditulis langsung oleh pembuat game, dari game dengan ukuran tim yang mirip dengan rencanamu. Isi lembar bacanya, termasuk baris "saran yang mungkin tidak berlaku untukmu".
+3. Cari satu postmortem dari game yang penjualannya kecil atau proyek yang dihentikan, menurut penulisnya sendiri. Bandingkan nadanya dengan postmortem dari game yang laris.
+4. Dari semua postmortem yang sudah kamu baca, tulis tiga tema yang muncul lebih dari sekali. Untuk setiap tema, tulis satu hal yang akan kamu cek di proyekmu berikutnya.
+5. Kalau kamu pernah ikut game jam atau menyelesaikan proyek kecil, tulis postmortem satu halaman dengan format "berjalan baik, berjalan buruk, yang akan diubah". Simpan sebagai bahan studi kasus untuk portofoliomu di [Pelajaran 4](/belajar/industri-karier/04-portofolio/#format-studi-kasus).
+
+Ringkasan kasus di pelajaran ini akan lebih akurat kalau ditinjau oleh orang yang terlibat di proyeknya. Kalau kamu salah satunya, atau kamu ingin menulis studi kasus dari proyekmu sendiri, lihat [cara berkontribusi](/kontribusi/).

@@ -1,0 +1,523 @@
+---
+title: "Ekonomi dan Progres"
+description: "Progres keterampilan pemain dan kekuatan karakter, membuka hal baru secara bertahap, kurva kesulitan dan zona flow, kesulitan dinamis, ekonomi dalam game sebagai sumber dan penguras, inflasi, alasan memakai lebih dari satu mata uang, jadwal hadiah, merancang ekonomi sederhana di spreadsheet, serta pola monetisasi yang merugikan pemain dan cara melindunginya."
+fundamental: "Koin yang menumpuk tanpa ada yang bisa dibeli, tantangan yang tiba-tiba jauh lebih sulit, dan hadiah harian yang membuat pemain merasa wajib membuka game jarang terlihat dalam satu sesi bermain, karena masalahnya muncul dari angka yang berjalan berhari-hari. Kalau kamu menuliskan dari mana setiap mata uang datang dan ke mana ia pergi, merencanakan kurva kesulitan, lalu menjalankan angkanya di spreadsheet sebelum membangunnya, sebagian besar masalah itu sudah terlihat lebih awal, termasuk desain yang menguntungkan studio dengan cara merugikan pemain."
+kind: lesson
+minutes: 40
+status: draf
+lastReviewed: 2026-10-31
+krekit:
+  gambaran-besar: "Ekonomi game itu kedengarannya urusan game besar. Padahal satu koin di platformer pun sudah punya sumber dan tujuan."
+  dua-jenis-progres: "Pemain yang makin jago dan karakter yang makin kuat sama-sama terasa sebagai kemajuan. Bedanya, yang pertama dibawa pemain ke mana pun."
+  kurva-kesulitan: "Naik terus tanpa jeda itu melelahkan. Naik, turun sedikit, lalu naik lagi biasanya terasa lebih adil."
+  ekonomi-dalam-game: "Setiap kali kamu menambah cara mendapat koin, tanyakan juga: koin ini nanti dipakai untuk apa?"
+  jadwal-hadiah: "Cara kamu membagi hadiah ikut membentuk cara orang bermain. Itu kekuatan, dan itu juga tanggung jawab."
+  merancang-ekonomi-di-spreadsheet: "Sepuluh baris spreadsheet sering lebih jujur daripada sepuluh halaman dokumen desain."
+  pola-eksploitatif-dan-perlindungan-pemain: "Pertanyaan yang kupakai: kalau pemain melihat semua angka di balik tombol beli ini, apakah ia masih merasa diperlakukan adil?"
+  kesalahan-umum: "Kesalahan pertama paling sering: banyak cara mendapat koin, sedikit sekali alasan untuk membelanjakannya."
+sidebar:
+  order: 5
+  label: "5 · Ekonomi dan Progres"
+quiz:
+  - q: "Di game bertanimu, playtester sudah membeli semua perluasan lahan di hari ke-7, lalu koinnya terus menumpuk tanpa ada yang bisa dibeli. Apa diagnosis yang paling tepat?"
+    options:
+      - "Sumber koin terlalu sedikit"
+      - "Sumber koin terus membesar, sementara penguras dan barang yang layak dibeli habis, sehingga koin kehilangan arti"
+      - "Pemain terlalu jago dan perlu dihukum"
+      - "Masalahnya ada di grafik ladang"
+    answer: 1
+    explain: "Pendapatan naik setiap kali lahan bertambah, tetapi harga perluasan tetap dan jumlahnya terbatas. Setelah semua dibeli, tidak ada penguras yang tersisa. Perbaikannya bisa berupa harga yang naik bertahap, penguras baru yang bermakna, atau keduanya. Cek lagi angkanya di spreadsheet sebelum mengubah game."
+  - q: "Menurut penjelasan tesis Jenova Chen tentang teori flow, apa yang terjadi saat tantangan jauh lebih rendah daripada kemampuan pemain?"
+    options:
+      - "Pemain cemas"
+      - "Pemain bosan"
+      - "Pemain otomatis masuk zona flow"
+      - "Tidak ada pengaruhnya"
+    answer: 1
+    explain: "Tesis itu merangkum Csikszentmihalyi: tantangan yang lebih tinggi dari kemampuan memicu cemas, tantangan yang lebih rendah memicu bosan, dan di antaranya ada zona yang cukup lebar tempat pemain masih nyaman walaupun tantangannya sedikit naik turun."
+  - q: "Sistem kesulitan dinamis di game aksimu menurunkan kesulitan setiap kali pemain sering mati. Seorang playtester sengaja melakukan aksi nekat untuk bersenang-senang dan sering mati. Masalah apa yang digambarkan di sini?"
+    options:
+      - "Tidak ada masalah, sistemnya bekerja sesuai rencana"
+      - "Performa yang terukur tidak selalu mencerminkan pengalaman pemain, sehingga sistem salah menyimpulkan bahwa pemain kesulitan"
+      - "Pemain seharusnya dilarang melakukan aksi nekat"
+      - "Kesulitan dinamis hanya cocok untuk game balap"
+    answer: 1
+    explain: "Tesis Chen mencatat masalah ini pada sistem kesulitan dinamis yang pasif: data yang tersedia terbatas, performa bersifat objektif sementara flow subjektif, dan analisisnya bergantung pada asumsi. Jumlah kematian tidak membedakan pemain yang kesulitan dari pemain yang sedang bereksperimen."
+  - q: "Hadiah naik level di gamemu diberikan setiap kelipatan poin pengalaman yang makin besar. Menurut artikel John Hopson, pola perilaku apa yang perlu kamu waspadai?"
+    options:
+      - "Pemain bermain makin cepat tanpa henti"
+      - "Jeda motivasi setelah setiap hadiah, yang makin panjang saat jumlah aksi yang dibutuhkan makin besar"
+      - "Pemain tidak pernah peduli pada poin pengalaman"
+      - "Tidak ada pola tertentu"
+    answer: 1
+    explain: "Hopson menggambarkan jadwal rasio tetap: setelah hadiah ada jeda, lalu aktivitas cepat sampai hadiah berikutnya. Panjang jedanya mengikuti besar rasio. Ia menyarankan menyediakan beberapa aktivitas lain di dalam game supaya jeda itu tetap terisi."
+  - q: "Kamu ingin menjual peti berisi item acak di game mobile. Menurut App Review Guidelines 3.1.1 dari Apple dan kebijakan Payments Google Play, apa yang wajib kamu lakukan?"
+    options:
+      - "Tidak ada aturan khusus untuk item acak"
+      - "Mengungkapkan peluang mendapatkan setiap jenis item kepada pemain sebelum pembelian"
+      - "Menjual peti hanya dengan mata uang yang didapat dari bermain"
+      - "Menampilkan iklan sebelum peti dibuka"
+    answer: 1
+    explain: "Kedua dokumen mewajibkan pengungkapan peluang sebelum pembelian. Google Play menambahkan bahwa pengungkapan itu harus jelas dan dekat dengan pembeliannya. Aturan hukum tentang loot box sendiri berbeda antarnegara, dan sistem rating seperti PEGI dan ESRB juga punya keterangan khusus untuk item acak berbayar."
+  - q: "Mana desain item berbayar yang paling sesuai dengan saran dokumentasi Steamworks tentang ekonomi dalam game?"
+    options:
+      - "Senjata berbayar yang lebih kuat dari semua senjata gratis di mode kompetitif"
+      - "Item yang membuat pemain lain di sekitarnya ikut senang saat seseorang membelinya"
+      - "Penghalang progres yang hanya bisa dilewati dengan membayar"
+      - "Mata uang berbayar dengan nilai tukar yang sengaja dibuat sulit dihitung"
+    answer: 1
+    explain: "Steamworks menyarankan menghindari sistem yang membuat game makin buruk bagi pemain lain saat seseorang membayar, dan memberi pegangan sederhana: rancang produk sehingga pemain senang saat orang di sebelahnya membeli. Dokumen yang sama menyebut penghalang progres buatan dan mata uang yang mengaburkan nilai cenderung membuat pemain menyesal."
+sources:
+  - title: "Flow in Games"
+    url: "https://www.jenovachen.com/flowingames/Flow_in_games_final.pdf"
+    publisher: "Jenova Chen, tesis MFA (situs penulis)"
+    accessed: 2026-10-31
+  - title: "Behavioral Game Design"
+    url: "https://www.gamedeveloper.com/design/behavioral-game-design"
+    publisher: "John Hopson, Game Developer (2001)"
+    accessed: 2026-10-31
+  - title: "Microtransactions (In-Game Purchases)"
+    url: "https://partner.steamgames.com/doc/features/microtransactions"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-31
+  - title: "App Review Guidelines"
+    url: "https://developer.apple.com/app-store/review/guidelines/"
+    publisher: "Apple, Apple Developer"
+    accessed: 2026-10-31
+  - title: "Payments"
+    url: "https://support.google.com/googleplay/android-developer/answer/9858738?hl=en"
+    publisher: "Google, Play Console Help (Kebijakan Developer Google Play)"
+    accessed: 2026-10-31
+  - title: "What do the labels mean?"
+    url: "https://pegi.info/what-do-the-labels-mean"
+    publisher: "PEGI (Pan European Game Information)"
+    accessed: 2026-10-31
+  - title: "Ratings Guide"
+    url: "https://www.esrb.org/ratings-guide/"
+    publisher: "Entertainment Software Rating Board (ESRB)"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Membedakan progres keterampilan pemain dari progres kekuatan karakter, dan merencanakan kapan hal baru terbuka.
+- Menjelaskan kurva kesulitan dengan bahasa tantangan dan kemampuan, serta menimbang kelebihan dan risiko kesulitan dinamis.
+- Menggambarkan ekonomi dalam game sebagai sumber dan penguras, mengenali tanda inflasi, dan menjelaskan kenapa sebuah game memakai lebih dari satu mata uang.
+- Membedakan jadwal hadiah tetap dan berubah-ubah, beserta pola perilaku yang biasa menyertainya.
+- Membuat spreadsheet ekonomi sederhana untuk memeriksa pacing sebelum membangunnya di engine.
+- Mengenali pola monetisasi yang merugikan pemain dan aturan platform serta rating yang berkaitan dengannya.
+</Aside>
+
+<Aside type="note" title="Catatan tentang aturan platform">
+Pelajaran ini membahas desain. Aturan platform dan sistem rating yang dikutip bisa berubah, jadi periksa dokumen resminya saat kamu benar-benar bersiap rilis. Sisi bisnis dari monetisasi dibahas di pelajaran [Model Bisnis](/belajar/bisnis-indie/01-model-bisnis/) pada jalur Bisnis Studio Indie.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: bak mandi">
+Bayangkan bak mandi dengan keran yang terbuka dan lubang pembuangan di dasarnya. Jika air dari keran lebih deras daripada yang keluar lewat lubang, bak pelan-pelan meluap. Jika lubangnya lebih besar, bak cepat kering. Ketinggian air yang nyaman hanya bertahan kalau keduanya seimbang, dan setiap kali kamu membuka keran lebih lebar, lubangnya juga perlu disesuaikan. Mata uang dalam game bekerja dengan cara yang mirip. Progres dan kesulitan juga begitu: setiap kali pemain bertambah kuat atau jago, tantangan perlu ikut disesuaikan.
+</Aside>
+
+Di [Pelajaran 1](/belajar/desain-game/01-core-loop/), hadiah atau progres adalah bagian loop yang memberi alasan untuk mengulang. Di game bertani, uang hasil panen dipakai membeli benih, dan benih itu memulai putaran berikutnya. Pelajaran itu juga menyebut loop jangka panjang sebagai bagian yang paling mahal, karena melibatkan penyimpanan data, mata uang, hal-hal yang terbuka bertahap, dan penyeimbangan selama berjam-jam permainan. Pelajaran ini membahas bagian itu.
+
+[Pelajaran 4](/belajar/desain-game/04-level-design/) membahas kesulitan pada skala satu level: celah yang nyaman, menantang, dan mustahil, serta tantangan yang naik satu variabel sekali waktu. Di sini skalanya diperbesar ke seluruh game: bagaimana tantangan naik dari level pertama sampai terakhir, bagaimana pemain bertambah kuat, dan apa yang bisa ia beli atau buka di sepanjang jalan.
+
+Pelajaran ini memakai dua contoh dari pelajaran sebelumnya: platformer dengan pijakan rapuh dan koin, serta game bertani dengan ladang, benih, dan alat.
+
+## Dua jenis progres
+
+Saat pemain merasa maju, ada dua hal berbeda yang bisa sedang terjadi:
+
+| Jenis | Apa yang bertambah | Platformer | Game bertani |
+| --- | --- | --- | --- |
+| **Progres keterampilan** | Kemampuan pemain sendiri: membaca situasi, waktu menekan tombol, strategi | Pemain makin tepat mengatur lompatan di atas pijakan rapuh | Pemain belajar petak mana yang sebaiknya ditanami dulu supaya panen tidak bertabrakan |
+| **Progres kekuatan** | Angka atau kemampuan milik karakter di dalam game | Membuka lompat ganda, nyawa tambahan | Penyiram yang lebih cepat, lahan lebih luas, tanaman yang lebih mahal |
+
+Keduanya sah dan sering dipakai bersama. Bedanya terasa saat kamu menyetel kesulitan. Progres keterampilan tidak bisa kamu kendalikan langsung, karena setiap pemain belajar dengan kecepatan berbeda. Progres kekuatan bisa kamu atur dengan angka, tetapi ia membawa pertanyaan tambahan: jika karakter makin kuat, apa yang menjaga tantangan tetap terasa?
+
+Ada dua jebakan yang umum di sini:
+
+- **Kekuatan menghapus tantangan.** Jika karakter tumbuh lebih cepat daripada tantangan, game terasa makin mudah sampai tidak ada keputusan yang tersisa. Ini mirip tanda loop lemah di Pelajaran 1: pemain bertahan hanya karena angka naik.
+- **Tantangan ikut naik persis mengikuti kekuatan.** Jika setiap musuh atau rintangan diskalakan tepat setara dengan kekuatan karakter, angka di layar naik tetapi rasanya sama saja. Pemain bisa merasa progresnya kosong.
+
+Cara yang sering lebih memuaskan adalah membiarkan pemain merasakan kekuatannya di tempat lama (rintangan awal kini mudah dilewati), sambil menghadirkan tantangan baru yang menuntut kemampuan barunya.
+
+### Membuka hal baru
+
+**Unlock** adalah apa pun yang tadinya tidak tersedia lalu terbuka: kemampuan, area, alat, resep, mode. Unlock yang paling berguna bagi desain biasanya menambah **kata kerja** baru atau mengubah cara memakai kata kerja lama, tidak hanya menaikkan angka. Lompat ganda di platformer mengubah celah mana yang bisa dilewati dan membuka jalur baru di level lama. Penyiram yang menyirami tiga petak sekaligus mengubah cara pemain menata ladang.
+
+Ini menyambung dengan pola teach, test, twist dari Pelajaran 4. Setiap unlock adalah mekanik baru yang perlu diperkenalkan dengan aman, diuji, lalu diberi sentuhan baru. Jika tiga unlock datang bersamaan, pemain tidak sempat mempelajari satu pun dengan baik.
+
+### Pacing progres
+
+Rencanakan unlock seperti kamu merencanakan beat di grafik intensitas: di mana pemain mendapat sesuatu yang baru, dan berapa lama ia sempat memakainya sebelum hal baru berikutnya datang. Untuk game bertani, rencananya bisa sesederhana tabel ini:
+
+| Hari di dalam game | Yang terbuka | Pertanyaan desain |
+| --- | --- | --- |
+| 1 | Cangkul, benih lobak, 6 petak | Apakah pemain paham loop tanam, siram, panen tanpa penjelasan panjang? |
+| 3 | Perluasan lahan pertama | Apakah pemain punya alasan menabung di hari 1 sampai 3? |
+| 5 | Penyiram tiga petak | Apakah ladang sudah cukup luas sehingga menyiram satu per satu mulai terasa lambat? |
+| 8 | Tanaman kedua dengan waktu tumbuh berbeda | Apakah ada keputusan baru tentang petak mana ditanami apa? |
+
+Angka hari di tabel itu ilustrasi. Yang penting adalah kolom ketiga: setiap unlock datang saat pemain punya masalah yang bisa diselesaikannya. Penyiram yang terbuka di hari pertama, saat ladang baru 6 petak, tidak menyelesaikan apa pun.
+
+## Kurva kesulitan
+
+**Kurva kesulitan** adalah gambaran bagaimana tuntutan game berubah dari awal sampai akhir. Kurva ini selalu berhubungan dengan kemampuan pemain di titik yang sama. Tantangan yang sama bisa terlalu berat di menit kelima dan terlalu ringan di jam kelima.
+
+### Tantangan dan kemampuan
+
+Pelajaran 4 sudah menyinggung bahwa kata *flow* punya arti lain di luar level design: kondisi pemain yang sangat larut saat keterampilan dan tantangan seimbang. Jenova Chen, dalam tesis MFA-nya berjudul *Flow in Games*, merangkum teori flow dari psikolog Mihaly Csikszentmihalyi untuk desain game. Menurut rangkuman itu, supaya seseorang tetap dalam kondisi flow, tantangan aktivitas harus seimbang dengan kemampuannya. Jika tantangan lebih tinggi dari kemampuan, aktivitas terasa membebani dan memicu cemas. Jika lebih rendah, aktivitas memicu bosan. Di antaranya ada zona aman yang cukup lebar, tempat tantangan boleh sedikit naik turun tanpa memutus pengalaman.
+
+```text title="Zona flow, digambar ulang dari penjelasan di tesis Chen"
+tantangan
+    ▲
+    │   cemas            ╱        ╱
+    │                 ╱        ╱
+    │              ╱  zona  ╱
+    │           ╱   flow ╱
+    │        ╱        ╱      bosan
+    │     ╱        ╱
+    └──────────────────────────────▶ kemampuan
+```
+
+Tesis itu juga mencatat bahwa zona flow setiap orang berbeda. Game yang disetel untuk pemain rata-rata bisa membuat pemula cemas dan pemain berpengalaman bosan. Karena itu, menurut Chen, game yang ingin menjangkau banyak jenis pemain perlu menawarkan rentang pengalaman yang lebar, dari tugas yang sangat sederhana sampai tantangan yang rumit, dengan pilihan yang mudah dikenali sejak awal.
+
+### Bentuk kurva
+
+Kemampuan pemain naik seiring waktu, jadi tantangan juga perlu naik. Kurva yang naik lurus tanpa jeda membuat pemain terus berada di batas kemampuannya. Kurva yang lebih sering dipakai berbentuk **gelombang yang naik**: tantangan baru, bagian yang sedikit lebih mudah untuk menguasainya, lalu naik lagi. Bentuk ini sama dengan saran selang-seling tinggi dan rendah di [bagian pacing Pelajaran 4](/belajar/desain-game/04-level-design/#ritme-dan-pacing), hanya pada skala yang lebih besar.
+
+```text title="Kurva kesulitan berbentuk gelombang (ilustrasi)"
+kesulitan
+  6 │                                    ██
+  5 │                          ██        ██
+  4 │                ██        ██   ██   ██
+  3 │      ██        ██   ██   ██   ██   ██
+  2 │ ██   ██   ██   ██   ██   ██   ██   ██
+  1 │ ██   ██   ██   ██   ██   ██   ██   ██
+    └─────────────────────────────────────────▶ waktu
+      1a   1b   2a   2b   3a   3b   4a   4b
+
+angka = dunia, a = awal dunia, b = akhir dunia
+setiap dunia mulai sedikit lebih rendah dari puncak dunia sebelumnya, lalu naik lagi
+```
+
+Beberapa hal yang sering membuat kurva terasa tidak adil:
+
+- **Lonjakan mendadak.** Satu bagian jauh lebih sulit daripada semua yang sebelumnya. Pemain yang selama ini lancar tiba-tiba buntu, dan sering menyalahkan game.
+- **Kesulitan dari dua arah sekaligus.** Tantangan naik bersamaan dengan kekuatan karakter yang tertahan karena pemain kekurangan mata uang untuk upgrade. Jika ekonomi dan kesulitan disetel terpisah, kombinasi seperti ini mudah terlewat.
+- **Tantangan yang menuntut hal yang belum diajarkan.** Bagian sulit seharusnya menguji kemampuan yang sudah diperkenalkan, sesuai pola teach, test, twist.
+
+### Kesulitan dinamis
+
+**Kesulitan dinamis** (*dynamic difficulty adjustment*, DDA) adalah sistem yang mengubah tingkat kesulitan saat game berjalan, berdasarkan keterampilan dan performa pemain. Tesis Chen membedakan dua pendekatan.
+
+Pendekatan **pasif**: sistem mengamati pemain lalu menyesuaikan game tanpa pemain memilih. Tesis itu menggambarkannya sebagai lingkaran empat bagian: pemain menghasilkan data saat bermain, sistem pemantau memilih data yang dianggap mencerminkan kondisinya, sistem analisis menyimpulkan apa yang perlu diubah, lalu sistem game menerapkan perubahan itu. Chen mencatat beberapa masalah pada pendekatan ini:
+
+- **Tidak ada data langsung.** Game hanya membaca input dari controller dan tidak tahu apa yang dirasakan pemain.
+- **Performa tidak sama dengan pengalaman.** Angka seperti jumlah kematian atau akurasi bersifat objektif, sedangkan flow bersifat subjektif. Pemain yang asyik melompat-lompat tanpa menyelesaikan level bisa sedang menikmati game.
+- **Analisis berdasarkan asumsi.** Pemain yang sengaja melakukan aksi nekat dan sering mati bisa disangka kurang terampil.
+- **Perubahan ditentukan desainer.** Seberapa besar penyesuaiannya tetap mengikuti selera desainer, yang belum tentu cocok untuk semua pemain.
+
+Pendekatan **aktif**: game menyediakan pilihan dengan tingkat tantangan berbeda, dan pemain sendiri yang memilih. Chen berpendapat bahwa banyak sistem DDA terlalu fokus menyeimbangkan tantangan dan kemampuan, lalu melupakan unsur lain dari flow, yaitu rasa memegang kendali. Ia mengusulkan agar pilihan ini menyatu dengan gameplay sehingga pemain memilih lewat bermain, tanpa merasa sedang mengatur menu. Jalur opsional yang lebih sulit dengan hadiah yang jelas, seperti di Pelajaran 4, adalah contoh sederhana pendekatan ini.
+
+Di luar kedua pendekatan itu, banyak game memberi pilihan tingkat kesulitan atau pengaturan bantuan yang terang-terangan di menu. Apa pun bentuknya, ada dua pertanyaan yang berguna saat merancang kesulitan dinamis: data apa yang dipakai sistem untuk menyimpulkan kondisi pemain, dan bagaimana perasaan pemain jika ia tahu sistem itu ada?
+
+## Ekonomi dalam game
+
+**Ekonomi dalam game** adalah semua sumber daya yang bisa didapat, disimpan, dan dibelanjakan pemain, beserta aturan perpindahannya. Sumber daya ini tidak harus berupa uang. Nyawa, amunisi, bahan crafting, energi, dan waktu juga bisa diperlakukan sebagai bagian dari ekonomi. Koin di platformer sudah membentuk ekonomi kecil jika ada yang bisa dibeli dengannya.
+
+### Sumber dan penguras
+
+Cara paling sederhana memetakan ekonomi adalah membagi semua aliran menjadi dua:
+
+- **Sumber** (*faucet*, keran): cara sumber daya masuk ke game. Contoh: koin dari level, uang hasil panen, hadiah misi.
+- **Penguras** (*sink*, saluran pembuangan): cara sumber daya keluar dari game. Contoh: membeli benih, membeli alat, biaya perbaikan, membeli dekorasi.
+
+Ada juga aliran yang hanya **memindahkan** sumber daya tanpa menambah atau mengurangi jumlahnya, misalnya pemain yang berdagang dengan pemain lain. Aliran ini penting di game multipemain, karena jumlah total uang di dunia tidak berubah walaupun banyak transaksi terjadi.
+
+```text title="Peta ekonomi game bertani (ilustrasi)"
+SUMBER                      MATA UANG                  PENGURAS
+hasil panen      ──▶                         ──▶  benih (setiap hari)
+hadiah festival  ──▶          koin           ──▶  perluasan lahan
+penjualan telur  ──▶                         ──▶  alat dan upgrade
+                                             ──▶  dekorasi rumah
+```
+
+Gambar peta seperti ini untuk setiap mata uang di game-mu. Untuk setiap sumber, tanyakan seberapa besar alirannya dan apakah alirannya membesar seiring waktu. Untuk setiap penguras, tanyakan apakah pemain mau memakainya, dan apakah penguras itu masih ada di jam kesepuluh.
+
+Penguras yang baik terasa sebagai pilihan yang menyenangkan: dekorasi yang memperlihatkan selera pemain, alat yang membuka cara bermain baru. Penguras yang terasa sebagai hukuman, seperti denda yang besar, bisa membuat pemain kesal walaupun secara angka menyeimbangkan ekonomi.
+
+### Inflasi
+
+Dalam ekonomi game, **inflasi** terjadi saat jumlah mata uang tumbuh lebih cepat daripada hal yang layak dibelanjakan. Penyebab paling umum adalah sumber yang ikut membesar seiring progres (lahan lebih luas berarti panen lebih banyak) sementara penguras tetap atau habis.
+
+Gejalanya berbeda menurut jenis game:
+
+- **Di game satu pemain**, koin menumpuk tanpa tujuan. Hadiah koin tidak lagi terasa sebagai hadiah, sehingga setiap peti harta di level kehilangan daya tariknya.
+- **Di game dengan pasar antarpemain**, harga barang yang dijual pemain cenderung naik karena semua orang punya lebih banyak uang. Pemain baru, yang masih sedikit uangnya, makin sulit membeli apa pun dari pemain lain.
+
+Pelajaran [MDA](/belajar/desain-game/03-mda/#umpan-balik-di-monopoly) membahas dinamika umpan balik di Monopoly, saat pemain yang sudah unggul makin mudah unggul. Sumber yang membesar bersama progres menghasilkan dinamika serupa di ekonomi: makin banyak yang dimiliki, makin cepat bertambah. Kadang ini memang yang diinginkan, karena terasa sebagai kemajuan. Masalahnya muncul saat penguras tidak ikut tumbuh.
+
+### Kenapa ada lebih dari satu mata uang
+
+Banyak game memakai beberapa mata uang. Alasannya biasanya salah satu dari ini:
+
+| Alasan | Contoh | Risiko |
+| --- | --- | --- |
+| **Memisahkan ekonomi** | Token festival yang hanya bisa dipakai di toko festival, supaya tabungan koin yang menumpuk tidak langsung membeli semua barang festival | Pemain harus mengingat lebih banyak angka |
+| **Mengatur pacing** | Bahan langka untuk upgrade alat, yang hanya didapat dari aktivitas tertentu | Jika bahan itu terlalu langka, terasa seperti penghalang |
+| **Menandai jenis usaha** | Poin reputasi dari membantu penduduk desa, terpisah dari koin hasil jualan | Mata uang yang terlalu banyak membuat pemain bingung mana yang penting |
+| **Memisahkan yang dibeli dengan uang sungguhan** | Mata uang premium yang dijual di toko dalam game, berdampingan dengan koin yang didapat dari bermain | Bisa mengaburkan harga sungguhan, dibahas di bagian pola eksploitatif di bawah |
+
+Setiap mata uang baru butuh peta sumber dan pengurasnya sendiri. Jika kamu tidak bisa menjelaskan kenapa sebuah mata uang perlu terpisah dari koin, kemungkinan besar ia tidak perlu ada.
+
+Untuk mata uang yang dibeli dengan uang sungguhan, toko aplikasi punya aturan sendiri. App Review Guidelines Apple bagian 3.1.1 menyebut kredit atau mata uang dalam game yang dibeli lewat in-app purchase tidak boleh kedaluwarsa. Kebijakan Payments Google Play menyebut mata uang virtual dalam aplikasi hanya boleh dipakai di aplikasi atau game tempat ia dibeli, dan developer harus memberi tahu pengguna tentang ketentuan dan harga secara jelas dan akurat.
+
+## Jadwal hadiah
+
+Hadiah bisa diberikan dengan pola yang berbeda-beda, dan polanya ikut membentuk cara orang bermain. John Hopson, dalam artikel *Behavioral Game Design* di Game Developer (2001), menerapkan konsep dari psikologi behavioral ke desain game. Ia memakai istilah **jadwal penguatan** (*schedule of reinforcement*) atau kontingensi: aturan yang menentukan kapan hadiah diberikan. Contohnya: naik satu level setiap 1.000 poin pengalaman, atau level bonus yang hanya terbuka jika pemain mengalahkan lawan tertentu.
+
+### Tetap dan berubah-ubah
+
+Hopson membagi jadwal dasar menurut dua pertanyaan: apakah hadiah datang setelah sejumlah aksi (**rasio**) atau setelah sejumlah waktu (**interval**), dan apakah jumlahnya **tetap** atau **berubah-ubah**. Pola perilaku di kolom ketiga adalah yang ia gambarkan di artikelnya:
+
+| Jadwal | Aturan | Pola perilaku menurut Hopson |
+| --- | --- | --- |
+| **Rasio tetap** | Hadiah setelah jumlah aksi yang sama, misalnya nyawa tambahan setiap 20 musuh | Jeda panjang setelah hadiah, lalu aktivitas cepat sampai hadiah berikutnya. Panjang jeda mengikuti besar rasio |
+| **Rasio berubah-ubah** | Hadiah setelah jumlah aksi yang acak, dengan rata-rata tertentu | Aktivitas stabil dengan laju tinggi, tanpa jeda yang jelas. Menurutnya, jadwal ini menghasilkan laju aktivitas tertinggi dari keempatnya |
+| **Interval tetap** | Hadiah pertama yang diambil setelah waktu tertentu berlalu, misalnya power-up muncul lagi 30 menit setelah diambil | Jeda setelah hadiah, lalu pemain makin sering memeriksa saat waktunya mendekat |
+| **Interval berubah-ubah** | Hadiah muncul setelah waktu yang acak | Aktivitas stabil, tetapi lebih lambat daripada rasio berubah-ubah, karena hadiah tidak datang lebih cepat walaupun pemain lebih rajin |
+
+Hopson memberi catatan penting tentang rasio tetap. Jika rasionya terus membesar, seperti kebutuhan poin pengalaman yang naik di setiap level, jedanya ikut memanjang. Pada titik tertentu pemain bisa memutuskan hadiah berikutnya tidak sepadan, lalu berhenti. Sisi baiknya, selama jeda itu pemain sering mencoba aktivitas lain di dalam game, seperti taktik baru. Karena itu ia menyarankan selalu ada beberapa aktivitas yang bisa dilakukan pada satu waktu, supaya saat satu aktivitas kurang menarik, perhatian pemain tetap di dalam game.
+
+Di game bertani, panen tanaman dengan waktu tumbuh yang pasti adalah hadiah yang dapat diperkirakan. Telur yang kadang berwarna emas adalah hadiah acak kecil. Keduanya sering dipakai bersama: hadiah yang pasti memberi rasa aman dan bisa direncanakan, hadiah acak kecil memberi kejutan.
+
+### Saat hadiah berkurang
+
+Hopson juga menulis tentang apa yang terjadi saat hadiah berhenti atau mendadak mengecil. Menurutnya, penurunan hadiah terasa sangat menghukum bagi pemain dan bisa mendorongnya berhenti bermain, bahkan jika penurunannya sementara. Pemain menilai hadiah dengan membandingkannya dengan hadiah sebelumnya, sehingga hadiah yang lebih kecil dari harapan terasa seperti keputusan tidak adil dari pembuat game. Sarannya: jika hadiah perlu dikurangi, kurangi pelan-pelan, dan hindari perubahan tajam pada laju hadiah.
+
+Ini berlaku juga untuk penyeimbangan ulang setelah rilis. Mengurangi hadiah sebuah aktivitas yang sudah biasa dilakukan pemain biasanya terasa jauh lebih buruk daripada menambah hadiah di aktivitas lain.
+
+<Aside type="caution" title="Pengetahuan yang sama bisa dipakai ke dua arah">
+Hopson menyebut artikelnya sebagai pengantar tentang cara orang bereaksi terhadap pola hadiah, tidak sebagai cetak biru game yang sempurna. Pola yang sama bisa membantu pemain tetap punya alasan bermain, dan bisa juga dipakai untuk membentuk kebiasaan yang tidak menguntungkan pemain. Rasio berubah-ubah yang digabung dengan pembelian memakai uang sungguhan, misalnya, adalah bentuk dasar loot box. Itu sebabnya platform dan lembaga rating punya aturan khusus untuknya, seperti dibahas di bawah. Pelajaran 1 sudah memberi satu ukuran: loop yang kuat tetap menarik saat hadiahnya dikurangi.
+</Aside>
+
+## Merancang ekonomi di spreadsheet
+
+Ekonomi yang berjalan berhari-hari sulit dinilai dengan bermain sebentar. Spreadsheet memungkinkan kamu menjalankan sepuluh atau seratus hari dalam beberapa detik, lalu melihat kapan pemain bisa membeli apa. Ini versi angka dari prototipe kertas di Pelajaran 1.
+
+Mulai dari aturan yang sederhana. Contoh di bawah memakai game bertani dengan aturan berikut:
+
+```text title="Aturan ekonomi (ilustrasi)"
+lahan awal        : 6 petak
+pendapatan        : 20 koin per petak per hari (sumber)
+benih             : 5 koin per petak per hari (penguras)
+perluasan lahan   : +6 petak, maksimal 5 kali (penguras)
+aturan pembelian  : pemain membeli perluasan begitu tabungannya cukup,
+                    petak baru dipakai mulai hari berikutnya
+```
+
+Susun kolomnya di spreadsheet: hari, jumlah petak, pendapatan, biaya benih, bersih, pembelian, dan tabungan di akhir hari. Rumus pendapatan cukup berupa jumlah petak dikalikan 20, dan tabungan adalah tabungan kemarin ditambah bersih hari ini, dikurangi pembelian. Simpan angka seperti 20 dan 5 di sel tersendiri, supaya bisa diubah tanpa menyentuh rumus.
+
+**Versi A: harga perluasan tetap 200 koin.** Ilustrasi, bukan data.
+
+| Hari | Petak | Pendapatan | Benih | Bersih | Pembelian | Tabungan |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | 6 | 120 | 30 | 90 |  | 90 |
+| 2 | 6 | 120 | 30 | 90 |  | 180 |
+| 3 | 6 | 120 | 30 | 90 | Perluasan 1 (200) | 70 |
+| 4 | 12 | 240 | 60 | 180 | Perluasan 2 (200) | 50 |
+| 5 | 18 | 360 | 90 | 270 | Perluasan 3 (200) | 120 |
+| 6 | 24 | 480 | 120 | 360 | Perluasan 4 (200) | 280 |
+| 7 | 30 | 600 | 150 | 450 | Perluasan 5 (200) | 530 |
+| 8 | 36 | 720 | 180 | 540 |  | 1.070 |
+| 9 | 36 | 720 | 180 | 540 |  | 1.610 |
+| 10 | 36 | 720 | 180 | 540 |  | 2.150 |
+
+Dua masalah terlihat dari tabel ini. Pertama, jarak antarpembelian makin pendek: tiga hari untuk perluasan pertama, lalu satu hari untuk setiap perluasan berikutnya. Unlock yang terlalu rapat membuat setiap perluasan terasa kurang berarti. Kedua, mulai hari ke-8 koin menumpuk lebih dari 500 per hari tanpa ada yang bisa dibeli. Ini gejala inflasi dari bagian sebelumnya: sumber membesar, penguras habis.
+
+**Versi B: harga perluasan naik setiap kali dibeli (200, 300, 450, 700, 1.000).** Ilustrasi, bukan data.
+
+| Hari | Petak | Pendapatan | Benih | Bersih | Pembelian | Tabungan |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | 6 | 120 | 30 | 90 |  | 90 |
+| 2 | 6 | 120 | 30 | 90 |  | 180 |
+| 3 | 6 | 120 | 30 | 90 | Perluasan 1 (200) | 70 |
+| 4 | 12 | 240 | 60 | 180 |  | 250 |
+| 5 | 12 | 240 | 60 | 180 | Perluasan 2 (300) | 130 |
+| 6 | 18 | 360 | 90 | 270 |  | 400 |
+| 7 | 18 | 360 | 90 | 270 | Perluasan 3 (450) | 220 |
+| 8 | 24 | 480 | 120 | 360 |  | 580 |
+| 9 | 24 | 480 | 120 | 360 | Perluasan 4 (700) | 240 |
+| 10 | 30 | 600 | 150 | 450 |  | 690 |
+| 11 | 30 | 600 | 150 | 450 | Perluasan 5 (1.000) | 140 |
+| 12 | 36 | 720 | 180 | 540 |  | 680 |
+
+Dengan harga yang naik, pemain membeli perluasan kira-kira setiap dua hari, sehingga setiap perluasan sempat dinikmati. Masalah kedua belum selesai: setelah hari ke-12, koin akan menumpuk lagi. Versi berikutnya perlu penguras yang tetap bermakna di akhir, misalnya dekorasi, tanaman langka dengan benih mahal, atau unlock baru dari tabel pacing di atas.
+
+Beberapa catatan saat memakai spreadsheet seperti ini:
+
+- **Aturan pembelian adalah asumsi.** Pemain sungguhan tidak selalu membeli begitu uangnya cukup. Anggap spreadsheet sebagai pemain yang paling efisien, lalu bandingkan dengan pengamatan playtest.
+- **Ubah satu angka sekali waktu.** Sama seperti tantangan di level, jika harga dan pendapatan diubah bersamaan, sulit melihat mana yang memberi efek.
+- **Tambahkan kolom yang kamu pedulikan.** Misalnya "hari sejak pembelian terakhir" untuk melihat pacing, atau "berapa hari bermain untuk membeli barang termahal".
+- **Periksa angkanya di game.** Spreadsheet tidak tahu apakah menanam 36 petak setiap hari terasa menyenangkan atau melelahkan. Ingat hitungan durasi umpan balik dikali jumlah pengulangan di Pelajaran 1.
+
+## Pola eksploitatif dan perlindungan pemain
+
+Ekonomi dan jadwal hadiah bisa dirancang untuk membantu pemain menikmati game, dan bisa juga dirancang untuk menekan pemain mengeluarkan uang atau waktu melebihi yang ia inginkan. Dokumentasi Steamworks tentang microtransaction menyarankan agar ekonomi dalam game dipakai untuk membuat produk lebih baik dan pelanggan lebih senang, tidak sebagai cara mengambil pendapatan dari pelanggan yang tidak senang. Dokumen itu juga menyebut bahwa penghalang progres buatan dan mata uang virtual yang mengaburkan nilai cenderung membuat pelanggan menyesali pembeliannya dalam jangka panjang.
+
+Bagian ini membahas pola, tanpa menunjuk game tertentu. Pelajaran [Model Bisnis](/belajar/bisnis-indie/01-model-bisnis/#etika-monetisasi) membahas sisi bisnis dan etikanya, termasuk contoh sikap pemerintah terhadap loot box.
+
+### Loot box dan item acak berbayar
+
+**Loot box** adalah pembelian yang isinya acak: pemain membayar, dengan uang sungguhan atau mata uang yang bisa dibeli dengan uang sungguhan, tanpa tahu persis item apa yang akan didapat. Dalam bahasa jadwal hadiah, ini rasio berubah-ubah yang setiap percobaannya berbiaya.
+
+Aturan yang berkaitan, dari sumber resminya:
+
+| Pihak | Ketentuan |
+| --- | --- |
+| **Apple**, App Review Guidelines 3.1.1 | Aplikasi yang menawarkan loot box atau mekanisme lain yang memberi item virtual acak untuk dibeli wajib mengungkapkan peluang mendapatkan setiap jenis item kepada pelanggan sebelum pembelian |
+| **Google Play**, kebijakan Payments | Aplikasi dan game yang menawarkan mekanisme untuk menerima item virtual acak dari pembelian, termasuk loot box, wajib mengungkapkan peluangnya dengan jelas, sebelum pembelian, dan di dekat serta pada saat pembelian itu |
+| **ESRB** | Keterangan *In-Game Purchases (Includes Random Items)* dipakai untuk penawaran dalam game yang dibeli dengan uang sungguhan, atau dengan mata uang dalam game yang bisa dibeli dengan uang sungguhan, saat pemain tidak tahu sebelum membeli barang apa yang akan didapat. Contoh yang disebut: loot box, paket item, hadiah misteri |
+| **PEGI** | Keterangan *Paid random items* muncul jika pembelian dalam game mencakup item acak, seperti loot box atau paket kartu. Menurut halaman PEGI, game dengan item acak berbayar yang diajukan ke PEGI sejak Juni 2026 akan mendapat rating PEGI 16, atau PEGI 18 untuk game kasino sosial |
+
+Kedua lembaga rating itu juga punya keterangan umum untuk pembelian dalam game. ESRB memakai *In-Game Purchases* untuk penawaran barang atau layanan digital dengan uang sungguhan, termasuk mata uang virtual, season pass, dan upgrade. Menurut PEGI, keterangan *In-game purchases* selalu muncul jika konten dalam game bisa dibeli.
+
+Status hukum loot box berbeda antarnegara. Periksa aturan di setiap pasar yang kamu tuju, dan konsultasikan dengan profesional untuk keputusan nyata.
+
+Jika game-mu memang memakai hadiah acak, beberapa langkah yang membantu pemain menilai pembeliannya: tampilkan peluang dengan bahasa yang mudah dipahami, tampilkan harga dalam uang sungguhan, dan pertimbangkan cara membeli item tertentu secara langsung sebagai pilihan lain.
+
+### Mata uang yang mengaburkan harga
+
+Mata uang premium memisahkan pembelian dari uang sungguhan. Pemisahan ini bisa membuat pemain sulit tahu berapa yang sebenarnya ia keluarkan. Pola yang sering dikritik:
+
+- **Nilai tukar yang sulit dihitung**, sehingga pemain tidak bisa langsung menerjemahkan harga item ke uang sungguhan.
+- **Ukuran paket yang tidak cocok dengan harga item**, sehingga selalu ada sisa mata uang yang mendorong pembelian berikutnya.
+- **Beberapa lapis mata uang**, misalnya uang sungguhan ditukar ke permata, permata ditukar ke tiket, tiket dipakai untuk peti.
+
+Google Play mewajibkan developer memberi tahu ketentuan dan harga dengan jelas dan akurat, dan harga di dalam aplikasi harus sama dengan harga yang tampil di antarmuka penagihan Play. Saat merancang toko, cara sederhana untuk menguji kejelasan adalah meminta playtester menyebutkan berapa uang sungguhan yang dibutuhkan untuk satu item tertentu. Jika ia tidak bisa menjawab dalam beberapa detik, harganya kemungkinan besar kabur.
+
+### Tekanan waktu
+
+Waktu bisa menjadi bagian sah dari desain. Tanaman yang butuh satu hari di dalam game untuk tumbuh memberi ritme dan alasan untuk merencanakan. Tekanan waktu menjadi masalah saat dipakai untuk mendorong keputusan cepat atau membuat pemain merasa wajib kembali.
+
+PEGI kini menilai dua pola ini. Menurut halaman PEGI:
+
+- **Penawaran terbatas waktu.** Jika pembelian konten dalam game hanya tersedia untuk waktu atau jumlah terbatas sehingga menimbulkan rasa mendesak, game diberi rating PEGI 12. Jika game punya kontrol orang tua bawaan dengan fitur belanja yang dimatikan secara bawaan, ratingnya bisa PEGI 7.
+- **Tekanan untuk bermain** (*pressure to play*). Keterangan ini muncul jika game punya mekanik yang memberi hadiah berkala kepada pemain yang rutin kembali, seperti misi harian, hadiah berturut-turut untuk login, atau hadiah acara yang kedaluwarsa. Sejak Juni 2026, fitur ini diberi rating PEGI 7. Jika pemain dihukum dengan kehilangan hadiah atau status karena tidak kembali tepat waktu, game diklasifikasikan PEGI 12.
+
+Perhatikan bedanya: memberi hadiah untuk kembali dinilai berbeda dari menghukum pemain yang tidak kembali. Dalam bahasa Hopson, hadiah yang hilang karena absen adalah penurunan hadiah, dan penurunan hadiah terasa menghukum. Jika kamu memakai hadiah harian, pertimbangkan desain yang tidak menghapus kemajuan pemain saat ia melewatkan satu hari.
+
+Tekanan waktu juga bisa muncul lewat sistem energi atau waktu tunggu yang bisa dipercepat dengan membayar. Pertanyaan yang berguna: apakah waktu tunggu ini ada untuk ritme game, atau terutama untuk dijual?
+
+### Pay-to-win
+
+**Pay-to-win** adalah desain yang membuat pemain yang membayar mendapat keunggulan atas pemain lain dalam permainan. Di game multipemain, setiap pembelian seperti ini menurunkan pengalaman pemain yang tidak membayar.
+
+Dokumentasi Steamworks menyarankan menghindari sistem yang membuat game makin buruk bagi pemain lain saat seseorang mengeluarkan uang, dan memusatkan perhatian pada produk dan item yang memberi dampak positif bagi pemain lain. Pegangannya sederhana: rancang produk sehingga pemain senang saat orang di sebelahnya membeli. Contoh yang sering memenuhi pegangan ini adalah kosmetik yang bisa dilihat dan dinikmati pemain lain, atau konten tambahan yang bisa dimainkan bersama.
+
+Di game satu pemain tidak ada lawan yang dirugikan, tetapi pola serupa tetap bisa muncul: progres sengaja dibuat lambat supaya pemain membeli percepatan. Steamworks menyebut bahwa membayar untuk menghilangkan rasa frustrasi bukan model bisnis yang berkelanjutan.
+
+### Daftar periksa perlindungan pemain
+
+Daftar berikut bisa dipakai untuk meninjau setiap fitur ekonomi yang melibatkan uang sungguhan atau tekanan waktu:
+
+- Apakah pemain bisa tahu berapa uang sungguhan yang ia keluarkan untuk setiap item, tanpa menghitung sendiri?
+- Jika ada hasil acak berbayar, apakah peluangnya tampil sebelum pembelian, dekat dengan tombol beli?
+- Apakah pemain yang tidak membayar tetap bisa menyelesaikan game dengan pacing yang wajar?
+- Apakah pembelian seseorang merugikan pemain lain?
+- Apakah ada hukuman karena pemain tidak membuka game di waktu tertentu?
+- Apakah ada penawaran dengan hitung mundur, dan untuk apa hitung mundur itu ada?
+- Apakah game punya pengaturan yang membantu orang tua membatasi belanja, jika pemainnya bisa anak-anak?
+- Keterangan rating apa yang akan didapat game ini dari PEGI, ESRB, atau lembaga rating di pasar yang kamu tuju?
+
+## Kesalahan umum
+
+### Sumber tanpa penguras
+
+```text title="✗ Keliru"
+koin dari level, panen, misi, dan acara → toko hanya punya 5 barang
+→ di jam ketiga semua terbeli, koin menumpuk tanpa arti
+```
+
+```text title="✓ Benar"
+peta sumber dan penguras untuk setiap mata uang
+→ penguras yang tetap bermakna di akhir (dekorasi, tanaman langka, unlock baru)
+→ jalankan 20 hari di spreadsheet untuk melihat kapan tabungan mulai menumpuk
+```
+
+### Lonjakan kesulitan di tengah game
+
+```text title="✗ Keliru"
+kesulitan dunia 1 sampai 3: 2 3 3 4 4 5 → bos dunia 3: 9
+```
+
+```text title="✓ Benar"
+kesulitan: 2 3 2 4 3 5 4 6 (naik bergelombang, bos sedikit di atas bagian sebelumnya)
+```
+
+Bos yang jauh lebih sulit daripada semua yang sebelumnya sering terasa sebagai tembok, terutama jika mekanik yang dituntutnya belum pernah diuji.
+
+### Tantangan selalu persis setara dengan kekuatan karakter
+
+```text title="✗ Keliru"
+setiap musuh diskalakan tepat mengikuti level karakter
+→ angka naik, tetapi rasanya sama dengan jam pertama
+```
+
+```text title="✓ Benar"
+rintangan lama tetap seperti semula, sehingga pemain merasakan kekuatannya
+tantangan baru menuntut kemampuan yang baru dibuka
+```
+
+### Memotong hadiah secara tiba-tiba
+
+```text title="✗ Keliru"
+pembaruan: hadiah koin dari misi harian dipotong setengah, berlaku hari ini
+```
+
+```text title="✓ Benar"
+tambahkan penguras baru atau naikkan harga barang baru secara bertahap
+jika hadiah perlu dikurangi, kurangi pelan-pelan dan jelaskan alasannya
+```
+
+### Mata uang premium yang tidak bisa dihitung
+
+```text title="✗ Keliru"
+paket 120 permata, item seharga 150 permata, nilai tukar tidak ditampilkan
+```
+
+```text title="✓ Benar"
+harga item ditampilkan juga dalam uang sungguhan
+ukuran paket bisa pas dengan harga item yang umum
+```
+
+### Kesulitan dinamis yang salah membaca pemain
+
+```text title="✗ Keliru"
+sering mati → kesulitan otomatis turun tanpa pemberitahuan
+(pemain yang sedang bereksperimen tiba-tiba mendapati game terlalu mudah)
+```
+
+```text title="✓ Benar"
+tawarkan pilihan yang menyatu dengan permainan (jalur mudah dan sulit),
+atau tawarkan bantuan secara terbuka dan biarkan pemain memilih
+```
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Latihan 1 sampai 3 cukup dikerjakan di kertas dan spreadsheet. Latihan 4 dikerjakan di engine pilihanmu.
+
+1. Pilih satu game yang sering kamu mainkan. Gambar peta sumber dan penguras untuk setiap mata uangnya. Tandai sumber yang membesar seiring progres dan penguras yang habis setelah sekali dibeli. Tulis di jam ke berapa kamu mulai merasa koinnya kehilangan arti, jika pernah.
+2. Salin aturan ekonomi game bertani di pelajaran ini ke spreadsheet. Jalankan sampai hari ke-20 untuk Versi B, lalu tambahkan satu penguras baru yang menurutmu menyenangkan, misalnya dekorasi atau tanaman langka. Atur harganya sampai tabungan tidak lagi menumpuk tanpa tujuan, dan tulis alasan setiap angka yang kamu pilih.
+3. Buat tabel pacing unlock untuk platformer dengan pijakan rapuh dari Pelajaran 4: apa yang terbuka di setiap dunia (misalnya lompat ganda atau pijakan jenis baru), masalah apa yang diselesaikan unlock itu, dan bagaimana kurva kesulitan berubah setelahnya. Gambar kurva kesulitannya berbentuk gelombang yang naik.
+4. Tambahkan koin dan satu toko sederhana ke prototipe platformer atau game bertanimu. Minta dua atau tiga orang bermain selama 15 menit tanpa penjelasan. Catat kapan mereka membeli sesuatu, berapa koin yang tersisa di akhir, dan bandingkan dengan spreadsheet-mu. Lalu tanyakan satu pertanyaan: "Berapa koin yang dibutuhkan untuk barang termahal?" Jika mereka tidak tahu, perbaiki cara tokonya menampilkan harga.

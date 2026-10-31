@@ -1,0 +1,589 @@
+---
+title: "Kualitas dan Rilis"
+description: "Strategi QA untuk tim kecil, jenis pengujian, laporan bug yang bisa dipakai, severity dan prioritas, triase dan known issues, kesiapan rilis, review Steam, App Store, dan Google Play, sertifikasi konsol, serta rencana patch dengan nomor versi, changelog, rollback, dan rilis bertahap."
+fundamental: "Pengujian adalah cara tim mengetahui keadaan game-nya yang sebenarnya, jadi keputusan rilis bisa diambil dari daftar bug yang tercatat. Setiap platform punya pemeriksaan dan jalur rilisnya sendiri, dan waktunya perlu masuk jadwal sejak awal. Kalau kamu paham kenapa laporan bug butuh langkah reproduksi dan kenapa patch dirilis bertahap, kamu bisa menerapkannya di engine dan toko mana pun."
+kind: lesson
+minutes: 35
+status: draf
+lastReviewed: 2026-10-31
+krekit:
+  gambaran-besar: "Bug yang ketemu di rumah sendiri jauh lebih murah daripada bug yang ketemu di ulasan toko."
+  strategi-qa-untuk-tim-kecil: "Rencana uji satu halaman yang benar-benar dipakai lebih berguna daripada dokumen tebal yang tidak pernah dibuka."
+  laporan-bug: "Kalau orang lain bisa mengulang bug dari laporanmu tanpa bertanya, laporan itu sudah bagus."
+  triase-bug-dan-known-issues: "Menunda bug juga keputusan. Yang penting, keputusannya ditulis."
+  kesiapan-rilis-dan-milestone: "Release candidate kedua atau ketiga itu biasa. Yang berbahaya adalah merilis RC1 karena tanggalnya sudah diumumkan."
+  persyaratan-platform: "Baca checklist platform di awal produksi, jangan baru di minggu rilis."
+  rencana-patch: "Siapkan cara mundur sebelum kamu menekan tombol rilis."
+  contoh-sari-dan-dimas-menyiapkan-release-candidate-dan-patch-pertama: "Kejadiannya karangan. Perhatikan kapan mereka berhenti memperbaiki dan mulai mengunci build."
+  kesalahan-umum: "Perbaikan kecil di hari terakhir tanpa uji ulang adalah sumber banyak patch darurat."
+sidebar:
+  order: 5
+  label: "5 · Kualitas dan Rilis"
+quiz:
+  - q: "Nama game di layar judul salah ketik, sedangkan menu debug tersembunyi bisa crash kalau dibuka dengan kombinasi tombol yang sangat jarang. Bagaimana severity dan prioritas keduanya biasanya dinilai?"
+    options:
+      - "Keduanya severity tinggi dan prioritas tinggi"
+      - "Salah ketik: severity rendah tetapi prioritas tinggi. Crash di menu debug: severity tinggi tetapi prioritasnya bisa rendah"
+      - "Salah ketik: severity tinggi. Crash di menu debug: severity rendah"
+      - "Severity dan prioritas selalu sama, jadi cukup dinilai sekali"
+    answer: 1
+    explain: "Severity mengukur seberapa parah dampak bug pada game, sedangkan prioritas mengukur seberapa cepat bug perlu diperbaiki. Salah ketik di layar judul tidak merusak permainan, tetapi dilihat setiap pemain. Crash itu parah, tetapi hampir tidak mungkin dialami pemain, sehingga bisa dijadwalkan belakangan atau menunya dimatikan di build rilis."
+  - q: "Sari memperbaiki bug lompatan di dinding. Pengujian apa yang paling perlu dijalankan sesudahnya?"
+    options:
+      - "Pengujian lokalisasi"
+      - "Pengujian regresi: memeriksa ulang bug yang diperbaiki dan fitur di sekitarnya supaya perbaikan itu tidak merusak hal lain"
+      - "Tidak perlu pengujian karena perubahannya kecil"
+      - "Pengujian kompatibilitas di semua perangkat"
+    answer: 1
+    explain: "Perbaikan menyentuh kode yang dipakai bagian lain. Pengujian regresi memeriksa bahwa bug benar-benar hilang dan bahwa hal yang sebelumnya berjalan masih berjalan. Semakin dekat ke rilis, semakin penting pemeriksaan ini."
+  - q: "Menurut Pusat Bantuan Play Console per 31 Oktober 2026, apa syarat pengujian untuk akun developer pribadi yang dibuat setelah 13 November 2023 sebelum bisa mengajukan akses produksi?"
+    options:
+      - "Tidak ada syarat khusus"
+      - "Menjalankan open test dengan minimal 1.000 penguji"
+      - "Menjalankan closed test dengan minimal 12 penguji yang terus ikut serta selama setidaknya 14 hari berturut-turut"
+      - "Menjalankan internal test selama 30 hari"
+    answer: 2
+    explain: "Google Play meminta closed test dengan minimal 12 penguji yang ikut serta tanpa putus selama 14 hari terakhir saat mengajukan akses produksi. Penguji yang keluar sebelum 14 hari tidak dihitung. Aturan ini bisa berubah, jadi periksa halaman resminya saat kamu bersiap."
+  - q: "Kamu menjalankan staged rollout di Google Play, lalu menemukan bug serius dan menghentikan (halt) rollout. Apa yang terjadi pada pengguna yang sudah menerima versi itu?"
+    options:
+      - "Versi mereka otomatis dikembalikan ke versi sebelumnya"
+      - "Mereka tetap memakai versi itu, jadi kamu perlu merilis versi baru yang sudah diperbaiki"
+      - "Aplikasi mereka dihapus dari perangkat"
+      - "Mereka mendapat notifikasi untuk mengunduh ulang"
+    answer: 1
+    explain: "Menurut Pusat Bantuan Play Console, menghentikan staged rollout mencegah pengguna tambahan menerima versi itu, tetapi pengguna yang sudah menerimanya tetap di versi tersebut. Dokumentasi menyarankan membuat rilis baru dengan app bundle yang sudah diperbaiki."
+  - q: "Apa perbedaan utama antara playtesting dan QA?"
+    options:
+      - "Tidak ada perbedaan, keduanya istilah untuk hal yang sama"
+      - "Playtesting mencari tahu apakah game dipahami dan dinikmati pemain, sedangkan QA memeriksa apakah game berjalan sesuai rancangan dan mencatat bug"
+      - "Playtesting hanya dilakukan setelah rilis"
+      - "QA hanya boleh dilakukan oleh perusahaan luar"
+    answer: 1
+    explain: "Keduanya memakai build dan orang yang memainkannya, tetapi pertanyaannya berbeda. Playtest menjawab pertanyaan desain, misalnya apakah level 3 terlalu sulit. QA menjawab pertanyaan kualitas, misalnya apakah game crash saat jendela diubah ukurannya. Hasil keduanya dicatat di tempat yang berbeda."
+  - q: "Menurut dokumentasi Steamworks, apa yang terjadi setelah game kamu lolos review dan dirilis?"
+    options:
+      - "Setiap update harus direview ulang dalam 3 sampai 5 hari kerja"
+      - "Game boleh diperbarui kapan saja tanpa review ulang, jadi pengujian setiap update menjadi tanggung jawab timmu sendiri"
+      - "Update hanya boleh dirilis sebulan sekali"
+      - "Update harus melewati branch beta selama 7 hari"
+    answer: 1
+    explain: "Steamworks menulis bahwa setelah game direview dan disetujui, tidak perlu review lagi dan kamu bebas memperbaruinya. Artinya tidak ada pemeriksa di luar tim untuk patch. Branch beta dan uji regresi membantu menangkap masalah sebelum update sampai ke semua pemain."
+sources:
+  - title: "Review Process"
+    url: "https://partner.steamgames.com/doc/store/review_process"
+    publisher: "Valve, dokumentasi Steamworks"
+    accessed: 2026-10-31
+  - title: "Branches (Betas)"
+    url: "https://partner.steamgames.com/doc/store/application/branches"
+    publisher: "Valve, dokumentasi Steamworks"
+    accessed: 2026-10-31
+  - title: "Uploading to Steam"
+    url: "https://partner.steamgames.com/doc/sdk/uploading"
+    publisher: "Valve, dokumentasi Steamworks"
+    accessed: 2026-10-31
+  - title: "Steam Playtest"
+    url: "https://partner.steamgames.com/doc/features/playtest"
+    publisher: "Valve, dokumentasi Steamworks"
+    accessed: 2026-10-31
+  - title: "App Review"
+    url: "https://developer.apple.com/distribute/app-review/"
+    publisher: "Apple Developer"
+    accessed: 2026-10-31
+  - title: "TestFlight"
+    url: "https://developer.apple.com/testflight/"
+    publisher: "Apple Developer"
+    accessed: 2026-10-31
+  - title: "Release a version update in phases"
+    url: "https://developer.apple.com/help/app-store-connect/update-your-app/release-a-version-update-in-phases"
+    publisher: "Apple, App Store Connect Help"
+    accessed: 2026-10-31
+  - title: "App testing requirements for new personal developer accounts"
+    url: "https://support.google.com/googleplay/android-developer/answer/14151465?hl=en"
+    publisher: "Google, Pusat Bantuan Play Console"
+    accessed: 2026-10-31
+  - title: "Set up an open, closed, or internal test"
+    url: "https://support.google.com/googleplay/android-developer/answer/9845334?hl=en"
+    publisher: "Google, Pusat Bantuan Play Console"
+    accessed: 2026-10-31
+  - title: "Prepare and roll out a release"
+    url: "https://support.google.com/googleplay/android-developer/answer/9859348?hl=en"
+    publisher: "Google, Pusat Bantuan Play Console"
+    accessed: 2026-10-31
+  - title: "Release app updates with staged rollouts"
+    url: "https://support.google.com/googleplay/android-developer/answer/6346149?hl=en"
+    publisher: "Google, Pusat Bantuan Play Console"
+    accessed: 2026-10-31
+  - title: "Certification Tested XBOX Requirements for XBOX Games"
+    url: "https://learn.microsoft.com/en-us/gaming/gdk/docs/store/policies/console/console-certification-requirements-and-tests"
+    publisher: "Microsoft Learn (versi 16.7, 27 Oktober 2026)"
+    accessed: 2026-10-31
+  - title: "Alpha, Beta, Gold: A Commitment to High-quality Game Development"
+    url: "https://www.filamentgames.com/blog/alpha-beta-gold-commitment-high-quality-game-development"
+    publisher: "Filament Games"
+    accessed: 2026-10-31
+  - title: "Semantic Versioning 2.0.0"
+    url: "https://semver.org/"
+    publisher: "Tom Preston-Werner, semver.org"
+    accessed: 2026-10-31
+  - title: "Keep a Changelog 1.1.0"
+    url: "https://keepachangelog.com/en/1.1.0/"
+    publisher: "Olivier Lacan, keepachangelog.com"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menyusun rencana uji sederhana dan memilih jenis pengujian yang dibutuhkan proyekmu.
+- Membedakan playtesting dari QA, dan menentukan siapa menguji apa di tim kecil.
+- Menulis laporan bug dengan langkah reproduksi, serta memberi severity dan prioritas secara terpisah.
+- Menjalankan triase bug dan menyusun daftar known issues.
+- Menjelaskan pemeriksaan sebelum rilis di Steam, App Store, Google Play, dan konsol.
+- Merencanakan patch: nomor versi, changelog, rollback, dan rilis bertahap.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: menerbitkan buku">
+Sebelum buku dicetak, naskahnya dibaca penyunting dan korektor. Mereka mencatat salah ketik, kalimat yang membingungkan, dan halaman yang tertukar. Penerbit lalu membuat cetak coba untuk diperiksa sekali lagi. Toko buku besar punya syarat sendiri sebelum mau memajang buku itu. Kalau setelah terbit masih ditemukan kesalahan, penerbit menyiapkan lembar ralat atau memperbaikinya di cetakan berikutnya. Pengujian, release candidate, review platform, dan patch di game mengikuti urutan yang mirip.
+</Aside>
+
+Empat pelajaran sebelumnya membawa proyek dari [scope](/belajar/produksi/01-scope-vertical-slice/) dan [fase produksi](/belajar/produksi/02-fase-produksi/) sampai [pembagian peran](/belajar/produksi/03-peran-tim-kecil/) dan [alat kerja](/belajar/produksi/04-alat-kerja/). Pelajaran Alat Kerja berhenti di smoke test dan build harian, yaitu pemeriksaan otomatis yang memastikan build tidak rusak secara mendasar. Pelajaran ini membahas langkah sesudahnya: memeriksa game secara menyeluruh, mencatat dan memilah bug, melewati pemeriksaan platform, lalu merawat game setelah rilis.
+
+Benang merahnya adalah informasi. QA memberi tahu tim keadaan build yang sebenarnya. Triase mengubah informasi itu menjadi keputusan. Kriteria rilis menentukan kapan keputusan itu cukup baik untuk dikirim ke pemain. Rencana patch menyiapkan langkah berikutnya untuk bug yang lolos dari semua pemeriksaan itu.
+
+Isi pelajaran ini:
+
+- Strategi QA, jenis pengujian, dan siapa yang menguji.
+- Laporan bug, severity dan prioritas, triase, dan known issues.
+- Kesiapan rilis dan pemeriksaan di setiap platform.
+- Rencana patch, dari nomor versi sampai rilis bertahap.
+
+## Strategi QA untuk tim kecil
+
+**QA** (*quality assurance*) adalah pekerjaan memeriksa bahwa game berjalan sesuai rancangan dan mencatat di mana tidak. Di studio besar, QA adalah tim tersendiri. Di tim kecil, menurut tabel di pelajaran [Peran dalam Tim Kecil](/belajar/produksi/03-peran-tim-kecil/#pekerjaan-yang-tetap-ada-tanpa-judul), pekerjaan ini tetap ada walaupun tidak ada orang yang memegang judulnya. Kalau tidak ada yang mengerjakannya, bug ditemukan pemain, dan perbaikan merusak hal lain tanpa ada yang sadar. Gambaran peran QA di studio ada di [Peta Peran](/belajar/industri-karier/01-peta-peran/#qa).
+
+### Rencana uji
+
+**Rencana uji** (*test plan*) menjawab pertanyaan: apa yang diuji, di mana, oleh siapa, kapan, dan kapan pengujian dianggap cukup. Untuk tim kecil, satu atau dua halaman sudah cukup. Isinya:
+
+| Bagian | Pertanyaan yang dijawab | Contoh untuk game 2D di PC |
+| --- | --- | --- |
+| Cakupan | Fitur dan konten apa yang diuji? | 12 level, boss, menu, simpan dan muat, pengaturan |
+| Platform | Di sistem operasi dan perangkat apa? | Windows dan Linux, satu laptop spesifikasi minimum, satu Steam Deck kalau didukung |
+| Jenis pengujian | Pengujian apa saja yang dijalankan? | Fungsional, regresi, kompatibilitas, performa, lokalisasi |
+| Jadwal | Kapan setiap pengujian dijalankan? | Smoke test setiap build, pengujian penuh setiap milestone |
+| Peran | Siapa menguji apa? | Setiap orang menguji pekerjaan orang lain |
+| Pencatatan | Di mana bug dicatat? | Satu pelacak bug, terpisah dari catatan playtest |
+| Kriteria selesai | Kapan pengujian dianggap cukup? | Semua item checklist dicoba di build RC, tidak ada bug kritis yang terbuka |
+
+Dari rencana ini lahir **checklist uji**: daftar langkah konkret yang dijalankan di setiap build penting, misalnya "mulai game baru, mainkan level 1 sampai selesai, keluar, buka lagi, pastikan progres tersimpan". Checklist menjaga supaya pengujian tidak bergantung pada ingatan, dan supaya hal yang membosankan untuk diuji tetap diuji.
+
+### Jenis pengujian
+
+Nama-nama di bawah ini umum dipakai. Satu sesi pengujian sering mencakup beberapa jenis sekaligus.
+
+| Jenis | Pertanyaan utama | Contoh di game |
+| --- | --- | --- |
+| Fungsional | Apakah setiap fitur bekerja sesuai rancangan? | Tombol lompat bekerja di keyboard dan gamepad; checkpoint menyimpan posisi |
+| Regresi | Apakah perubahan baru merusak hal yang sebelumnya berjalan? | Setelah bug dash diperbaiki, lompatan di dinding diperiksa lagi |
+| Kompatibilitas | Apakah game berjalan di semua platform dan perangkat yang didukung? | Resolusi layar berbeda, gamepad dari beberapa merek, sistem operasi yang tercantum di halaman toko |
+| Performa | Apakah frame rate, waktu muat, dan memori memenuhi target? | Frame rate di level paling ramai pada laptop spesifikasi minimum |
+| Lokalisasi | Apakah setiap bahasa tampil dan terbaca dengan benar? | Teks terpotong di tombol, huruf yang tidak ada di font, teks yang lupa diterjemahkan |
+
+Beberapa catatan tentang setiap jenis:
+
+- **Fungsional** adalah pengujian paling dasar. Checklist uji biasanya sebagian besar berisi pengujian fungsional.
+- **Regresi** makin penting menjelang rilis. Setiap perbaikan menyentuh kode atau aset yang mungkin dipakai bagian lain, jadi setelah bug diperbaiki, periksa bug itu dan bagian di sekitarnya. Smoke test di [build otomatis](/belajar/produksi/04-alat-kerja/#build-otomatis) menangkap kerusakan besar, tetapi tidak menangkap lompatan yang terasa sedikit berbeda.
+- **Kompatibilitas** dibatasi oleh apa yang kamu janjikan. Spesifikasi minimum dan sistem operasi di halaman toko adalah janji, dan perlu diuji. Steam, misalnya, memeriksa bahwa game bisa berjalan di semua sistem operasi yang tercantum di halaman tokonya (dibahas di bagian [persyaratan platform](#persyaratan-platform)).
+- **Performa** sebaiknya sudah diukur sejak vertical slice, seperti di bagian [performa muat di anggaran](/belajar/produksi/01-scope-vertical-slice/#performa-muat-di-anggaran). Di tahap akhir, pengujiannya memastikan target itu tetap terpenuhi setelah semua konten masuk.
+- **Lokalisasi** baru bisa diuji tuntas setelah teks dikunci dan terjemahan dimasukkan ke game. Penerjemah yang hanya melihat spreadsheet tidak tahu bahwa terjemahannya terlalu panjang untuk tombol.
+
+### Siapa yang menguji
+
+Di tim kecil, pengujian biasanya dibagi seperti ini:
+
+- **Pembuat fitur** menguji pekerjaannya sendiri sebelum menandainya selesai. Ini sudah tertulis di [definition of done](/belajar/produksi/04-alat-kerja/#definition-of-done): fitur bisa dicoba di build terbaru, tidak hanya di editor pembuatnya.
+- **Rekan tim** menguji pekerjaan orang lain. Pembuat fitur tahu cara "benar" memakai fiturnya, jadi ia cenderung tidak mencoba cara yang salah. Orang lain lebih mungkin menekan tombol di urutan yang tidak terduga.
+- **Penguji dari luar tim**, misalnya teman, komunitas, atau peserta beta tertutup, menguji di perangkat dan kebiasaan yang tidak dimiliki tim.
+- **Jasa QA profesional** bisa disewa untuk pengujian tertentu, misalnya kompatibilitas di banyak perangkat atau lokalisasi. Gunakan kriteria yang sama seperti memilih freelancer di [pelajaran sebelumnya](/belajar/produksi/03-peran-tim-kecil/#bekerja-dengan-freelancer-dan-kontraktor): cakupan tertulis, hasil yang bisa diperiksa, dan jadwal yang jelas.
+
+Apa pun susunannya, satu orang perlu memegang keputusan tentang daftar bug: kapan triase, bug mana yang ditunda, dan kapan build dianggap siap. Tanpa pemilik, daftar bug terus memanjang tanpa ada yang memutuskan.
+
+### Playtesting dan QA
+
+Playtesting dan QA sama-sama melibatkan orang yang memainkan build, sehingga sering tercampur. Pertanyaan yang dijawab keduanya berbeda.
+
+| | Playtesting | QA |
+| --- | --- | --- |
+| Pertanyaan | Apakah pemain paham, tertantang, dan menikmati game ini? | Apakah game berjalan sesuai rancangan? |
+| Contoh temuan | "Pemain tidak sadar bisa dash di udara" | "Dash di udara menembus dinding di level 4" |
+| Cara | Mengamati pemain tanpa mengarahkan | Menjalankan checklist dan mencoba hal yang bisa rusak |
+| Hasil | Masukan desain, diputuskan oleh pemilik desain | Laporan bug, masuk triase |
+
+Keduanya perlu, dan hasilnya sebaiknya dicatat di tempat berbeda. Masukan "level 7 terlalu sulit" adalah keputusan desain. Kalau dicampur dengan daftar bug, masukan seperti ini bisa menunggu di antrean perbaikan yang tidak cocok untuknya. Cara merencanakan sesi playtest akan dibahas di pelajaran Playtesting di jalur Desain Game, yang masih dalam rencana.
+
+## Laporan bug
+
+Laporan bug yang baik memungkinkan orang lain mengulang bug itu tanpa bertanya kepada pelapornya. Bug yang tidak bisa diulang hampir tidak bisa diperbaiki, karena programmer tidak tahu apakah perbaikannya berhasil.
+
+### Isi laporan yang bisa dipakai
+
+| Bagian | Isi | Kenapa perlu |
+| --- | --- | --- |
+| Judul | Apa yang terjadi, di mana, dalam satu kalimat | Bisa dicari dan dibedakan dari bug lain |
+| Build dan platform | Nomor versi atau build, sistem operasi, perangkat, alat input | Bug sering hanya muncul di satu konfigurasi |
+| Langkah reproduksi | Langkah bernomor dari titik yang jelas, misalnya dari menu utama | Orang lain bisa mengulangnya |
+| Hasil yang diharapkan | Apa yang seharusnya terjadi | Memastikan ini memang bug, bukan salah paham tentang rancangan |
+| Hasil yang terjadi | Apa yang benar-benar terjadi | Inti laporannya |
+| Frekuensi | Selalu, atau berapa kali dari berapa percobaan | Bug yang muncul 1 dari 10 kali butuh cara uji yang berbeda |
+| Lampiran | Video, screenshot, file log, file simpanan | Sering lebih jelas daripada penjelasan panjang |
+| Severity | Seberapa parah dampaknya | Bahan triase |
+
+Satu laporan berisi satu bug. Kalau dua masalah muncul di layar yang sama, tulis dua laporan, karena keduanya mungkin diperbaiki oleh orang yang berbeda di waktu yang berbeda.
+
+### Severity dan prioritas
+
+Dua ukuran ini sering dianggap sama, padahal menjawab pertanyaan yang berbeda.
+
+- **Severity** (tingkat keparahan) menjelaskan seberapa besar dampak bug pada game. Pelapor biasanya bisa menilainya.
+- **Prioritas** menjelaskan seberapa cepat bug perlu diperbaiki. Nilainya diputuskan di triase, dengan melihat severity, seberapa banyak pemain akan mengalaminya, biaya perbaikannya, dan jadwal.
+
+Contoh skala severity yang umum. Nama dan jumlah tingkatnya berbeda di setiap tim, jadi yang penting adalah definisi yang disepakati dan ditulis.
+
+| Severity | Arti | Contoh |
+| --- | --- | --- |
+| Kritis | Game crash, progres atau file simpanan hilang, atau pemain tidak bisa melanjutkan | Game crash saat masuk level 9 |
+| Mayor | Fitur penting rusak, tetapi ada cara untuk melanjutkan | Gamepad tidak terdeteksi kalau dicolok setelah game dibuka |
+| Minor | Masalah kecil yang mengganggu, game tetap bisa dimainkan normal | Suara langkah tidak berbunyi di satu jenis lantai |
+| Kosmetik | Masalah tampilan tanpa pengaruh ke permainan | Satu tile berkedip di pojok layar |
+
+Severity dan prioritas bisa tidak sejalan. Nama game yang salah ketik di layar judul hanya kosmetik, tetapi dilihat setiap pemain dan murah diperbaiki, sehingga prioritasnya tinggi. Crash di menu debug yang hanya terbuka dengan kombinasi tombol yang sangat jarang itu kritis, tetapi prioritasnya bisa rendah, atau cukup diselesaikan dengan mematikan menu itu di build rilis.
+
+Sebagai contoh kriteria nyata, Filament Games menulis bahwa build di tahap Gold, tahap siap rilis mereka, tidak boleh punya cacat kelas A, B, dan C, dan hanya boleh punya sangat sedikit cacat kelas D dan E. Artikel itu tidak menjelaskan arti setiap kelas, tetapi polanya jelas: kriteria rilis ditulis dalam bentuk tingkat keparahan bug yang masih boleh tersisa.
+
+### Contoh laporan
+
+<Aside type="caution" title="Ilustrasi">
+Laporan di bawah ini dibuat untuk contoh dan tidak berasal dari proyek nyata.
+</Aside>
+
+```text title="Laporan bug (ilustrasi)"
+Judul      : Progres level 6 hilang kalau game ditutup saat layar "Menyimpan..." tampil
+Build      : 0.9.3-rc.1 (build harian 14 Agustus), Windows 11, gamepad
+Severity   : Kritis (progres pemain hilang)
+Frekuensi  : 4 dari 5 percobaan
+
+Langkah reproduksi:
+1. Dari menu utama, pilih Lanjutkan dengan file simpanan yang sudah sampai level 6.
+2. Selesaikan level 6 sampai layar hasil muncul.
+3. Saat tulisan "Menyimpan..." tampil di pojok kanan bawah, tutup game dengan Alt+F4.
+4. Buka game lagi, pilih Lanjutkan.
+
+Hasil yang diharapkan:
+Level 7 terbuka, atau paling tidak progres sampai level 6 tetap ada.
+
+Hasil yang terjadi:
+File simpanan kosong. Menu Lanjutkan tidak tersedia.
+
+Lampiran:
+- video-simpan-hilang.mp4 (40 detik)
+- log dari folder user data
+- file simpanan sebelum langkah 2
+```
+
+Perhatikan bahwa langkah pertama dimulai dari titik yang jelas, dan file simpanan sebelum bug ikut dilampirkan. Dengan itu, programmer bisa mengulang bug ini dalam beberapa menit.
+
+## Triase bug dan known issues
+
+**Triase** adalah sesi rutin untuk memeriksa bug baru dan memutuskan nasibnya. Istilah ini sudah muncul di pelajaran [Fase Produksi](/belajar/produksi/02-fase-produksi/#alpha-dan-beta). Di sini kita lihat cara menjalankannya.
+
+Untuk setiap bug baru, keputusan yang umum:
+
+- **Perbaiki sekarang**, dengan prioritas dan nama orang yang memperbaikinya.
+- **Tunda** ke milestone atau patch tertentu. Tulis ke mana, supaya bug tidak hilang.
+- **Tidak diperbaiki**, dengan alasan tertulis. Misalnya, biaya perbaikannya terlalu besar dibanding dampaknya, atau fitur itu akan dihapus.
+- **Butuh informasi**, kembali ke pelapor karena langkah reproduksi belum cukup.
+- **Duplikat**, digabung dengan laporan yang sudah ada.
+
+Ritme triase berubah mengikuti fase. Di produksi, seminggu sekali biasanya cukup. Menjelang rilis, triase bisa dilakukan setiap hari karena daftar bug cepat berubah.
+
+**Batas perbaikan makin ketat menjelang rilis.** Setiap perbaikan bisa membawa bug baru, dan waktu untuk menguji ulang makin sedikit. Banyak tim menulis aturan seperti ini: setelah beta, bug minor dan kosmetik hanya diperbaiki kalau aman. Setelah release candidate, hanya bug kritis yang diperbaiki, dan setiap perbaikan diikuti uji regresi. Bug yang ditunda dijadwalkan ke patch pertama.
+
+### Known issues
+
+**Known issues** adalah daftar bug yang sudah diketahui tim tetapi belum diperbaiki di build tertentu. Daftar ini berguna untuk dua kelompok:
+
+- **Penguji**, supaya mereka tidak menghabiskan waktu melaporkan bug yang sama berkali-kali, dan tahu bagian mana yang belum perlu diuji.
+- **Pemain**, setelah rilis, supaya mereka tahu masalahnya sudah diketahui, apakah ada cara menghindarinya, dan kira-kira kapan diperbaiki.
+
+Untuk pemain, tulis dengan bahasa yang mereka pahami dan sertakan cara menghindarinya kalau ada: "Gamepad yang dicolok setelah game dibuka belum terdeteksi. Untuk sementara, colok gamepad sebelum membuka game. Perbaikan direncanakan di update berikutnya." Hindari menjanjikan tanggal yang belum pasti.
+
+## Kesiapan rilis dan milestone
+
+Pelajaran [Scope dan Vertical Slice](/belajar/produksi/01-scope-vertical-slice/#milestone-dari-prototipe-sampai-release-candidate) sudah membahas milestone dari prototipe sampai release candidate beserta kriteria keluarnya. Bagian ini melihat milestone dari sisi kualitas.
+
+| Istilah | Arti yang umum | Fokus pengujian |
+| --- | --- | --- |
+| Alpha | Fitur lengkap, konten belum lengkap | Fungsional, mencari bug besar di fitur |
+| Beta | Fitur dan konten lengkap | Semua jenis pengujian, termasuk kompatibilitas, performa, dan lokalisasi |
+| Release candidate (RC) | Build yang akan dirilis kalau tidak ditemukan masalah serius | Checklist penuh dan regresi, hanya bug kritis yang diperbaiki |
+| Gold | Build final yang disetujui untuk dirilis | Build ini yang diunggah dan diajukan ke platform |
+
+Istilah-istilah ini dipakai luas, tetapi tidak ada satu standar yang mengikat semua studio. Filament Games, misalnya, memakai tiga tahap: Alpha, Beta, dan Gold, dengan Gold sebagai tahap siap rilis. Studio lain memakai RC dan gold untuk hal yang sedikit berbeda, dan kontrak publisher bisa punya definisinya sendiri. Yang penting adalah definisi yang ditulis dan disepakati timmu.
+
+### Release candidate
+
+Release candidate biasanya diberi nomor: RC1, RC2, dan seterusnya. Kalau RC1 punya bug kritis, bug itu diperbaiki dan dibuat RC2, lalu checklist dijalankan lagi dari awal. Pusat Bantuan Play Console bahkan memakai "3.2.5-RC2" sebagai contoh nama rilis. Membuat beberapa RC itu wajar. Jadwal rilis yang baik menyisakan waktu untuk setidaknya satu RC tambahan.
+
+Selama masa RC, branch utama sebaiknya dibekukan. Perubahan yang tidak ada hubungannya dengan bug kritis menunggu di branch lain sampai rilis selesai. Tanpa aturan ini, RC2 bisa membawa perubahan yang tidak pernah diuji.
+
+### Checklist go atau no-go
+
+Sebelum build dinyatakan siap, tim memeriksa daftar pendek dan memutuskan bersama: rilis, atau belum. Contoh isinya:
+
+- Tidak ada bug kritis yang terbuka. Bug mayor yang tersisa sudah diputuskan di triase dan masuk known issues.
+- Checklist uji penuh sudah dijalankan di build RC, di semua platform yang didukung.
+- Target performa terpenuhi di perangkat spesifikasi minimum.
+- Semua bahasa sudah diperiksa di dalam game.
+- Halaman toko hanya menyebut fitur yang ada di build ini.
+- Build sudah lolos atau sudah diajukan ke review platform, dengan waktu tunggu yang masuk jadwal.
+- Cara mundur sudah disiapkan: build sebelumnya tersimpan, dan orang yang siaga di hari rilis sudah ditentukan.
+
+Keputusan no-go terasa berat kalau tanggal sudah diumumkan. Karena itu, kriterianya ditulis jauh sebelum hari rilis, saat tidak ada tekanan.
+
+## Persyaratan platform
+
+Setiap toko memeriksa game sebelum dirilis, dengan aturan dan kedalaman yang berbeda. Bagian ini meringkas dokumentasi resmi per 31 Oktober 2026. Aturan platform sering berubah, jadi baca dokumentasi terbarunya saat kamu benar-benar bersiap.
+
+### Steam
+
+Pelajaran [Fase Produksi](/belajar/produksi/02-fase-produksi/#rilis) sudah membahas halaman *Coming Soon* dan waktu review di Steam. Ringkasnya, menurut dokumentasi Steamworks, halaman toko dan build sama-sama direview oleh tim Valve sebelum rilis. Kamu menekan tombol *Mark as ready for review* setelah menyelesaikan checklist rilis. Review halaman toko dan review build masing-masing biasanya selesai dalam 3 sampai 5 hari kerja. Valve meminta halaman toko diajukan setidaknya 7 hari kerja sebelum ingin tayang, dan meminta waktu setidaknya 7 hari kerja untuk review build.
+
+Dari sisi kualitas, yang diperiksa di review build menurut dokumentasi itu antara lain:
+
+- Game harus bisa berjalan dengan benar di semua sistem operasi yang tercantum di halaman toko.
+- Semua fitur yang dicentang di halaman toko harus sudah ada di build. Fitur yang baru direncanakan harus dihapus dari daftar sampai benar-benar dirilis.
+- Transaksi di dalam game harus memakai Steam Wallet.
+- Build yang diajukan sebaiknya build yang hampir final.
+
+Satu hal penting untuk rencana patch: setelah game direview dan disetujui, update berikutnya tidak perlu direview lagi. Artinya, setelah rilis tidak ada pemeriksa dari luar tim untuk setiap patch. Pengujianmu sendiri menjadi satu-satunya penyaring.
+
+Untuk pengujian sebelum dan sesudah rilis, Steamworks menyediakan dua alat yang relevan:
+
+- **Branch** (disebut juga *beta*): build tertentu yang bisa dibuka untuk umum atau secara privat, misalnya dengan kata sandi. Sebelum rilis, branch bawaan (*default*) adalah build yang diunduh penguji. Setelah rilis, branch bawaan adalah build yang diterima pemain. Pembahasan lebih lanjut ada di bagian [rencana patch](#rencana-patch).
+- **Steam Playtest**: appID terpisah yang terhubung dengan game utama, untuk playtest tanpa memakai Steam key dan tanpa memengaruhi ulasan game utama. Pemain mendaftar dari halaman toko game utama, dan kamu memilih berapa banyak yang diberi akses. Playtest juga melewati review halaman toko dan build yang lebih sederhana.
+
+### App Store
+
+Apple meninjau semua aplikasi, update, dan item lain yang diajukan lewat App Store Connect. Menurut halaman App Review di Apple Developer, tim App Review bekerja sepanjang waktu dan biasanya meninjau setidaknya 50% pengajuan dalam waktu kurang dari 24 jam dan 90% dalam waktu kurang dari 48 jam. Pengajuan yang tidak lengkap bisa tertunda atau tidak lolos.
+
+Halaman yang sama mencatat bahwa rata-rata lebih dari 40% masalah yang belum terselesaikan terkait pedoman 2.1, *App Completeness*, yang mencakup crash, konten sementara (*placeholder*), dan informasi yang tidak lengkap. Saran Apple yang langsung berhubungan dengan QA:
+
+- Ajukan hanya kalau sudah lengkap dan siap dirilis. Uji di perangkat dengan versi sistem operasi terbaru dan perbaiki semua bug sebelum mengajukan.
+- Semua gambar dan teks harus sudah final. Item dengan konten sementara tidak bisa disetujui.
+- Kalau ada fitur yang butuh login, sertakan akun demo yang valid. Kalau fitur butuh perangkat atau kondisi khusus, siapkan video demo atau perangkatnya.
+
+Untuk pengujian sebelum rilis, Apple menyediakan **TestFlight**. Menurut halaman TestFlight, kamu bisa menambahkan sampai 100 anggota tim sebagai penguji internal dan mengundang sampai 10.000 penguji eksternal. Build pertama untuk penguji eksternal harus disetujui App Review untuk TestFlight lebih dulu.
+
+### Google Play
+
+Play Console menyediakan beberapa **jalur pengujian** (*testing track*) sebelum produksi. Menurut Pusat Bantuan Play Console:
+
+| Jalur | Untuk apa | Catatan |
+| --- | --- | --- |
+| Internal testing | Membagikan build dengan cepat ke kelompok kecil penguji tepercaya | Sampai 100 penguji per aplikasi; bisa dimulai sebelum pengaturan aplikasi selesai |
+| Closed testing | Menguji dengan kelompok yang kamu tentukan | Penguji diatur lewat daftar email atau Google Groups |
+| Open testing | Versi uji tampil di Google Play dan siapa pun bisa bergabung | Pastikan aplikasi dan halaman toko siap dilihat publik |
+| Production | Rilis ke pengguna Google Play | Update bisa dirilis bertahap |
+
+Ada syarat khusus untuk **akun developer pribadi yang dibuat setelah 13 November 2023**. Akun seperti ini harus menjalankan closed test dengan minimal 12 penguji yang ikut serta tanpa putus selama setidaknya 14 hari sebelum bisa mengajukan akses produksi. Penguji yang keluar sebelum 14 hari tidak dihitung, dan kalau keluar lalu masuk lagi, hitungannya harus 14 hari berturut-turut. Saat mengajukan, kamu menjawab pertanyaan tentang closed test, game-mu, dan kesiapannya untuk produksi, termasuk ringkasan masukan dari penguji. Menurut halaman itu, peninjauan pengajuan biasanya memakan waktu tujuh hari atau kurang, tetapi kadang lebih lama. Open testing baru tersedia setelah akses produksi didapat.
+
+Kalau kamu memakai akun jenis ini, syarat tersebut berarti waktu minimal sekitar tiga minggu antara closed test dimulai dan rilis produksi, belum termasuk waktu mencari penguji. Masukkan ke jadwal sejak beta. Halaman yang sama juga menyebut *pre-launch report* di Play Console, yang membantu menemukan peringatan, error, dan masalah performa sebelum aplikasi sampai ke pengguna.
+
+### Konsol
+
+Di konsol, pemeriksaan sebelum rilis biasa disebut **sertifikasi**: build diuji terhadap daftar persyaratan teknis dan kebijakan dari pemilik platform.
+
+Microsoft menerbitkan contoh yang bisa dibaca umum. Halaman XBOX Requirements (XR) di Microsoft Learn, versi 16.7 tertanggal 27 Oktober 2026, menyebut XR sebagai kebijakan, persyaratan teknis, dan persyaratan komponen produk yang wajib dipenuhi semua developer dan publisher game Xbox, lengkap dengan test case yang dipakai di sertifikasi Xbox. Isinya memperlihatkan jenis hal yang diperiksa di sertifikasi. Salah satunya, XR 003-16 *Save-Game Compatibility*, meminta file simpanan dan progres pemain tetap berfungsi setelah content update, dan memuat file simpanan versi baru dengan versi dasar game tidak boleh menyebabkan data hilang permanen. Test case lain di halaman itu memeriksa perilaku game saat terputus dari layanan Xbox dan saat konsol kembali dari mode suspend.
+
+Dokumen persyaratan untuk sebagian besar platform konsol lain hanya bisa dibaca developer yang sudah terdaftar di program platform tersebut, dan biasanya terikat perjanjian kerahasiaan (NDA). Karena itu, pelajaran ini hanya membahas konsepnya. Hal yang bisa kamu rencanakan sebelum punya akses:
+
+- Sertifikasi butuh waktu, dan build yang gagal harus diperbaiki lalu diajukan ulang. Sisakan waktu untuk lebih dari satu putaran.
+- Begitu punya akses, periksa apakah patch juga harus melewati sertifikasi di platform itu dan berapa lama prosesnya. Jawabannya menentukan seberapa cepat kamu bisa merilis hotfix.
+- Baca dokumen persyaratan di awal produksi, karena sebagian persyaratan memengaruhi desain sistem seperti simpan data dan akun.
+
+## Rencana patch
+
+Setelah rilis, pemain akan menemukan bug yang tidak terlihat di pengujian, karena jumlah pemain dan variasi perangkatnya jauh lebih besar daripada tim penguji mana pun. Rencana patch disusun sebelum rilis, saat kepala masih dingin.
+
+### Hotfix dan update konten
+
+| | Hotfix | Update konten |
+| --- | --- | --- |
+| Tujuan | Memperbaiki bug serius secepatnya | Menambah fitur, konten, atau perubahan balancing |
+| Isi | Sesedikit mungkin perubahan | Bisa banyak perubahan sekaligus |
+| Pengujian | Bug yang diperbaiki dan regresi di sekitarnya | Siklus seperti rilis kecil: beta, RC, checklist penuh |
+| Waktu | Beberapa jam sampai beberapa hari setelah bug ditemukan | Dijadwalkan, sering berminggu-minggu |
+
+Godaan terbesar adalah memasukkan "satu perbaikan kecil lagi" ke hotfix. Setiap tambahan memperbesar risiko dan memperpanjang pengujian. Hotfix yang baik hanya berisi perbaikan untuk masalah yang membuatnya dibuat. Perbaikan lain menunggu patch berikutnya.
+
+### Nomor versi
+
+Nomor versi membantu semua orang, termasuk pemain, penguji, dan timmu sendiri, tahu build mana yang sedang dibicarakan. Tampilkan nomor versi di dalam game, misalnya di pojok menu utama, supaya bisa dicantumkan di laporan bug.
+
+Salah satu skema yang banyak dikenal adalah **Semantic Versioning**: format MAYOR.MINOR.PATCH. Spesifikasinya ditulis untuk perangkat lunak dengan API: angka MAYOR naik kalau ada perubahan yang tidak kompatibel, MINOR naik kalau ada fungsi baru yang tetap kompatibel, dan PATCH naik untuk perbaikan bug yang kompatibel. Spesifikasi itu juga mengizinkan label pra-rilis seperti `1.0.0-rc.1`.
+
+Game biasanya tidak punya API untuk pihak lain, jadi banyak tim memakai bentuknya saja dengan arti yang disesuaikan, misalnya:
+
+- **1.0.0** untuk rilis pertama.
+- **1.0.1, 1.0.2** untuk hotfix dan perbaikan bug.
+- **1.1.0** untuk update konten.
+- **2.0.0** untuk perubahan besar, misalnya ekspansi atau perubahan yang membuat file simpanan lama tidak bisa dipakai.
+
+Skema apa pun boleh, asal ditulis dan dipakai konsisten. Simpan juga nomor build internal (misalnya nomor dari build otomatis) supaya setiap versi bisa dilacak ke commit di repositori.
+
+### Changelog dan patch notes
+
+**Changelog** adalah catatan perubahan per versi untuk tim dan penguji. **Patch notes** adalah versi untuk pemain, biasanya diumumkan di halaman toko, situs, atau komunitas.
+
+Situs Keep a Changelog mendefinisikan changelog sebagai file berisi daftar perubahan penting untuk setiap versi, yang dipilih dan diurutkan berdasarkan waktu. Beberapa prinsipnya:
+
+- Changelog ditulis untuk manusia, tidak untuk mesin. Daftar pesan commit mentah tidak sama dengan changelog.
+- Perubahan dikelompokkan menurut jenisnya. Situs itu memakai *Added*, *Changed*, *Deprecated*, *Removed*, *Fixed*, dan *Security*.
+- Ada bagian *Unreleased* di paling atas untuk mengumpulkan perubahan yang belum dirilis.
+
+Untuk patch notes, tulis dari sudut pandang pemain: apa yang berubah untuk mereka. "Memperbaiki progres level 6 yang bisa hilang kalau game ditutup saat menyimpan" lebih berguna daripada "Perbaiki race condition di SaveManager". Sebutkan juga known issues yang belum terselesaikan, supaya pemain tahu masalahnya sudah dicatat.
+
+### Rollback
+
+**Rollback** berarti mengembalikan pemain ke build sebelumnya kalau patch ternyata lebih buruk daripada versi lama. Caranya berbeda di setiap platform, dan sebagian platform tidak memungkinkannya sama sekali.
+
+- **Steam.** Dokumentasi SteamPipe menyebut pengelolaan build berbasis web yang memungkinkan merilis build baru atau kembali ke build sebelumnya dengan beberapa klik. Supaya ini bisa dilakukan, build lama harus masih tersedia di daftar build.
+- **Google Play.** Menghentikan staged rollout hanya mencegah pengguna tambahan menerima versi itu. Menurut Pusat Bantuan Play Console, pengguna yang sudah menerimanya tetap di versi itu, dan langkah yang disarankan adalah merilis versi baru dengan app bundle yang sudah diperbaiki.
+- **App Store.** Phased release bisa dihentikan sementara (lihat di bawah), tetapi pengguna yang sudah memperbarui tetap di versi baru.
+
+Karena rollback tidak selalu bisa dilakukan, ada dua kebiasaan yang menolong. Pertama, file simpanan dari versi baru sebaiknya tetap bisa dibaca kalau pemain kembali ke versi lama, atau setidaknya game tidak merusak file simpanan lama saat membacanya. Persyaratan XR 003-16 dari Microsoft yang dibahas di bagian [konsol](#konsol) meminta hal serupa untuk game Xbox. Kedua, simpan setiap build yang dirilis beserta commit asalnya, supaya kamu bisa membuat ulang build mana pun.
+
+### Rilis bertahap
+
+Rilis bertahap mengirim update ke sebagian pengguna lebih dulu. Kalau ada masalah, hanya sebagian kecil pemain yang terkena, dan kamu punya waktu untuk berhenti.
+
+**Staged rollout di Google Play.** Menurut Pusat Bantuan Play Console, update dikirim ke persentase pengguna yang kamu pilih, dan persentasenya bisa dinaikkan dari waktu ke waktu. Beberapa ketentuannya:
+
+- Hanya untuk update, tidak untuk rilis pertama aplikasi.
+- Pengguna dipilih secara acak, dan persentasenya tidak naik otomatis.
+- Rollout bisa dibatasi ke negara tertentu, dan negara yang sudah dimulai tidak bisa dihapus.
+- Rollout bisa dihentikan (*halt*) dan dilanjutkan. Saat dilanjutkan, kelompok pengguna yang sama yang terpengaruh.
+- Selama rollout, pantau laporan crash dan masukan pengguna. Google menyarankan memperbarui halaman toko setelah rollout mencapai 100%.
+
+**Phased release di App Store.** Menurut App Store Connect Help, update iOS, macOS, dan tvOS bisa dirilis bertahap selama 7 hari kepada pengguna yang menyalakan update otomatis, dengan urutan berikut:
+
+| Hari | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Persentase pengguna | 1% | 2% | 5% | 10% | 20% | 50% | 100% |
+
+Rilis ini bisa dijeda total sampai 30 hari, dengan jumlah jeda yang tidak dibatasi. Ada satu catatan penting: selama phased release, siapa pun tetap bisa mengunduh update itu secara manual dari App Store kapan saja. Jadi phased release mengurangi jumlah pemain yang terkena masalah, tetapi tidak menjamin hanya sebagian kecil yang menerima update.
+
+**Branch beta di Steam.** Dokumentasi Steamworks yang dirujuk di sini tidak membahas rilis bertahap berdasarkan persentase, tetapi branch bisa dipakai dengan cara yang mirip. Dokumentasi Steamworks memberi contoh: setelah game rilis, kamu ingin menguji perbaikan bug sebelum memperbarui game untuk semua pemain, jadi kamu membuat branch baru, mengunggah build uji, lalu mengaktifkan build itu di branch tersebut. Pemain yang mau bisa memilih branch itu dari menu properti game di library Steam. Setelah build di branch beta terbukti aman, build yang sama diaktifkan di branch bawaan. Dokumentasi juga mencatat bahwa build baru tidak bisa otomatis diaktifkan di branch bawaan saat diunggah. Langkah itu harus dilakukan manual di App Admin, sehingga selalu ada satu keputusan sadar sebelum build sampai ke semua pemain.
+
+{/* Belum diverifikasi ke dokumentasi Epic (situs Epic diblokir proxy saat ditulis, 2026-10-31): Unreal menyimpan nomor versi proyek di Project Settings (Project > Description, kolom Project Version) dan sistem patching/ChunkDownloader untuk konten tambahan. Periksa halaman "Project Settings" dan "Patching" di dev.epicgames.com sebelum menambahkan bagian per engine. */}
+
+## Contoh: Sari dan Dimas menyiapkan release candidate dan patch pertama
+
+<Aside type="caution" title="Ilustrasi, bukan data">
+Kejadian, angka, dan nomor versi di bagian ini dibuat untuk menunjukkan cara berpikir, tidak berasal dari proyek nyata. Pilihan alat dan platform di sini tidak berarti pilihan lain kurang cocok.
+</Aside>
+
+Sari (programmer dan desain) dan Dimas (art dan audio) adalah tim dua orang dari [contoh di pelajaran Alat Kerja](/belajar/produksi/04-alat-kerja/#contoh-sari-dan-dimas-menyiapkan-repositori-papan-dan-build-otomatis). Platformer 2D tentang kurir di kota bertingkat itu dibuat dengan Godot dan akan dirilis di Steam untuk Windows dan Linux. Bagian ini memperbesar bulan 8 dan 9 dari [garis waktu di pelajaran Fase Produksi](/belajar/produksi/02-fase-produksi/#contoh-sari-dan-dimas-dari-konsep-sampai-pascarilis).
+
+**Awal bulan 8: rencana uji.** Konten sudah dikunci. Sari menulis rencana uji satu halaman. Platformnya Windows dan Linux, diuji di laptop Sari, laptop lama Dimas sebagai perangkat spesifikasi minimum, dan satu PC milik Raka, komposer lepas mereka, yang memakai gamepad berbeda. Checklist uji berisi 46 langkah, dari memulai game baru sampai mengganti bahasa di tengah level. Mereka sepakat Sari menguji art dan audio, Dimas menguji level dan sistem, dan bug dicatat di papan terpisah dengan kolom: baru, diterima, diperbaiki, diverifikasi, ditutup.
+
+**Bulan 8: beta.** Selain 15 pemain playtest dari komunitas, mereka membuka branch beta privat di Steam untuk 30 penguji. Masukan desain, seperti level 7 yang terlalu sulit, masuk dokumen playtest yang dipegang Sari sebagai pemilik desain. Bug masuk papan bug. Dalam tiga minggu, tercatat 84 laporan. Setelah duplikat digabung, tersisa 61 bug: 4 kritis, 13 mayor, 27 minor, dan 17 kosmetik. Triase dilakukan dua kali seminggu.
+
+**Akhir bulan 8: aturan pembekuan.** Mereka menulis aturan untuk masa RC. Setelah RC1, hanya bug kritis yang diperbaiki. Bug lain dijadwalkan ke patch 1.0.1 atau 1.1.0. Setiap perbaikan diikuti uji regresi di bagian yang disentuhnya. Sari juga menambahkan nomor versi di pojok menu utama, sehingga laporan dari penguji selalu menyebut build yang dipakai.
+
+**Minggu 1 bulan 9: RC1.** Semua bug kritis dan 9 dari 13 bug mayor sudah diperbaiki. Build 1.0.0-rc.1 dibuat dari branch utama, lalu branch utama dibekukan. Saat menjalankan checklist penuh, Dimas menemukan bug baru: progres level 6 hilang kalau game ditutup saat menyimpan. Laporannya mirip contoh di atas. Bug ini kritis, jadi RC1 tidak bisa dirilis.
+
+**Minggu 2: RC2.** Sari mengubah cara menyimpan supaya data ditulis ke file sementara lebih dulu, lalu menggantikan file lama setelah selesai. Karena perubahan ini menyentuh sistem simpan, mereka menjalankan ulang seluruh bagian checklist yang berhubungan dengan simpan dan muat, termasuk memuat file simpanan dari build beta. Build 1.0.0-rc.2 lolos checklist penuh di ketiga perangkat. Keputusan go atau no-go: go. RC2 menjadi build rilis dan diajukan untuk review build di Steam, dengan jarak lebih dari tujuh hari kerja sebelum tanggal rilis yang sudah diumumkan.
+
+**Minggu 2 dan 3: menunggu review.** Sambil menunggu, mereka memperbaiki tiga bug minor yang ditunda dari RC, termasuk suara langkah yang hilang di lantai kaca. Perbaikan ini disiapkan sebagai patch hari pertama 1.0.1 dan diuji di branch beta privat. Mereka juga menyiapkan tiga hal:
+
+```text title="Persiapan hari rilis (ilustrasi)"
+Known issues untuk pemain
+- Gamepad yang dicolok setelah game dibuka belum terdeteksi.
+  Colok sebelum membuka game. Perbaikan direncanakan di update berikutnya.
+
+Cara mundur
+- Build 1.0.0 (rc.2) dan 1.0.1 tersimpan di daftar build Steam dan di cadangan.
+- Setiap build rilis diberi tag di repositori.
+
+Siaga hari rilis dan tiga hari sesudahnya
+- Sari: memantau laporan crash dan papan bug, membuat hotfix kalau perlu.
+- Dimas: membaca forum dan ulasan, memindahkan laporan pemain ke papan bug.
+```
+
+**Hari rilis.** Build 1.0.0 dirilis, lalu patch 1.0.1 diaktifkan di branch bawaan beberapa jam kemudian setelah dicoba sekali lagi di branch beta. Patch notes-nya pendek, menyebut tiga perbaikan dan satu known issue.
+
+**Hari ke-3: hotfix.** Tujuh pemain melaporkan bahwa game tidak bisa dibuka di Linux kalau nama folder pengguna mengandung spasi. Ini tidak pernah muncul di pengujian karena tidak ada perangkat uji dengan folder seperti itu. Severity kritis untuk pemain Linux. Sari memperbaikinya dan hanya itu yang masuk 1.0.2. Mereka mengujinya di branch beta dengan folder bernama "Rumah Sari", menjalankan smoke test dan bagian checklist untuk Linux, lalu mengaktifkannya di branch bawaan. Kasus ini ditambahkan ke checklist uji.
+
+**Minggu ke-4: update pertama direncanakan.** Bug yang ditunda (4 mayor, 15 minor, 10 kosmetik) dan mode time attack dari masukan playtest dijadwalkan ke 1.1.0. Mereka memperlakukannya seperti rilis kecil: beta di branch Steam selama dua minggu, RC, checklist penuh, lalu changelog dengan bagian *Added* dan *Fixed*.
+
+**Catatan untuk postmortem.** Dua hal mereka tulis untuk dibahas di postmortem nanti. Yang menolong: aturan pembekuan RC, karena satu-satunya perubahan setelah RC1 adalah perbaikan simpan data. Yang perlu diperbaiki: perangkat uji terlalu mirip satu sama lain. Untuk proyek berikutnya, mereka berencana meminta penguji beta mengisi formulir spesifikasi perangkat, supaya terlihat konfigurasi mana yang belum terwakili.
+
+## Kesalahan umum
+
+### Laporan bug tanpa langkah reproduksi
+
+```text title="✗ Keliru"
+Judul: Game error
+Kadang game error waktu main. Tolong dicek.
+```
+
+```text title="✓ Benar"
+Judul: Crash saat masuk level 9 dari peta kota, build 0.9.3, Windows 11
+Langkah: 1. Lanjutkan file simpanan di level 8. 2. Selesaikan level 8.
+3. Di peta kota, pilih level 9.
+Diharapkan: level 9 dimuat. Terjadi: game tertutup tanpa pesan.
+Frekuensi: 5 dari 5. Lampiran: log, file simpanan.
+```
+
+Tanpa langkah, build, dan frekuensi, programmer harus menebak. Bug yang tidak bisa diulang biasanya menunggu lama di daftar.
+
+### Severity dan prioritas dicampur
+
+Kalau semua bug yang "penting" ditandai kritis, label kritis berhenti berarti. Pelapor menilai severity dengan definisi yang tertulis, dan prioritas diputuskan di triase.
+
+### Playtest dan QA dicatat di tempat yang sama
+
+Masukan desain seperti "musuh terbang terlalu menyebalkan" menunggu di antrean bug tanpa ada yang memutuskannya, sementara bug sungguhan tertimbun masukan selera. Pisahkan catatannya, dan tentukan siapa yang memutuskan masing-masing.
+
+### Perbaikan di menit terakhir tanpa uji regresi
+
+Perbaikan satu baris di hari rilis bisa merusak bagian lain yang tidak diuji ulang. Setelah RC, setiap perubahan, sekecil apa pun, membuat RC baru dan menjalankan ulang bagian checklist yang terkait.
+
+### Waktu review platform tidak masuk jadwal
+
+Tanggal rilis diumumkan, lalu tim baru sadar bahwa review build butuh berhari-hari, atau bahwa akun Google Play pribadi mereka butuh closed test 14 hari. Baca persyaratan setiap platform target di awal produksi dan masukkan waktunya ke jadwal.
+
+### Tidak ada cara mundur
+
+Build lama tidak tersimpan, file simpanan versi baru tidak bisa dibaca versi lama, dan tidak ada yang siaga setelah rilis. Siapkan build sebelumnya, uji kompatibilitas file simpanan, dan tentukan siapa yang memantau di hari-hari pertama.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan dengan proyekmu sendiri, atau dengan game kecil yang pernah kamu buat.
+
+1. Tulis rencana uji satu halaman untuk proyekmu dengan bagian di tabel rencana uji: cakupan, platform, jenis pengujian, jadwal, peran, pencatatan, dan kriteria selesai.
+2. Susun checklist uji minimal 15 langkah yang bisa dijalankan orang lain tanpa penjelasan tambahan. Minta seseorang menjalankannya, lalu perbaiki langkah yang membuatnya bertanya.
+3. Cari satu bug di game-mu atau game lain yang kamu mainkan. Tulis laporannya lengkap dengan langkah reproduksi, hasil yang diharapkan, hasil yang terjadi, frekuensi, dan severity. Uji apakah orang lain bisa mengulang bug itu hanya dari laporanmu.
+4. Tulis definisi empat tingkat severity untuk timmu, masing-masing dengan satu contoh dari game-mu. Lalu tulis aturan bug mana yang masih boleh diperbaiki setelah beta dan setelah release candidate.
+5. Pilih platform target game-mu. Baca halaman resmi tentang review dan jalur pengujiannya, lalu tulis berapa hari minimal yang perlu disisihkan di jadwal antara build siap dan tanggal rilis. Catat tanggal kamu membaca halaman itu.
+6. Tulis rencana patch untuk minggu pertama setelah rilis: skema nomor versi, contoh patch notes untuk satu perbaikan, cara mundur di platform yang kamu pakai, dan siapa yang siaga.

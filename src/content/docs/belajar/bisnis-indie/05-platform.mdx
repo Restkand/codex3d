@@ -1,0 +1,566 @@
+---
+title: "Platform"
+description: "Cara memilih platform rilis dan apa yang diminta setiap keluarga platform sebelum game boleh dijual: toko PC seperti Steam dan itch.io, App Store dan Google Play, program pengembang konsol, dan game di browser. Termasuk dokumen usaha dan pajak, rating usia, serta biaya dan waktu porting."
+fundamental: "Setiap platform punya pemain, cara bermain, dan syarat masuknya sendiri, dan semuanya ikut menentukan desain, jadwal, serta biaya game-mu. Studio yang memilih platform sejak awal bisa menyiapkan input, performa, dokumen, dan pengujian yang diminta, sehingga rilis tidak tertahan oleh syarat yang baru diketahui di akhir. Kebiasaan membaca dokumentasi resmi platform dan mencatat tanggalnya tetap berguna walaupun aturannya berubah."
+kind: lesson
+minutes: 40
+status: draf
+lastReviewed: 2026-10-31
+terms:
+  - input-action
+  - webgl
+krekit:
+  gambaran-besar: "Platform pertama sebaiknya dipilih karena cocok dengan game dan timmu. Platform kedua bisa menyusul setelah game terbukti."
+  memilih-platform: "Tulis alasan memilih setiap platform. Kalau alasannya hanya karena platform itu besar, periksa lagi apakah pemain genre-mu ada di sana."
+  toko-pc: "Hitung mundur dari tanggal rilis. Di Steam, masa tunggu 21 hari dan halaman Coming Soon dua minggu sudah memakan lebih dari sebulan."
+  toko-mobile: "Di Google Play, akun personal baru butuh 12 tester selama 14 hari berturut-turut. Kumpulkan tester sebelum build siap."
+  konsol: "Mendaftar ke portal konsol adalah awal prosesnya. Rincian teknis dan sertifikasi baru terbuka setelah kamu menyetujui NDA."
+  game-di-browser: "Uji ekspor web engine-mu di awal produksi, dengan fitur yang benar-benar akan kamu pakai."
+  perbandingan-syarat-masuk: "Biaya pendaftaran biasanya kecil dibanding waktu yang dihabiskan untuk pengujian, review, dan dokumen."
+  dokumen-usaha-dan-pajak: "Nama di akun toko, rekening bank, dan formulir pajak harus sama persis. Siapkan sebelum mendaftar."
+  rating-usia: "Isi kuesioner rating dengan jujur dan ulangi setiap kali isi game berubah."
+  contoh-rina-dan-bayu-memilih-platform: "Angkanya karangan. Perhatikan urutan keputusannya dan syarat platform yang memengaruhinya."
+  kesalahan-umum: "Sebagian besar kesalahan di sini muncul karena syarat platform baru dibaca setelah game selesai."
+sidebar:
+  order: 5
+  label: "5 · Platform"
+quiz:
+  - q: "Akun personal Google Play Console kamu dibuat tahun ini. Apa yang harus dipenuhi sebelum kamu bisa mengajukan akses produksi, menurut Play Console Help per 31 Oktober 2026?"
+    options:
+      - "Tidak ada syarat tambahan setelah membayar biaya pendaftaran"
+      - "Closed test dengan minimal 12 tester yang ikut terus-menerus selama setidaknya 14 hari"
+      - "Open test dengan minimal 100 tester"
+      - "Rilis di App Store terlebih dahulu"
+    answer: 1
+    explain: "Akun personal yang dibuat setelah 13 November 2023 wajib menjalankan closed test dengan minimal 12 tester yang ikut terus-menerus selama 14 hari sebelumnya. Tester yang keluar lalu masuk lagi harus mengulang hitungan 14 hari. Setelah itu kamu mengajukan akses produksi dengan menjawab pertanyaan tentang pengujian, dan Google menyebut review biasanya selesai dalam tujuh hari atau kurang."
+  - q: "Kamu baru membayar biaya Steam Direct untuk game pertamamu hari ini. Menurut halaman Onboarding Steamworks, kapan paling cepat game itu bisa dirilis?"
+    options:
+      - "Besok, setelah review selesai"
+      - "Setelah masa tunggu 21 hari sejak biaya dibayar, dan setelah halaman Coming Soon tayang publik minimal dua minggu"
+      - "Setelah 90 hari"
+      - "Kapan saja, karena Steam tidak punya masa tunggu"
+    answer: 1
+    explain: "Untuk beberapa judul pertama, Valve memberi masa tunggu 21 hari sejak biaya aplikasi dibayar untuk memeriksa informasimu. Halaman Coming Soon juga harus tayang publik setidaknya dua minggu. Review halaman toko dan build berjalan terpisah, jadi jadwalnya perlu disusun mundur dari tanggal rilis."
+  - q: "Menurut dokumentasi Godot tentang ekspor web, apa akibat memakai ekspor multi-thread di browser?"
+    options:
+      - "Tidak ada akibat, multi-thread selalu lebih baik"
+      - "Butuh header server khusus dan cross-origin isolation penuh, sehingga situs yang memuat game tidak bisa memakai iklan atau integrasi pihak ketiga"
+      - "Game hanya bisa berjalan di ponsel"
+      - "Game wajib ditulis dengan C#"
+    answer: 1
+    explain: "Karena masalah keamanan SharedArrayBuffer, ekspor multi-thread membutuhkan header server tertentu dan cross-origin isolation penuh. Sejak Godot 4.3, ekspor single-thread tersedia dan menjadi pilihan bawaan karena lebih cocok untuk itch.io dan portal game web, walaupun tanpa thread dan kurang cepat."
+  - q: "Studio kamu sudah berbentuk badan usaha dan ingin mendaftar Apple Developer Program sebagai organisasi. Apa yang diminta halaman pendaftaran Apple per 31 Oktober 2026?"
+    options:
+      - "Hanya akun Apple dan kartu kredit"
+      - "Badan hukum yang bisa membuat kontrak, nomor D-U-N-S, situs web publik dengan domain milik organisasi, dan email kerja di domain itu"
+      - "Surat rekomendasi dari publisher"
+      - "Game yang sudah rilis di platform lain"
+    answer: 1
+    explain: "Apple meminta organisasi berupa badan hukum yang bisa membuat kontrak, tanpa nama dagang atau DBA, dengan nomor D-U-N-S, situs web yang berfungsi, dan email kerja di domain organisasi. Pendaftar juga harus punya wewenang mengikat organisasi secara hukum. Pendaftaran perorangan tidak meminta D-U-N-S, tetapi nama legalmu akan tampil sebagai nama penjual."
+  - q: "Game-mu sudah punya rating IGRS yang didapat lewat proses IARC di toko lain. Bolehkah rating itu dimasukkan di Steam, menurut halaman Age Ratings in Indonesia di Steamworks?"
+    options:
+      - "Boleh, semua rating IGRS berlaku di mana saja"
+      - "Tidak boleh. Rating IGRS hanya dimasukkan di Steam kalau game benar-benar direview tim IGRS dan versi yang direview sama persis dengan yang dijual di Steam"
+      - "Boleh, asalkan game gratis"
+      - "Wajib, karena Steam tidak punya proses rating sendiri"
+    answer: 1
+    explain: "Steamworks melarang memasukkan rating IGRS yang dihasilkan lewat proses IARC di toko pihak ketiga. Rating untuk Indonesia di Steam bisa datang dari proses rating mandiri Steam, yang memakai kuesioner konten, atau dari review langsung oleh IGRS untuk versi yang sama."
+  - q: "Kamu mengunggah game sebagai HTML5 di itch.io dan ingin menjualnya dengan harga tetap. Apa yang disebut dokumentasi itch.io per 31 Oktober 2026?"
+    options:
+      - "Game HTML5 bisa dijual dengan harga berapa pun"
+      - "Game HTML5 hanya bisa menerima pembayaran sebagai donasi. Untuk menjual akses, jenis proyek diubah menjadi Downloadable"
+      - "Game HTML5 tidak boleh diunggah"
+      - "Game HTML5 wajib gratis dan tanpa donasi"
+    answer: 1
+    explain: "Halaman Uploading HTML5 games menyebut semua game HTML5 di itch.io saat ini hanya menerima pembayaran sebagai donasi. Kalau ingin menjual akses, atur Kind of Game menjadi Downloadable. Banyak studio memakai build web sebagai demo gratis dan menjual versi unduhan."
+sources:
+  - title: "Onboarding"
+    url: "https://partner.steamgames.com/doc/gettingstarted/onboarding"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-31
+  - title: "Steam Direct Fee"
+    url: "https://partner.steamgames.com/doc/gettingstarted/appfee"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-31
+  - title: "Review Process"
+    url: "https://partner.steamgames.com/doc/store/review_process"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-31
+  - title: "Bringing Mobile Games to Steam"
+    url: "https://partner.steamgames.com/doc/gettingstarted/mobile"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-31
+  - title: "Age Ratings in Indonesia"
+    url: "https://partner.steamgames.com/doc/gettingstarted/contentsurvey/indonesia"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-31
+  - title: "Your first itch.io page"
+    url: "https://itch.io/docs/creators/getting-started"
+    publisher: "itch.io, Creator documentation"
+    accessed: 2026-10-31
+  - title: "Creator FAQ"
+    url: "https://itch.io/docs/creators/faq"
+    publisher: "itch.io, Creator documentation"
+    accessed: 2026-10-31
+  - title: "Getting paid & VAT"
+    url: "https://itch.io/docs/creators/payments"
+    publisher: "itch.io, Creator documentation"
+    accessed: 2026-10-31
+  - title: "Uploading HTML5 games"
+    url: "https://itch.io/docs/creators/html5"
+    publisher: "itch.io, Creator documentation"
+    accessed: 2026-10-31
+  - title: "Become a member"
+    url: "https://developer.apple.com/programs/enroll/"
+    publisher: "Apple, Apple Developer Program"
+    accessed: 2026-10-31
+  - title: "Membership Details"
+    url: "https://developer.apple.com/programs/whats-included/"
+    publisher: "Apple, Apple Developer Program"
+    accessed: 2026-10-31
+  - title: "App Review"
+    url: "https://developer.apple.com/distribute/app-review/"
+    publisher: "Apple, Apple Developer"
+    accessed: 2026-10-31
+  - title: "TestFlight"
+    url: "https://developer.apple.com/testflight/"
+    publisher: "Apple, Apple Developer"
+    accessed: 2026-10-31
+  - title: "Age ratings values and definitions"
+    url: "https://developer.apple.com/help/app-store-connect/reference/app-information/age-ratings-values-and-definitions"
+    publisher: "Apple, App Store Connect Help"
+    accessed: 2026-10-31
+  - title: "Get started with Play Console"
+    url: "https://support.google.com/googleplay/android-developer/answer/6112435?hl=en"
+    publisher: "Google, Play Console Help"
+    accessed: 2026-10-31
+  - title: "Choose a developer account type"
+    url: "https://support.google.com/googleplay/android-developer/answer/13634885?hl=en"
+    publisher: "Google, Play Console Help"
+    accessed: 2026-10-31
+  - title: "App testing requirements for new personal developer accounts"
+    url: "https://support.google.com/googleplay/android-developer/answer/14151465?hl=en"
+    publisher: "Google, Play Console Help"
+    accessed: 2026-10-31
+  - title: "Content Ratings"
+    url: "https://support.google.com/googleplay/android-developer/answer/9898843?hl=en"
+    publisher: "Google, Play Console Help"
+    accessed: 2026-10-31
+  - title: "Nintendo Developer Portal: Register"
+    url: "https://developer.nintendo.com/register"
+    publisher: "Nintendo"
+    accessed: 2026-10-31
+  - title: "Nintendo Developer Portal: The Process"
+    url: "https://developer.nintendo.com/the-process"
+    publisher: "Nintendo"
+    accessed: 2026-10-31
+  - title: "Nintendo Developer Portal: FAQ"
+    url: "https://developer.nintendo.com/faq"
+    publisher: "Nintendo"
+    accessed: 2026-10-31
+  - title: "Bring your game to Xbox (ID@Xbox)"
+    url: "https://developer.microsoft.com/en-US/games/partner/"
+    publisher: "Microsoft, Xbox Developer"
+    accessed: 2026-10-31
+  - title: "PlayStation Partners"
+    url: "https://partners.playstation.net/"
+    publisher: "Sony Interactive Entertainment"
+    accessed: 2026-10-31
+  - title: "Exporting for the Web"
+    url: "https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html"
+    publisher: "Godot Engine Documentation (versi stable, 4.7 saat dibaca)"
+    accessed: 2026-10-31
+  - title: "Web browser compatibility (Unity 6.3)"
+    url: "https://docs.unity.com/en-us/engine/6000.3/manual/platform-specific/webgl/intro/browsercompatibility"
+    publisher: "Unity Technologies, Unity Manual"
+    accessed: 2026-10-31
+  - title: "Technical limitations (Unity 6.3)"
+    url: "https://docs.unity.com/en-us/engine/6000.3/manual/platform-specific/webgl/intro/technical-overview"
+    publisher: "Unity Technologies, Unity Manual"
+    accessed: 2026-10-31
+  - title: "Participating Rating Authorities"
+    url: "https://www.globalratings.com/participants/"
+    publisher: "International Age Rating Coalition (IARC)"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Memilih platform rilis pertama dengan kriteria yang sama untuk setiap pilihan.
+- Menjelaskan langkah mendaftar dan merilis di Steam, itch.io, App Store, dan Google Play.
+- Menjelaskan cara mengajukan diri ke program pengembang konsol dan apa yang tertutup NDA.
+- Memeriksa batasan ekspor web engine-mu sebelum menjanjikan versi browser.
+- Menyiapkan dokumen identitas, rekening, dan pajak yang biasa diminta toko.
+- Menjelaskan sistem rating usia yang dipakai toko, termasuk IARC dan IGRS.
+</Aside>
+
+<Aside type="caution" title="Biaya dan aturan dicek per 31 Oktober 2026">
+Biaya pendaftaran, syarat pengujian, dan aturan review di pelajaran ini dicek per 31 Oktober 2026 dari halaman resmi yang tercantum di daftar sumber. Platform bisa mengubahnya kapan saja. Sebelum mendaftar atau menjadwalkan rilis, buka halaman resminya dan catat tanggal kamu membacanya. Bagian yang tidak bisa diverifikasi ditulis "lihat halaman resmi". Contoh di sini adalah ilustrasi, bukan nasihat hukum atau pajak.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: memilih tempat berjualan">
+Kamu membuat keripik dan ingin menjualnya. Ada pasar kaget yang bisa kamu masuki besok dengan meja lipat, minimarket yang meminta izin edar dan label gizi, dan supermarket besar yang meminta kontrak, uji produk, dan kemasan khusus. Setiap tempat punya pembeli yang berbeda. Kemasan untuk pasar kaget juga tidak bisa langsung dipajang di supermarket. Penjual yang berpengalaman memilih satu tempat yang paling cocok dulu, lalu menyiapkan kemasan dan izin untuk tempat berikutnya setelah keripiknya terbukti laku.
+</Aside>
+
+**Platform** di pelajaran ini berarti tempat game-mu dijalankan dan dijual: PC lewat toko seperti Steam atau itch.io, ponsel lewat App Store atau Google Play, konsol lewat program pengembang pemilik konsol, dan browser. Pelajaran [Peta Ekosistem](/belajar/industri-karier/02-peta-ekosistem/#platform-holder-dan-toko) sudah menjelaskan peran pemilik platform dan toko sebagai konsep. Pelajaran ini membahas apa yang diminta masing-masing sebelum game boleh dijual.
+
+Beberapa topik sudah dibahas di pelajaran sebelumnya di jalur ini, jadi tidak diulang di sini:
+
+- **Potongan toko, pajak yang dipungut toko, refund, dan jadwal pembayaran** untuk Steam, App Store, dan Google Play ada di [Menghitung Pendapatan](/belajar/bisnis-indie/03-menghitung-pendapatan/#potongan-toko).
+- **Halaman toko, wishlist, dan Steam Next Fest** ada di [Marketing](/belajar/bisnis-indie/04-marketing/#halaman-toko).
+- **Kemampuan engine membuat build** untuk setiap platform ada di [Kriteria Memilih Engine](/belajar/lanskap-engine/04-kriteria-memilih/#platform-target) di jalur Lanskap Engine.
+
+Alur memasuki satu platform kira-kira seperti ini:
+
+```text title="Alur masuk ke satu platform (model sederhana)"
+pilih platform              pemain, input, kecocokan teknis, biaya, waktu
+  → daftar sebagai developer  identitas, perjanjian, biaya pendaftaran
+  → lengkapi data             rekening bank, formulir pajak, verifikasi
+  → siapkan game              build, halaman toko, rating usia
+  → uji dan review            pengujian wajib, review toko atau sertifikasi
+  → rilis dan rawat           update, dukungan pemain, laporan penjualan
+```
+
+Setiap langkah butuh waktu, dan sebagian berjalan berurutan. Karena itu, keputusan platform sebaiknya diambil saat produksi masih bisa menyesuaikan.
+
+## Memilih platform
+
+Pertanyaan berikut bisa dipakai untuk setiap platform, supaya perbandingannya adil:
+
+1. **Di mana pemain genre-mu bermain?** Cari game sejenis dan lihat di platform mana saja game itu tersedia dan aktif dibicarakan. Cara riset game pembanding sudah dibahas di [Marketing](/belajar/bisnis-indie/04-marketing/#hook-dan-calon-pemain).
+2. **Apakah cara bermainnya cocok dengan input platform itu?** Game yang dirancang untuk mouse perlu dirancang ulang untuk layar sentuh atau gamepad. Memisahkan aksi dari tombol fisik, seperti dijelaskan di Kamus lewat istilah input action, membuat pergantian input lebih murah.
+3. **Apakah engine dan teknologimu bisa membuat build untuk platform itu?** Termasuk plugin dan bahasa yang kamu pakai.
+4. **Berapa biaya dan waktu untuk masuk dan bertahan?** Biaya pendaftaran, perangkat uji, pengujian wajib, review, dan pekerjaan merawat build setelah rilis.
+5. **Apakah model bisnismu diterima di sana?** Aturan dan kebiasaan pemain berbeda antarplatform.
+
+Contoh dari dokumentasi resmi menunjukkan kenapa pertanyaan nomor 2 dan 5 penting. Halaman Bringing Mobile Games to Steam di Steamworks per 31 Oktober 2026 berisi pengamatan Valve tentang game mobile yang dibawa ke PC, yang menurut Valve bukan aturan baku:
+
+- **Konteks bermain.** Pemain PC tampaknya lebih menyukai pengalaman yang lebih panjang, sedangkan potongan konten pendek yang cocok dimainkan sambil menunggu bus belum tentu berhasil di PC.
+- **Resolusi.** Aset dan antarmuka perlu tetap bagus di monitor beresolusi tinggi dengan rasio layar yang berbeda.
+- **Input.** Kebanyakan orang tidak memakai monitor sentuh, jadi input perlu dipikirkan ulang untuk keyboard dan mouse, dan gamepad juga layak dipertimbangkan.
+- **Model bisnis.** Pemain PC tampaknya kurang mau menerima transaksi dalam game yang menahan kemajuan kecuali dibayar. Valve menyebut sebagian game seperti itu beralih ke model premium di PC.
+
+Aturan toko juga bisa langsung menutup pilihan. Halaman Onboarding Steamworks per 31 Oktober 2026 mencantumkan aplikasi dengan model bisnis berbasis iklan sebagai konten yang tidak boleh diterbitkan di Steam. Game mobile yang hidup dari iklan perlu mengganti model bisnisnya kalau ingin masuk Steam. Pilihan model bisnis dibahas di [Model Bisnis](/belajar/bisnis-indie/01-model-bisnis/).
+
+**Porting** adalah pekerjaan membuat game yang sudah ada berjalan dan layak dijual di platform lain. Biayanya jarang hanya soal membuat build. Ada penyesuaian input dan antarmuka, optimasi untuk perangkat yang lebih lemah atau berbeda, pengujian di perangkat nyata, syarat sertifikasi pemilik platform, rating usia baru, dan halaman toko baru. Setelah rilis, setiap platform tambahan juga berarti satu build lagi yang harus diperbarui setiap kali ada patch. Untuk tim kecil, memulai dari satu platform utama lalu menambah platform setelah game terbukti sering lebih mudah dikelola, asalkan kebutuhan platform berikutnya sudah dipikirkan sejak awal.
+
+## Toko PC
+
+### Steam
+
+Halaman Onboarding Steamworks per 31 Oktober 2026 menjelaskan urutan mendaftar sebagai developer:
+
+1. **Tanda tangani dokumen digital.** Termasuk Non Disclosure Agreement dan Steam Distribution Agreement.
+2. **Bayar biaya aplikasi** (Steam Direct Fee) dengan metode pembayaran Steam yang tersedia di negaramu.
+3. **Lengkapi data bank, pajak, dan verifikasi identitas**, supaya Valve tahu dengan siapa mereka berbisnis dan bisa membayar dengan benar.
+4. **Siapkan game di Steamworks:** halaman toko, build, fitur Steamworks, dan harga.
+5. **Lewati review.** Valve menjalankan game, memeriksa halaman toko, dan memastikan semuanya berjalan sesuai harapan dan tidak berbahaya.
+
+Biaya Steam Direct per 31 Oktober 2026 adalah US$100 (atau setara) untuk setiap aplikasi, menurut halaman Steam Direct Fee. Biaya ini tidak bisa di-refund tetapi bisa dikembalikan setelah penjualan mencapai ambang tertentu. Rinciannya sudah dibahas di [Menghitung Pendapatan](/belajar/bisnis-indie/03-menghitung-pendapatan/#potongan-toko).
+
+Ada dua syarat waktu untuk beberapa judul pertama, menurut halaman Onboarding:
+
+- **Masa tunggu 21 hari** antara pembayaran biaya aplikasi dan rilis game itu, untuk memberi waktu Valve memeriksa informasimu.
+- **Halaman Coming Soon yang tayang publik setidaknya dua minggu.** Detail halaman ini ada di [Marketing](/belajar/bisnis-indie/04-marketing/#halaman-coming-soon).
+
+Halaman Review Process menambahkan rincian waktu review: review halaman toko biasanya 3 sampai 5 hari kerja, tetapi Valve menyarankan mengajukannya setidaknya 7 hari kerja sebelum halaman ingin ditayangkan. Review build juga biasanya 3 sampai 5 hari kerja, dan Valve meminta kamu merencanakan setidaknya 7 hari kerja. Beberapa hal yang diperiksa:
+
+- Game harus berjalan di semua sistem operasi yang tercantum di halaman toko.
+- Semua fitur yang tercantum di halaman toko sudah ada di build. Fitur yang baru direncanakan harus dihapus dari daftar fitur dulu.
+- Transaksi dalam game harus memakai Steam Wallet.
+- Build yang diajukan sebaiknya hampir final.
+
+Setelah game disetujui, kamu tidak perlu melewati review lagi untuk setiap update, menurut halaman yang sama.
+
+Data identitas dan pajak dibahas di bagian [Dokumen usaha dan pajak](#dokumen-usaha-dan-pajak), karena polanya mirip di banyak toko.
+
+### itch.io
+
+itch.io adalah toko terbuka yang sering dipakai untuk game kecil, demo, prototipe, dan game jam. Per 31 Oktober 2026, dokumentasi kreatornya menyebut:
+
+- **Pendaftaran.** Akun itch.io gratis sudah cukup untuk membuat halaman proyek. Creator FAQ menyebut itch.io tidak memungut biaya pemakaian dan tidak memasang iklan di halamanmu.
+- **Unggahan.** Proyek bisa berupa HTML5 yang dimainkan di browser, atau file unduhan yang ditandai per platform. Rilis yang umum berisi satu file .zip per platform. Demo gratis bisa diunggah di halaman yang sama dengan menandai file sebagai demo.
+- **Batas akun baru.** Ada batas ukuran unggahan, batas lunak 20 halaman proyek, dan maksimal 10 file per halaman. Batas ini bisa dinaikkan dengan menghubungi itch.io.
+- **Visibilitas.** Halaman baru bersifat privat sampai kamu mengubahnya menjadi publik. Ada juga pilihan Public restricted untuk menampilkan halaman tanpa membuka pembelian atau unduhan.
+
+Model bagi hasilnya disebut **open revenue sharing**: penjual memilih sendiri berapa persen penjualan yang diberikan kepada itch.io, dari 0% sampai 100%. Halaman Getting paid & VAT memakai angka bawaan 10% dalam contohnya, lalu mengurangkan biaya pemroses pembayaran. Untuk Stripe, halaman itu menyebut biaya sekitar US$0,30 ditambah 2,9% per transaksi. Karena ada biaya tetap, itch.io menyarankan harga minimal US$2 agar potongan pemroses pembayaran tidak terlalu besar.
+
+Ada dua mode pembayaran. Pada mode **Direct to you**, setiap pembelian langsung masuk ke akun PayPal atau Stripe milikmu. Pada mode **Collected by itch.io, paid later**, itch.io mengumpulkan uangnya dan membayarkannya setelah kamu mengajukan payout. Menurut halaman yang sama, mode kedua mensyaratkan tax interview yang sudah diisi, saldo minimal US$5, pendapatan baru tersedia 7 hari setelah pembelian, dan setiap payout direview staf dengan waktu umumnya 10 sampai 14 hari.
+
+### Toko PC lain
+
+Epic Games Store dan toko PC lain juga menerima game dari developer, masing-masing dengan proses, perjanjian, dan biayanya sendiri. Halaman resmi Epic tidak bisa diakses saat pelajaran ini ditulis, jadi syarat dan biayanya tidak dibahas di sini. Pakai pertanyaan di bagian [Memilih platform](#memilih-platform) dan baca halaman resmi setiap toko sebelum memutuskan.
+
+{/* Belum diverifikasi ke dokumentasi Epic (situs Epic diblokir proxy saat ditulis, 2026-10-31): Epic Games Store punya jalur self-publishing lewat Epic Developer Portal. Biaya, bagi hasil, dan syarat pendaftaran perlu dicek ke dev.epicgames.com sebelum ditulis. */}
+
+## Toko mobile
+
+### App Store
+
+Halaman Become a member di Apple Developer per 31 Oktober 2026 membedakan dua jenis pendaftaran:
+
+- **Perorangan** (termasuk usaha perseorangan): akun Apple dengan autentikasi dua faktor, usia dewasa menurut hukum di wilayahmu, dan nama legal di kolom nama depan dan belakang. Apple mengonfirmasi nama legal, email, telepon, dan alamat (kotak pos tidak diterima). Nama legalmu akan tampil sebagai nama penjual di App Store.
+- **Organisasi:** badan hukum yang bisa membuat kontrak dengan Apple, tanpa nama dagang atau cabang. Pendaftar harus punya wewenang mengikat organisasi secara hukum. Organisasi wajib punya nomor **D-U-N-S** dari Dun & Bradstreet, email kerja di domain organisasi, dan situs web publik yang berfungsi di domain itu.
+
+Biaya keanggotaannya 99 USD per tahun keanggotaan, menurut halaman yang sama, dan harga bisa berbeda per wilayah serta ditampilkan dalam mata uang lokal saat mendaftar. Organisasi nirlaba, lembaga pendidikan terakreditasi, dan instansi pemerintah yang memenuhi syarat bisa meminta pembebasan biaya. Biayanya tahunan, jadi masukkan ke anggaran rutin selama game masih dijual.
+
+Sebelum rilis, game melewati **App Review**. Halaman App Review per 31 Oktober 2026 menyebut tim review biasanya menyelesaikan setidaknya 50% pengajuan dalam kurang dari 24 jam dan 90% dalam kurang dari 48 jam. Halaman itu juga menyebut lebih dari 40% masalah yang belum terselesaikan berkaitan dengan pedoman 2.1, App Completeness, yang mencakup crash, konten placeholder, dan informasi yang tidak lengkap.
+
+Untuk pengujian sebelum rilis, Apple menyediakan **TestFlight**. Halamannya per 31 Oktober 2026 menyebut kamu bisa menunjuk sampai 100 anggota tim sebagai tester internal dan mengundang sampai 10.000 tester eksternal. Build pertama untuk tester eksternal harus disetujui App Review dulu.
+
+### Google Play
+
+Halaman Get started with Play Console per 31 Oktober 2026 menyebut langkah-langkah berikut:
+
+1. **Buat akun developer** dengan akun Google. Pendaftar harus berusia minimal 18 tahun.
+2. **Setujui Developer Distribution Agreement dan bayar biaya pendaftaran** sebesar US$25, satu kali. Kartu prabayar tidak diterima.
+3. **Pilih jenis akun:** personal atau organisasi.
+4. **Verifikasi identitas developer.** Google bisa meminta kartu identitas resmi dan kartu kredit atas nama legalmu. Kalau datanya dinilai tidak valid, biaya pendaftaran tidak dikembalikan.
+5. **Untuk akun personal:** penuhi syarat pengujian dan verifikasi akses ke perangkat Android lewat aplikasi Play Console di ponsel.
+
+Halaman Choose a developer account type menyebut akun personal dan organisasi punya fungsi inti yang sama dan sama-sama bisa menghasilkan uang. Akun organisasi wajib memberikan nomor D-U-N-S. Google mengingatkan bahwa mengajukan D-U-N-S ke Dun & Bradstreet gratis, dan meminta developer waspada terhadap pihak ketiga yang memungut biaya tinggi untuk pendaftaran itu.
+
+Syarat pengujian untuk akun personal baru dijelaskan di halaman App testing requirements for new personal developer accounts. Akun personal yang dibuat setelah 13 November 2023 wajib menjalankan **closed test dengan minimal 12 tester yang ikut terus-menerus selama setidaknya 14 hari** sebelum bisa mengajukan akses produksi. Tester yang keluar lalu ikut lagi harus mengulang hitungan 14 harinya. Saat mengajukan, kamu menjawab pertanyaan tentang pengujian, game-mu, dan kesiapan produksi. Google menyebut review pengajuan ini biasanya selesai dalam tujuh hari atau kurang. Mencari 12 tester yang aktif selama dua minggu butuh persiapan, jadi mulai kumpulkan tester sebelum build siap.
+
+### Beban pengujian perangkat
+
+Ponsel datang dalam banyak ukuran layar, kemampuan, dan versi sistem operasi. Game yang lancar di ponsel milikmu bisa tersendat atau tampil terpotong di ponsel lain. Ada beberapa cara mengurangi risikonya:
+
+- **Kumpulkan beberapa ponsel uji** dengan rentang kemampuan yang mewakili calon pemainmu, termasuk ponsel kelas bawah yang banyak dipakai.
+- **Pakai jalur uji resmi** seperti TestFlight dan testing track di Play Console, supaya tester bisa memasang build dan mengirim masukan.
+- **Ukur performa di perangkat nyata.** Cara membaca profiler dibahas di [Profiling](/belajar/fondasi-engine/08-profiling/) di jalur Fondasi Engine.
+
+Biaya ponsel uji dan waktu pengujiannya sering lebih besar daripada biaya pendaftaran toko.
+
+## Konsol
+
+Konsol berbeda dari PC dan ponsel: kamu tidak bisa langsung membuat build dan mengunggahnya. Developer harus mendaftar ke program pemilik konsol, disetujui, menandatangani perjanjian kerahasiaan (**NDA**), lalu mendapat akses ke alat pengembangan, dokumentasi teknis, dan perangkat pengembangan (**dev kit**). Karena tertutup NDA, rincian teknis, biaya dev kit, dan syarat sertifikasi konsol umumnya tidak bisa dibahas di tempat umum seperti pelajaran ini. Yang bisa dibaca publik adalah cara mendaftarnya.
+
+### Nintendo
+
+Per 31 Oktober 2026, Nintendo Developer Portal menyebut:
+
+- **Pendaftaran terbuka untuk perorangan maupun perusahaan**, dan FAQ-nya menyebut tidak ada syarat pengalaman sebelumnya. Pendaftar harus sudah dewasa menurut hukum di negaranya. FAQ juga menyebut kantor di rumah diterima.
+- **Setelah mendaftar**, kamu menyetujui NDA dan Terms of Service untuk mendapat akses ke SDK, dukungan developer, dan informasi lebih lanjut.
+- **Akses ke informasi Nintendo Switch butuh pengajuan terpisah** lewat formulir Nintendo Switch Access Request, dengan riwayat pengalaman pengembangan dan informasi proyek yang direncanakan.
+- **Menjelang rilis**, halaman The Process menyebut langkahnya: menandatangani perjanjian penerbitan, mendapat rating usia, dan mengajukan game untuk direview Nintendo.
+- **Biaya:** FAQ menyebut pendaftaran portal dan pengunduhan alat gratis. Untuk game khusus digital, rating usia bisa didapat lewat sistem IARC tanpa biaya. Biaya perangkat pengembangan dijelaskan di dalam portal.
+- **Harga dan tanggal rilis** di Nintendo eShop ditentukan developer, menurut FAQ.
+
+### Xbox
+
+Halaman pengembang Xbox di situs Microsoft per 31 Oktober 2026 menyebut **ID@Xbox** sebagai program untuk menerbitkan game di Xbox. FAQ di halaman itu menyebut tiga syarat utama untuk memulai hubungan pengembangan atau bisnis dengan Xbox:
+
+- Berusia minimal 18 tahun. Kalau belum, orang tua atau wali bisa memulai hubungan itu.
+- Menandatangani NDA.
+- Berada di negara tempat Microsoft bisa berbisnis.
+
+Halaman yang sama menyebut alat untuk pengujian, integrasi platform, dan sertifikasi tersedia lewat Game Development Kit. Biaya dan rincian prosesnya: lihat halaman resmi.
+
+### PlayStation
+
+Pendaftaran pengembang PlayStation dilakukan lewat portal PlayStation Partners milik Sony Interactive Entertainment. Isi portal itu dimuat lewat aplikasi web dan tidak bisa dibaca lengkap saat pelajaran ini ditulis, jadi syarat, biaya, dan prosesnya: lihat halaman resmi.
+
+### Yang perlu disiapkan sebelum mendaftar ke konsol
+
+Formulir program konsol umumnya menanyakan siapa kamu dan apa yang sedang kamu buat. Nintendo, misalnya, meminta riwayat pengalaman dan informasi proyek untuk akses Switch. Siapkan bahan yang bisa menunjukkan bahwa proyekmu nyata: deskripsi singkat game, video gameplay atau build yang bisa dimainkan, rencana jadwal, dan pengalaman tim. Bahan yang sama sudah kamu susun untuk [halaman toko dan press kit](/belajar/bisnis-indie/04-marketing/#press-kit).
+
+Periksa juga dua hal di luar program konsol. Pertama, apakah engine-mu punya jalur ekspor untuk konsol itu dan apakah butuh paket lisensi tertentu, seperti dibahas di [Kriteria Memilih Engine](/belajar/lanskap-engine/04-kriteria-memilih/#platform-target). Kedua, apakah lebih masuk akal bekerja dengan publisher atau studio porting yang sudah terdaftar. Pertanyaan untuk menilai publisher ada di [Pendanaan](/belajar/bisnis-indie/02-pendanaan/#publisher).
+
+## Game di browser
+
+Game browser bisa dimainkan tanpa instalasi, sehingga cocok untuk demo, game jam, dan game pendek. Ada beberapa jalur distribusi: situs milikmu sendiri, halaman HTML5 di itch.io, dan portal game web yang mengumpulkan game browser dengan perjanjian dan syarat teknisnya sendiri. Dokumentasi Godot menyebut Poki dan CrazyGames sebagai contoh portal semacam ini. Pelajaran ini tidak membahas syarat portal mana pun karena tidak dibaca dari sumber resminya.
+
+### HTML5 di itch.io
+
+Halaman Uploading HTML5 games per 31 Oktober 2026 menyebut:
+
+- Game diunggah sebagai file ZIP yang berisi `index.html` sebagai titik masuk, dengan path relatif untuk semua aset.
+- ZIP tidak boleh berisi lebih dari 1.000 file setelah diekstrak, total isi tidak lebih dari 500 MB, dan satu file tidak lebih dari 200 MB.
+- **Semua game HTML5 di itch.io saat ini hanya menerima pembayaran sebagai donasi.** Untuk menjual akses, jenis proyek diubah menjadi Downloadable.
+
+Karena itu, banyak studio memakai build web sebagai demo gratis dan menjual versi unduhannya. Batas ukuran juga menjadi pengingat bahwa game web dimuat lewat internet setiap kali dibuka, sehingga ukuran build memengaruhi berapa lama pemain menunggu.
+
+### Batasan ekspor web di engine
+
+Game browser berjalan dengan WebAssembly dan WebGL (lihat Kamus), dan dibatasi oleh aturan keamanan browser. Akibatnya, ekspor web hampir selalu punya batasan dibanding build desktop. Per 31 Oktober 2026:
+
+**Godot.** Halaman Exporting for the Web (dokumentasi versi stable, 4.7 saat dibaca) menyebut:
+
+- Ekspor web membutuhkan dukungan WebAssembly dan WebGL 2.0 di browser pemain. Godot 4 hanya bisa memakai metode render Compatibility untuk web.
+- Proyek Godot 4 yang ditulis dengan C# belum bisa diekspor ke web.
+- Ekspor dengan banyak thread membutuhkan `SharedArrayBuffer`, yang menuntut header server khusus dan **cross-origin isolation** penuh. Dokumentasi menyebut akibatnya situs yang memuat game tidak bisa memakai iklan atau integrasi pihak ketiga.
+- Sejak Godot 4.3, ekspor single-thread tersedia dan menjadi pilihan bawaan. Ekspor ini tidak bisa memakai thread dan kurang cepat, tetapi lebih cocok untuk itch.io dan portal game web, dan berjalan lebih baik di macOS dan iOS.
+- Browser menghentikan game saat tab tidak aktif, sehingga game jaringan bisa terputus kalau pemain lama berpindah tab.
+
+**Unity.** Manual Unity 6.3 untuk platform Web per 31 Oktober 2026 menyebut:
+
+- Browser desktop harus mendukung WebGL 2, mematuhi standar HTML5, dan merupakan browser 64-bit yang mendukung WebAssembly. Untuk ponsel, Unity mencantumkan Safari iOS 15 ke atas dan Chrome 58 ke atas di Android.
+- Thread C# (managed) tidak didukung karena WebAssembly belum punya garbage collection multi-thread. Dukungan thread C/C++ native tersedia sebagai pengaturan eksperimental.
+- Browser tidak mengizinkan akses langsung ke socket IP, sehingga sebagian fitur jaringan .NET tidak didukung.
+
+**Unreal Engine.** Pelajaran ini belum memverifikasi status ekspor web Unreal ke dokumentasi resmi Epic. Kalau versi browser penting untuk proyekmu, periksa dokumentasi engine yang kamu pakai sebelum memilih.
+
+{/* Belum diverifikasi ke dokumentasi Epic (situs Epic diblokir proxy saat ditulis, 2026-10-31): Unreal Engine versi terbaru tidak punya ekspor web (HTML5) resmi. Dukungan HTML5 sudah dihapus dari engine dan hanya tersedia lewat proyek komunitas atau pihak ketiga. */}
+
+Cara aman memakai informasi ini: buat build web kecil di awal produksi dengan fitur yang benar-benar akan kamu pakai, misalnya fisika, audio, dan jaringan, lalu uji di beberapa browser dan ponsel. Masalah yang ditemukan di bulan kedua jauh lebih murah diperbaiki daripada di bulan terakhir.
+
+## Perbandingan syarat masuk
+
+Tabel ini merangkum syarat yang bisa diverifikasi dari halaman resmi per 31 Oktober 2026. Sumber setiap baris ada di daftar sumber di akhir halaman. Biaya potongan toko tidak dimasukkan karena sudah dibahas di [Menghitung Pendapatan](/belajar/bisnis-indie/03-menghitung-pendapatan/#potongan-toko).
+
+| Platform | Pendaftaran | Biaya masuk | Sebelum rilis | Rating usia |
+| --- | --- | --- | --- | --- |
+| Steam | Dokumen digital (NDA, Steam Distribution Agreement), data bank, pajak, verifikasi identitas | US$100 per aplikasi (Steam Direct Fee) | Review halaman toko dan build. Judul pertama: masa tunggu 21 hari, halaman Coming Soon minimal 2 minggu | Kuesioner konten Steam. Untuk Indonesia: rating Steam atau IGRS |
+| itch.io | Akun itch.io gratis | Tanpa biaya pendaftaran. Bagi hasil dipilih penjual, bawaan 10% | Halaman privat sampai dipublikasikan. Proses review: lihat halaman resmi | Lihat halaman resmi |
+| Epic Games Store | Lihat halaman resmi | Lihat halaman resmi | Lihat halaman resmi | Lihat halaman resmi |
+| App Store | Apple Developer Program, perorangan atau organisasi (organisasi butuh D-U-N-S) | 99 USD per tahun keanggotaan | App Review. TestFlight untuk uji beta | Kuesioner di App Store Connect, rating dibuat Apple |
+| Google Play | Play Console, usia minimal 18 tahun, personal atau organisasi (organisasi butuh D-U-N-S) | US$25 sekali | Akun personal baru: closed test 12 tester selama 14 hari, verifikasi perangkat Android | IARC, lewat kuesioner di Play Console |
+| Nintendo | Nintendo Developer Portal, perorangan boleh, NDA. Akses Switch diajukan terpisah | Pendaftaran gratis. Perangkat pengembangan: lihat portal | Perjanjian penerbitan, rating usia, review oleh Nintendo | IARC tanpa biaya untuk game khusus digital |
+| Xbox (ID@Xbox) | Usia minimal 18 tahun, NDA, negara tempat Microsoft bisa berbisnis | Lihat halaman resmi | Lihat halaman resmi | Lihat halaman resmi |
+| PlayStation | PlayStation Partners. Rincian: lihat halaman resmi | Lihat halaman resmi | Lihat halaman resmi | Lihat halaman resmi |
+| Situs sendiri (web) | Domain dan hosting milikmu | Biaya hosting dan domain | Pengujian sendiri di berbagai browser | Tergantung aturan negara tempat game ditawarkan |
+
+Tabel ini hanya berlaku untuk tanggal pengecekannya. Kolom "lihat halaman resmi" berarti informasinya tidak bisa diverifikasi saat pelajaran ini ditulis. Syaratnya tetap ada dan perlu kamu baca sendiri di halaman resmi.
+
+## Dokumen usaha dan pajak
+
+Hampir semua toko yang membayarmu meminta data yang sama dalam bentuk berbeda: siapa yang menandatangani perjanjian, ke rekening mana uang dikirim, dan bagaimana status pajakmu. Per 31 Oktober 2026, contohnya:
+
+- **Steam.** Halaman Onboarding meminta nama legal, tanpa nama alias atau nama dagang. Kalau kamu memiliki game sebagai perorangan, pilih "Sole Proprietorship" dan isi nama legalmu sebagai nama perusahaan. Nama pemilik rekening bank harus sama dengan nama yang kamu isi. Ada kuesioner pajak yang menentukan status dan tarif pemotongan, dan untuk negara yang punya perjanjian pajak dengan Amerika Serikat, informasinya mirip formulir W-8BEN. Verifikasi pajak oleh pihak ketiga bisa butuh sampai 30 hari, dan data pajak tidak bisa diubah selama proses itu.
+- **Apple dan Google.** Pendaftaran organisasi di keduanya meminta nomor D-U-N-S. Pendaftaran perorangan memakai nama legal, dan di App Store nama itu tampil sebagai nama penjual.
+- **itch.io.** Untuk mode pembayaran yang dikumpulkan itch.io, kamu mengisi tax interview dengan nomor identitas pajak. Halaman Getting paid & VAT menyebut tanpa nomor identitas pajak yang valid, akun dikenai tarif pemotongan bawaan 30%, walaupun negaramu punya perjanjian pajak dengan Amerika Serikat.
+
+**Perorangan atau badan usaha?** Semua toko di atas menerima pendaftaran perorangan, dengan konsekuensi yang perlu diperhatikan. Nama pribadimu bisa tampil sebagai nama penjual, rekening harus atas nama yang sama, dan akun tidak mudah dipindahkan kalau kelak kamu mendirikan badan usaha. Di Indonesia, nomor identitas pajak yang dikenal adalah NPWP. Cara mengisi formulir pajak toko luar negeri dengan data pajak Indonesia, dan apakah pajak yang dipotong bisa dikreditkan, sebaiknya ditanyakan kepada konsultan pajak. Pajak penghasilan dan pemotongan pajak Steam sudah dibahas di [Menghitung Pendapatan](/belajar/bisnis-indie/03-menghitung-pendapatan/#pajak-penghasilan-studio). Pilihan bentuk badan usaha direncanakan di pelajaran Legal dan IP di jalur ini.
+
+Langkah praktis sebelum mendaftar ke toko mana pun:
+
+1. **Tentukan atas nama siapa akun dibuat**, perorangan atau badan usaha, dan pakai nama itu secara konsisten di semua dokumen.
+2. **Siapkan rekening bank atas nama yang sama** yang bisa menerima transfer dari luar negeri.
+3. **Siapkan nomor identitas pajak** dan tanyakan kepada konsultan pajak cara mengisi formulir pajak setiap toko.
+4. **Simpan salinan semua perjanjian** yang kamu setujui, beserta tanggalnya.
+
+## Rating usia
+
+Rating usia memberi tahu pemain, terutama orang tua, tentang isi game. Setiap toko punya caranya sendiri, dan sebagian memakai sistem bersama.
+
+**IARC** (International Age Rating Coalition) adalah sistem rating untuk game dan aplikasi digital. Developer mengisi satu kuesioner, lalu sistem memberikan rating dari lembaga rating di berbagai wilayah. Halaman Participating Rating Authorities di situs IARC per 31 Oktober 2026 mencantumkan lembaga dari beberapa negara dan wilayah, termasuk **Indonesia Game Rating System (IGRS)**. Contoh pemakaiannya:
+
+- **Google Play.** Halaman Content Ratings menyebut semua aplikasi wajib punya rating dari IARC untuk berada di Google Play. Developer mengisi kuesioner di Play Console dan wajib mengisinya ulang kalau isi game berubah. Aplikasi tanpa rating akan dihapus.
+- **Nintendo.** FAQ Nintendo Developer Portal menyebut game khusus digital bisa mendapat rating lewat IARC tanpa biaya, yang berlaku di semua negara peserta.
+
+**Apple** memakai kuesionernya sendiri. Halaman Age ratings values and definitions menyebut Apple membuat rating berdasarkan jawabanmu atas kuesioner rating usia di App Store Connect.
+
+**Steam** memakai kuesioner kontennya sendiri. Untuk Indonesia, halaman Age Ratings in Indonesia per 31 Oktober 2026 menyebut rating bisa berasal dari Komdigi lewat IGRS, atau dari proses rating mandiri Steam yang memakai kuesioner konten. Halaman itu juga melarang memasukkan rating IGRS yang dihasilkan lewat proses IARC di toko pihak ketiga. Rating IGRS hanya boleh dimasukkan kalau game benar-benar direview tim IGRS dan versi yang direview sama persis dengan yang dijual di Steam. Rincian rating di Indonesia, termasuk jenjangnya, sudah dibahas di [Ekosistem Indonesia](/belajar/industri-karier/03-ekosistem-indonesia/#rating-usia) di jalur Industri & Karier.
+
+Untuk konsol lain, cara mendapatkan rating: lihat halaman resmi masing-masing program.
+
+Yang berlaku di semua sistem: isi kuesioner dengan jujur, karena jawaban yang tidak sesuai bisa membuat game dihapus atau ditolak, dan isi ulang setiap kali konten game berubah.
+
+## Contoh: Rina dan Bayu memilih platform
+
+<Aside type="caution" title="Ilustrasi, bukan data">
+Tim, game, jadwal, perkiraan jam kerja, dan keputusan di bagian ini dikarang untuk menunjukkan cara berpikir. Biaya dan syarat platform yang disebut berasal dari halaman resmi per 31 Oktober 2026 dan bisa berubah. Contoh ini tidak menggambarkan game nyata dan bukan rekomendasi untuk platform tertentu.
+</Aside>
+
+Rina dan Bayu dari pelajaran [Marketing](/belajar/bisnis-indie/04-marketing/#contoh-jadwal-marketing-rina-dan-bayu) membuat game puzzle tentang merapikan rak toko kelontong, dimainkan dengan menyeret barang memakai mouse. Rencana produksinya 14 bulan. Di bulan ke-2, sebelum vertical slice, mereka mengisi tabel penilaian untuk platform rilis pertama.
+
+```text title="Ilustrasi: penilaian platform rilis pertama (bulan ke-2, semua penilaian karangan)"
+                 pemain genre   input cocok    teknis    biaya dan waktu masuk
+Steam            ada            ya (mouse)     ya        US$100, 21 hari tunggu, review
+itch.io          ada, kecil     ya (mouse)     ya        gratis, cocok untuk demo web
+App Store        ada            perlu ubah UI  ya        99 USD per tahun, ponsel uji
+Google Play      ada            perlu ubah UI  ya        US$25, 12 tester x 14 hari
+Nintendo Switch  ada            perlu ubah     belum     NDA, akses Switch diajukan,
+                                (sentuh/pad)   dicek     perangkat dev: lihat portal
+```
+
+Keputusan mereka:
+
+- **Rilis pertama di Steam**, dengan model premium seperti di pelajaran sebelumnya. Input mouse sudah cocok, dan jadwal marketing mereka sudah disusun untuk Steam.
+- **Demo web di itch.io** untuk pameran dan game jam, karena pemain bisa mencobanya tanpa instalasi. Mereka menguji ekspor web engine mereka di bulan ke-3 dengan level contoh, dan memastikan demo tidak bergantung pada fitur yang tidak didukung di browser.
+- **Menyiapkan port sejak awal tanpa menjanjikannya.** Mereka memisahkan aksi dari tombol fisik, sehingga drag dengan mouse, sentuhan, dan gamepad memicu aksi yang sama. Antarmuka dibuat bisa diskalakan untuk layar kecil.
+
+Enam bulan setelah rilis, penjualan di Steam sudah menutup sebagian biaya, dan banyak ulasan meminta versi untuk dimainkan di perjalanan. Mereka membandingkan dua pilihan port:
+
+```text title="Ilustrasi: membandingkan dua pilihan port (perkiraan jam kerja karangan)"
+pilihan A: mobile (App Store dan Google Play)
+  daftar dan biaya          Apple 99 USD per tahun, Google US$25 sekali
+  pekerjaan                 UI sentuh, optimasi ponsel kelas bawah,
+                            uji di beberapa ponsel                 ~ 300 jam
+  syarat sebelum rilis      closed test 12 tester x 14 hari (akun personal),
+                            App Review, rating IARC dan kuesioner Apple
+  pertanyaan bisnis         tetap premium, atau ubah model?
+
+pilihan B: Nintendo Switch
+  daftar dan biaya          portal gratis, NDA, ajukan akses Switch,
+                            biaya perangkat dev: lihat portal
+  pekerjaan                 dukungan gamepad dan sentuh, optimasi,
+                            syarat teknis setelah NDA              ~ belum diketahui
+  syarat sebelum rilis      perjanjian penerbitan, rating usia, review Nintendo
+  pertanyaan bisnis         kerjakan sendiri atau lewat publisher atau studio porting?
+```
+
+Mereka memilih mulai dari mobile, karena biaya masuknya bisa dihitung dan syaratnya terbuka. Pada saat yang sama, mereka mendaftar ke Nintendo Developer Portal untuk membaca syarat teknisnya, dan menunda keputusan Switch sampai bisa menilai pekerjaan sebenarnya. Untuk syarat 12 tester Google Play, mereka mengajak anggota server komunitas yang dibuka saat marketing. Untuk model bisnis, mereka memakai hitungan dari [Menghitung Pendapatan](/belajar/bisnis-indie/03-menghitung-pendapatan/#titik-impas): berapa unit yang harus terjual di mobile agar 300 jam kerja itu tertutup.
+
+Yang terlihat dari contoh ini:
+
+- **Platform kedua lebih murah kalau dipersiapkan sejak awal.** Pemisahan input dan antarmuka yang bisa diskalakan dikerjakan di bulan-bulan awal, saat perubahannya masih kecil.
+- **Syarat yang tertutup NDA tidak bisa dihitung dari luar.** Untuk konsol, langkah pertama yang masuk akal adalah mendaftar dan membaca syaratnya, sebelum menjanjikan tanggal rilis kepada siapa pun.
+- **Setiap port adalah keputusan bisnis.** Biaya pendaftaran kecil dibanding jam kerja porting dan pengujian, jadi yang dihitung adalah apakah penjualan di platform baru menutup jam kerja itu.
+
+## Kesalahan umum
+
+### Memilih platform setelah game selesai
+
+```text title="✗ Keliru"
+selesaikan game untuk PC  →  lalu cari tahu cara masuk ke mobile dan konsol
+```
+
+```text title="✓ Benar"
+awal produksi:  pilih platform utama, catat platform berikutnya
+                →  siapkan input dan antarmuka  →  uji build di setiap platform sedini mungkin
+```
+
+Input, antarmuka, performa, dan model bisnis yang sudah terkunci mahal untuk diubah. Pelajaran [Kriteria Memilih Engine](/belajar/lanskap-engine/04-kriteria-memilih/#mengabaikan-syarat-ekspor-konsol-atau-platform-lain) membahas kesalahan yang sama dari sisi engine.
+
+### Menghitung hanya biaya pendaftaran
+
+US$25 atau US$100 terlihat kecil. Biaya sebenarnya ada di ponsel uji, jam porting, waktu pengujian wajib, biaya tahunan, dan pekerjaan merawat satu build tambahan setiap kali ada update.
+
+### Lupa waktu tunggu dan pengujian wajib
+
+Masa tunggu 21 hari dan halaman Coming Soon dua minggu di Steam, atau closed test 14 hari di Google Play, tidak bisa dipercepat. Susun jadwal mundur dari tanggal rilis dan masukkan semua syarat waktu itu.
+
+### Nama di akun, rekening, dan formulir pajak tidak sama
+
+Toko memeriksa kecocokan nama legal, nama pemilik rekening, dan data pajak. Ketidakcocokan bisa menunda pembayaran atau verifikasi. Putuskan atas nama siapa akun dibuat sebelum mendaftar.
+
+### Menjanjikan versi konsol atau web sebelum mengujinya
+
+Mengumumkan versi Switch atau versi browser sebelum mendaftar ke programnya atau menguji ekspor web bisa berakhir dengan janji yang tidak bisa ditepati. Umumkan setelah syaratnya dibaca dan build percobaan berjalan.
+
+### Mengisi kuesioner rating asal-asalan
+
+Jawaban yang tidak sesuai isi game bisa membuat game dihapus dari toko atau tidak tampil di negara tertentu. Isi dengan jujur dan perbarui saat konten berubah.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Pakai game-mu sendiri atau ide yang sedang kamu rencanakan. Kerjakan di dokumen atau spreadsheet, dan tandai semua perkiraanmu.
+
+1. Buat tabel penilaian seperti contoh Rina dan Bayu untuk tiga sampai lima platform. Isi kolom pemain genre, kecocokan input, kecocokan teknis, serta biaya dan waktu masuk. Tulis alasan di setiap sel.
+2. Pilih satu platform rilis pertama dan satu platform berikutnya. Tulis apa yang harus disiapkan sejak sekarang agar port ke platform kedua tidak mahal.
+3. Buka halaman resmi pendaftaran developer untuk dua platform pilihanmu. Catat biaya, dokumen yang diminta, syarat pengujian, dan waktu review, beserta tanggal kamu membacanya.
+4. Susun jadwal mundur dari tanggal rilis rencanamu yang memasukkan semua syarat waktu platform itu, misalnya masa tunggu, review, dan pengujian wajib.
+5. Kalau engine-mu mendukung ekspor web, buat build web dari satu level atau prototipe, lalu uji di dua browser desktop dan satu ponsel. Catat apa yang tidak berjalan.
+6. Tulis tiga pertanyaan untuk konsultan pajak tentang mendaftar ke toko luar negeri sebagai perorangan atau badan usaha.
