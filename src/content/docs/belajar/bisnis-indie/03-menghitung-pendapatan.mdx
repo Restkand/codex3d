@@ -1,0 +1,432 @@
+---
+title: "Menghitung Pendapatan"
+description: "Dari harga di halaman toko ke uang yang benar-benar sampai di rekening studio: harga regional, pajak yang dipungut toko, potongan toko, refund, jadwal pembayaran, bagi hasil dengan publisher, pajak penghasilan, diskon, dan titik impas."
+fundamental: "Harga di halaman toko melewati beberapa potongan sebelum menjadi uang yang bisa dipakai membayar tim. Studio yang menghitung dari harga jual sering merasa game-nya laku, padahal biaya produksinya belum tertutup. Memahami urutan potongan membantumu menetapkan harga, membaca laporan toko, dan tahu berapa penjualan yang dibutuhkan sebelum game benar-benar balik modal."
+kind: lesson
+minutes: 35
+status: draf
+lastReviewed: 2026-10-31
+krekit:
+  gambaran-besar: "Mulai hitunganmu dari uang yang masuk rekening, lalu telusuri mundur ke harga di toko."
+  harga-dan-harga-regional: "Harga regional adalah keputusan bisnis. Periksa setiap mata uang sebelum menyetujui hasil konversi otomatis."
+  pajak-yang-dipungut-toko: "Di banyak negara, sebagian dari harga yang dibayar pemain adalah pajak yang tidak pernah menjadi milik studio."
+  potongan-toko: "Baca angka potongan dari perjanjian dan halaman resmi toko, lalu catat tanggal kamu membacanya."
+  refund-dan-chargeback: "Angka penjualan di dasbor belum memperhitungkan refund. Tunggu laporan bulanan sebelum merencanakan pengeluaran."
+  kapan-uang-dibayarkan: "Penjualan bulan ini baru bisa dipakai bulan depan atau sesudahnya. Masukkan jeda itu ke runway."
+  bagi-hasil-dengan-publisher: "Selama advance belum tertutup, penjualan tambahan belum menambah uang di rekeningmu."
+  pajak-penghasilan-studio: "Sisihkan cadangan pajak sejak uang pertama masuk, lalu tanyakan jumlah pastinya ke konsultan pajak."
+  diskon-dan-pendapatan-per-unit: "Diskon 50% berarti kamu butuh dua kali lipat pembeli untuk mendapat uang yang sama."
+  titik-impas: "Hitung titik impas dari pendapatan bersih per unit. Harga jual akan membuat angkanya terlihat terlalu kecil."
+  contoh-penjualan-game-rina-dan-bayu-di-steam: "Angkanya karangan. Perhatikan berapa banyak yang berkurang di setiap baris."
+  kesalahan-umum: "Hampir semua kesalahan di sini berawal dari angka yang terlihat di layar, padahal uangnya belum diterima."
+sidebar:
+  order: 3
+  label: "3 · Menghitung Pendapatan"
+quiz:
+  - q: "Menurut Tax FAQ di dokumentasi Steamworks, apa yang dikurangkan dari Gross Revenues sebelum dikalikan dengan persentase bagi hasil?"
+    options:
+      - "Tidak ada, bagi hasil dihitung dari harga kotor"
+      - "Applicable Adjustments: pajak, retur (refund), dan chargeback"
+      - "Biaya pemasaran yang dikeluarkan developer"
+      - "Gaji tim developer"
+    answer: 1
+    explain: "Valve menyebut pembayaran dihitung dari Net Revenues, yaitu Gross Revenues dikurangi Applicable Adjustments (pajak, retur, dan chargeback). Net Revenues lalu dikalikan persentase bagi hasil di Steam Distribution Agreement, dan hasilnya dibayar setelah dipotong pajak pemotongan yang berlaku."
+  - q: "Kapan biaya Steam Direct sebesar US$100 per aplikasi dikembalikan kepada developer, menurut dokumentasi Steamworks per 31 Oktober 2026?"
+    options:
+      - "Tidak pernah dikembalikan dalam bentuk apa pun"
+      - "Di pembayaran setelah produk mencapai setidaknya US$1.000 Adjusted Gross Revenue"
+      - "Langsung setelah game lolos review"
+      - "Kalau developer meminta refund dalam dua minggu"
+    answer: 1
+    explain: "Biaya itu tidak bisa di-refund, tetapi dikembalikan (recoup) di pembayaran setelah produk mencapai setidaknya US$1.000 Adjusted Gross Revenue dari toko Steam atau pembelian dalam game. Pengembaliannya muncul sebagai baris terpisah di laporan bulanan."
+  - q: "Sebuah studio ikut App Store Small Business Program dengan komisi 15%. Di tengah tahun berjalan, proceeds-nya melewati US$1 juta. Apa yang terjadi menurut halaman program itu?"
+    options:
+      - "Komisi tetap 15% sampai akhir tahun"
+      - "Komisi standar berlaku untuk penjualan berikutnya"
+      - "Studio harus mengembalikan selisih komisi tahun itu"
+      - "Akun studio dihentikan"
+    answer: 1
+    explain: "Apple menulis bahwa kalau developer peserta melewati ambang US$1 juta di tahun berjalan, komisi standar berlaku untuk penjualan selanjutnya. Kalau proceeds turun di bawah ambang di tahun berikutnya, developer bisa memenuhi syarat lagi setahun sesudahnya."
+  - q: "Game-mu didiskon 50%. Persentase potongan toko tetap sama, dan pajak serta refund diabaikan. Berapa salinan diskon yang harus terjual untuk menghasilkan uang yang sama dengan satu salinan harga penuh? (Ilustrasi)"
+    options:
+      - "1 salinan"
+      - "1,5 salinan"
+      - "2 salinan"
+      - "4 salinan"
+    answer: 2
+    explain: "Potongan toko berupa persentase, jadi pendapatan bersih per unit ikut turun setengah. Untuk mendapat uang yang sama, jumlah pembeli harus dua kali lipat. Diskon tetap bisa masuk akal kalau menarik pembeli yang tidak akan membeli di harga penuh."
+  - q: "Rina dan Bayu menerima advance Rp 150 juta dari publisher. Setelah satu tahun, bagian developer dari penjualan menurut kontrak mencapai Rp 120 juta. Berapa royalti tambahan yang mereka terima tahun itu? (Ilustrasi)"
+    options:
+      - "Rp 120 juta"
+      - "Rp 30 juta"
+      - "Rp 0, karena bagian developer masih dipakai untuk menutup advance"
+      - "Rp 270 juta"
+    answer: 2
+    explain: "Dalam model advance against royalties, bagian developer dipakai menutup advance lebih dulu. Masih ada Rp 30 juta yang belum tertutup, jadi belum ada royalti tambahan. Uang Rp 150 juta sudah mereka terima di muka selama produksi."
+  - q: "Menurut FAQ pembayaran Steamworks, kapan Valve membayar penjualan bulan Februari?"
+    options:
+      - "Setiap hari setelah transaksi"
+      - "Paling lambat tanggal 30 Maret"
+      - "Akhir tahun"
+      - "Setelah game mencapai 1.000 unit"
+    answer: 1
+    explain: "Valve membayar paling lambat tanggal 30 bulan berikutnya, dalam dolar AS lewat transfer bank, selama saldo sudah melewati ambang minimum US$100. Bank bisa butuh beberapa hari kerja lagi untuk mengkreditkannya."
+sources:
+  - title: "Steam Direct Fee"
+    url: "https://partner.steamgames.com/doc/gettingstarted/appfee"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-31
+  - title: "Taxes FAQ"
+    url: "https://partner.steamgames.com/doc/finance/taxfaq"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-31
+  - title: "Reporting and Payments"
+    url: "https://partner.steamgames.com/doc/finance/payments_salesreporting"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-31
+  - title: "Reporting and Payments FAQ"
+    url: "https://partner.steamgames.com/doc/finance/payments_salesreporting/faq"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-31
+  - title: "Pricing"
+    url: "https://partner.steamgames.com/doc/store/pricing"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-31
+  - title: "Supported Currencies"
+    url: "https://partner.steamgames.com/doc/store/pricing/currencies"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-31
+  - title: "Discounting"
+    url: "https://partner.steamgames.com/doc/marketing/discounts"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-31
+  - title: "Steam Refunds"
+    url: "https://store.steampowered.com/steam_refunds/"
+    publisher: "Valve, Steam"
+    accessed: 2026-10-31
+  - title: "App Store Small Business Program"
+    url: "https://developer.apple.com/app-store/small-business-program/"
+    publisher: "Apple, Apple Developer"
+    accessed: 2026-10-31
+  - title: "Set a price"
+    url: "https://developer.apple.com/help/app-store-connect/manage-app-pricing/set-a-price"
+    publisher: "Apple, App Store Connect Help"
+    accessed: 2026-10-31
+  - title: "Overview of receiving payments"
+    url: "https://developer.apple.com/help/app-store-connect/getting-paid/overview-of-receiving-payments"
+    publisher: "Apple, App Store Connect Help"
+    accessed: 2026-10-31
+  - title: "Service fees"
+    url: "https://support.google.com/googleplay/android-developer/answer/112622?hl=en"
+    publisher: "Google, Play Console Help"
+    accessed: 2026-10-31
+  - title: "Set up your app's prices"
+    url: "https://support.google.com/googleplay/android-developer/answer/6334373?hl=en"
+    publisher: "Google, Play Console Help"
+    accessed: 2026-10-31
+  - title: "Order processing and payouts"
+    url: "https://support.google.com/googleplay/android-developer/answer/137997?hl=en"
+    publisher: "Google, Play Console Help"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menyusun urutan potongan dari harga di toko sampai uang yang diterima studio.
+- Menjelaskan harga regional, pajak yang dipungut toko, potongan toko, refund, dan chargeback.
+- Membaca kapan toko membayar dan kenapa jeda itu memengaruhi runway.
+- Menghitung pengaruh advance, recoup, dan diskon pada uang yang diterima tim.
+- Menghitung titik impas sederhana untuk game-mu sendiri.
+</Aside>
+
+<Aside type="caution" title="Edukasi, bukan nasihat keuangan, pajak, atau hukum">
+Pelajaran ini menjelaskan cara berpikir. Angka platform di sini dicek per 31 Oktober 2026 dari halaman resmi yang tercantum di daftar sumber, dan bisa berubah kapan saja. Semua perhitungan adalah ilustrasi. Aturan pajak berbeda menurut negara, bentuk usaha, dan jenis penghasilan, jadi untuk angka nyata konsultasikan dengan konsultan pajak dan akuntan yang memahami situasimu.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: kue titipan di warung">
+Kamu menitipkan kue di warung dengan label harga Rp 10.000. Sebagian harga itu sebenarnya pajak. Warung mengambil bagiannya untuk etalase dan kasir. Beberapa kue dikembalikan pembeli karena rusak. Warung menyetor hasil penjualan seminggu sekali. Kalau kue dibuat bersama pemodal, pemodal mengambil bagiannya dulu. Setelah semua itu, kamu masih harus membayar pajak penghasilanmu sendiri. Yang tersisa baru bisa dipakai membeli tepung untuk minggu depan.
+</Aside>
+
+Pelajaran [Peta Ekosistem](/belajar/industri-karier/02-peta-ekosistem/#bagaimana-uang-mengalir) di jalur Industri & Karier sudah menggambarkan aliran uang dari pemain sampai developer sebagai konsep. Pelajaran ini memberi angka pada setiap langkahnya. Urutan yang dipakai di sini:
+
+```text title="Urutan potongan dari harga ke kas studio (model sederhana)"
+harga dasar yang kamu tetapkan
+  → harga regional dan mata uang       (harga berbeda per negara)
+  → harga yang dibayar pemain           (bisa setelah diskon)
+  - pajak yang dipungut toko             (PPN, VAT, GST, sales tax)
+  - refund dan chargeback
+  = pendapatan bersih menurut toko
+  - potongan toko                        (komisi atau bagi hasil toko)
+  = bagian pemegang akun toko
+  - bagian publisher dan recoup          (kalau ada publisher)
+  - pajak yang dipotong di sumber        (kalau berlaku)
+  - biaya bank dan selisih kurs
+  = uang yang masuk rekening studio
+  - pajak penghasilan studio
+  = uang untuk tim, biaya, dan game berikutnya
+```
+
+Urutan dan istilahnya berbeda di setiap toko dan kontrak. Steam, misalnya, mengurangkan pajak, retur, dan chargeback sebelum menghitung bagi hasil, seperti dibahas di bagian [Potongan toko](#potongan-toko). Gunakan urutan ini sebagai daftar periksa, lalu cocokkan dengan dokumen toko yang kamu pakai.
+
+Pelajaran sebelumnya, [Pendanaan](/belajar/bisnis-indie/02-pendanaan/), membahas uang untuk membuat game. Pelajaran ini membahas uang yang kembali setelah game dijual, dan apakah jumlahnya cukup untuk menutup biaya tadi.
+
+## Harga dan harga regional
+
+Studio menetapkan harga dasar, lalu toko membantu menurunkannya ke mata uang dan negara lain. Pemain di negara yang berbeda membayar jumlah yang berbeda untuk game yang sama, sehingga rata-rata uang per salinan hampir selalu lebih rendah dari harga dasar.
+
+Per 31 Oktober 2026, dokumentasi resmi ketiga toko besar menjelaskan hal berikut:
+
+- **Steam.** Halaman Pricing di Steamworks menyebut Steam mendukung harga dalam 37 mata uang dan 4 kelompok wilayah. Ada tiga alat konversi bawaan: kurs saja, daya beli saja, dan konversi multi-variabel yang menggabungkan daya beli lokal, harga hiburan sejenis, dan kurs. Developer boleh memakai saran itu atau menentukan harganya sendiri. Kalau satu mata uang tidak diberi harga, pemain yang memakai mata uang itu tidak bisa membeli game-nya. Rupiah (IDR) termasuk mata uang yang didukung menurut halaman Supported Currencies.
+- **App Store.** Halaman bantuan "Set a price" menyebut developer bisa memilih dari 800 titik harga secara bawaan, dan meminta 100 titik harga tambahan yang lebih tinggi. Harga di satu negara dasar dipakai untuk membuat harga di 174 storefront lain dan 43 mata uang, dengan memperhitungkan kurs dan pajak tertentu. Apple menyesuaikan harga di storefront lain secara berkala saat pajak atau kurs berubah, kecuali harga di negara dasar dan storefront yang dikelola manual.
+- **Google Play.** Halaman "Set up your app's prices" menyebut Play memakai harga yang kamu masukkan sebagai dasar, mengonversinya ke mata uang lokal, menambahkan pajak di negara tertentu, dan menerapkan pola harga yang lazim di setiap pasar.
+
+Hal yang perlu diingat saat menghitung:
+
+- **Harga dasar bukan harga rata-rata.** Kalau sebagian besar pembelimu ada di negara dengan harga regional lebih rendah, uang per salinan ikut turun.
+- **Toko menampilkan pajak dengan cara berbeda.** Steamworks menyebut sebagian negara terbiasa melihat harga sudah termasuk pajak, sebagian lain melihat pajak ditambahkan saat bayar. Steam mengikuti kebiasaan dan aturan setempat.
+- **Kurs ikut berubah.** Steam membayar dalam dolar AS, sehingga studio di Indonesia menerima rupiah setelah konversi oleh bank. Nilainya bisa berbeda dari perkiraan saat harga ditetapkan.
+
+Cara memilih harga dasar, misalnya dengan membandingkan game sejenis, dibahas sebagai pertanyaan di halaman Pricing Steamworks: berapa lama game dimainkan, apakah bisa dimainkan ulang, apakah ada multiplayer, dan apakah harga sudah mempertimbangkan promosi di masa depan.
+
+## Pajak yang dipungut toko
+
+Banyak negara mengenakan pajak konsumsi atas penjualan barang digital. Namanya bermacam-macam: PPN di Indonesia, VAT di Eropa, GST di beberapa negara lain, dan sales tax di sebagian negara bagian Amerika Serikat. Pajak ini dibayar pembeli. Toko memungutnya dan menyetorkannya ke otoritas pajak, sehingga uang itu tidak pernah menjadi bagian studio.
+
+Tax FAQ di dokumentasi Steamworks per 31 Oktober 2026 menjelaskan beberapa hal:
+
+- Steam memungut pajak jenis ini di negara yang tercantum di tabel tarifnya. Di negara lain, Steam menganggap penjualannya lintas batas dan tidak wajib memungut.
+- Di negara tempat pajak dipungut, harga Steam sudah termasuk VAT (*inclusive*). Sales tax di sebagian wilayah Amerika Serikat dan Kanada ditambahkan di atas harga (*additive*).
+- Indonesia tercantum di tabel itu dengan tarif 11%, jenis inclusive. Artinya, menurut tabel itu, sebagian dari harga yang dibayar pembeli Steam di Indonesia adalah pajak yang dipungut Steam.
+- Valve menyatakan hanya bisa menjelaskan cara Steam menangani pajak penjualan, dan developer perlu berkonsultasi dengan penasihat pajaknya sendiri tentang kewajibannya.
+
+Untuk perhitungan, pajak yang sudah termasuk dalam harga dihitung keluar dari harga, tidak ditambahkan di atasnya. Contoh ilustrasi dengan tarif karangan 10%: harga Rp 110.000 yang sudah termasuk pajak berisi Rp 100.000 harga sebelum pajak dan Rp 10.000 pajak. Mengalikan Rp 110.000 dengan 10% akan memberi angka pajak yang keliru.
+
+Aturan pajak atas penjualan digital di Indonesia dan negara lain bisa berubah. Pelajaran ini tidak mengutip regulasi atau tarif dari otoritas pajak. Untuk kewajibanmu sendiri, periksa situs resmi Direktorat Jenderal Pajak dan tanyakan kepada konsultan pajak.
+
+## Potongan toko
+
+Toko mengambil bagian dari setiap penjualan sebagai imbalan atas etalase, pemrosesan pembayaran, unduhan, dan layanan lain, seperti dijelaskan di [Peta Ekosistem](/belajar/industri-karier/02-peta-ekosistem/#platform-holder-dan-toko). Besarnya berbeda antartoko, wilayah, jenis transaksi, dan program. Berikut yang dinyatakan halaman resmi per 31 Oktober 2026.
+
+**Steam.** Tax FAQ dan Reporting and Payments FAQ di Steamworks menjelaskan rumus pembayarannya: Gross Revenues (termasuk VAT dan sales tax kalau ada) dikurangi Applicable Adjustments, yaitu pajak, retur, dan chargeback, menjadi Net Revenues. Net Revenues dikalikan persentase bagi hasil (*revenue share*), lalu dibayar setelah dikurangi pajak pemotongan yang berlaku. Persentase bagi hasilnya diatur di Steam Distribution Agreement yang ditandatangani developer, dan tidak tercantum di halaman dokumentasi yang dibaca untuk pelajaran ini. FAQ yang sama menyebut adanya *additional revenue share* untuk aplikasi jenis Game atau Application, tanpa menyebut persentasenya. Baca perjanjianmu untuk angka yang berlaku bagi game-mu.
+
+Steam juga memungut **biaya Steam Direct** sebesar US$100 (atau setara) untuk setiap aplikasi baru. Biaya ini tidak bisa di-refund, tetapi dikembalikan di pembayaran setelah produk mencapai setidaknya US$1.000 Adjusted Gross Revenue dari toko Steam atau pembelian dalam game, dan muncul sebagai baris terpisah di laporan bulanan. Valve juga bisa memungut VAT, GST, atau pajak sejenis atas biaya itu sesuai aturan negara pembayar.
+
+**App Store.** Halaman App Store Small Business Program menyebut komisi 15% untuk aplikasi berbayar dan In-App Purchase bagi developer yang proceeds-nya (penjualan setelah dikurangi komisi Apple serta pajak dan penyesuaian tertentu) paling banyak US$1 juta di tahun kalender sebelumnya, juga bagi developer baru. Kalau ambang US$1 juta terlewati di tahun berjalan, komisi standar berlaku untuk penjualan berikutnya. Proceeds dari akun developer yang terkait ikut dihitung. Program ini perlu didaftarkan, dan halaman itu tidak mencantumkan besar komisi standarnya.
+
+**Google Play.** Halaman Service fees menyatakan tidak ada satu biaya layanan yang berlaku untuk semua. Besarnya bergantung pada wilayah pembeli, jenis transaksi, dan program yang diikuti developer. Untuk transaksi dengan pengguna di Australia, Kawasan Ekonomi Eropa, Jepang, Inggris, dan Amerika Serikat, ada struktur baru yang membedakan instalasi baru dan lama, ditambah biaya penagihan (*billing fee*), dengan tanggal mulai berbeda per wilayah di tahun 2026. Untuk pasar lain sampai struktur baru diterapkan global, halaman itu menyebut developer yang terdaftar di tingkat biaya 15% dikenai 15% untuk US$1 juta pertama pendapatan setiap tahun dan 30% untuk pendapatan di atasnya, sedangkan langganan yang diperpanjang otomatis dikenai 15%. Tabel lengkapnya rumit, jadi baca halaman itu langsung untuk wilayah dan jenis transaksi game-mu.
+
+Dari tiga contoh ini terlihat satu pola: potongan toko jarang berupa satu angka tetap. Catat tiga hal setiap kali kamu membaca halaman toko: angka yang berlaku untuk situasimu, syarat program yang harus diikuti, dan tanggal kamu membacanya.
+
+## Refund dan chargeback
+
+**Refund** adalah pengembalian uang kepada pembeli melalui toko. **Chargeback** terjadi saat pembeli membatalkan transaksi lewat bank atau penyedia kartunya. Keduanya mengurangi pendapatan setelah penjualan tercatat.
+
+Per 31 Oktober 2026, halaman resmi menyebut:
+
+- **Steam.** Halaman Steam Refunds menyebut Valve memberi refund untuk alasan apa pun kalau diminta dalam dua minggu sejak pembelian dan game dimainkan kurang dari dua jam. DLC punya aturan serupa selama belum dipakai atau diubah. Pembelian dalam game di game buatan pihak ketiga hanya bisa di-refund lewat Steam kalau developer memilih mengaktifkannya. Dalam laporan Steam, retur dan chargeback termasuk Applicable Adjustments yang dikurangkan sebelum bagi hasil.
+- **Google Play.** Halaman Order processing and payouts menyebut pembeli punya waktu dua jam untuk membatalkan pembelian aplikasi atau game. Pesanan yang diproses, di-refund, atau di-chargeback sepanjang satu bulan dihitung bersama dalam pembayaran bulan berikutnya.
+
+Dampaknya pada perhitungan:
+
+- **Angka di dasbor belum bersih.** Halaman Reporting and Payments Steamworks menyebut angka pendapatan di portal Sales & Activations Reports belum dikurangi refund, chargeback, pajak, dan potongan lain. Laporan bulananlah yang mencerminkan jumlah yang benar-benar akan dibayar.
+- **Kesan pertama ikut menentukan.** Seperti dibahas di [Model Bisnis](/belajar/bisnis-indie/01-model-bisnis/#premium), aturan refund Steam membuat dua jam pertama game premium ikut menentukan apakah penjualan bertahan.
+- **Pembelian dalam game perlu ditangani.** Dokumentasi microtransaction Steamworks yang dikutip di pelajaran itu mengingatkan bahwa tim harus menyesuaikan item saat terjadi refund.
+
+Pelajaran ini tidak mencantumkan angka rata-rata refund karena tidak ada sumber resmi yang dipakai di sini. Pakai angka dari laporan game-mu sendiri setelah rilis, dan sebelum itu pakai perkiraan yang ditandai jelas sebagai asumsi.
+
+## Kapan uang dibayarkan
+
+Toko tidak membayar setiap kali ada penjualan. Uang dikumpulkan per periode, lalu dibayar setelah jeda tertentu. Per 31 Oktober 2026:
+
+| Toko | Jadwal pembayaran menurut halaman resmi | Ambang dan cara bayar |
+| --- | --- | --- |
+| Steam | Paling lambat tanggal 30 bulan berikutnya. Penjualan Februari dibayar paling lambat 30 Maret | Minimum US$100. Dibayar dalam dolar AS lewat transfer SWIFT untuk bank di luar Amerika Serikat |
+| App Store | Dalam 45 hari setelah hari terakhir bulan fiskal Apple tempat transaksi selesai | Harus melewati ambang minimum bulanan untuk setiap negara atau wilayah penjualan |
+| Google Play | Sekitar tanggal 15 bulan berikutnya | Minimum US$1 untuk pembayaran mata uang lokal, US$100 untuk transfer dolar AS |
+
+Beberapa catatan dari halaman yang sama:
+
+- Valve menyebut bank bisa butuh beberapa hari kerja lagi untuk mengkreditkan pembayaran, dan Valve tidak membebankan biaya transfernya, tetapi biaya dari bank perantara atau bank penerima bisa mengurangi jumlah yang masuk.
+- Steam dan Apple sama-sama mensyaratkan data bank dan pajak lengkap sebelum membayar. Kalau datanya belum lengkap atau transfer gagal, pembayaran ditahan sampai siklus berikutnya.
+- Apple menyebut pembayaran bisa terkena biaya bank dan biaya transaksi dari lembaga perantara.
+
+Artinya, uang dari penjualan di minggu rilis baru bisa dipakai sekitar satu sampai dua bulan kemudian. Masukkan jeda ini ke hitungan [runway](/belajar/bisnis-indie/02-pendanaan/#runway). Studio yang menghabiskan tabungan tepat di hari rilis masih harus membayar gaji selama menunggu pembayaran pertama.
+
+## Bagi hasil dengan publisher
+
+Kalau game diterbitkan publisher, pendapatan dari toko biasanya masuk ke publisher dulu, lalu dibagi sesuai kontrak. Konsep **advance** dan **recoup** sudah dijelaskan di [Peta Ekosistem](/belajar/industri-karier/02-peta-ekosistem/#advance-dan-recoup), dan pertanyaan yang perlu diajukan sebelum menandatangani kontrak ada di [Pendanaan](/belajar/bisnis-indie/02-pendanaan/#publisher). Bagian ini menunjukkan cara memasukkannya ke hitungan.
+
+Pelajaran ini sengaja tidak menyebut persentase bagi hasil yang "umum". Setiap kontrak berbeda, dan angka dari satu kontrak tidak berlaku untuk kontrak lain. Contoh di bawah memakai angka karangan.
+
+```text title="Ilustrasi: recoup advance (angka karangan)"
+advance yang sudah diterima developer     Rp 150.000.000
+bagian toko yang diteruskan ke publisher  Rp 200.000.000   (tahun pertama)
+bagian developer menurut kontrak karangan  60%
+bagian developer                          Rp 120.000.000
+dipakai untuk menutup advance             Rp 120.000.000
+advance yang belum tertutup               Rp  30.000.000
+royalti tambahan yang dibayar             Rp           0
+```
+
+Yang perlu dibaca dari contoh ini:
+
+- **Pendapatan dari mana yang dibagi?** Kontrak bisa menghitung bagi hasil dari uang yang diterima publisher dari toko, atau dari angka lain. Tanyakan definisinya, termasuk apakah pajak dan refund sudah dikurangkan.
+- **Biaya apa yang ikut di-recoup?** Kalau biaya pemasaran, lokalisasi, atau port ikut ditutup dari bagian developer, titik ketika royalti mulai mengalir mundur. [Pendanaan](/belajar/bisnis-indie/02-pendanaan/#tanda-bahaya-dalam-kesepakatan) menyebut recoup tanpa batas yang jelas sebagai salah satu tanda bahaya.
+- **Seberapa sering laporan dan pembayaran dikirim?** Jadwal publisher ditambahkan di atas jadwal toko, sehingga jedanya bisa lebih panjang.
+
+## Pajak penghasilan studio
+
+Setelah uang masuk rekening, studio masih punya kewajiban pajak penghasilan di negaranya. Besarnya bergantung pada bentuk usaha (perorangan atau badan usaha), jumlah penghasilan, biaya yang boleh dikurangkan, dan aturan yang berlaku tahun itu. Pelajaran ini tidak mencantumkan tarif karena aturannya berubah dan bergantung pada situasi masing-masing.
+
+Ada juga pajak yang bisa dipotong sebelum uang dikirim. Tax FAQ Steamworks per 31 Oktober 2026 menjelaskan:
+
+- Pembayaran bagi hasil Steam diklasifikasikan sebagai royalti.
+- Untuk developer di luar Amerika Serikat, Valve bisa memotong pajak atas bagian pendapatan yang berasal dari penjualan di Amerika Serikat (*US Share*). Tarifnya ditentukan dari *tax interview* yang diisi developer dan bisa berkisar 0% sampai 30%.
+- Kalau negara tempat tinggal developer punya perjanjian pajak dengan Amerika Serikat, tarif bisa lebih rendah, dengan syarat developer memberikan nomor identitas pajak. Kalau tidak ada perjanjian, Valve menyebut wajib memotong 30%.
+- Valve menyarankan developer bertanya kepada penasihat pajak apakah pajak yang sudah dipotong bisa dikreditkan dalam pelaporan pajak di negaranya sendiri.
+
+Toko lain punya formulir dan aturannya sendiri. Langkah praktis untuk tim kecil:
+
+1. **Sisihkan cadangan pajak** dari setiap pembayaran yang masuk, sebelum uangnya dipakai. Besar cadangan ditentukan bersama konsultan pajak.
+2. **Simpan semua laporan toko dan bukti potong.** Laporan bulanan Steam, misalnya, punya tautan "Steam Sales by Country" yang menurut Valve bisa membantu menghitung kewajiban pajakmu.
+3. **Tanyakan sejak awal**, sebelum mengisi tax interview atau memilih bentuk usaha. Topik badan usaha direncanakan di pelajaran Legal dan IP di jalur ini.
+
+## Diskon dan pendapatan per unit
+
+Diskon menurunkan harga yang dibayar pemain. Karena pajak dan potongan toko umumnya berupa persentase, uang yang diterima studio per salinan ikut turun dengan perbandingan yang sama.
+
+```text title="Ilustrasi: pengaruh diskon (pajak dan refund diabaikan, angka karangan)"
+                          harga penuh     diskon 50%
+harga                     Rp 100.000      Rp  50.000
+potongan toko karangan    Rp  30.000      Rp  15.000
+diterima studio per unit  Rp  70.000      Rp  35.000
+unit untuk Rp 7.000.000   100 unit        200 unit
+```
+
+Diskon tetap bisa menguntungkan kalau menarik pembeli yang tidak akan membeli di harga penuh. Halaman Discounting Steamworks menulis bahwa menurut pengalaman Valve, ada pembeli di setiap tingkat harga, dan strategi diskon yang efektif bisa membantu keberhasilan jangka panjang. Valve juga menyarankan menaikkan besar diskon secara bertahap, dan mengingatkan bahwa diskon besar beberapa minggu setelah rilis memberi pesan buruk kepada pembeli yang membayar harga penuh.
+
+Aturan diskon Steam per 31 Oktober 2026, menurut halaman yang sama:
+
+- Diskon peluncuran (*launch discount*) bersifat opsional, berlangsung 7 sampai 14 hari, dan paling besar 40%. Valve umumnya menyarankan sekitar 10% sampai 15%.
+- Di luar diskon peluncuran, produk tidak bisa didiskon dalam 30 hari setelah rilis, 30 hari setelah kenaikan harga, atau 30 hari setelah diskon lain. Seasonal Sale, acara diskon besar se-Steam, dikecualikan dari jeda antardiskon.
+- Diskon paling kecil 10% dan paling besar 95%, dengan durasi 1 sampai 14 hari.
+
+Saat merencanakan penjualan, hitung pendapatan per unit untuk setiap tingkat diskon yang mungkin kamu pakai, jangan hanya untuk harga penuh.
+
+## Titik impas
+
+**Titik impas** (*break-even*) adalah jumlah penjualan yang dibutuhkan agar uang yang diterima studio sama dengan biaya membuat dan merilis game. Rumus dasarnya:
+
+```text title="Ilustrasi: rumus titik impas"
+pendapatan bersih per unit = uang yang diterima studio / jumlah unit terjual
+titik impas (unit)         = total biaya / pendapatan bersih per unit
+```
+
+Dua hal sering membuat hitungan ini meleset:
+
+- **Memakai harga jual sebagai pendapatan per unit.** Pendapatan bersih per unit sudah dikurangi harga regional, diskon, pajak, refund, potongan toko, bagian publisher, dan biaya bank. Pajak penghasilan studio dihitung terpisah setelahnya.
+- **Melupakan sebagian biaya.** Total biaya mencakup gaji atau biaya hidup tim selama produksi, biaya toko, aset dan software, pemasaran dan festival, jasa akuntan dan hukum, serta biaya selama menunggu pembayaran pertama. Hitungan [runway](/belajar/bisnis-indie/02-pendanaan/#runway) di pelajaran Pendanaan bisa dipakai sebagai titik awal.
+
+Titik impas memberi target yang bisa dibandingkan dengan rencana pemasaran dan ukuran komunitasmu. Kalau targetnya jauh di atas jumlah orang yang realistis bisa kamu jangkau, itu tanda untuk memeriksa scope, biaya, atau harga sebelum produksi berlanjut.
+
+## Contoh: penjualan game Rina dan Bayu di Steam
+
+<Aside type="caution" title="Ilustrasi, bukan data">
+Tim, game, jumlah penjualan, rata-rata harga, persentase pajak, refund, potongan toko, kurs, dan bagi hasil publisher di bagian ini dikarang untuk menunjukkan cara menghitung. Angka ini tidak menggambarkan game, toko, atau publisher nyata, dan bukan nasihat keuangan atau pajak. Persentase potongan toko 30% di sini adalah angka karangan untuk latihan. Angka yang berlaku untukmu ada di perjanjian distribusi toko.
+</Aside>
+
+Rina dan Bayu dari pelajaran [Pendanaan](/belajar/bisnis-indie/02-pendanaan/#contoh-satu-game-tiga-jalur-pendanaan) merilis game puzzle rak toko kelontong mereka di Steam sebagai game premium. Rencana produksinya 14 bulan dengan pengeluaran bersih Rp 13 juta per bulan, jadi biaya produksi Rp 182 juta. Ditambah biaya lain (biaya Steam Direct, aset, festival, jasa akuntan) sebesar Rp 18 juta karangan, total biayanya Rp 200 juta.
+
+Mereka menetapkan harga dasar US$9,99 dan memakai harga regional. Setelah satu tahun, laporan karangan mereka terlihat seperti ini.
+
+```text title="Ilustrasi: satu tahun penjualan di Steam, self-publishing (semua angka karangan)"
+unit terjual (sebelum refund)                         3.000 unit
+rata-rata harga yang dibayar pembeli                   US$  7,00   (harga regional dan diskon)
+
+Gross Revenues                       3.000 x 7,00      US$ 21.000
+- pajak yang dipungut toko           karangan 8%       US$  1.680
+- refund dan chargeback              karangan 7%       US$  1.470
+= Net Revenues                                         US$ 17.850
+- potongan toko                      karangan 30%      US$  5.355
+= bagian studio                                        US$ 12.495
+- pajak dipotong di sumber           karangan          US$    400
+- biaya bank selama setahun          karangan          US$     40
++ pengembalian biaya Steam Direct                      US$    100
+= masuk rekening                                       US$ 12.155
+
+kurs karangan Rp 16.000 per US$                        Rp 194.480.000
+pendapatan bersih per unit (tanpa biaya Steam Direct)  sekitar Rp 64.300
+total biaya                                            Rp 200.000.000
+titik impas                          200.000.000 / 64.300  sekitar 3.110 unit
+```
+
+Yang terlihat dari tabel ini:
+
+- **Harga di toko dikali jumlah unit memberi kesan yang keliru.** 3.000 unit dikali US$9,99 sekitar US$30.000, sedangkan yang masuk rekening sekitar US$12.155, kurang dari setengahnya.
+- **Mereka belum balik modal.** Uang yang masuk sekitar Rp 194 juta, masih di bawah biaya Rp 200 juta, dan pajak penghasilan studio belum dihitung. Titik impasnya sekitar 3.110 unit sebelum pajak penghasilan.
+- **Setiap baris bisa diubah.** Kalau lebih banyak pembeli datang dari negara dengan harga regional rendah, atau mereka cepat memberi diskon besar, rata-rata harga turun dan titik impas naik.
+
+Rina lalu menghitung skenario jalur publisher dari pelajaran Pendanaan, dengan advance karangan Rp 150 juta dan bagian developer karangan 60% dari uang yang diterima publisher dari toko:
+
+```text title="Ilustrasi: penjualan yang sama lewat publisher (semua angka karangan)"
+bagian toko diteruskan ke publisher   US$ 12.495 x 16.000   Rp 199.920.000
+bagian developer                      60%                   Rp 119.952.000
+advance yang sudah diterima                                 Rp 150.000.000
+belum tertutup                                              Rp  30.048.000
+royalti tambahan tahun pertama                              Rp           0
+```
+
+Di jalur publisher, mereka sudah menerima Rp 150 juta selama produksi, sehingga tidak perlu menunggu penjualan untuk membayar biaya hidup. Sebagai gantinya, penjualan setahun pertama belum menambah uang mereka. Dengan angka karangan ini, jalur publisher masuk akal kalau layanan publisher (pemasaran, QA, lokalisasi) bisa menaikkan penjualan cukup tinggi, atau kalau tanpa advance mereka tidak sanggup menyelesaikan game. Keputusan ini hanya berlaku untuk angka karangan mereka.
+
+## Kesalahan umum
+
+### Menghitung dari harga di toko
+
+```text title="✗ Keliru"
+3.000 unit x US$9,99 = sekitar US$30.000 masuk ke studio
+```
+
+```text title="✓ Benar"
+harga rata-rata yang dibayar pembeli
+- pajak - refund - potongan toko - bagian publisher
+- pajak dipotong di sumber - biaya bank
+= masuk rekening, lalu sisihkan pajak penghasilan
+```
+
+[Peta Ekosistem](/belajar/industri-karier/02-peta-ekosistem/#harga-di-toko-adalah-uang-developer) sudah menyebut kesalahan ini sebagai konsep. Di contoh Rina dan Bayu, selisihnya lebih dari setengah harga di toko.
+
+### Membaca dasbor sebagai uang yang sudah diterima
+
+Angka penjualan yang muncul hampir seketika di dasbor toko belum dikurangi refund, chargeback, pajak, dan potongan lain. Tunggu laporan bulanan dan pembayaran nyata sebelum menghitung uang itu sebagai pemasukan.
+
+### Lupa jeda pembayaran
+
+Penjualan di minggu rilis baru dibayar satu sampai dua bulan kemudian, tergantung toko. Rencana yang menganggap uang langsung tersedia membuat studio kehabisan kas tepat setelah rilis.
+
+### Memakai angka potongan dari forum atau ingatan
+
+Potongan toko berubah, berbeda menurut wilayah dan program, dan kadang hanya tercantum di perjanjian. Baca halaman resmi dan perjanjianmu sendiri, lalu catat tanggalnya.
+
+### Tidak menyisihkan pajak
+
+Seluruh pembayaran dipakai untuk gaji dan proyek berikutnya, lalu tagihan pajak datang saat uangnya sudah habis. Sisihkan cadangan sejak pembayaran pertama dan tanyakan jumlahnya kepada konsultan pajak.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan di spreadsheet. Pakai game-mu sendiri atau ide yang sedang kamu rencanakan, dan tandai semua angkamu sebagai perkiraan.
+
+1. Pilih satu toko tujuan. Baca halaman resminya tentang potongan toko, pajak, refund, dan jadwal pembayaran, lalu catat angka yang berlaku untuk situasimu beserta tanggal kamu membacanya.
+2. Susun tabel seperti contoh Rina dan Bayu, dari Gross Revenues sampai uang yang masuk rekening. Buat satu baris untuk setiap potongan, dan tulis dari mana angka atau asumsi di setiap baris berasal.
+3. Hitung total biaya game-mu, mulai dari hitungan runway di pelajaran Pendanaan, lalu hitung titik impasnya dalam unit.
+4. Ulangi hitungan untuk tiga skenario: rata-rata harga lebih rendah karena harga regional, diskon 50% untuk separuh penjualan, dan jalur publisher dengan advance dan bagi hasil karangan. Bagaimana titik impasnya berubah?
+5. Tulis tiga pertanyaan tentang pajak yang ingin kamu tanyakan kepada konsultan pajak sebelum game-mu rilis.
