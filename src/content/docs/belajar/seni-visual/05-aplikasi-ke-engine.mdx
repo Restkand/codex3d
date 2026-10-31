@@ -1,0 +1,664 @@
+---
+title: "Dari Aplikasi ke Engine"
+description: "File sumber dan file ekspor, penamaan dan susunan folder, ekspor dari Aseprite, Krita, dan Blender, ekspor ulang yang hasilnya selalu sama, pengaturan impor tekstur di Unity, Godot, dan Unreal, serta cara menghitung memori tekstur dengan mipmap dan kompresi."
+fundamental: "Gambar yang tampak sama di layar bisa memakan memori GPU empat kali lipat, atau hilang pengaturannya setiap kali artist mengekspor ulang. Penyebabnya ada di jalur antara aplikasi gambar dan engine: file mana yang disimpan, bagaimana file diekspor, dan format apa yang dipilih engine saat impor. Kalau kamu bisa menghitung memori sebuah tekstur dan tahu file mana yang menjadi sumber kebenaran, kamu bisa memutuskan ukuran dan kompresi sebelum masalahnya muncul di perangkat pemain."
+kind: lesson
+minutes: 35
+status: draf
+lastReviewed: 2026-10-31
+terms:
+  - texture
+  - texture-filtering
+  - color-space
+  - normal-map
+  - 2d/sprite-sheet
+  - 2d/sprite-atlas
+  - draw-call
+krekit:
+  gambaran-besar: "File yang kamu edit dan file yang dibaca engine sebaiknya berbeda. Yang pertama untuk manusia, yang kedua untuk mesin."
+  file-sumber-dan-file-ekspor: "Kalau file sumber hilang, kamu hanya punya hasil akhir yang sulit diubah. Lindungi file sumber lebih dulu."
+  penamaan-dan-susunan-folder: "Tulis aturan nama di satu halaman dokumentasi proyek. Aturan yang hanya ada di kepala satu orang akan dilanggar."
+  ekspor-dari-aseprite: "Satu perintah di terminal bisa menggantikan banyak klik di dialog ekspor, dan hasilnya sama setiap kali."
+  ekspor-dari-krita: "Simpan .kra untuk bekerja, ekspor PNG untuk engine. Jangan pernah mengedit PNG hasil ekspor sebagai file kerja."
+  ekspor-dari-blender: "Simpan pengaturan ekspor di file .blend, supaya orang berikutnya tidak perlu menebak opsi apa yang kamu pakai."
+  ekspor-ulang-tanpa-kejutan: "Timpa file ekspor dengan nama yang sama. Engine akan mengimpor ulang dan pengaturannya tetap."
+  pengaturan-impor-tekstur-di-engine: "Kelompokkan pengaturan impor menurut jenis tekstur. Warna, data, UI, dan pixel art butuh pengaturan yang berbeda."
+  menghitung-memori-tekstur: "Ukuran file PNG di disk tidak memberi tahu apa pun tentang memori GPU. Hitung dari lebar, tinggi, dan format."
+  ukuran-pangkat-dua: "Kalau ragu, pakai pangkat dua. Lebar dan tinggi boleh berbeda, misalnya 1024 × 512."
+  ilustrasi-dari-aplikasi-ke-engine: "Hitung tiga angka untuk setiap aset: tanpa kompresi, dengan kompresi desktop, dan dengan kompresi ponsel."
+  kesalahan-umum: "Sebagian besar kesalahan di sini baru terasa di perangkat target. Uji build di perangkat paling lemah yang kamu dukung."
+sidebar:
+  order: 5
+  label: "5 · Dari Aplikasi ke Engine"
+quiz:
+  - q: "Tekstur 2048 × 2048 dengan mipmap aktif dikompresi ke BC7, yang menurut tabel Unity memakai 8 bit per piksel. Berapa kira-kira memori GPU yang dipakai?"
+    options:
+      - "Sekitar 21,3 MiB, sama seperti tanpa kompresi"
+      - "Sekitar 5,3 MiB: 2048 × 2048 × 1 byte = 4 MiB, ditambah sekitar sepertiga untuk mipmap"
+      - "Sekitar 1 MiB, karena BC7 selalu 1 MiB"
+      - "Sama dengan ukuran file PNG di disk"
+    answer: 1
+    explain: "8 bit per piksel sama dengan 1 byte per piksel. 2048 × 2048 × 1 byte = 4.194.304 byte = 4 MiB. Mipmap menambah sekitar 33% menurut dokumentasi Unity dan Godot, jadi totalnya sekitar 5,3 MiB. Angka 1 MB di tabel Unity berlaku untuk tekstur 1024 × 1024. Tanpa kompresi (RGBA 32 bit, 4 byte per piksel), tekstur yang sama memakan sekitar 21,3 MiB."
+  - q: "Di Godot, sebuah tekstur latar 2D yang besar diubah dari mode Lossless ke Lossy. Ukuran proyek di disk turun banyak. Apa yang terjadi pada memori GPU?"
+    options:
+      - "Turun dengan perbandingan yang sama seperti ukuran di disk"
+      - "Tidak berubah. Dokumentasi Godot menyebut mode Lossy tidak mengurangi pemakaian memori video, hanya ukuran file"
+      - "Naik, karena file harus didekompresi dua kali"
+      - "Turun 4 sampai 6 kali, sama seperti VRAM Compressed"
+    answer: 1
+    explain: "Lossless dan Lossy menyimpan gambar sebagai WebP atau PNG di disk. Saat dimuat, gambar dibuka kembali menjadi piksel mentah di memori GPU, jadi pemakaian memorinya sama. Hanya VRAM Compressed dan Basis Universal yang menyimpan tekstur dalam format terkompresi yang bisa dibaca GPU langsung, sehingga memori turun."
+  - q: "Artist mengekspor ulang tekstur peti di Unity dengan nama baru, peti_v2.png, lalu menghapus peti.png lewat file explorer. Setelah itu material peti kehilangan teksturnya. Kenapa?"
+    options:
+      - "Unity tidak bisa membaca file PNG yang diekspor ulang"
+      - "Referensi material terikat pada ID aset di file .meta milik peti.png. File baru mendapat ID baru, dan pengaturan impornya kembali ke bawaan"
+      - "Nama file tekstur di Unity harus berakhiran _BaseColor"
+      - "Material harus dibuat ulang setiap kali tekstur diekspor"
+    answer: 1
+    explain: "Dokumentasi Unity menjelaskan bahwa file .meta menyimpan ID unik aset dan semua pengaturan impornya. Kalau file .meta hilang, referensi ke aset itu putus, dan material yang memakai tekstur itu harus diisi ulang manual. Cara aman: ekspor ulang dengan nama dan lokasi yang sama, sehingga file lama tertimpa dan .meta tetap berlaku."
+  - q: "Game ponsel memakai tekstur yang diatur ke format yang tidak didukung GPU sebagian perangkat target. Menurut dokumentasi Unity, apa akibatnya di perangkat itu?"
+    options:
+      - "Tekstur tidak tampil sama sekali"
+      - "Unity mendekompresi tekstur ke format tanpa kompresi dan menyimpan salinan itu di memori bersama tekstur aslinya, sehingga waktu muat dan memori bertambah"
+      - "GPU tetap membaca format itu dengan kecepatan sama"
+      - "Unity otomatis mengecilkan tekstur ke separuh ukuran"
+    answer: 1
+    explain: "Dokumentasi Unity menyebut tekstur dengan format yang tidak didukung perangkat akan didekompresi ke format tanpa kompresi bawaan platform, dan salinan itu disimpan di memori bersama tekstur asli. Karena itu, pilih format yang didukung perangkat target, misalnya lewat tab override per platform di pengaturan impor."
+  - q: "Sebuah ikon UI 512 × 512 selalu tampil dengan ukuran aslinya, tidak pernah diperkecil. Mipmap-nya aktif. Apa yang sebaiknya dilakukan?"
+    options:
+      - "Biarkan aktif, karena mipmap selalu mempercepat render"
+      - "Matikan mipmap. Mipmap menambah sekitar 33% memori dan tidak membantu tekstur yang selalu tampil di resolusi penuh"
+      - "Naikkan ukuran ke 1024 supaya mipmap lebih berguna"
+      - "Ganti filter ke Trilinear"
+    answer: 1
+    explain: "Dokumentasi Unity menyebut mipmap menambah ukuran tekstur 33% di disk dan di memori, dan tidak memberi manfaat untuk tekstur yang hanya dirender di resolusi penuh, seperti tekstur UI yang tidak diskalakan. Dokumentasi Godot juga menyarankan mipmap di 2D hanya jika proyek memang terlihat terbantu olehnya."
+  - q: "Tekstur base color 1000 × 1000 dari Krita diimpor ke Unity untuk platform yang tidak mendukung ukuran bukan pangkat dua. Apa yang paling mungkin terjadi, dan apa perbaikannya?"
+    options:
+      - "Tidak ada yang terjadi, semua GPU mendukung semua ukuran"
+      - "Unity memperbesar dan menambal tekstur ke pangkat dua berikutnya, sehingga memori dan waktu muat bertambah. Perbaikannya, ekspor dari file sumber dengan ukuran 1024 × 1024"
+      - "Unity memotong tekstur menjadi 512 × 512"
+      - "Tekstur otomatis dikompresi dengan Crunch"
+    answer: 1
+    explain: "Dokumentasi Unity menyarankan ukuran pangkat dua di setiap sisi. Jika platform atau GPU tidak mendukung ukuran bukan pangkat dua, Unity menskalakan dan menambal tekstur ke pangkat dua berikutnya, yang memakai lebih banyak memori dan memperlambat pemuatan. Unity juga mensyaratkan ukuran pangkat dua untuk membuat mipmap otomatis. Memperbaikinya di file sumber berarti hasilnya benar di semua engine."
+sources:
+  - title: "Sprite sheets"
+    url: "https://www.aseprite.org/docs/sprite-sheet/"
+    publisher: "Aseprite Documentation"
+    accessed: 2026-10-31
+  - title: "Aseprite Command Line Interface"
+    url: "https://www.aseprite.org/docs/cli/"
+    publisher: "Aseprite Documentation"
+    accessed: 2026-10-31
+  - title: "Contoh keluaran --data (json-hash), ditautkan dari halaman CLI Aseprite"
+    url: "https://gist.github.com/dacap/db18e5747a4b6e208d3c"
+    publisher: "David Capello, GitHub Gist"
+    accessed: 2026-10-31
+  - title: "Introduction to Aseprite Importer (2D Aseprite Importer 1.1)"
+    url: "https://docs.unity3d.com/Packages/com.unity.2d.aseprite@1.1/manual/index.html"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "*.kra"
+    url: "https://docs.krita.org/en/general_concepts/file_formats/file_kra.html"
+    publisher: "Krita Manual"
+    accessed: 2026-10-31
+  - title: "*.png"
+    url: "https://docs.krita.org/en/general_concepts/file_formats/file_png.html"
+    publisher: "Krita Manual"
+    accessed: 2026-10-31
+  - title: "Working with Images"
+    url: "https://docs.krita.org/en/user_manual/working_with_images.html"
+    publisher: "Krita Manual"
+    accessed: 2026-10-31
+  - title: "Python Plugins (default)"
+    url: "https://docs.krita.org/en/reference_manual/default_python_plugins.html"
+    publisher: "Krita Manual"
+    accessed: 2026-10-31
+  - title: "Color Managed Workflow"
+    url: "https://docs.krita.org/en/general_concepts/colors/color_managed_workflow.html"
+    publisher: "Krita Manual"
+    accessed: 2026-10-31
+  - title: "glTF 2.0"
+    url: "https://docs.blender.org/manual/en/latest/addons/scene_gltf2.html"
+    publisher: "Blender Manual"
+    accessed: 2026-10-31
+  - title: "Collections (Exporters)"
+    url: "https://docs.blender.org/manual/en/latest/scene_layout/collections/collections.html"
+    publisher: "Blender Manual"
+    accessed: 2026-10-31
+  - title: "Import a texture"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/importing-textures"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Default texture Import Settings window reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/textures-reference/texture-type-default"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Platform-specific texture overrides panel reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/textures-reference/class-texture-importer/type-specific"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "GPU texture format fundamentals"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/textures-getting-started/texture-compression-formats/fundamentals"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "GPU texture formats reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/textures-getting-started/texture-compression-formats/texture-formats-reference"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Mipmaps"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/textures-getting-started/texture-mipmaps-introduction"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Sprite Atlas Inspector window reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/atlas/sprite-atlas-reference"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Asset metadata"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/assets-and-media/import-assets/asset-metadata"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Presets"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/assets-and-media/presets"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Importing images"
+    url: "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_images.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "ResourceImporterTexture"
+    url: "https://docs.godotengine.org/en/stable/classes/class_resourceimportertexture.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "Import process"
+    url: "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/import_process.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "Project organization"
+    url: "https://docs.godotengine.org/en/stable/tutorials/best_practices/project_organization.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Membedakan file sumber dan file ekspor, lalu menyusun nama dan folder supaya keduanya tidak tertukar.
+- Mengekspor sprite sheet dan data JSON dari Aseprite, gambar dari Krita, dan model glTF dari Blender dengan cara yang bisa diulang.
+- Mengekspor ulang aset tanpa kehilangan pengaturan impor dan referensi di engine.
+- Mengatur ukuran maksimum, kompresi, filter, dan mipmap tekstur di Unity, Godot, dan Unreal.
+- Menghitung memori GPU sebuah tekstur dari ukuran, format, dan mipmap, lalu membandingkan pilihan kompresi.
+- Menjelaskan kenapa ukuran pangkat dua disarankan untuk tekstur.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: naskah dan buku cetak">
+Penulis menyimpan naskah dengan semua catatan, revisi, dan bab yang dicoret. Percetakan hanya menerima berkas siap cetak dengan ukuran kertas dan jenis tinta yang sudah ditentukan. Kalau ada salah ketik, penulis memperbaiki naskah lalu mengirim berkas cetak yang baru. Tidak ada yang memperbaiki buku dengan menempelkan kertas di atas halaman yang sudah dicetak.
+</Aside>
+
+Empat pelajaran sebelumnya membahas cara membuat aset: [pixel art](/belajar/seni-visual/01-pixel-art/), [sprite dan atlas 2D](/belajar/seni-visual/02-game-2d/), [2.5D](/belajar/seni-visual/03-2-5d/), dan [model 3D](/belajar/seni-visual/04-aset-3d/). Setiap pelajaran itu juga membahas pengaturan impor untuk gayanya sendiri, misalnya filter Point untuk pixel art, atau skala dan sumbu untuk model dari Blender. Pelajaran ini melihat jalurnya secara utuh, dengan fokus pada dua hal yang berlaku untuk semua gaya: cara file berpindah dari aplikasi ke engine, dan berapa memori yang dipakai tekstur setelah sampai di sana.
+
+Jalurnya kira-kira seperti ini:
+
+```text title="Pseudocode: jalur aset dari aplikasi ke GPU"
+file sumber   → .aseprite, .kra, .blend: lapisan, riwayat, pengaturan
+ekspor        → .png, .json, .glb/.gltf: hasil rata yang dibaca engine
+impor         → engine membaca file ekspor dan pengaturan impornya
+format GPU    → engine mengubah piksel ke format yang dibaca GPU
+memori GPU    → lebar × tinggi × byte per piksel, ditambah mipmap
+```
+
+Dua baris terakhir sering terlewat. GPU tidak membaca file PNG di folder proyek. Engine mengubahnya ke format lain saat impor atau saat game dimuat, dan format itulah yang menentukan memori dan kualitas di perangkat pemain.
+
+## File sumber dan file ekspor
+
+**File sumber** adalah file kerja di aplikasi pembuatnya. File ini menyimpan semua yang dibutuhkan untuk mengubah aset nanti: lapisan, tag animasi, modifier, riwayat, dan pengaturan. **File ekspor** adalah hasil rata yang dibaca engine.
+
+| Aplikasi | File sumber | Isi yang hanya ada di file sumber | File ekspor umum |
+| --- | --- | --- | --- |
+| Aseprite | `.aseprite` / `.ase` | Lapisan, tag animasi, slice, palet | `.png` sprite sheet + `.json` |
+| Krita | `.kra` | Lapisan, mask, filter layer, ruang warna per lapisan | `.png` |
+| Blender | `.blend` | Modifier, high poly, kamera, lampu, pengaturan ekspor | `.glb` atau `.gltf` + `.bin` + tekstur |
+
+Manual Krita menyebut `.kra` sebagai format internal yang menyimpan semua fitur yang bisa ditangani Krita, dan sebagian besar aplikasi lain tidak bisa membukanya. Isinya adalah arsip yang bisa dibuka sebagai `.zip`, dan di dalamnya ada `mergedimage.png` berisi gambar rata seperti yang tampil di kanvas. Hal serupa berlaku untuk dua aplikasi lain: file ekspor kehilangan lapisan dan pengaturan yang membuat aset bisa diubah dengan mudah.
+
+Aturan dasarnya:
+
+- **File sumber adalah sumber kebenaran.** Semua perubahan dimulai dari file sumber, lalu diekspor ulang. PNG hasil ekspor tidak diedit langsung.
+- **File sumber disimpan dan dicadangkan.** File ini besar dan biner, jadi biasanya dilacak dengan Git LFS atau sistem lain yang dibahas di [Pelajaran 4 Produksi](/belajar/produksi/04-alat-kerja/#git-dan-git-lfs).
+- **File ekspor bisa dibuat ulang.** Kalau file ekspor hilang, kamu cukup mengekspor lagi. Kalau file sumber hilang, kamu hanya punya hasil akhir.
+
+### Engine yang membaca file sumber langsung
+
+Beberapa engine bisa mengimpor file sumber tanpa langkah ekspor:
+
+- **Unity** meratakan file PSD dan TIFF berlapis saat impor, tanpa mengubah file aslinya, sehingga satu file bisa dipakai di aplikasi gambar dan di Unity sekaligus. Paket **2D Aseprite Importer** mengimpor file `.ase` dan `.aseprite`. Menurut dokumentasi paket versi 1.1, paket ini sudah terpasang saat membuat proyek 2D atau 2D URP baru di Unity 2021.3.28f1, 2022.3.2f1, atau versi yang lebih baru.
+- **Godot** dan **Unity** bisa mengimpor `.blend` jika Blender terpasang di komputer setiap anggota tim, seperti dibahas di [Pelajaran 4](/belajar/seni-visual/04-aset-3d/#format).
+
+Cara ini menghemat satu langkah, dengan harga yang perlu dipertimbangkan: setiap orang yang membuka proyek butuh aplikasi yang sama, hasil impor bisa bergantung pada versi aplikasi itu, dan file sumber yang besar ikut masuk ke folder proyek engine. Banyak tim memakai impor langsung untuk aset yang sering berubah selama prototipe, lalu beralih ke file ekspor saat produksi berjalan. Keduanya sah, asal tim memilih satu cara per jenis aset dan menuliskannya.
+
+## Penamaan dan susunan folder
+
+Nama dan folder menentukan apakah orang lain bisa menemukan aset, dan apakah ekspor ulang menimpa file yang benar. Aturan penamaan umum untuk aset 3D, termasuk akhiran yang dibaca importer, sudah dibahas di [Pelajaran 4](/belajar/seni-visual/04-aset-3d/#penamaan-dan-susunan-file). Bagian ini menambahkan hubungan antara file sumber dan file ekspor.
+
+**Satu file sumber, satu nama dasar.** File ekspor memakai nama dasar yang sama dengan file sumbernya, supaya asal setiap file jelas:
+
+```text title="Contoh: susunan folder dengan sumber terpisah dari proyek engine"
+proyek-game/
+  sumber/                         ← file kerja, dilacak Git LFS
+    karakter/pedagang/pedagang.aseprite
+    prop/tong_kayu/tong_kayu.blend
+    prop/tong_kayu/tong_kayu_basecolor.kra
+  game/                           ← folder proyek engine
+    karakter/pedagang/pedagang.png
+    karakter/pedagang/pedagang.json
+    prop/tong_kayu/tong_kayu.gltf
+    prop/tong_kayu/tong_kayu.bin
+    prop/tong_kayu/tong_kayu_basecolor.png
+```
+
+**Huruf kecil dan tanpa spasi.** Dokumentasi Godot menyarankan `snake_case` untuk nama folder dan file, karena Windows dan macOS umumnya tidak membedakan huruf besar-kecil, sedangkan sistem file virtual PCK di game Godot yang sudah diekspor membedakannya. File bernama `Tong.png` yang dipanggil sebagai `tong.png` bisa berjalan di editor lalu gagal di build. Tim yang memakai pola lain, misalnya awalan `T_` dan `SM_` seperti di Pelajaran 4, tetap aman asal penulisannya konsisten.
+
+**Simpan file sumber di tempat yang tidak diimpor engine.** Unity mengimpor file gambar di dalam folder `Assets`, dan Godot mengimpor semua file yang bisa diimpornya di folder proyek. File sumber yang ikut terimpor menambah waktu impor dan bisa ikut terbawa ke build. Dua pilihan yang umum:
+
+- Taruh folder `sumber/` di luar folder proyek engine, seperti contoh di atas.
+- Di Godot, folder di dalam proyek bisa diabaikan dengan file kosong bernama `.gdignore`. Menurut dokumentasi Godot, folder itu tidak diimpor, tidak tampil di dock FileSystem, dan isinya tidak ikut diekspor bersama proyek.
+
+## Ekspor dari Aseprite
+
+Untuk animasi dan sprite, Aseprite mengekspor dua file: gambar sprite sheet, dan data JSON yang menjelaskan letak setiap frame di gambar itu. Cara kerja [sprite sheet](/kamus/2d/sprite-sheet/) dan [atlas](/kamus/2d/sprite-atlas/) di engine dibahas di [Pelajaran 2](/belajar/seni-visual/02-game-2d/#sprite-sheet-atlas-dan-packing).
+
+**Lewat antarmuka.** Menu **File → Export Sprite Sheet** membuka dialog ekspor. Menurut dokumentasi Aseprite, kamu bisa memilih semua lapisan yang terlihat atau satu lapisan saja, dan memilih frame berdasarkan tag.
+
+**Lewat baris perintah.** Aseprite punya antarmuka baris perintah (CLI) yang menjalankan ekspor yang sama tanpa membuka jendela program. Opsi `-b` (`--batch`) menjalankan Aseprite hanya untuk memproses perintah lalu selesai, dan dokumentasinya menyebut opsi ini berguna untuk mengotomatiskan pembuatan sprite sheet dari skrip.
+
+```bash title="Mengekspor sprite sheet dan data JSON lewat CLI Aseprite"
+aseprite -b --list-tags sumber/karakter/pedagang/pedagang.aseprite \
+  --sheet-type rows --shape-padding 2 \
+  --sheet game/karakter/pedagang/pedagang.png \
+  --data game/karakter/pedagang/pedagang.json \
+  --format json-array
+```
+
+Arti setiap opsi, menurut dokumentasi CLI Aseprite:
+
+- `--sheet` menyimpan semua gambar yang disebut sebelum opsi ini ke satu file sprite sheet. File yang sudah ada akan ditimpa.
+- `--data` menyimpan informasi sprite sheet dalam format JSON. `--format` memilih `json-hash` (bawaan) atau `json-array`.
+- `--list-tags` memasukkan daftar tag animasi ke bagian `meta` di JSON, lengkap dengan frame awal dan akhirnya. Opsi ini ditulis sebelum nama file yang dimaksud.
+- `--sheet-type` memilih susunan: `horizontal`, `vertical`, `rows`, `columns`, atau `packed`. `--sheet-pack` memakai algoritme pengemasan untuk menghindari ruang kosong.
+- `--shape-padding` memberi jarak antar-frame dalam piksel, `--border-padding` memberi bingkai di sekeliling sheet, dan `--inner-padding` memberi bingkai di setiap frame.
+- `--sheet-width` dan `--sheet-height` menetapkan ukuran sheet dalam piksel.
+
+Contoh keluaran yang ditautkan dari dokumentasi CLI menunjukkan isi setiap frame di JSON: posisi dan ukuran potongan di sheet (`frame`), ukuran asli sebelum di-trim (`sourceSize`), dan durasi frame (`duration`).
+
+**Siapa yang membaca JSON itu.** Format JSON ini milik Aseprite, jadi engine tidak otomatis memahaminya. Unity punya 2D Aseprite Importer yang membaca file `.aseprite` langsung, sehingga JSON tidak dibutuhkan di jalur itu. Di engine lain, JSON dibaca oleh plugin importer atau skrip buatan tim, yang memotong sheet menjadi frame dan membuat animasi dari tag. Kalau tidak ada yang membaca JSON, kamu harus memotong sheet secara manual di engine, dan setiap perubahan susunan frame berarti memotong ulang.
+
+## Ekspor dari Krita
+
+Krita sering dipakai untuk melukis tekstur, ilustrasi latar, karakter 2D beresolusi tinggi, dan elemen UI.
+
+**Save dan Export.** **File → Save** menyimpan `.kra` dengan semua lapisannya. Menurut manual Krita, **File → Export…** menyimpan salinan ke lokasi lain tanpa membukanya sebagai dokumen aktif, sehingga kamu bisa terus bekerja di file berlapis dan hanya mengirim versi rata ke engine. **Export Advanced…** menambahkan pilihan memotong dan mengubah ukuran saat ekspor.
+
+**PNG untuk engine.** Manual Krita menjelaskan PNG sebagai format lossless yang menyimpan semua warna gambar dengan tepat dan mendukung transparansi alpha penuh. Ini cocok untuk engine, karena kompresi untuk GPU dilakukan oleh engine sendiri saat impor. Satu catatan dari dokumentasi Godot: presisi PNG dibatasi 8 bit per channel saat diimpor ke Godot, jadi mengekspor PNG 16 bit untuk tekstur biasa tidak menambah apa pun di sana.
+
+**Banyak lapisan menjadi banyak file.** Untuk sprite atau UI yang dilukis dalam satu dokumen dengan banyak lapisan, Krita menyertakan plugin Python bawaan:
+
+- **Batch Exporter**, yang menurut manual Krita ditujukan untuk game developer dan desainer grafis. Plugin ini mengekspor aset ke beberapa ukuran, jenis file, dan lokasi sekaligus, bisa mengekspor semua lapisan atau lapisan terpilih, dan secara bawaan menaruh hasilnya di folder ekspor di sebelah dokumen Krita dengan susunan mengikuti tumpukan lapisan.
+- **Export Layers**, yang mengekspor lapisan dokumen secara berurutan.
+
+**Ruang warna.** Bagian *Games* di halaman alur kerja warna manual Krita menyarankan ruang kerja sRGB, atau grayscale linear untuk roughness dan specular map, dan gambar yang dikirim ke engine dalam sRGB atau grayscale. Untuk normal map, height map, dan peta data seperti metalness dan roughness, manual itu menyarankan agar engine diberi tahu bahwa gambar tersebut linear, atau setidaknya tidak dikonversi. Pengaturannya di engine dijelaskan di Kamus [Color Space](/kamus/cahaya/color-space/) dan di tabel tekstur PBR [Pelajaran 4](/belajar/seni-visual/04-aset-3d/#tekstur-pbr).
+
+## Ekspor dari Blender
+
+Persiapan model sebelum ekspor (satuan, apply transform, sumbu, normal, triangulasi) dan pengaturan importer model di setiap engine sudah dibahas di [Pelajaran 4](/belajar/seni-visual/04-aset-3d/#ekspor-dan-impor). Bagian ini membahas pilihan file dan tekstur di eksporter glTF.
+
+**Tiga bentuk file glTF.** Manual Blender menjelaskan tiga pilihan **Format**:
+
+| Format | Isi | Kapan dipakai |
+| --- | --- | --- |
+| **glTF Binary** (`.glb`) | Satu file biner berisi mesh, tekstur, dan data lain | Mudah dibagikan atau disalin sebagai satu file |
+| **glTF Separate** (`.gltf` + `.bin` + tekstur) | File teks JSON untuk struktur, `.bin` untuk data mesh, dan file gambar terpisah | Lebih mudah mengedit JSON atau gambar setelah ekspor, tetapi semua file harus dibagikan bersama |
+| **glTF Embedded** (`.gltf`) | Satu file teks dengan data biner dikodekan Base64 | Menurut manual, bentuk paling tidak efisien. Hanya muncul jika diaktifkan di preferensi add-on |
+
+Untuk glTF Separate, opsi **Textures** menentukan folder tempat file tekstur ditulis, relatif terhadap file `.gltf`. Bentuk ini membuat tekstur menjadi file sendiri di proyek engine, sehingga setiap tekstur bisa diberi pengaturan impor sendiri dan diganti tanpa mengekspor ulang mesh.
+
+**Format gambar.** Manual Blender mencatat bahwa glTF mensyaratkan tekstur material dalam format PNG atau JPEG, dan add-on mengonversi format lain secara otomatis. Opsi **Images** memilih format keluaran: PNG lossless dan umumnya lebih disukai, JPEG menghasilkan file lebih kecil, WebP menyimpan semua tekstur sebagai WebP tanpa cadangan PNG atau JPEG, dan **None** mengekspor material tanpa tekstur. Seperti PNG dari Krita, format file di sini hanya memengaruhi ukuran di disk dan kualitas sumber. Memori di GPU ditentukan pengaturan impor engine.
+
+**Menyimpan pengaturan ekspor.** Dua fitur Blender membuat ekspor bisa diulang dengan pengaturan yang sama:
+
+- **Remember Export Settings** menyimpan pengaturan ekspor di file `.blend`, sehingga pengaturan itu muncul lagi saat file dibuka berikutnya.
+- **Collection Exporters**: setiap collection bisa diberi satu atau beberapa eksporter, termasuk glTF 2.0 dan FBX. Manual Blender menyebut panel ini menyederhanakan ekspor ulang aset yang sama berulang kali, misalnya saat membuat aset glTF untuk game. Tombol **Export All** mengekspor semua eksporter di collection aktif, dan **File → Export All Collections** mengekspor semuanya sekaligus.
+
+## Ekspor ulang tanpa kejutan
+
+Aset jarang selesai dalam satu kali ekspor. Warna diubah, frame ditambah, segitiga dikurangi. Setiap perubahan berarti ekspor ulang, dan di sinilah banyak masalah kecil muncul: jarak antar-frame berbeda dari ekspor sebelumnya, lapisan sketsa ikut terekspor, atau nama file berubah sehingga engine menganggapnya aset baru.
+
+Ekspor yang **bisa diulang** berarti siapa pun yang menjalankan langkah yang sama dari file sumber yang sama akan mendapat file ekspor yang sama. Ini penting karena tiga alasan:
+
+- **Orang lain bisa melanjutkan.** Kalau artist yang membuat aset sedang tidak ada, anggota tim lain tetap bisa memperbaiki dan mengekspor tanpa menebak pengaturannya.
+- **Perubahan bisa dilacak.** Kalau hasil di engine berubah, kamu tahu penyebabnya ada di file sumber, karena langkah ekspornya tetap.
+- **Ekspor massal menjadi mungkin.** Mengganti padding untuk seratus sprite sheet cukup dengan mengubah satu skrip, lalu menjalankannya lagi.
+
+### Di sisi aplikasi
+
+| Aplikasi | Cara menyimpan langkah ekspor |
+| --- | --- |
+| Aseprite | Perintah CLI dengan `-b` di file skrip yang disimpan di repositori |
+| Krita | Batch Exporter dengan lokasi dan ukuran yang tetap |
+| Blender | Collection Exporters dan Remember Export Settings, tersimpan di file `.blend` |
+
+### Di sisi engine
+
+Engine menyimpan pengaturan impor di file pendamping, di sebelah file ekspor:
+
+- **Unity** membuat file `.meta` untuk setiap aset di folder `Assets`. Menurut dokumentasi Unity, file ini menyimpan ID unik aset dan semua pengaturan impornya. Kalau sebuah tekstur kehilangan `.meta`-nya, material yang memakainya kehilangan referensi ke tekstur itu dan harus diisi ulang manual. Memindahkan atau mengganti nama aset di luar Unity berarti file `.meta` harus ikut dipindahkan.
+- **Godot** membuat file `<nama aset>.import` di sebelah file sumber, berisi konfigurasi impor. Dokumentasi Godot meminta file ini ikut di-commit ke version control. Saat checksum MD5 file berubah, Godot mengimpor ulang aset secara otomatis dengan pengaturan yang sama. Hasil impornya disimpan di folder tersembunyi `res://.godot/imported/`, yang tidak disarankan untuk di-commit.
+
+Akibatnya untuk alur ekspor ulang: **timpa file lama dengan nama dan lokasi yang sama.** Engine akan mendeteksi perubahan, mengimpor ulang dengan pengaturan yang tersimpan, dan semua referensi tetap utuh. Mengekspor ke nama baru seperti `pedagang_final2.png` lalu menghapus yang lama membuang pengaturan impor dan memutus referensi.
+
+**Pengaturan bawaan per jenis aset.** Supaya aset baru langsung mendapat pengaturan yang benar, kedua engine menyediakan cara mengatur nilai bawaan. Unity punya **Presets**, yang menurut dokumentasinya bisa dipakai sebagai pengaturan impor bawaan dan diterapkan berdasarkan lokasi folder aset. Godot punya menu **Preset…** di dock Import dan tab **Import Defaults** di Project Settings untuk mengubah nilai bawaan per jenis aset.
+
+## Pengaturan impor tekstur di engine
+
+Pengaturan impor menentukan format yang dipakai GPU, jadi pengaturan ini yang paling menentukan memori dan kualitas. Pengaturan khusus pixel art (filter Point atau Nearest, tanpa mipmap, tanpa kompresi) ada di [Pelajaran 1](/belajar/seni-visual/01-pixel-art/#menyiapkan-proyek-di-tiap-engine), dan pengaturan atlas sprite ada di [Pelajaran 2](/belajar/seni-visual/02-game-2d/#pengaruhnya-ke-memori). Bagian ini membahas pengaturan umum untuk semua tekstur.
+
+Pengaturan yang perlu dicek untuk setiap tekstur, di engine mana pun:
+
+| Pengaturan | Pertanyaan yang dijawab |
+| --- | --- |
+| Ukuran maksimum | Berapa piksel terbesar yang dipakai di perangkat target? |
+| Kompresi dan format | Format GPU apa yang dipakai, dan apakah didukung perangkat target? |
+| Ruang warna | Apakah tekstur ini warna (sRGB) atau data (linear)? |
+| Mipmap | Apakah tekstur ini pernah tampil lebih kecil dari ukuran aslinya? |
+| Filter | Halus (bilinear, trilinear) atau tegas (point, nearest)? |
+
+<EngineTabs>
+<div slot="unity">
+
+Pilih tekstur di jendela Project. Di proyek 3D, Unity mengimpor gambar sebagai **Texture**, dan di proyek 2D sebagai **Sprite**.
+
+**Bagian atas (Texture Type: Default)**
+
+- **sRGB (Color Texture)**: aktifkan untuk tekstur warna seperti albedo, matikan untuk tekstur yang menyimpan nilai yang perlu dibaca tepat.
+- **Non Power of 2**: cara Unity menskalakan tekstur yang ukurannya bukan pangkat dua. Pilihannya **None**, **To nearest**, **To larger**, dan **To smaller**. Contoh di dokumentasi: tekstur 257 × 511 menjadi 256 × 512 dengan To nearest.
+- **Read/Write**: bawaannya mati. Jika aktif, Unity menyimpan salinan data tekstur untuk skrip, sehingga memori yang dibutuhkan menjadi dua kali lipat.
+- **Generate Mipmap**: membuat mipmap. **Mipmap Filtering** memilih **Box** (lebih halus) atau **Kaiser** (lebih tajam untuk tekstur yang terlalu buram dari jauh).
+- **Filter Mode**: **Point (no filter)**, **Bilinear**, atau **Trilinear**. Trilinear juga mencampur antar-tingkat mipmap.
+- **Aniso Level**: kualitas tekstur yang dilihat dari sudut miring, misalnya lantai. Dokumentasi Unity menyebut pengaturan ini berguna untuk lantai dan tanah, tetapi berat.
+
+**Panel bawah (tab Default dan tab per platform)**
+
+- **Max Size**: ukuran maksimum tekstur hasil impor dalam piksel. Jika file lebih besar, Unity mengecilkannya dengan **Resize Algorithm** (Mitchell sebagai bawaan, atau Bilinear). File sumbernya tidak berubah.
+- **Format**: bawaannya **Automatic**, yang memilih format dari jumlah channel tekstur dan pengaturan **Compression**.
+- **Compression**: **None**, **Low Quality**, **Normal Quality**, atau **High Quality**. Menurut tabel format bawaan Unity, untuk Windows, Linux, dan macOS, Normal Quality memilih DXT1 untuk tekstur RGB dan DXT5 untuk RGBA, sedangkan High Quality memilih BC7. Untuk Android dan iOS, pilihan ASTC di tabel itu adalah 6x6 untuk Normal Quality, 4x4 untuk High Quality, dan 8x8 untuk Low Quality, dengan ETC2, ETC, atau PVRTC sebagai alternatif menurut konfigurasi platform.
+- **Use Crunch Compression**: memperkecil ukuran di disk. Dokumentasi Unity menegaskan bahwa Crunch tidak berpengaruh pada pemakaian memori saat game berjalan, karena tekstur didekompresi ke DXT atau ETC di CPU sebelum dikirim ke GPU.
+- Tab per platform: centang **Override for** nama platform, lalu atur Max Size dan Format khusus untuk platform itu. Dengan cara ini, tekstur yang sama bisa memakai 2048 di desktop dan 1024 di ponsel tanpa dua file sumber.
+
+**Sprite Atlas** punya Max Texture Size, Format, Compression, Generate Mip Maps, dan Filter Mode sendiri, terpisah dari pengaturan setiap sprite di dalamnya. Atlas tidak menjadi lebih kecil dari sprite terbesar di dalamnya: jika ada sprite yang lebih besar dari Max Texture Size, Unity mengabaikan nilai itu dan memakai ukuran terkecil yang memuat sprite tersebut.
+
+</div>
+<div slot="unreal">
+
+Klik dua kali aset tekstur di Content Browser untuk membuka Texture Editor. Pengaturan yang setara dengan engine lain:
+
+- **Compression Settings** memilih format GPU menurut isi tekstur. Ada pilihan untuk tekstur warna biasa, normal map, tekstur data yang dikemas per channel (Masks), tekstur grayscale, dan UI 2D yang tidak dikompresi.
+- **sRGB** dicentang untuk tekstur warna dan dimatikan untuk tekstur data.
+- **Mip Gen Settings** menentukan cara mipmap dibuat, termasuk pilihan tanpa mipmap untuk UI dan pixel art.
+- **Maximum Texture Size** membatasi ukuran yang dipakai tanpa mengubah file sumber.
+- **LOD Group** (Texture Group) memberi aturan bersama, misalnya filter dan batas ukuran, untuk satu kelompok tekstur seperti UI atau karakter.
+
+Unreal umumnya membutuhkan ukuran pangkat dua agar tekstur punya mipmap dan bisa di-stream. Texture Editor menampilkan ukuran dan format hasil impor, yang bisa dipakai untuk menghitung memori seperti di bagian berikutnya.
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-31): nama dan pilihan Compression Settings (Default, Normalmap, Masks, Grayscale, UserInterface2D, BC7, HDR) beserta format BC yang dipilih, kotak centang sRGB, Mip Gen Settings (FromTextureGroup, NoMipmaps), Maximum Texture Size, LOD Group / Texture Group, syarat ukuran pangkat dua untuk mipmap dan texture streaming, informasi ukuran dan format di Texture Editor, serta membuka Texture Editor dengan klik dua kali aset di Content Browser. */}
+
+</div>
+<div slot="godot">
+
+Pilih gambar di dock FileSystem, atur di dock **Import**, lalu klik **Reimport**. Pengaturan hilang jika kamu memilih file lain sebelum mengklik Reimport. Beberapa file bisa dipilih sekaligus, dan dock Import menampilkan kotak centang untuk mengubah hanya parameter tertentu.
+
+**Compress → Mode**
+
+| Mode | Disimpan di disk sebagai | Memori GPU | Catatan dari dokumentasi Godot |
+| --- | --- | --- | --- |
+| **Lossless** | WebP atau PNG lossless | Besar | Bawaan untuk 2D, disarankan untuk pixel art |
+| **Lossy** | WebP lossy | Besar | File di disk beberapa kali lebih kecil, tetapi memori video tidak berkurang |
+| **VRAM Compressed** | S3TC, BPTC, atau ETC2, tergantung platform | Kecil | Bawaan untuk 3D, memori turun sekitar 4 sampai 6 kali. Hindari untuk 2D karena artefaknya terlihat |
+| **VRAM Uncompressed** | Piksel mentah | Besar | Hanya berguna untuk format yang tidak bisa dikompresi, seperti gambar floating point |
+| **Basis Universal** | Format yang diubah ke format GPU saat dimuat | Kecil | File sangat kecil, kualitas lebih rendah dari VRAM Compressed |
+
+- **Compress → High Quality**: jika aktif, memakai BPTC (BC7) di desktop dan ASTC di ponsel. Jika mati (bawaan), memakai S3TC di desktop (DXT1 untuk tekstur opak, DXT5 untuk tekstur transparan) dan ETC2 di ponsel dan web. Hanya didukung renderer Forward+ dan Mobile.
+- **Compress → Normal Map**: bawaannya **Detect**. Tekstur yang terdeteksi dipakai sebagai normal map diimpor ulang dengan kompresi RGTC, yang menurut dokumentasi menjaga detail normal map jauh lebih baik dengan memori yang sama seperti tekstur RGBA terkompresi biasa.
+- **Mipmaps → Generate**: membuat mipmap saat impor. Disarankan untuk 3D. Di 2D, aktifkan hanya jika kamera memang memperkecil tekstur.
+- **Process → Size Limit**: membatasi ukuran tekstur saat impor tanpa mengubah file sumber. Dokumentasi Godot mencatat bahwa platform ponsel dan web biasanya tidak bisa menampilkan tekstur di atas 4096 × 4096.
+- **Detect 3D**: tekstur yang dipakai di material 3D otomatis diubah ke mipmap aktif dan VRAM Compressed, kecuali **Detect 3D → Compress To** diubah.
+
+**Filter tidak diatur di dock Import.** Sejak Godot 4.0, filter dan mode pengulangan tekstur diatur di properti CanvasItem untuk 2D (dengan nilai bawaan di Project Settings), dan per material untuk 3D.
+
+Untuk melihat memori sebuah tekstur, klik dua kali tekstur itu di dock FileSystem, lalu lihat di Inspector.
+
+</div>
+</EngineTabs>
+
+## Menghitung memori tekstur
+
+Memori sebuah tekstur di GPU bisa dihitung sebelum aset dibuat. Rumusnya sederhana:
+
+```text title="Pseudocode: memori satu tekstur di GPU"
+byte_per_piksel = bit_per_piksel_format / 8
+memori          = lebar × tinggi × byte_per_piksel
+jika mipmap:      memori = memori × 4/3        // sekitar +33%
+```
+
+Angka `4/3` datang dari rantai mipmap. Setiap tingkat berukuran separuh di kedua sisi, jadi luasnya seperempat tingkat sebelumnya: 1 + 1/4 + 1/16 + 1/64 + … mendekati 4/3. Dokumentasi Unity dan Godot sama-sama menyebut mipmap menambah sekitar 33% memori. Penjelasan cara kerja mipmap ada di Kamus [Texture Filtering & Mipmap](/kamus/geometri/texture-filtering/#mipmap).
+
+### Bit per piksel setiap format
+
+Yang berubah dari satu format ke format lain adalah bit per piksel. Tabel format GPU di dokumentasi Unity mencantumkan angkanya:
+
+| Format | Channel | Bit per piksel | Ukuran 1024 × 1024 (tabel Unity) |
+| --- | --- | --- | --- |
+| RGBA 32 bit (tanpa kompresi) | RGBA | 32 | 4 MB |
+| RGB 24 bit (tanpa kompresi) | RGB | 24 di disk, 32 di GPU | 3 MB di disk, 4 MB di GPU |
+| R 8 (tanpa kompresi) | R | 8 | 1 MB |
+| BC7 | RGB atau RGBA | 8 | 1 MB |
+| DXT1 (BC1) | RGB | 4 | 0,5 MB |
+| BC4 | R | 4 | 0,5 MB |
+| BC5 | RG | 8 | 1 MB |
+| ETC2 RGBA | RGBA | 8 | 1 MB |
+| ASTC 4x4 | RGB atau RGBA | 8 | 1,0 MB |
+| ASTC 6x6 | RGB atau RGBA | 3,56 | 0,45 MB |
+| ASTC 8x8 | RGB atau RGBA | 2 | 0,25 MB |
+
+Dua hal dari tabel ini sering mengejutkan. Pertama, tekstur RGB tanpa alpha tetap memakan 4 byte per piksel di GPU, karena diubah ke RGBA 32 bit. Kedua, format terkompresi berbeda jauh satu sama lain: DXT1 memakai seperdelapan memori RGBA 32 bit, sedangkan BC7 seperempatnya dengan kualitas lebih tinggi.
+
+Dokumentasi Godot memberi tabel serupa untuk satu tekstur RGBA8 dengan mipmap: 1024 × 1024 memakan 5,33 MiB dengan Lossless dan 1,33 MiB dengan VRAM Compressed, sedangkan 2048 × 2048 memakan 21,33 MiB dan 5,33 MiB. Dokumentasi itu juga mencatat bahwa dengan rasio kompresi 4:1, VRAM Compressed praktis memungkinkan tekstur dua kali lebih besar di setiap sumbu dengan memori GPU yang sama.
+
+Tabel Unity menulis satuan MB. Hitungan di pelajaran ini memakai MiB (1 MiB = 1024 × 1024 byte) supaya angkanya bulat, dan untuk tekstur berukuran pangkat dua angkanya sama dengan tabel Unity.
+
+### Ukuran di disk tidak sama dengan memori
+
+File PNG 2048 × 2048 di disk bisa berukuran beberapa ratus KB saja, karena PNG mengompresi gambar tanpa kehilangan data. GPU tidak membaca PNG. Saat dimuat, gambar dibuka menjadi piksel mentah atau diubah ke format GPU, dan memorinya mengikuti tabel di atas. Ada beberapa pengaturan yang hanya memperkecil ukuran di disk:
+
+- **Lossy** di Godot memperkecil file, tetapi memori video tetap sama dengan Lossless.
+- **Crunch** di Unity memperkecil ukuran di disk, tetapi tidak berpengaruh pada memori saat game berjalan.
+
+Sebaliknya, ada situasi yang menambah memori melebihi hitungan. Dokumentasi Unity menyebut tekstur dengan format yang tidak didukung perangkat akan didekompresi ke format tanpa kompresi, dan salinan itu disimpan di memori bersama tekstur aslinya. **Read/Write** yang aktif juga menggandakan memori tekstur di Unity.
+
+### Kompresi juga soal kecepatan
+
+Dokumentasi Unity menjelaskan bahwa bit per piksel yang lebih rendah juga berarti GPU memakai lebih sedikit bandwidth memori untuk membaca tekstur, dan bandwidth memori sering menjadi penghambat frame rate. Dokumentasi Godot menyebut hal yang sama, terutama untuk grafis terintegrasi dan ponsel. Karena itu, tekstur terkompresi bisa membuat game berjalan lebih cepat, selain lebih hemat memori.
+
+Harganya adalah kualitas. Dokumentasi Unity menyebut semua format kompresi tekstur bersifat lossy sampai tingkat tertentu. Untuk foto dan tekstur 3D biasanya tidak terlihat, tetapi untuk pixel art dan UI yang harus tajam per piksel, kompresi sering merusak tampilan, seperti dibahas di [Pelajaran 1](/belajar/seni-visual/01-pixel-art/#kompresi).
+
+## Ukuran pangkat dua
+
+Ukuran pangkat dua adalah 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, dan seterusnya. Lebar dan tinggi tidak harus sama: 1024 × 512 juga pangkat dua di kedua sisi.
+
+Apa kata dokumentasi engine:
+
+- **Unity** menyebut ukuran ideal adalah pangkat dua di setiap sisi. Tekstur yang bukan pangkat dua (NPOT) umumnya memakai sedikit lebih banyak memori dan bisa lebih lambat dibaca GPU. Jika platform atau GPU tidak mendukung NPOT, Unity menskalakan dan menambal tekstur ke pangkat dua berikutnya, yang menambah memori dan memperlambat pemuatan. Untuk membuat mipmap otomatis, Unity mensyaratkan resolusi tekstur berupa pangkat dua. Dokumentasinya juga menyarankan NPOT hanya untuk GUI.
+- **Godot** menyebut ukuran pangkat dua disarankan tetapi tidak wajib, dan tekstur tidak harus persegi.
+- **Format PVRTC** di Unity mensyaratkan tekstur persegi. Contoh di dokumentasi Unity: tekstur 257 × 511 yang diskalakan **To nearest** menjadi 256 × 512, lalu diperbesar lagi ke 512 × 512 jika memakai PVRTC.
+
+Alasannya terlihat dari rantai mipmap. Tekstur 1024 dibagi dua terus menjadi 512, 256, 128, sampai 1, dan setiap tingkat tetap bilangan bulat. Dokumentasi Godot memberi contoh: tekstur 64 × 64 menghasilkan 6 tingkat mipmap (32, 16, 8, 4, 2, 1). Tekstur 1000 × 1000 dibagi dua menjadi 500, 250, 125, lalu 62,5, yang harus dibulatkan, sehingga setiap tingkat tidak lagi tepat separuh tingkat sebelumnya.
+
+Untuk artist, keputusan ini paling murah diambil di file sumber. Kanvas Krita atau ukuran bake di Blender yang langsung pangkat dua menghasilkan file ekspor yang benar di semua engine, tanpa bergantung pada opsi penskalaan di importer. Untuk sprite sheet, ukuran akhirnya ditentukan oleh jumlah frame dan padding, jadi hitung dulu, atau tetapkan ukuran sheet saat ekspor dengan `--sheet-width` dan `--sheet-height` di Aseprite.
+
+## Ilustrasi: dari aplikasi ke engine
+
+<Aside type="caution" title="Ilustrasi, bukan data">
+Aset, ukuran, dan keputusan di bagian ini adalah contoh. Bit per piksel diambil dari tabel format Unity dan Godot. Hasil sebenarnya bergantung pada format yang dipilih engine untuk platform target, jadi selalu periksa di engine.
+</Aside>
+
+### Sprite sheet karakter pixel art
+
+Karakter pedagang digambar di Aseprite dengan frame 32 × 32 piksel. Ada tiga tag: `diam` (4 frame), `jalan` (8 frame), dan `serang` (6 frame), total 18 frame.
+
+```text title="Ilustrasi: dua cara mengekspor 18 frame 32 × 32"
+horizontal, tanpa padding
+  lebar  = 18 × 32 = 576, tinggi = 32
+  memori = 576 × 32 × 4 byte = 73.728 byte = 72 KiB   (Lossless, tanpa mipmap)
+  catatan: 576 bukan pangkat dua
+
+dikemas ke 256 × 256 (--sheet-pack --sheet-width 256 --sheet-height 256)
+  memori = 256 × 256 × 4 byte = 262.144 byte = 256 KiB
+  catatan: pangkat dua, masih ada ruang untuk frame tambahan
+```
+
+Keduanya kecil, jadi untuk pixel art keputusan ini jarang soal memori. Pilihan horizontal lebih hemat di sini, tetapi strip yang terus memanjang punya batas: bos 64 × 64 dengan 80 frame dalam satu baris lebarnya 5.120 piksel, melewati batas 4096 yang menurut dokumentasi Godot biasanya berlaku di ponsel dan web. Sheet yang dikemas ke ukuran tetap menghindari masalah itu dan memenuhi saran pangkat dua di Unity.
+
+Di engine, sheet ini diimpor dengan pengaturan pixel art dari [Pelajaran 1](/belajar/seni-visual/01-pixel-art/#menyiapkan-proyek-di-tiap-engine): filter Point atau Nearest, tanpa mipmap, tanpa kompresi. Kompresi ditolak dengan sengaja: hematnya hanya beberapa ratus KiB, sedangkan warnanya bisa keluar dari palet. Kalau sheet ini kemudian digabung ke sprite atlas bersama aset lain, pengaturan atlas yang berlaku, seperti dijelaskan di [Pelajaran 2](/belajar/seni-visual/02-game-2d/#pengaruhnya-ke-memori).
+
+### Tekstur prop 3D
+
+Tong kayu dimodelkan di Blender. Normal map dan ORM di-bake di Blender, base color dilukis di Krita. Ketiga tekstur berukuran 2048 × 2048, dan model diekspor sebagai glTF Separate supaya setiap tekstur menjadi file sendiri di engine. Semua tekstur memakai mipmap.
+
+```text title="Ilustrasi: memori tiga tekstur 2048 × 2048 dengan mipmap"
+tanpa kompresi (RGBA 32 bit, 4 byte per piksel)
+  per tekstur  = 2048 × 2048 × 4 = 16 MiB, × 4/3 ≈ 21,33 MiB
+  tiga tekstur ≈ 64 MiB
+
+desktop, kompresi bawaan Godot (S3TC, High Quality mati)
+  base color   DXT1, 4 bit  → 2048 × 2048 × 0,5 = 2 MiB, × 4/3 ≈ 2,67 MiB
+  normal map   RGTC, memori setara RGBA terkompresi (tabel Godot) ≈ 5,33 MiB
+  ORM          DXT1, 4 bit  ≈ 2,67 MiB
+  total        ≈ 10,67 MiB
+
+ponsel, anggap ketiganya ASTC 6x6 (Normal Quality di Unity untuk Android dan iOS)
+  per tekstur  = 2048 × 2048 × 3,56 / 8 ≈ 1,78 MiB, × 4/3 ≈ 2,37 MiB
+  tiga tekstur ≈ 7,1 MiB
+```
+
+Kompresi membuat memori turun dari sekitar 64 MiB ke sekitar 7 sampai 11 MiB untuk satu prop. Tong ini lalu diuji di perangkat target, dan ternyata hanya tampil kecil di layar. Tim memutuskan memakai Max Size 1024 di tab Android (Unity) atau Size Limit 1024 (Godot):
+
+```text title="Ilustrasi: tekstur yang sama setelah dibatasi ke 1024 × 1024"
+ASTC 6x6, 1024 × 1024 → 0,45 MiB (tabel Unity), × 4/3 ≈ 0,59 MiB
+tiga tekstur          ≈ 1,8 MiB
+```
+
+Setiap kali sisi tekstur dibagi dua, memorinya menjadi seperempat. File sumber tetap 2048, jadi kalau nanti ada platform dengan memori lebih besar, tekstur resolusi penuh masih tersedia tanpa melukis ulang. Cara menentukan ukuran tekstur dari texel density dan ukuran objek ada di [Pelajaran 4](/belajar/seni-visual/04-aset-3d/#uv-unwrapping-dan-texel-density).
+
+## Kesalahan umum
+
+### PNG hasil ekspor dijadikan file kerja
+
+```text title="✗ Keliru"
+pedagang.png diedit langsung di aplikasi gambar, lalu disimpan
+pedagang.aseprite tidak diperbarui
+ekspor berikutnya dari .aseprite menimpa perbaikan di PNG
+```
+
+```text title="✓ Benar"
+semua perubahan di pedagang.aseprite
+ekspor ulang ke pedagang.png dan pedagang.json
+```
+
+File ekspor tidak punya lapisan, tag, atau riwayat. Perbaikan yang hanya ada di file ekspor akan hilang di ekspor berikutnya.
+
+### Ekspor ulang dengan nama baru
+
+```text title="✗ Keliru"
+ekspor ke tong_kayu_v2.png, hapus tong_kayu.png di file explorer
+material kehilangan tekstur, pengaturan impor kembali ke bawaan
+```
+
+```text title="✓ Benar"
+ekspor ulang ke tong_kayu.png di lokasi yang sama (timpa)
+versi lama disimpan di riwayat version control, tidak di nama file
+```
+
+File `.meta` di Unity dan `.import` di Godot terikat pada nama dan lokasi file. Nama baru berarti aset baru.
+
+### Mengukur beban tekstur dari ukuran file di disk
+
+```text title="✗ Keliru"
+"teksturnya cuma 600 KB di folder, jadi ringan"
+```
+
+```text title="✓ Benar"
+memori = lebar × tinggi × byte per piksel format GPU, × 4/3 jika mipmap
+2048 × 2048 tanpa kompresi ≈ 21,33 MiB, berapa pun ukuran PNG-nya
+```
+
+Ukuran PNG mencerminkan seberapa mudah gambar dikompresi tanpa kehilangan data. GPU memakai format lain.
+
+### Mipmap aktif untuk tekstur yang tidak pernah mengecil
+
+```text title="✗ Keliru"
+ikon dan panel UI yang selalu tampil seukuran aslinya, mipmap aktif
+```
+
+```text title="✓ Benar"
+mipmap mati untuk UI yang tidak diskalakan dan sprite 2D yang tidak di-zoom out
+mipmap aktif untuk tekstur 3D dan sprite yang bisa tampil mengecil
+```
+
+Mipmap menambah sekitar 33% memori. Manfaatnya hanya muncul saat tekstur tampil lebih kecil dari ukuran aslinya.
+
+### Satu pengaturan kompresi untuk semua tekstur
+
+```text title="✗ Keliru"
+semua tekstur proyek: VRAM Compressed (Godot) atau Normal Quality (Unity)
+termasuk pixel art, teks di UI, dan tekstur data
+```
+
+```text title="✓ Benar"
+tekstur 3D warna dan data: kompresi GPU, sRGB sesuai isinya
+normal map: mode normal map engine (RGTC di Godot)
+pixel art dan UI tajam: tanpa kompresi
+atur bawaan per folder: Presets (Unity), Import Defaults (Godot)
+```
+
+Jenis tekstur yang berbeda butuh format yang berbeda. Pengaturan bawaan per folder atau per jenis aset mencegah tekstur baru masuk dengan pengaturan yang salah.
+
+### Mengekspor sebesar mungkin untuk berjaga-jaga
+
+```text title="✗ Keliru"
+semua tekstur diekspor 4096 × 4096, "nanti bisa dikecilkan"
+tidak ada yang mengatur Max Size atau Size Limit
+```
+
+```text title="✓ Benar"
+file sumber boleh beresolusi tinggi
+ukuran di engine ditetapkan dari texel density dan perangkat target
+Max Size per platform (Unity), Size Limit (Godot)
+```
+
+Satu tekstur 4096 × 4096 tanpa kompresi dengan mipmap memakan sekitar 85,33 MiB menurut tabel Godot. Simpan resolusi tinggi di file sumber, dan batasi di engine.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan dengan aset buatanmu sendiri atau aset berlisensi jelas, di Unity atau Godot.
+
+1. **Susunan proyek.** Buat folder `sumber/` dan folder proyek engine seperti contoh di bagian [penamaan dan susunan folder](#penamaan-dan-susunan-folder). Tulis aturan nama file di satu halaman catatan proyek, termasuk huruf besar-kecil dan akhiran tekstur.
+2. **Ekspor Aseprite lewat skrip.** Buat animasi pendek dengan dua tag di Aseprite. Tulis perintah CLI yang mengekspor sprite sheet dan JSON ke folder proyek engine, simpan perintah itu di file skrip, lalu jalankan dua kali. Bandingkan kedua hasilnya. Ubah satu frame, jalankan lagi, dan pastikan engine mengimpor ulang tanpa kehilangan pengaturan.
+3. **Ekspor ulang glTF.** Di Blender, tambahkan Collection Exporter glTF 2.0 dengan format glTF Separate ke collection berisi satu prop. Ekspor, impor ke engine, dan beri tekstur pengaturan impor yang berbeda dari bawaan. Ubah warna di Blender, klik **Export All**, lalu periksa apakah pengaturan impor tekstur masih sama.
+4. **Hitung lalu periksa.** Pilih tiga tekstur di proyekmu. Untuk setiap tekstur, hitung memorinya dengan rumus di bagian [menghitung memori tekstur](#menghitung-memori-tekstur), sekali tanpa kompresi dan sekali dengan format yang dipilih engine. Di Godot, bandingkan dengan angka memori di Inspector. Di Unity, catat Format di tab platform, lalu cocokkan dengan tabel bit per piksel.
+5. **Anggaran tekstur satu scene.** Daftar semua tekstur di satu scene uji beserta ukurannya. Hitung total memori tanpa kompresi dan dengan kompresi untuk desktop dan ponsel. Tandai tekstur yang bisa dikecilkan dengan Max Size atau Size Limit tanpa perbedaan yang terlihat di perangkat target.

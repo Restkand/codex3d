@@ -1,18 +1,7 @@
 {
   "fondasi-engine": [],
-  "lanskap-engine": [
-    {
-      "num": 5,
-      "title": "Pindah Engine",
-      "subtitle": "Biaya tersembunyi migrasi dan cara mengurangi ketergantungan."
-    }
-  ],
+  "lanskap-engine": [],
   "desain-game": [
-    {
-      "num": 5,
-      "title": "Ekonomi dan Progres",
-      "subtitle": "Kurva kesulitan, mata uang dalam game, hadiah, dan risiko desain yang eksploitatif."
-    },
     {
       "num": 6,
       "title": "Playtesting",
@@ -26,22 +15,12 @@
   ],
   "produksi": [
     {
-      "num": 5,
-      "title": "Kualitas dan Rilis",
-      "subtitle": "Strategi QA, sertifikasi platform, dan rencana patch."
-    },
-    {
       "num": 6,
       "title": "Postmortem",
       "subtitle": "Menulis evaluasi proyek yang jujur dan berguna untuk proyek berikutnya."
     }
   ],
   "bisnis-indie": [
-    {
-      "num": 5,
-      "title": "Platform",
-      "subtitle": "PC, konsol, mobile, dan web: syarat, proses, dan biaya masuk."
-    },
     {
       "num": 6,
       "title": "Legal dan IP",
@@ -53,19 +32,8 @@
       "subtitle": "Membaca term sheet, milestone pembayaran, hak dan kewajiban."
     }
   ],
-  "industri-karier": [
-    {
-      "num": 5,
-      "title": "Studi Kasus dan Postmortem",
-      "subtitle": "Kisah studio dan game, ditulis atau ditinjau oleh pelakunya langsung."
-    }
-  ],
+  "industri-karier": [],
   "seni-visual": [
-    {
-      "num": 5,
-      "title": "Dari Aplikasi ke Engine",
-      "subtitle": "Aseprite, Krita, dan Blender ke Unity, Godot, dan Unreal."
-    },
     {
       "num": 6,
       "title": "Memilih Gaya Visual",

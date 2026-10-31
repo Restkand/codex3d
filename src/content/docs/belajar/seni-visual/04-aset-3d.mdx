@@ -412,7 +412,7 @@ Memori tekstur naik kuadratik dengan sisinya. Menggandakan sisi berarti empat ka
 4096 × 4096 × 4 byte = 64 MiB
 ```
 
-Kompresi tekstur GPU memperkecil angka ini jauh, dan formatnya berbeda per platform. Pelajaran 5 jalur ini membahas format file, kompresi, dan biaya memorinya secara lebih lengkap. Prinsip untuk artist: tentukan ukuran tekstur dari texel density target dan ukuran objek. Resolusi terbesar yang bisa diekspor aplikasi texturing jarang menjadi pilihan yang tepat.
+Kompresi tekstur GPU memperkecil angka ini jauh, dan formatnya berbeda per platform. [Pelajaran 5](/belajar/seni-visual/05-aplikasi-ke-engine/#menghitung-memori-tekstur) jalur ini membahas format file, kompresi, dan biaya memorinya secara lebih lengkap. Prinsip untuk artist: tentukan ukuran tekstur dari texel density target dan ukuran objek. Resolusi terbesar yang bisa diekspor aplikasi texturing jarang menjadi pilihan yang tepat.
 
 ## LOD
 
@@ -625,7 +625,7 @@ Memori tekstur tanpa kompresi:
 3 tekstur            ≈ 16 MiB
 ```
 
-Kompresi tekstur GPU memperkecil angka ini beberapa kali lipat, dan detailnya ada di Pelajaran 5 jalur ini. Perhitungan di atas tetap berguna untuk membandingkan pilihan, karena perbandingannya tetap empat kali lipat setiap sisi tekstur digandakan.
+Kompresi tekstur GPU memperkecil angka ini beberapa kali lipat, dan detailnya ada di [Pelajaran 5](/belajar/seni-visual/05-aplikasi-ke-engine/#menghitung-memori-tekstur) jalur ini. Perhitungan di atas tetap berguna untuk membandingkan pilihan, karena perbandingannya tetap empat kali lipat setiap sisi tekstur digandakan.
 
 Dari sisi segitiga: kedai dengan 6 tong, 4 meja, 16 kursi, 10 gelas, 4 lentera, dan 3 peti berisi sekitar 6 × 600 + 4 × 400 + 16 × 300 + 10 × 150 + 4 × 350 + 3 × 200 = 13.500 segitiga untuk prop. Angka ini lalu dibandingkan dengan anggaran yang disepakati untuk prop di satu ruangan. Karena semua prop memakai satu material, programmer bisa memakai [instancing](/kamus/performa/instancing/) atau batching untuk kursi dan gelas yang berulang.
 
