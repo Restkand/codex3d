@@ -2,11 +2,6 @@
   "fondasi-engine": [],
   "lanskap-engine": [
     {
-      "num": 3,
-      "title": "Lisensi dan Model Biaya",
-      "subtitle": "Royalti, biaya per kursi, ambang pendapatan, dan perubahan ketentuan."
-    },
-    {
       "num": 4,
       "title": "Kriteria Memilih Engine",
       "subtitle": "Genre, platform, tim, kebutuhan grafis, ekosistem, dan komunitas lokal."
@@ -18,11 +13,6 @@
     }
   ],
   "desain-game": [
-    {
-      "num": 3,
-      "title": "Mekanik, Dinamika, Estetika",
-      "subtitle": "Kerangka untuk menganalisis game yang ada dan merancang yang baru."
-    },
     {
       "num": 4,
       "title": "Level Design",
@@ -45,11 +35,6 @@
     }
   ],
   "produksi": [
-    {
-      "num": 3,
-      "title": "Peran dalam Tim Kecil",
-      "subtitle": "Siapa mengerjakan apa ketika satu orang memegang banyak peran."
-    },
     {
       "num": 4,
       "title": "Alat Kerja",
@@ -100,11 +85,6 @@
   ],
   "industri-karier": [
     {
-      "num": 3,
-      "title": "Ekosistem Indonesia dan Asia Tenggara",
-      "subtitle": "Asosiasi, komunitas, event, program inkubasi, dan tantangan pasar regional."
-    },
-    {
       "num": 4,
       "title": "Portofolio",
       "subtitle": "Apa yang dicari studio dari setiap peran, dan cara menunjukkan proses berpikir."
@@ -116,11 +96,6 @@
     }
   ],
   "seni-visual": [
-    {
-      "num": 3,
-      "title": "2.5D",
-      "subtitle": "Kamera ortografis dan perspektif, isometrik, billboard, dan sprite di dunia 3D."
-    },
     {
       "num": 4,
       "title": "Aset 3D untuk Game",

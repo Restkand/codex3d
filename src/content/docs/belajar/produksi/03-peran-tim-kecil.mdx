@@ -1,0 +1,374 @@
+---
+title: "Peran dalam Tim Kecil"
+description: "Bagaimana peran bertumpuk di tim satu sampai lima orang, membuat kepemilikan keputusan tertulis, memutuskan saat pendiri tidak sepakat, bekerja dengan freelancer, ritme komunikasi mingguan, bus factor, dan menjaga beban kerja tetap wajar."
+fundamental: "Di tim kecil, pekerjaan produksi, QA, komunitas, dan bisnis tetap ada walaupun tidak ada orang yang memegang judulnya. Pekerjaan yang tidak punya pemilik biasanya baru dikerjakan saat sudah menjadi masalah. Menuliskan siapa yang memutuskan dan siapa yang mengerjakan setiap bagian membuat tim kecil bisa bergerak cepat tanpa saling menunggu atau saling menebak."
+kind: lesson
+minutes: 30
+status: draf
+lastReviewed: 2026-10-31
+krekit:
+  gambaran-besar: "Coba hitung berapa topi yang kamu pakai minggu ini. Biasanya lebih banyak dari yang kamu kira."
+  pekerjaan-yang-tetap-ada-tanpa-judul: "Kalau semua orang merasa \"nanti juga ada yang mengurus\", biasanya tidak ada yang mengurus."
+  membuat-kepemilikan-jelas: "Satu bagian, satu pemilik keputusan. Yang lain tetap boleh bersuara."
+  saat-pendiri-tidak-sepakat: "Sepakati cara memutuskan saat suasana masih tenang, sebelum ada yang perlu diputuskan."
+  bekerja-dengan-freelancer-dan-kontraktor: "Brief yang jelas menghemat lebih banyak revisi daripada feedback yang panjang."
+  ritme-komunikasi: "Keputusan yang cuma diucapkan gampang diingat berbeda oleh dua orang. Tulis satu baris saja sudah cukup."
+  bus-factor-dan-dokumentasi: "Coba bayangkan kamu tidak bisa membuka laptop selama dua minggu. Siapa yang bisa membuat build?"
+  beban-kerja-yang-bisa-dipertahankan: "Lembur seminggu bisa menolong. Lembur berbulan-bulan biasanya tanda rencananya yang perlu diubah."
+  contoh-sari-dimas-dan-satu-freelancer-selama-sebulan: "Kejadiannya karangan. Perhatikan di mana mereka menulis keputusan."
+  kesalahan-umum: "Kesalahan pertama paling sering: semua orang mengerjakan semuanya, jadi tidak ada yang memutuskan apa pun."
+sidebar:
+  order: 3
+  label: "3 · Peran Tim Kecil"
+quiz:
+  - q: "Tim tiga orangmu tidak punya community manager. Pertanyaan pemain di Discord sudah dua minggu tidak dijawab. Apa langkah yang paling berguna?"
+    options:
+      - "Menunggu sampai cukup dana untuk merekrut community manager"
+      - "Menunjuk satu orang sebagai pemilik pekerjaan komunitas, dengan waktu yang jelas, misalnya dua kali seminggu masing-masing 30 menit"
+      - "Menutup Discord karena tim terlalu kecil"
+      - "Meminta semua orang menjawab kalau sempat"
+    answer: 1
+    explain: "Pekerjaan komunitas tetap ada walaupun tidak ada yang memegang judulnya. \"Siapa saja yang sempat\" biasanya berakhir dengan tidak ada yang menjawab. Pemilik yang jelas dengan waktu terjadwal membuat pekerjaan ini masuk ke minggu kerja seseorang."
+  - q: "Dalam tabel pemilik keputusan, kenapa setiap bagian sebaiknya hanya punya satu pemilik keputusan?"
+    options:
+      - "Agar orang lain tidak boleh memberi pendapat"
+      - "Agar jelas siapa yang memutuskan setelah semua masukan didengar, sehingga keputusan tidak menggantung atau diambil dua kali dengan hasil berbeda"
+      - "Karena pemilik keputusan harus mengerjakan semuanya sendiri"
+      - "Karena tim kecil tidak perlu berdiskusi"
+    answer: 1
+    explain: "Panduan RACI dari Atlassian menyarankan tepat satu orang accountable per tugas, dan DACI menyebut satu approver per keputusan. Orang lain tetap bisa dimintai pendapat. Yang dibatasi hanya siapa yang mengambil keputusan akhir."
+  - q: "Kamu membayar ilustrator lepas di Indonesia untuk membuat key art. Kontrak tidak menyebut apa pun soal hak cipta. Menurut Pasal 36 UU Hak Cipta, siapa pemegang hak ciptanya?"
+    options:
+      - "Otomatis studiomu, karena kamu yang membayar"
+      - "Pihak yang membuat ciptaan, yaitu ilustratornya, kecuali diperjanjikan lain"
+      - "Platform tempat game dijual"
+      - "Tidak ada yang memegang hak cipta"
+    answer: 1
+    explain: "Pasal 36 UU No. 28 Tahun 2014 menyebut bahwa kecuali diperjanjikan lain, pencipta dan pemegang hak cipta atas ciptaan yang dibuat dalam hubungan kerja atau berdasarkan pesanan adalah pihak yang membuat ciptaan. Karena itu, kepemilikan atau lisensi perlu diatur tertulis. Untuk keputusan nyata, konsultasikan dengan profesional hukum."
+  - q: "Hanya satu orang di timmu yang tahu cara membuat build rilis, dan langkahnya tidak ditulis di mana pun. Apa istilah untuk risiko ini, dan apa langkah pertamanya?"
+    options:
+      - "Scope creep. Potong fitur"
+      - "Bus factor satu. Tulis langkahnya, lalu minta orang lain mencoba membuat build dari catatan itu"
+      - "Crunch. Tambah jam kerja"
+      - "Feature lock. Hentikan pengembangan"
+    answer: 1
+    explain: "Bus factor adalah jumlah orang yang harus tiba-tiba tidak ada sebelum proyek macet. Kalau angkanya satu, proyek bergantung pada satu orang. Catatan baru terbukti berguna setelah orang lain berhasil memakainya tanpa bertanya."
+  - q: "Dua pendiri berbeda pendapat soal warna palet UI. Mereka sudah sepakat bahwa arah visual dipegang pendiri yang mengurus art. Apa yang sebaiknya terjadi?"
+    options:
+      - "Diskusi diulang setiap minggu sampai keduanya setuju"
+      - "Pendiri lain menyampaikan alasannya, lalu pemilik arah visual memutuskan dan keputusannya dicatat"
+      - "Diputuskan dengan voting oleh playtester"
+      - "Keduanya membuat versi sendiri dan memakai dua-duanya"
+    answer: 1
+    explain: "Kesepakatan pemilik keputusan per bidang dibuat justru untuk saat seperti ini. Pendapat yang berbeda tetap didengar, lalu pemiliknya memutuskan. Keputusan yang dicatat tidak perlu didebatkan lagi, kecuali ada informasi baru."
+  - q: "Menurut ringkasan Developer Satisfaction Survey 2023 dari IGDA, bagaimana sebaiknya angka crunch di survei itu dibaca?"
+    options:
+      - "Sebagai angka pasti untuk seluruh developer di dunia"
+      - "Sebagai gambaran dari 777 responden yang sebagian besar bekerja di Amerika Serikat dan Kanada, sehingga tidak otomatis mewakili developer di negara lain"
+      - "Sebagai data khusus developer Indonesia"
+      - "Sebagai bukti bahwa crunch sudah tidak terjadi"
+    answer: 1
+    explain: "Laporan itu menyebut sampel valid 777 respons, dengan 47% bekerja di Amerika Serikat dan 11% di Kanada, dan mengakui bahwa developer Amerika Utara kemungkinan terwakili berlebihan. Angkanya berguna sebagai tanda masalah, tetapi tidak bisa dipakai sebagai angka untuk negara lain."
+sources:
+  - title: "Understanding and using RACI charts"
+    url: "https://www.atlassian.com/work-management/project-management/raci-chart"
+    publisher: "Atlassian"
+    accessed: 2026-10-31
+  - title: "DACI: A Decision-Making Framework"
+    url: "https://www.atlassian.com/team-playbook/plays/daci"
+    publisher: "Atlassian, Team Playbook"
+    accessed: 2026-10-31
+  - title: "Undang-undang (UU) No. 28 Tahun 2014 tentang Hak Cipta"
+    url: "https://peraturan.bpk.go.id/Details/38690/uu-no-28-tahun-2014"
+    publisher: "JDIH BPK RI"
+    accessed: 2026-10-31
+  - title: "Developer Satisfaction Survey (DSS)"
+    url: "https://igda.org/dss/"
+    publisher: "IGDA"
+    accessed: 2026-10-31
+  - title: "Developer Satisfaction Survey 2023: Summary Report"
+    url: "https://igda-website.s3.us-east-2.amazonaws.com/wp-content/uploads/2024/05/01161842/2023-04-14_IGSA-DSS-2023_SummaryReport.pdf"
+    publisher: "Johanna Weststar dan Ava Lentini, IGDA dan Western University (2024)"
+    accessed: 2026-10-31
+  - title: "The Business of Being Indie: A Production Survival Guide"
+    url: "https://gdcvault.com/play/1025563/The-Business-of-Being-Indie"
+    publisher: "Amy Dallas (ClutchPlay Games), GDC 2018, GDC Vault"
+    accessed: 2026-10-31
+  - title: "Producer Panel: Managing Your Indie Team"
+    url: "https://gdcvault.com/play/1022225/Producer-Panel-Managing-Your-Indie"
+    publisher: "Kara Kono, Jenna Hoffstein, Aaron Isaksen, Alex Schwartz, Amy Dallas, GDC 2015, GDC Vault"
+    accessed: 2026-10-31
+  - title: "The Game Outcomes Project: How Teamwork, Leadership and Culture Drive Results"
+    url: "https://gdcvault.com/play/1022972/The-Game-Outcomes-Project-How"
+    publisher: "Paul Tozour (Mothership Entertainment), GDC 2016, GDC Vault"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menyebut pekerjaan yang tetap ada di tim kecil walaupun tidak ada orang yang memegang judulnya.
+- Menyusun tabel pemilik keputusan untuk timmu.
+- Menyepakati cara memutuskan saat pendiri berbeda pendapat.
+- Menyiapkan brief, kriteria hasil, dan pertanyaan kontrak sebelum bekerja dengan freelancer.
+- Menjalankan ritme komunikasi mingguan dan mencatat keputusan.
+- Mengenali bus factor dan tanda beban kerja yang tidak bisa dipertahankan.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: warung keluarga">
+Warung makan kecil yang dijalankan dua atau tiga orang tetap butuh orang yang belanja ke pasar, memasak, melayani pembeli, mencatat uang masuk, dan membersihkan dapur. Tidak ada yang berjabatan "manajer pembelian", tetapi kalau tidak ada yang ditugaskan belanja, besok pagi warungnya tidak bisa buka. Warung yang lancar biasanya punya pembagian yang jelas walaupun tidak tertulis di papan: siapa belanja, siapa pegang uang, siapa memutuskan menu baru.
+</Aside>
+
+Pelajaran [Peta Peran](/belajar/industri-karier/01-peta-peran/) di jalur Industri dan Karier sudah menjelaskan apa yang dikerjakan setiap peran di studio game, dari programmer sampai QA dan producer. Di bagian [tim kecil dan studio besar](/belajar/industri-karier/01-peta-peran/#tim-kecil-dan-studio-besar), pelajaran itu mencatat satu hal penting: pekerjaan sebuah peran tetap ada walau tidak ada orang yang memegang judulnya.
+
+Pelajaran ini melanjutkan dari situ dengan pertanyaan yang lebih praktis. Kalau timmu hanya dua sampai lima orang, bagaimana membagi pekerjaan itu supaya tidak ada yang terlewat, tidak ada yang dikerjakan dua kali, dan tidak ada yang kelelahan?
+
+Di GDC 2018, Amy Dallas (ClutchPlay Games) membawakan talk tentang sisi bisnis dan produksi studio indie. Menurut deskripsi sesinya, kebanyakan developer indie memulai studio karena ingin membuat game, belum tentu karena ingin mengelola orang atau menjalankan bisnis, dan sebagian besar harus mengurus semua itu tanpa orang khusus untuk produksi, marketing, atau pengembangan bisnis. Pelajaran ini hanya merujuk deskripsi sesi tersebut, belum isi talk-nya.
+
+Isi pelajaran ini:
+
+- Pekerjaan apa saja yang tetap ada, dan siapa yang biasanya menanggungnya.
+- Cara menuliskan siapa memutuskan apa.
+- Cara memutuskan saat pendiri tidak sepakat.
+- Bekerja dengan freelancer.
+- Ritme komunikasi, dokumentasi, dan beban kerja.
+
+## Pekerjaan yang tetap ada tanpa judul
+
+Di tim kecil, pekerjaan pembuatan game (kode, art, desain, audio) biasanya sudah punya pemilik, karena itulah alasan orang bergabung. Yang sering tidak punya pemilik adalah pekerjaan di sekitarnya:
+
+| Pekerjaan | Contoh tugas | Kalau tidak ada pemiliknya |
+| --- | --- | --- |
+| Produksi | Menyusun jadwal, menghitung laju kerja, memimpin check-in mingguan, mencatat keputusan | Scope tidak pernah dihitung ulang, dan keterlambatan baru terasa di bulan terakhir |
+| Desain (sebagai keputusan) | Menjaga dokumen desain, memutuskan kalau ada usulan yang bertabrakan | Setiap orang menambah fitur menurut seleranya sendiri |
+| QA | Menguji build sebelum dibagikan, mencatat bug, memeriksa ulang bug yang sudah diperbaiki | Bug ditemukan pemain, dan perbaikan merusak hal lain tanpa ada yang sadar |
+| Komunitas | Menjawab pertanyaan di Discord atau media sosial, mengumpulkan masukan playtest | Pemain merasa diabaikan, dan masukan penting hilang |
+| Bisnis | Mengurus pembayaran, kontrak, pajak, halaman toko, hubungan dengan publisher atau platform | Tenggat administrasi terlewat, dan uang keluar tanpa tercatat |
+
+Rincian setiap peran ini ada di Peta Peran, misalnya bagian [produksi](/belajar/industri-karier/01-peta-peran/#produksi) dan [QA](/belajar/industri-karier/01-peta-peran/#qa). Di sini yang penting adalah siapa yang menanggungnya di timmu.
+
+### Bagaimana peran bertumpuk menurut ukuran tim
+
+Pola berikut adalah ilustrasi yang umum, tidak diambil dari studio tertentu:
+
+- **1 orang.** Semua pekerjaan di tabel ada di tangan satu orang. Pertanyaannya lebih ke kapan pekerjaan itu dikerjakan. Pekerjaan produksi dan bisnis mudah tergeser terus karena membuat game terasa lebih mendesak. Membagi minggu menjadi blok (misalnya Jumat sore untuk jadwal, komunitas, dan administrasi) membantu.
+- **2 orang.** Biasanya satu orang lebih ke kode dan desain, satu lagi ke art dan audio. Pekerjaan di sekitarnya dibagi berdasarkan minat dan waktu, dan sering tanpa dibicarakan. Di sinilah tabel pemilik keputusan paling berguna.
+- **3 sampai 5 orang.** Mulai masuk akal kalau satu orang memegang produksi sebagai tanggung jawab utama, walaupun tetap mengerjakan hal lain. Jumlah percakapan yang perlu terjadi juga naik: tiga orang punya tiga pasangan, lima orang punya sepuluh. Keputusan yang tidak ditulis mulai sering diingat berbeda.
+
+Pembagian yang wajar biasanya mengikuti dua pertimbangan. Pertama, siapa yang paling dekat dengan pekerjaan itu. Programmer yang membuat build cocok juga memegang pengujian build sebelum dibagikan. Kedua, siapa yang punya waktu. Kalau satu orang sudah menjadi hambatan di pekerjaan utamanya, menambah pekerjaan lain ke orang itu akan memperlambat seluruh tim.
+
+## Membuat kepemilikan jelas
+
+Cara paling sederhana adalah tabel **pemilik keputusan**: untuk setiap bagian proyek, tulis siapa yang memutuskan, siapa yang mengerjakan, dan siapa yang perlu dimintai pendapat sebelum keputusan diambil.
+
+| Bagian | Pemilik keputusan | Yang mengerjakan | Dimintai pendapat |
+| --- | --- | --- | --- |
+| Gerak dan kontrol | Sari | Sari | Dimas |
+| Arah visual dan UI | Dimas | Dimas | Sari |
+| Scope dan jadwal | Sari | Sari dan Dimas | Dimas |
+| Musik | Dimas | Freelancer | Sari |
+| Halaman toko dan trailer | Dimas | Dimas | Sari |
+| Pengujian build mingguan | Sari | Sari dan Dimas bergantian | |
+| Komunitas | Dimas | Dimas | |
+| Kontrak dan pembayaran | Sari | Sari | Dimas |
+
+Tiga aturan membuat tabel ini berguna:
+
+1. **Satu bagian, satu pemilik keputusan.** Banyak orang boleh mengerjakan dan memberi pendapat, tetapi hanya satu yang memutuskan kalau ada perbedaan.
+2. **Pemilik keputusan tidak harus orang yang paling ahli.** Yang penting, orang itu bersedia mendengar, memutuskan dalam waktu yang wajar, dan menanggung hasilnya.
+3. **Tabelnya ditinjau ulang** saat ada orang baru, saat pindah fase, atau saat seseorang terlalu banyak memegang bagian.
+
+### Kerangka yang sudah ada: RACI dan DACI
+
+Tabel di atas adalah versi sederhana dari kerangka yang sudah lama dipakai di manajemen proyek.
+
+**RACI** adalah matriks pembagian tanggung jawab. Menurut panduan Atlassian, setiap tugas diberi empat jenis peran: *Responsible* (orang yang mengerjakan, boleh lebih dari satu), *Accountable* (orang yang memastikan tugas selesai dan menjadi pengambil keputusan), *Consulted* (orang yang dimintai pengetahuan dan saran), dan *Informed* (orang yang perlu diberi tahu hasilnya). Panduan itu menyarankan agar setiap tugas punya tepat satu orang accountable, supaya tidak ada konflik kepemimpinan.
+
+**DACI** dipakai khusus untuk keputusan. Atlassian Team Playbook menjelaskan empat peran: *Driver* yang mengumpulkan informasi dan memastikan keputusan diambil sebelum tanggal yang disepakati, *Approver* yang memutuskan (satu orang saja), *Contributors* yang punya pengetahuan dan boleh memberi rekomendasi tetapi tidak ikut memutuskan, dan *Informed* yang diberi tahu setelah keputusan diambil.
+
+Untuk tim dua sampai lima orang, kolom "pemilik keputusan", "yang mengerjakan", dan "dimintai pendapat" biasanya sudah cukup. Kolom "diberi tahu" bisa dilewati kalau semua keputusan dicatat di satu tempat yang dibaca semua orang.
+
+## Saat pendiri tidak sepakat
+
+Perbedaan pendapat di antara pendiri itu wajar, dan sering menghasilkan keputusan yang lebih baik. Masalahnya muncul kalau tidak ada cara untuk mengakhiri perbedaan itu, sehingga keputusan menggantung berminggu-minggu atau diulang setiap rapat.
+
+Praktik yang umum dipakai:
+
+- **Sepakati pemilik keputusan per bidang sejak awal**, saat belum ada yang perlu diperdebatkan. Tabel di bagian sebelumnya adalah bentuk tertulisnya. Kalau terjadi perbedaan di bidang yang sudah punya pemilik, pendiri lain menyampaikan alasannya, lalu pemiliknya memutuskan.
+- **Pisahkan keputusan yang bisa dibalik dan yang tidak.** Warna tombol bisa diganti minggu depan, jadi putuskan cepat. Mengganti engine, menandatangani kontrak publisher, atau memakai tabungan bersama sulit dibalik, jadi beri waktu lebih dan libatkan semua pendiri.
+- **Tetapkan keputusan yang harus disepakati bersama.** Misalnya: mengubah tanggal rilis, menambah atau mengurangi orang, menandatangani kontrak, dan pengeluaran di atas jumlah tertentu. Tulis daftarnya.
+- **Uji dulu kalau bisa.** Banyak perbedaan soal desain bisa dijawab dengan prototipe kecil atau playtest, sehingga keputusan bersandar pada hasil uji.
+- **Beri batas waktu.** Misalnya: "kalau minggu ini belum sepakat, pemilik bidang yang memutuskan hari Jumat."
+- **Catat keputusan dan alasannya.** Keputusan yang dicatat tidak perlu diperdebatkan lagi, kecuali ada informasi baru.
+
+Perbedaan yang menyangkut arah studio, pembagian kepemilikan, atau uang adalah wilayah perjanjian antarpendiri. Topik itu akan dibahas di pelajaran Legal dan IP di jalur Bisnis Studio Indie, yang masih dalam rencana. Untuk keputusan nyata, konsultasikan dengan profesional hukum.
+
+## Bekerja dengan freelancer dan kontraktor
+
+Tim kecil sering memakai freelancer untuk pekerjaan yang tidak dikuasai anggota tim atau tidak sempat dikerjakan, misalnya musik, terjemahan, key art, atau trailer. Freelancer bisa menutup celah dengan cepat, asalkan pekerjaannya dijelaskan dengan baik.
+
+### Sebelum mulai
+
+- **Scope.** Apa yang dibuat, berapa banyak, dan apa yang tidak termasuk. "4 lagu loop berdurasi 1 sampai 2 menit, tanpa versi orkestra" lebih jelas daripada "musik untuk game".
+- **Referensi.** Contoh yang mewakili rasa yang dicari, dan contoh yang tidak diinginkan.
+- **Hasil yang diserahkan** (*deliverables*): format file, resolusi atau kualitas audio, aturan penamaan, dan file sumber (misalnya file proyek DAW atau file PSD berlapis) ikut diserahkan atau tidak.
+- **Kriteria selesai.** Bagaimana kamu tahu hasilnya bisa diterima, misalnya "loop tanpa jeda saat diputar ulang di engine".
+- **Jadwal dan putaran feedback.** Berapa kali revisi termasuk dalam harga, berapa lama kamu akan memberi feedback, dan apa yang terjadi kalau revisi melebihi jumlah itu.
+- **Pembayaran.** Jumlah, termin (misalnya sebagian di awal, sisanya setelah diterima), dan cara pembayaran.
+
+### Pertanyaan tentang file dan kepemilikan
+
+Bagian ini sering terlupa padahal paling sulit diperbaiki belakangan. Di Indonesia, Pasal 36 UU No. 28 Tahun 2014 tentang Hak Cipta menyebut bahwa **kecuali diperjanjikan lain**, pencipta dan pemegang hak cipta atas ciptaan yang dibuat dalam hubungan kerja atau berdasarkan pesanan adalah pihak yang membuat ciptaan. Artinya, membayar seseorang untuk membuat aset tidak otomatis membuat studiomu pemegang hak ciptanya. Hal ini perlu diatur tertulis.
+
+Pertanyaan yang perlu dijawab di kontrak:
+
+- Apakah hak cipta dialihkan ke studio, atau freelancer memberi lisensi? Kalau lisensi, untuk apa saja (game ini saja, trailer, sekuel, merchandise) dan berapa lama?
+- Apakah freelancer boleh memakai hasilnya di portofolio, dan sejak kapan?
+- Apakah freelancer memakai bahan dari pihak lain (sampel suara, font, aset berlisensi)? Lisensinya mengizinkan pemakaian komersial di game?
+- Apakah nama freelancer dicantumkan di kredit, dan bagaimana penulisannya?
+- File sumber mana yang diserahkan, dan di mana disimpan?
+- Apa yang terjadi kalau kerja sama berhenti di tengah jalan: pekerjaan yang sudah jadi milik siapa, dan berapa yang dibayar?
+
+Daftar ini berisi pertanyaan untuk dibahas dan tidak menggantikan nasihat hukum. Aturan di negara lain bisa berbeda, dan freelancer di luar negeri mungkin tunduk pada hukum negaranya. Topik kontrak dan kepemilikan aset akan dibahas lebih dalam di pelajaran Legal dan IP di jalur Bisnis Studio Indie. Untuk kontrak nyata, konsultasikan dengan profesional hukum.
+
+### Selama bekerja
+
+Tunjuk satu orang di tim sebagai penghubung dengan freelancer, dan catat itu di tabel pemilik keputusan. Freelancer yang menerima feedback bertentangan dari dua orang akan bingung harus mengikuti siapa. Kumpulkan feedback di tim dulu, lalu kirim sebagai satu daftar yang konkret: apa yang sudah cocok, apa yang perlu diubah, dan contohnya.
+
+## Ritme komunikasi
+
+Tim kecil yang duduk di satu ruangan pun bisa salah paham, apalagi yang bekerja jarak jauh. Ritme yang tetap membantu semua orang tahu kapan masalah dibicarakan.
+
+Di GDC 2015, panel producer indie (Kara Kono, Jenna Hoffstein, Aaron Isaksen, Alex Schwartz, dan Amy Dallas) membahas cara menyusun jadwal dengan banyak ketidakpastian, menjaga tim tetap selaras tanpa kantor, mencegah burnout di proyek yang panjang, dan alat manajemen proyek yang berguna. Pelajaran ini hanya merujuk deskripsi sesi tersebut, belum isi diskusinya.
+
+Ritme minimal yang bisa dicoba:
+
+- **Check-in mingguan**, 30 sampai 60 menit di hari yang sama setiap minggu. Isinya: apa yang selesai minggu lalu, apa rencana minggu ini, apa yang menghambat, dan keputusan apa yang perlu diambil. Kalau timmu memakai sprint seperti di pelajaran [Fase Produksi](/belajar/produksi/02-fase-produksi/#sprint), check-in ini bisa menjadi bagian dari perencanaan dan peninjauan sprint.
+- **Satu pelacak tugas** yang menjadi sumber kebenaran: setiap tugas punya satu nama orang dan statusnya terlihat. Papan sederhana dengan kolom "belum", "dikerjakan", dan "selesai" sudah cukup untuk mulai. Pilihan alatnya akan dibahas di pelajaran Alat Kerja di jalur ini, yang masih dalam rencana.
+- **Catatan keputusan tertulis.** Satu dokumen atau satu kanal khusus, berisi tanggal, keputusan, alasan singkat, dan pemilik keputusan. Obrolan di chat mudah tenggelam, jadi salin keputusan pentingnya ke sini.
+- **Build berkala** yang dimainkan bersama, misalnya setiap Jumat. Banyak salah paham baru terlihat saat game dimainkan.
+
+```text title="Contoh catatan keputusan"
+2026-06-12  Musik menu diganti versi lebih pelan.     Pemilik: Dimas
+            Alasan: playtester merasa terburu-buru.
+2026-06-19  Level bonus masuk won't have.             Pemilik: Sari dan Dimas
+            Alasan: art masih tertinggal dua minggu.
+```
+
+## Bus factor dan dokumentasi
+
+**Bus factor** adalah jumlah orang yang harus tiba-tiba tidak bisa bekerja (sakit, pindah kerja, keluarga butuh bantuan) sebelum proyek macet. Di tim kecil, angka ini sering satu untuk banyak hal: hanya satu orang yang tahu cara membuat build rilis, hanya satu yang punya kata sandi akun Steamworks, hanya satu yang tahu di mana file sumber art disimpan.
+
+Kamu tidak bisa membuat semua orang menguasai semua hal. Yang bisa dilakukan adalah memastikan pengetahuan penting tidak hanya ada di kepala satu orang:
+
+- **Langkah membuat build rilis** ditulis dan pernah dicoba oleh orang lain dari catatan itu.
+- **Akses akun penting** (toko, domain, email studio, layanan pembayaran, repositori) dipegang setidaknya dua orang, lewat fitur akses tim atau pengelola kata sandi yang aman. Jangan menulis kata sandi di dokumen biasa.
+- **File sumber** disimpan di tempat bersama dengan struktur folder yang jelas, termasuk file dari freelancer.
+- **Keputusan desain dan alasannya** dicatat, supaya orang lain bisa melanjutkan tanpa menebak.
+- **Dokumentasi pendek lebih baik daripada tidak ada.** Satu halaman berisi "cara membuka proyek, cara membuat build, di mana semua file ada" sudah menurunkan risiko banyak.
+
+Cara menguji dokumentasimu: minta orang lain melakukan tugas itu hanya dari catatan, tanpa bertanya. Setiap pertanyaan yang muncul menunjukkan bagian yang perlu ditulis.
+
+## Beban kerja yang bisa dipertahankan
+
+Di tim kecil, setiap orang memegang banyak pekerjaan, dan godaan untuk menutup kekurangan dengan jam kerja tambahan selalu ada. Pelajaran [Fase Produksi](/belajar/produksi/02-fase-produksi/#menganggap-crunch-sebagai-bagian-normal-dari-rilis) sudah membahas crunch sebagai gejala masalah perencanaan. Di sini fokusnya pada risiko untuk orang-orangnya.
+
+### Apa kata data survei
+
+IGDA, bekerja sama dengan Western University, menjalankan Developer Satisfaction Survey untuk memahami komposisi, kualitas hidup, dan kepuasan kerja orang di industri game. Menurut ringkasan laporan DSS 2023:
+
+- Survei dibuka dari 17 Mei sampai 20 Oktober 2023, dengan sampel valid 777 respons.
+- Di antara semua responden, 28% menyebut pekerjaannya melibatkan crunch, dan 25% lagi menyebut pekerjaannya menuntut periode jam kerja panjang yang tidak mereka sebut crunch.
+- Di antara responden yang mengalami crunch, 75% dari kelompok wiraswasta (*self-employed*), 64% freelancer, dan 63% karyawan sudah crunch lebih dari dua kali dalam dua tahun terakhir.
+- Banyak responden, terutama freelancer, merasa crunch atau jam kerja panjang dianggap bagian normal dari pekerjaan mereka. Grafik di laporan itu menunjukkan 63% freelancer menjawab ya.
+
+Baca angka ini dengan hati-hati. Laporan yang sama mencatat bahwa 47% responden bekerja di Amerika Serikat dan 11% di Kanada, dan bahwa developer Amerika Utara kemungkinan terwakili berlebihan. Survei ini juga diisi oleh orang yang memilih ikut, sehingga tidak otomatis mewakili seluruh developer atau kondisi di Indonesia. Yang bisa diambil: jam kerja panjang berulang adalah pola yang dilaporkan banyak developer, termasuk mereka yang bekerja untuk diri sendiri.
+
+Di GDC 2016, Paul Tozour mempresentasikan Game Outcomes Project. Menurut deskripsi sesinya, penelitian itu menemukan korelasi antara faktor seperti kerja sama tim, kepemimpinan, dan crunch dengan hasil proyek, dan sesinya juga membahas batasan penelitian tersebut. Rujukan ini hanya diperiksa dari deskripsi sesinya.
+
+### Menjaga beban kerja di tim kecil
+
+- **Hitung kapasitas dengan jujur.** Kalau seseorang juga mengurus komunitas dan administrasi, kurangi jam pembuatan game-nya di jadwal. Cara menghitung kapasitas dalam orang-hari ada di pelajaran [Scope dan Vertical Slice](/belajar/produksi/01-scope-vertical-slice/).
+- **Perhatikan siapa yang memegang terlalu banyak.** Tabel pemilik keputusan memperlihatkan nama yang muncul di hampir setiap baris.
+- **Perlakukan lembur sebagai tanda untuk memeriksa rencana.** Lembur sesekali untuk tenggat yang jelas berbeda dengan lembur yang terus berlanjut minggu demi minggu. Kalau sudah berlanjut, hitung ulang sisa pekerjaan, potong scope, atau geser tanggal.
+- **Sepakati jam kerja dan hari libur**, terutama kalau tim bekerja jarak jauh dan pesan bisa datang kapan saja.
+- **Beri tenggat yang wajar untuk freelancer.** Freelancer juga punya klien lain. Feedback yang terlambat dari pihakmu jangan dibayar dengan meminta mereka lembur.
+
+## Contoh: Sari, Dimas, dan satu freelancer selama sebulan
+
+<Aside type="caution" title="Ilustrasi, bukan data">
+Kejadian dan angka di bagian ini dibuat untuk menunjukkan cara berpikir, tidak berasal dari proyek nyata. Isi kontrak di contoh ini juga tidak bisa dipakai sebagai templat hukum.
+</Aside>
+
+Sari (programmer dan desain) dan Dimas (art dan audio) adalah tim dua orang dari [contoh di pelajaran Fase Produksi](/belajar/produksi/02-fase-produksi/#contoh-sari-dan-dimas-dari-konsep-sampai-pascarilis). Mereka berada di bulan keenam, di tengah produksi platformer 2D tentang kurir di kota bertingkat.
+
+**Masalah di awal bulan.** Di check-in Senin, laju kerja menunjukkan art level tertinggal dua minggu dari kode. Dimas memegang art, animasi, efek suara, musik, halaman toko, dan Discord. Namanya muncul di enam baris tabel pemilik keputusan, sedangkan Sari di empat. Mereka sepakat Dimas melepas satu pekerjaan.
+
+**Minggu 1: memilih apa yang dilepas.** Musik dipilih karena bisa dikerjakan terpisah dari level dan hasilnya mudah diperiksa. Dimas tetap menjadi pemilik keputusan musik, dan Sari mengurus kontrak dan pembayaran sesuai tabel. Dimas menulis brief: 4 lagu loop (menu, kota siang, kota malam, boss), durasi 1 sampai 2 menit, tiga referensi dan satu contoh yang tidak diinginkan, format WAV 48 kHz, loop tanpa jeda di engine, dua putaran revisi per lagu, selesai dalam tiga minggu.
+
+**Minggu 1: kontrak.** Mereka menghubungi Raka, komposer lepas yang pernah mereka temui di komunitas game lokal. Sebelum mulai, Sari menyiapkan daftar pertanyaan dari bagian freelancer di atas dan membahasnya dengan Raka: musik dipakai untuk game, trailer, dan soundtrack yang dijual terpisah; Raka boleh memakai lagu di portofolio setelah game rilis; namanya masuk kredit; file proyek tidak diserahkan, tetapi stem per instrumen diserahkan. Karena Pasal 36 UU Hak Cipta menyerahkan pengaturannya pada perjanjian, mereka menuliskan semua ini di kontrak dan memutuskan meminta pendapat profesional hukum sebelum menandatangani. Pembayaran dibagi dua: setengah di awal, setengah setelah keempat lagu diterima.
+
+**Minggu 2: feedback pertama.** Raka mengirim draf lagu menu dan kota siang. Sari merasa lagu kota siang terlalu ramai. Dimas setuju sebagian. Mereka tidak mengirim dua pendapat terpisah ke Raka. Dimas, sebagai pemilik keputusan musik, mengumpulkan masukan dan mengirim satu daftar: menu sudah cocok; kota siang kurangi lapisan perkusi di 30 detik pertama, contohnya seperti referensi kedua. Keputusan dicatat di dokumen keputusan.
+
+**Minggu 2: bus factor.** Sari sakit tiga hari. Dimas ingin membagikan build ke playtester, tetapi langkah membuat build hanya ada di kepala Sari. Setelah Sari sembuh, ia menulis satu halaman langkah build, lalu Dimas mencobanya sendiri dan menambahkan dua langkah yang terlewat. Akses akun Steamworks juga ditambahkan untuk Dimas.
+
+**Minggu 3: perbedaan pendapat.** Sari ingin menambah level bonus karena musik malam terdengar bagus untuk itu. Dimas menolak karena art masih tertinggal. Scope dan jadwal dipegang Sari, tetapi menambah level menyentuh pekerjaan Dimas, dan keputusan menambah scope ada di daftar keputusan bersama. Mereka menghitung: satu level bonus sekitar 6 orang-hari, sebagian besar di art. Level bonus masuk daftar won't have untuk rilis ini dan dicatat sebagai kandidat update.
+
+**Minggu 4: penyerahan.** Keempat lagu diterima setelah revisi kedua untuk lagu boss. Sari mengecek loop di engine sesuai kriteria selesai, lalu membayar termin kedua. File WAV dan stem disimpan di folder bersama, dengan salinan kontrak di folder administrasi.
+
+**Hasil di check-in akhir bulan.** Art level tertinggal satu minggu, berkurang dari dua. Nama Dimas sekarang muncul di lima baris tabel. Mereka juga mencatat dua hal untuk diperbaiki: brief berikutnya akan menyebut loudness target supaya volume antarlagu seragam, dan langkah build akan dicoba ulang setiap kali ada perubahan pada proses build.
+
+## Kesalahan umum
+
+### Semua orang mengerjakan semuanya
+
+```text title="✗ Keliru"
+Halaman toko: nanti kita kerjakan bareng
+```
+
+```text title="✓ Benar"
+Halaman toko: pemilik Dimas, Sari memberi masukan,
+draf pertama selesai 15 Juli
+```
+
+Tanpa pemilik dan tanggal, pekerjaan bersama sering tidak dimulai. Setiap pekerjaan butuh satu nama.
+
+### Keputusan hanya diucapkan
+
+Dua orang sepakat di telepon, lalu dua minggu kemudian masing-masing ingat hasil yang berbeda. Catat keputusan, tanggal, dan pemiliknya di satu tempat.
+
+### Brief freelancer yang kabur
+
+"Buatkan musik yang epik" menghasilkan revisi berkali-kali dan biaya tambahan. Tulis scope, referensi, format, kriteria selesai, dan jumlah revisi sebelum pekerjaan dimulai.
+
+### Kepemilikan aset tidak diatur
+
+Aset dari freelancer dipakai di game tanpa kontrak tertulis. Masalahnya baru muncul saat game dijual, saat ada sekuel, atau saat publisher meminta bukti hak atas aset. Bahas kepemilikan dan lisensi di awal, dan minta pendapat profesional hukum untuk kontrak nyata.
+
+### Pengetahuan penting hanya di satu kepala
+
+Build rilis, akun toko, dan file sumber hanya bisa diakses satu orang. Tulis langkahnya, bagikan akses dengan aman, dan uji dengan meminta orang lain melakukannya.
+
+### Lembur dianggap solusi
+
+Kekurangan waktu terus ditutup dengan jam tambahan. Kelelahan menurunkan kualitas kerja dan bisa membuat anggota tim berhenti di tengah proyek. Saat lembur mulai rutin, buka lagi rencana scope dan jadwal.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan di kertas atau spreadsheet. Pakai proyekmu sendiri, atau bayangkan tim dua sampai tiga orang yang ingin kamu bentuk.
+
+1. Tulis semua pekerjaan di proyekmu, termasuk produksi, QA, komunitas, dan bisnis. Tandai pekerjaan yang belum punya pemilik.
+2. Susun tabel pemilik keputusan dengan kolom bagian, pemilik keputusan, yang mengerjakan, dan dimintai pendapat. Pastikan setiap baris punya tepat satu pemilik keputusan.
+3. Hitung berapa baris yang dipegang setiap orang. Apakah ada yang jauh lebih banyak dari yang lain? Pekerjaan apa yang bisa dilepas atau diserahkan ke freelancer?
+4. Tulis daftar keputusan yang harus disepakati bersama di timmu, misalnya mengubah tanggal rilis atau pengeluaran di atas jumlah tertentu.
+5. Pilih satu pekerjaan yang mungkin kamu serahkan ke freelancer. Tulis brief lengkap: scope, referensi, format, kriteria selesai, jadwal, jumlah revisi, dan daftar pertanyaan tentang kepemilikan file.
+6. Cari satu hal di proyekmu yang bus factor-nya satu. Tulis langkahnya dalam satu halaman, lalu minta orang lain mencoba memakainya.

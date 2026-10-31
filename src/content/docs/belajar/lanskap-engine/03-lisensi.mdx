@@ -1,0 +1,379 @@
+---
+title: "Lisensi dan Model Biaya"
+description: "Cara membaca perjanjian lisensi engine: jenis lisensi, pemicu biaya seperti kursi, royalti, dan ambang pendapatan, arti kata pendapatan di dalam lisensi, kewajiban pengembang, dan apa yang terjadi saat ketentuannya berubah. Dengan tabel Godot, Unity, Unreal Engine, dan GameMaker."
+fundamental: "Biaya engine jarang terasa di awal proyek, karena engine bisa diunduh dan prototipe bisa dibuat tanpa membayar apa pun. Kewajibannya baru muncul saat game mulai menghasilkan uang, studio menerima pendanaan, tim bertambah, atau game dibawa ke konsol, dan pada saat itu pindah engine sudah mahal. Kalau kamu tahu apa yang memicu biaya di setiap lisensi dan cara membaca definisinya, kamu bisa menghitungnya sebelum produksi dimulai."
+kind: lesson
+minutes: 35
+status: draf
+lastReviewed: 2026-10-31
+krekit:
+  gambaran-besar: "Pertanyaan pertamanya selalu sama: kejadian apa yang membuat aku harus membayar?"
+  jenis-lisensi-engine: "Cari dulu nama lisensinya. Dari situ kamu tahu dokumen mana yang harus dibaca."
+  pemicu-biaya: "Satu engine bisa punya lebih dari satu pemicu. Catat semuanya, jangan berhenti di yang pertama."
+  arti-pendapatan-di-dalam-lisensi: "Kotor atau bersih, per game atau per perusahaan. Dua pertanyaan ini bisa mengubah hasil hitunganmu berlipat-lipat."
+  kewajiban-pengembang: "Masukkan kewajiban lisensi ke daftar tugas rilis, sama seperti ikon dan halaman toko."
+  saat-ketentuan-berubah: "Simpan salinan ketentuan yang kamu setujui, lengkap dengan tanggal dan versi engine-nya."
+  tabel-perbandingan: "Tabel ini menjawab siapa membayar dan kapan. Besarnya angka ada di halaman resmi masing-masing."
+  ilustrasi-satu-studio-empat-model-biaya: "Angkanya karangan. Perhatikan kapan setiap model mulai menagih."
+  pertanyaan-sebelum-memilih: "Kalau ada pertanyaan yang jawabannya tidak kamu temukan di dokumen resmi, tanyakan langsung ke vendornya secara tertulis."
+  kesalahan-umum: "Kesalahan pertama paling sering terjadi karena pendanaan dari publisher dianggap bukan pendapatan."
+sidebar:
+  order: 3
+  label: "3 · Lisensi"
+quiz:
+  - q: "Menurut halaman Unity Personal per 31 Oktober 2026, siapa yang boleh memakai Unity Personal?"
+    options:
+      - "Siapa saja, tanpa batas pendapatan"
+      - "Individu dan organisasi kecil dengan pendapatan dan dana yang dihimpun kurang dari US$200.000 dalam 12 bulan terakhir"
+      - "Hanya pelajar dan pengajar"
+      - "Studio dengan paling banyak tiga anggota tim"
+    answer: 1
+    explain: "Halaman Unity Personal menyebut batasnya pendapatan dan dana yang dihimpun kurang dari US$200.000 dalam 12 bulan terakhir. Pendanaan ikut dihitung, jadi studio yang belum punya penjualan tetapi menerima dana dari publisher atau investor bisa melewati batas ini."
+  - q: "Apa satu-satunya syarat lisensi MIT Godot untuk game yang kamu rilis, menurut dokumentasi Godot?"
+    options:
+      - "Membayar royalti setelah pendapatan tertentu"
+      - "Menampilkan logo Godot saat game dibuka"
+      - "Menyertakan teks lisensi Godot di suatu tempat di game atau dokumentasinya"
+      - "Merilis kode game-mu dengan lisensi MIT juga"
+    answer: 2
+    explain: "Halaman Complying with licenses menyebut syaratnya hanya menyertakan teks lisensi, misalnya di layar kredit, menu lisensi, atau berkas yang ikut terpasang. Game-mu sendiri boleh memakai lisensi apa pun, termasuk lisensi komersial."
+  - q: "Menurut pengumuman resmi Unity tanggal 12 September 2024 dan halaman FAQ harganya, apa yang terjadi pada Runtime Fee?"
+    options:
+      - "Runtime Fee dibatalkan untuk pelanggan game, dan menurut FAQ tidak ada game Unity yang pernah dikenai biaya itu"
+      - "Runtime Fee hanya berlaku untuk game yang dibuat dengan Unity 6"
+      - "Runtime Fee diganti royalti dari pendapatan kotor"
+      - "Runtime Fee ditunda sampai 2026"
+    answer: 0
+    explain: "CEO Unity mengumumkan pembatalan Runtime Fee untuk pelanggan game, berlaku langsung. FAQ di halaman perubahan harga Unity menambahkan bahwa biaya itu belum pernah diterapkan, jadi tidak ada game baru maupun lama yang dikenai. Unity kembali ke langganan per kursi."
+  - q: "Menurut teks GameMaker Runtime Licence - Professional, apa yang berlaku setelah kamu membeli lisensi itu?"
+    options:
+      - "Kamu membayar bagi hasil dari setiap penjualan"
+      - "Kamu membayar biaya untuk setiap instalasi game"
+      - "Lisensinya berlaku selamanya, tanpa bagi hasil dan tanpa biaya per instalasi"
+      - "Lisensinya harus diperpanjang setiap bulan"
+    answer: 2
+    explain: "Teks lisensi Professional menyebut durasinya perpetual, tanpa revenue share, tanpa cost per install, dan tanpa biaya tambahan. Ekspor konsol tidak termasuk di paket ini; ekspor itu ada di lisensi Enterprise dan tetap butuh status pengembang yang disetujui pemilik platform."
+  - q: "Unity memperbarui Editor Software Terms. Kamu masih memakai versi editor lama yang sudah kamu pakai sejak awal proyek. Menurut FAQ Unity, apa yang berlaku?"
+    options:
+      - "Kamu wajib langsung menyetujui ketentuan baru"
+      - "Kamu boleh tetap memakai ketentuan lama selama memakai versi editor bernama sama, tetapi perubahan harga langganan tetap bisa berlaku saat pembelian atau perpanjangan"
+      - "Ketentuan lama dan harga lama berlaku selamanya"
+      - "Game yang sudah rilis harus ditarik dari toko"
+    answer: 1
+    explain: "FAQ Unity menyebut kamu boleh tetap memakai versi ketentuan yang sudah kamu setujui selama memakai versi Unity Editor bernama sama, misalnya 2022.1 ke 2022.2. Untuk Unity 6 kamu wajib menyetujui ketentuan 10 Oktober 2024. Harga langganan tetap bisa berubah, dan perubahannya berlaku saat pembelian atau perpanjangan."
+  - q: "Sebuah lisensi menarik royalti dari pendapatan kotor sebuah produk. Game-mu terjual dengan total nilai penjualan 100 satuan uang, lalu toko memotong 30 satuan sebelum membayarmu. Angka mana yang paling mungkin menjadi dasar royalti?"
+    options:
+      - "70, yaitu uang yang kamu terima"
+      - "100, yaitu nilai penjualan sebelum potongan toko"
+      - "30, yaitu potongan toko"
+      - "Laba setelah gaji tim dibayar"
+    answer: 1
+    explain: "Pendapatan kotor biasanya berarti nilai sebelum potongan. Dasar pastinya selalu ditentukan oleh definisi di perjanjian lisensi itu sendiri, termasuk potongan apa saja yang boleh dikurangkan, jadi baca bagian definisinya sebelum menghitung."
+sources:
+  - title: "License"
+    url: "https://godotengine.org/license/"
+    publisher: "Godot Engine"
+    accessed: 2026-10-31
+  - title: "Complying with licenses"
+    url: "https://docs.godotengine.org/en/stable/about/complying_with_licenses.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "Unity Plans & Pricing"
+    url: "https://unity.com/pricing"
+    publisher: "Unity"
+    accessed: 2026-10-31
+  - title: "Changes to Unity subscription plans and pricing"
+    url: "https://unity.com/products/pricing-updates"
+    publisher: "Unity"
+    accessed: 2026-10-31
+  - title: "Unity Personal"
+    url: "https://unity.com/products/unity-personal"
+    publisher: "Unity"
+    accessed: 2026-10-31
+  - title: "Unity Pro"
+    url: "https://unity.com/products/unity-pro"
+    publisher: "Unity"
+    accessed: 2026-10-31
+  - title: "A message to our community: Unity is canceling the Runtime Fee (12 September 2024)"
+    url: "https://unity.com/blog/unity-is-canceling-the-runtime-fee"
+    publisher: "Matt Bromberg, Unity"
+    accessed: 2026-10-31
+  - title: "Get GameMaker (paket dan FAQ harga)"
+    url: "https://gamemaker.io/en/get"
+    publisher: "GameMaker (Opera Norway AS)"
+    accessed: 2026-10-31
+  - title: "GameMaker Runtime Licence - Free"
+    url: "https://gamemaker.io/en/legal/gamemaker-runtime-licence-free"
+    publisher: "GameMaker (Opera Norway AS)"
+    accessed: 2026-10-31
+  - title: "GameMaker Runtime Licence - Professional"
+    url: "https://gamemaker.io/en/legal/gamemaker-runtime-licence-professional"
+    publisher: "GameMaker (Opera Norway AS)"
+    accessed: 2026-10-31
+  - title: "GameMaker Runtime Licence - Enterprise"
+    url: "https://gamemaker.io/en/legal/gamemaker-runtime-licence-enterprise"
+    publisher: "GameMaker (Opera Norway AS)"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Membedakan lisensi open source, source available, langganan per kursi, dan royalti.
+- Menemukan pemicu biaya di sebuah lisensi engine: kursi, pendapatan, pendanaan, atau platform.
+- Membaca definisi pendapatan di perjanjian lisensi: kotor atau bersih, per produk atau per perusahaan.
+- Menyebut kewajiban pengembang yang sering terlupa, dan ketentuan mana yang berlaku saat vendor mengubah lisensinya.
+- Menghitung kasar biaya engine untuk beberapa skenario pendapatan sebelum produksi dimulai.
+</Aside>
+
+<Aside type="caution" title="Edukasi, bukan nasihat hukum">
+Pelajaran ini menjelaskan cara membaca lisensi. Ketentuan dan harga engine berubah, jadi selalu baca perjanjian lisensi terbaru di situs vendor sebelum mengambil keputusan. Untuk kontrak, pajak, dan keputusan bisnis nyata, konsultasikan dengan profesional hukum yang memahami situasi dan negaramu.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: menyewa tempat usaha">
+Ada tempat usaha yang dipinjamkan gratis asal papan nama pemiliknya tetap terpasang, ada yang disewa per meja setiap bulan, ada yang meminta bagian dari omzet setelah penjualan melewati angka tertentu, dan ada yang dibeli sekali lalu dipakai seterusnya. Semuanya bisa dipakai untuk berjualan. Yang berbeda adalah kapan kamu membayar, berapa, dan apa yang terjadi kalau usahamu tumbuh.
+</Aside>
+
+Di [Pelajaran 2](/belajar/lanskap-engine/02-profil-engine/) kamu membandingkan engine dari sisi teknis, termasuk siapa yang boleh membaca kode sumbernya. Pelajaran ini membahas sisi lain dari dokumen yang sama: kewajiban yang muncul saat kamu memakai engine untuk membuat dan menjual game.
+
+Setiap lisensi engine bisa dibaca dengan empat pertanyaan:
+
+| Pertanyaan | Contoh jawaban |
+| --- | --- |
+| Lisensi apa yang dipakai? | MIT, perjanjian pengguna (EULA) vendor, syarat langganan |
+| Apa yang memicu biaya? | Jumlah kursi, pendapatan atau pendanaan di atas ambang, penjualan produk, ekspor ke platform tertentu |
+| Siapa yang membayar, dan kepada siapa? | Studio membayar langganan ke vendor, studio membayar royalti dari penjualan, atau tidak ada pembayaran ke vendor sama sekali |
+| Apa kewajiban selain uang? | Mencantumkan teks lisensi, melaporkan pendapatan, menghitung kursi, mematuhi aturan merek |
+
+Angka di pelajaran ini diambil dari halaman resmi vendor per 31 Oktober 2026, dan setiap angka menyebut sumbernya. Untuk Unreal Engine, situs Epic tidak bisa dibuka saat pelajaran ini ditulis, jadi bagian Unreal hanya menjelaskan strukturnya tanpa angka. Cocokkan semuanya dengan dokumen terbaru sebelum kamu memakainya.
+
+## Jenis lisensi engine
+
+Ada empat bentuk yang paling sering kamu temui. Satu engine bisa menggabungkan beberapa bentuk, misalnya gratis di bawah ambang tertentu lalu berlangganan di atasnya.
+
+**Open source.** Kode engine dirilis dengan lisensi open source seperti MIT atau Apache 2.0. Godot memakai lisensi MIT. Menurut halaman lisensinya, kamu bebas memakai Godot untuk tujuan apa pun, mempelajari dan mengubahnya, serta mendistribusikannya, termasuk secara komersial. Satu-satunya batasan: pemberitahuan hak cipta dan teks lisensinya harus ikut disertakan. Halaman yang sama menyebut ketentuan lisensi Godot tidak berlaku untuk konten yang kamu buat, jadi kamu bebas menentukan lisensi game-mu sendiri.
+
+**Source available dengan perjanjian.** Kode sumber engine bisa dibaca, dan kadang boleh diubah, tetapi hanya setelah kamu menyetujui perjanjian vendor. Perjanjian itu yang menentukan apa yang boleh dilakukan dengan kode dan dengan game yang dihasilkan, termasuk kewajiban membayar. Seperti dibahas di Pelajaran 2, bisa membaca kode tidak sama dengan open source.
+
+**Proprietary dengan langganan per kursi.** Engine dipakai dengan syarat perjanjian vendor, dan studio membayar langganan untuk setiap orang (kursi, atau *seat*) yang memakai editornya. Biayanya tidak bergantung pada laku tidaknya game, tetapi bisa naik saat tim bertambah atau saat vendor menyesuaikan harga.
+
+**Proprietary dengan pembelian sekali.** Studio membayar satu kali untuk lisensi yang berlaku seterusnya. Pembaruan engine, platform tambahan, atau dukungan bisa tetap dijual terpisah.
+
+Model **royalti** bisa muncul di atas bentuk mana pun yang tidak open source: vendor meminta persentase dari pendapatan game, biasanya setelah pendapatan melewati ambang tertentu.
+
+## Pemicu biaya
+
+Pemicu biaya adalah kejadian yang membuat kamu mulai wajib membayar, atau membayar lebih. Saat membaca lisensi, cari setiap pemicu dan catat angkanya, satuannya, dan periode hitungnya.
+
+### Kursi
+
+Biaya dihitung per orang yang memakai editor, biasanya per bulan atau per tahun. Per 31 Oktober 2026, halaman perubahan harga Unity mencantumkan Unity Pro seharga US$2.310 per tahun per kursi jika dibayar di muka tahunan, atau US$210 per bulan per kursi jika dibayar bulanan. Halaman yang sama menyebut jumlah akhirnya bisa berbeda per wilayah karena pajak lokal, mata uang, dan pembulatan.
+
+Di model ini, pertanyaan pentingnya adalah siapa yang dihitung sebagai kursi. Apakah artis yang hanya mengimpor aset ikut dihitung? Bagaimana dengan kontraktor lepas, atau komputer khusus untuk membuat build? Jawabannya ada di perjanjian vendor, dan bisa berbeda antarvendor.
+
+### Ambang pendapatan atau pendanaan
+
+Lisensi bisa gratis sampai studio melewati angka tertentu, lalu mewajibkan paket berbayar. Per 31 Oktober 2026, halaman harga Unity menyebut:
+
+- **Unity Personal** gratis untuk individu dan organisasi kecil dengan pendapatan dan dana yang dihimpun kurang dari US$200.000 dalam 12 bulan terakhir.
+- **Unity Pro** wajib untuk bisnis dengan pendapatan atau pendanaan lebih dari US$200.000 dalam 12 bulan terakhir.
+- **Unity Enterprise** wajib untuk bisnis dengan pendapatan atau pendanaan lebih dari US$25 juta dalam 12 bulan terakhir, dengan harga yang ditentukan lewat tim penjualan. Halaman harganya menyebut komitmen langganan minimum bisa berlaku.
+
+Perhatikan bahwa ambangnya memakai pendapatan **dan pendanaan**. Dana dari publisher, investor, atau hibah bisa ikut dihitung walaupun game-nya belum terjual satu kopi pun. Halaman yang sama juga menyebut paket Pro dan Enterprise tidak boleh dicampur di satu bisnis.
+
+### Royalti dari pendapatan
+
+Vendor meminta persentase dari pendapatan game. Hal yang perlu dicari: berapa persentasenya, mulai berlaku di atas angka berapa, apakah ambangnya dihitung per produk atau per perusahaan, apakah per tahun atau sepanjang umur produk, dan pendapatan jenis apa saja yang dihitung.
+
+{/* Belum diverifikasi ke dokumentasi Epic (situs Epic diblokir proxy saat ditulis, 2026-10-31): untuk game, Unreal Engine memakai model royalti; royalti dihitung dari pendapatan kotor per produk setelah pendapatan kotor seumur produk itu melewati ambang tertentu; sebagian sumber pendapatan dikecualikan (misalnya penjualan lewat Epic Games Store); pengembang wajib melaporkan pendapatan secara berkala (per kuartal); untuk penggunaan di luar game, Epic memakai langganan per kursi bagi perusahaan di atas ambang pendapatan tertentu. Angka persentase, ambang, dan harga kursi sengaja tidak ditulis. Sumber yang perlu dicek: unrealengine.com/license, unrealengine.com/eula, dan FAQ lisensi Unreal. */}
+
+Untuk game, Unreal Engine memakai model royalti: royalti dihitung dari pendapatan kotor sebuah produk setelah pendapatan produk itu melewati ambang tertentu, dan pengembang wajib melaporkan pendapatannya secara berkala. Untuk penggunaan di luar game, Epic memakai langganan per kursi. Persentase, ambang, dan pengecualiannya tercantum di halaman lisensi dan EULA Unreal Engine di situs Epic, dan harus kamu baca langsung dari sana.
+
+### Pembelian sekali
+
+Per 31 Oktober 2026, FAQ di halaman paket GameMaker menyebut GameMaker gratis untuk penggunaan nonkomersial, dan untuk menjual game kamu perlu membeli Commercial License seharga US$99,99. Teks GameMaker Runtime Licence - Professional menyebut lisensi ini berlaku selamanya (*perpetual*), tanpa bagi hasil, tanpa biaya per instalasi, dan tanpa biaya tambahan.
+
+### Platform dan fitur tambahan
+
+Ekspor ke platform tertentu sering hanya tersedia di paket yang lebih mahal. Per 31 Oktober 2026, halaman harga Unity mencantumkan build dan rilis ke konsol game di paket Pro. Di GameMaker, ekspor konsol hanya ada di langganan Enterprise, dan teks lisensinya menandai setiap konsol dengan catatan bahwa status pengembang yang disetujui tetap diperlukan. Akses kode sumber juga sering menjadi tambahan: Unity mencantumkan akses kode sumber (hanya baca) di paket Enterprise, dan GameMaker mencantumkannya di paket Enterprise.
+
+Ingat juga ketentuan dari Pelajaran 2: izin dari pemilik konsol adalah urusan terpisah dari lisensi engine. Membayar paket yang punya ekspor konsol belum berarti studiomu boleh merilis di konsol.
+
+## Arti pendapatan di dalam lisensi
+
+Kata "pendapatan" di lisensi selalu punya definisi sendiri, biasanya di bagian awal perjanjian. Dua lisensi yang sama-sama menyebut "pendapatan US$200.000" bisa menghitung hal yang sangat berbeda. Ada empat hal yang perlu dicek.
+
+**Kotor atau bersih.** Pendapatan kotor (*gross*) umumnya berarti nilai sebelum potongan, misalnya sebelum toko digital mengambil bagiannya. Pendapatan bersih (*net*) berarti nilai setelah potongan tertentu. Daftar potongan yang boleh dikurangkan ditentukan oleh perjanjiannya, jadi jangan menebak.
+
+**Per produk atau per perusahaan.** Ambang per produk dihitung terpisah untuk setiap game. Ambang per perusahaan menjumlahkan semua pendapatan studio, termasuk dari game lain, proyek klien, atau usaha yang tidak memakai engine itu. FAQ harga Unity membedakan beberapa kasus. Untuk bisnis kecil yang tidak memberi jasa ke pihak lain, yang dihitung adalah total pendapatan kotor dan pendanaan bisnisnya. Untuk individu, yang dihitung adalah uang yang dihasilkan dari pemakaian Unity. Untuk pihak yang memakai Unity untuk mengerjakan proyek klien, yang dihitung adalah total pendapatan dan dana klien-kliennya.
+
+**Termasuk pendanaan atau tidak.** Seperti contoh Unity di atas, sebagian lisensi menghitung dana dari investor atau publisher. Sebagian lain hanya menghitung penjualan.
+
+**Periode hitung.** Dua belas bulan terakhir, tahun kalender, atau sepanjang umur produk. Periode menentukan kapan kamu harus mulai membayar dan apakah kewajiban itu bisa hilang lagi kalau pendapatan turun.
+
+Pertanyaan dari pelajaran [Model Bisnis](/belajar/bisnis-indie/01-model-bisnis/) di jalur Bisnis Indie relevan di sini. Model premium, free-to-play, dan work-for-hire menghasilkan pola pendapatan yang berbeda, dan pola itu menentukan kapan sebuah ambang terlewati. Studio work-for-hire, misalnya, bisa melewati ambang per perusahaan dari proyek klien jauh sebelum game milik sendiri dirilis.
+
+## Kewajiban pengembang
+
+Selain membayar, lisensi biasanya meminta beberapa hal lain. Kewajiban ini mudah terlupa karena tidak muncul di tagihan.
+
+**Mencantumkan teks lisensi.** Lisensi MIT Godot hanya punya satu syarat: teks lisensinya harus disertakan. Dokumentasi Godot menyebut beberapa cara yang bisa dipilih salah satunya, misalnya di layar kredit, di menu lisensi, di berkas yang ikut terpasang di PC pemain, atau tautan ke godotengine.org/license di dokumentasi atau kredit game. Godot juga memakai komponen pihak ketiga dengan lisensinya sendiri, dan dokumentasinya menyarankan menyertakan berkas COPYRIGHT.txt dari Godot. Dokumentasi yang sama mengingatkan untuk mencantumkan lisensi aset yang kamu pakai, termasuk aset gratis.
+
+**Melaporkan pendapatan.** Lisensi dengan royalti biasanya mewajibkan laporan pendapatan berkala, dan vendor bisa meminta bukti pendukungnya. Laporan ini perlu disiapkan dari data penjualan semua toko tempat game-mu dijual.
+
+**Menghitung kursi dan memantau ambang.** Di model langganan, studio bertanggung jawab memastikan jumlah kursi sesuai dengan jumlah pemakai, dan memantau apakah pendapatan serta pendanaannya sudah melewati ambang paket. FAQ harga Unity juga menyebut langganan tidak bisa dibatalkan di tengah masa komitmen, dan paket tidak bisa diturunkan selama masa itu.
+
+**Layar pembuka (splash screen).** Sebagian engine pernah atau masih mewajibkan logo engine tampil saat game dibuka di paket gratis. Per 31 Oktober 2026, halaman perubahan harga Unity menyebut splash screen bersifat opsional di Unity Personal sejak Unity 6. FAQ GameMaker menyebut GameMaker tidak memaksakan watermark atau splash screen di paket mana pun. Lisensi MIT Godot tidak mewajibkan layar pembuka.
+
+**Tidak berbagi lisensi.** Teks GameMaker Runtime Licence melarang berbagi lisensimu atau memakai lisensi milik orang lain. Aturan serupa umum di lisensi komersial.
+
+## Saat ketentuan berubah
+
+Vendor bisa mengubah harga, ambang, dan isi perjanjian. Pertanyaan utamanya: ketentuan versi mana yang berlaku untuk proyek yang sedang berjalan dan untuk game yang sudah dirilis?
+
+Secara umum, jawabannya bergantung pada tiga hal yang tertulis di perjanjian: apakah ketentuan terikat pada versi engine yang kamu pakai, apakah perubahan berlaku otomatis atau baru saat perpanjangan, dan apakah ada janji tertulis bahwa perubahan tidak berlaku surut. Lisensi open source seperti MIT punya sifat yang berbeda: salinan engine yang sudah kamu terima dengan lisensi MIT tetap boleh dipakai sesuai lisensi itu.
+
+Contoh nyata yang sering dibahas adalah Runtime Fee dari Unity, yaitu rencana biaya berdasarkan pemakaian Unity Runtime untuk game dengan pendapatan besar. Pada 12 September 2024, CEO Unity Matt Bromberg mengumumkan pembatalan Runtime Fee untuk pelanggan game, berlaku langsung. Pengumuman itu menyebut Unity kembali ke langganan per kursi untuk semua pelanggan game, termasuk yang memakai Unity 6. Pengumuman yang sama mengulang komitmen Unity: jika ketentuan software editor diubah dengan cara yang berdampak pada pengguna, pengguna boleh terus memakai versi software yang sedang dipakainya dengan ketentuan yang sudah disetujui sebelumnya, selama tetap memakai versi itu. FAQ di halaman perubahan harga Unity menambahkan bahwa Runtime Fee belum pernah diterapkan, jadi tidak ada game Unity yang dikenai biaya itu.
+
+FAQ yang sama menjelaskan batas komitmen tersebut, per 31 Oktober 2026:
+
+- Kamu boleh tetap memakai versi Editor Software Terms yang sudah kamu setujui selama memakai versi Unity Editor bernama sama. FAQ memberi contoh: pindah dari 2022.1 ke 2022.2 masih dihitung versi bernama sama.
+- Untuk memakai Unity 6, kamu wajib menyetujui ketentuan tanggal 10 Oktober 2024.
+- Harga langganan tetap bisa berubah untuk pengguna ketentuan lama maupun baru, dan perubahan harga berlaku saat pembelian atau perpanjangan. Contohnya, halaman itu mengumumkan kenaikan harga Unity Pro dan Enterprise sebesar 5% mulai 12 Januari 2026, berlaku saat perpanjangan berikutnya bagi pelanggan yang sudah ada.
+
+Teks GameMaker Runtime Licence menyebut lisensinya tidak boleh diubah kecuali diwajibkan hukum, dan jika perubahan diperlukan pengguna akan diberi tahu. Teks yang sama menyebut dukungan untuk platform tertentu bisa dihentikan, misalnya saat platform itu habis masa pakainya.
+
+Dari sini ada dua kebiasaan yang berguna. Simpan salinan ketentuan yang kamu setujui beserta tanggal dan versi engine-nya. Lalu, saat mempertimbangkan pindah versi engine di tengah produksi, baca juga apakah versi baru membawa ketentuan baru.
+
+## Tabel perbandingan
+
+Tabel ini membandingkan struktur, per 31 Oktober 2026. Angka dan detailnya ada di bagian sebelumnya dan di halaman resmi setiap vendor.
+
+{/* Belum diverifikasi ke dokumentasi Epic (situs Epic diblokir proxy saat ditulis, 2026-10-31): kolom Unreal Engine di tabel ini (royalti dari pendapatan kotor per produk di atas ambang untuk game; langganan per kursi untuk di luar game; kode sumber lewat GitHub setelah EULA disetujui; kewajiban laporan pendapatan; konsol dengan persetujuan pemilik platform). */}
+
+| Kriteria | Godot | Unity | Unreal Engine | GameMaker |
+| --- | --- | --- | --- | --- |
+| Jenis lisensi | Open source, MIT | Proprietary, syarat Editor Software Terms dan langganan | Source available, EULA Epic | Proprietary, GameMaker Runtime Licence per paket |
+| Pemicu biaya | Tidak ada biaya lisensi | Pendapatan atau pendanaan studio di atas ambang Personal; harga dihitung per kursi | Untuk game: pendapatan kotor produk di atas ambang (royalti) | Penggunaan komersial (beli sekali); ekspor konsol (langganan Enterprise) |
+| Akses kode sumber | Terbuka untuk semua | Hanya baca, di paket Enterprise | Bisa dibaca dan diubah setelah menyetujui EULA | Di paket Enterprise |
+| Siapa membayar | Tidak ada pembayaran ke vendor | Studio, per kursi, setiap bulan atau tahun | Studio, persentase dari penjualan produk, dengan laporan berkala | Studio, sekali per lisensi Professional, atau berlangganan untuk Enterprise |
+| Kewajiban lain | Sertakan teks lisensi Godot dan komponen pihak ketiga | Pantau ambang; paket tidak boleh dicampur; splash screen opsional di Personal sejak Unity 6 | Laporan pendapatan | Lisensi tidak boleh dibagi; tanpa splash screen wajib |
+| Konsol | Lewat pihak ketiga, dengan persetujuan pemilik platform | Di paket Pro ke atas, dengan persetujuan pemilik platform | Dengan persetujuan pemilik platform | Di Enterprise, dengan status pengembang yang disetujui |
+
+Tidak ada kolom yang lebih murah untuk semua orang. Lisensi tanpa biaya bisa tetap membawa biaya lain, misalnya jasa port konsol pihak ketiga. Langganan per kursi bisa lebih ringan dari royalti untuk game yang sangat laris, dan sebaliknya untuk game yang penjualannya kecil tetapi timnya besar. Bagian berikut menunjukkan cara menghitungnya.
+
+## Ilustrasi: satu studio, empat model biaya
+
+<Aside type="caution" title="Ilustrasi, bukan data atau nasihat hukum">
+Studio, game, pendapatan, dan keempat model lisensi di bagian ini dikarang untuk menunjukkan cara membandingkan pemicu biaya. Model A sampai D sengaja tidak memakai angka vendor mana pun, jadi jangan dipakai untuk memperkirakan biaya engine sungguhan. Untuk keputusan nyata, hitung dengan perjanjian terbaru vendor dan konsultasikan dengan profesional.
+</Aside>
+
+Studio Lentera punya tiga orang yang memakai editor engine setiap hari. Mereka membuat game premium untuk PC dan ingin tahu biaya engine dalam tiga skenario pendapatan kotor tahun pertama: sepi (US$40.000), sedang (US$250.000), dan laris (US$1.500.000). Mereka membandingkan empat model karangan:
+
+| Model | Ketentuan karangan |
+| --- | --- |
+| A, kursi dengan ambang | Gratis jika pendapatan dan pendanaan studio dalam 12 bulan terakhir di bawah US$150.000. Di atasnya, US$2.000 per kursi per tahun. |
+| B, royalti | Gratis sampai pendapatan kotor produk mencapai US$500.000 sepanjang umur produk. Di atasnya, 4% dari pendapatan kotor yang melewati ambang. |
+| C, beli sekali | US$100 per kursi, satu kali. |
+| D, open source | Tanpa biaya lisensi. Wajib menyertakan teks lisensi. |
+
+Hasil hitungannya untuk tahun pertama:
+
+| Skenario | Model A | Model B | Model C | Model D |
+| --- | --- | --- | --- | --- |
+| Sepi, US$40.000 | US$0 | US$0 | US$300 | US$0 |
+| Sedang, US$250.000 | 3 × US$2.000 = US$6.000 | US$0 (belum lewat ambang) | US$300 | US$0 |
+| Laris, US$1.500.000 | US$6.000 | 4% × US$1.000.000 = US$40.000 | US$300 | US$0 |
+
+Tiga hal muncul dari tabel ini.
+
+1. **Pemicu menentukan kapan biaya datang.** Model A menagih begitu studio melewati ambangnya, berapa pun laba sebenarnya. Model B baru menagih setelah game benar-benar laris.
+2. **Definisi pendapatan mengubah hasil.** Kalau Model B menghitung dari pendapatan bersih, misalnya setelah toko memotong 35% (angka karangan), pendapatan bersih skenario laris menjadi US$975.000 dan royaltinya 4% × US$475.000 = US$19.000, kira-kira setengah dari hitungan dengan pendapatan kotor.
+3. **Pendanaan bisa memicu biaya sebelum penjualan.** Misalkan sebelum rilis Studio Lentera menerima dana publisher US$160.000 dan belum punya penjualan. Model A, yang menghitung pendanaan, sudah mewajibkan US$6.000 per tahun. Model B belum menagih apa pun karena belum ada penjualan.
+
+Hitungan ini juga belum memasukkan hal lain yang ikut berubah saat studio tumbuh: tambahan kursi saat tim membesar, paket yang lebih mahal untuk ekspor konsol, jasa port pihak ketiga, dan pajak. Rina dan Bayu di contoh pelajaran Model Bisnis membuat tabel beban kerja per model bisnis. Tabel biaya seperti ini bisa disandingkan dengan tabel mereka.
+
+## Pertanyaan sebelum memilih
+
+Sebelum memutuskan engine, cari jawaban pertanyaan berikut di dokumen resmi vendor, dan catat alamat serta tanggal aksesnya:
+
+1. **Apa nama dan versi lisensinya?** Simpan salinan atau tautan ke versi yang kamu setujui.
+2. **Apa saja pemicu biayanya?** Kursi, pendapatan, pendanaan, penjualan produk, platform, atau fitur seperti akses kode sumber.
+3. **Bagaimana pendapatan didefinisikan?** Kotor atau bersih, per produk atau per perusahaan, termasuk pendanaan atau tidak, dan dihitung per periode apa.
+4. **Siapa yang dihitung sebagai kursi?** Termasuk kontraktor, artis, dan mesin build.
+5. **Kewajiban apa yang ada selain membayar?** Laporan, teks lisensi, splash screen, aturan merek.
+6. **Apa yang dibutuhkan untuk platform targetmu?** Paket apa yang membuka ekspornya, dan izin apa yang perlu diurus ke pemilik platform.
+7. **Apa yang terjadi saat ketentuan berubah?** Apakah ketentuan terikat pada versi engine, dan kapan perubahan harga berlaku.
+8. **Berapa biayanya di skenario sepi, sedang, dan laris?** Hitung seperti ilustrasi di atas dengan angka resmi terbaru.
+
+Jawaban-jawaban ini menjadi salah satu masukan di Pelajaran 4, Kriteria memilih engine, bersama genre, platform, dan keahlian tim.
+
+## Kesalahan umum
+
+### Mengira pendanaan bukan pendapatan
+
+```text title="✗ Keliru"
+belum ada penjualan  →  masih di bawah ambang  →  tetap di paket gratis
+```
+
+```text title="✓ Benar"
+baca definisi ambang  →  apakah pendanaan ikut dihitung?
+    ya   →  dana publisher, investor, atau hibah bisa melewati ambang sebelum rilis
+    tidak →  hanya penjualan yang dihitung
+```
+
+Sebagian lisensi, seperti paket Unity, menghitung pendapatan dan pendanaan bersama. Studio yang baru menandatangani kesepakatan dengan publisher perlu memeriksa ulang paketnya.
+
+### Menghitung royalti dari uang yang diterima
+
+```text title="✗ Keliru"
+toko membayar studio 70  →  royalti dihitung dari 70
+```
+
+```text title="✓ Benar"
+cek definisi di perjanjian  →  kotor (sebelum potongan) atau bersih (setelah potongan tertentu)?
+    kotor  →  dasar hitungnya nilai penjualan sebelum potongan toko
+```
+
+Selisihnya bisa besar, seperti terlihat di ilustrasi. Siapkan data penjualan kotor dari setiap toko sejak awal.
+
+### Menganggap engine gratis berarti tanpa kewajiban
+
+```text title="✗ Keliru"
+lisensi MIT, tanpa biaya  →  tidak perlu melakukan apa pun
+```
+
+```text title="✓ Benar"
+lisensi MIT  →  sertakan teks lisensi engine dan komponen pihak ketiga
+            →  cantumkan juga lisensi aset yang dipakai
+```
+
+Syarat ini ringan, tetapi tetap syarat lisensi. Masukkan ke daftar tugas rilis supaya tidak terlewat di minggu terakhir.
+
+### Membaca harga dari ringkasan pihak ketiga
+
+```text title="✗ Keliru"
+artikel atau video lama menyebut harga dan ambang  →  dipakai untuk anggaran
+```
+
+```text title="✓ Benar"
+buka halaman harga dan perjanjian resmi  →  catat angka, tanggal akses, dan versi ketentuan
+```
+
+Harga dan ambang berubah. Angka Unity Pro di pengumuman September 2024 sudah berbeda dengan angka di halaman harga per 31 Oktober 2026, karena ada penyesuaian harga di antaranya.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+1. Pilih satu engine yang kamu pertimbangkan. Jawab delapan pertanyaan di bagian Pertanyaan sebelum memilih hanya dari dokumen resminya. Catat alamat, tanggal akses, dan versi ketentuan untuk setiap jawaban. Pertanyaan mana yang tidak bisa kamu jawab?
+2. Cari bagian definisi di perjanjian lisensi engine yang memakai ambang pendapatan atau royalti. Tulis dengan kalimatmu sendiri: pendapatan apa yang dihitung, apa yang boleh dikurangkan, dan periode hitungnya.
+3. Ulangi ilustrasi Studio Lentera dengan angka resmi terbaru dari dua engine yang memakai pemicu biaya berbeda, dan dengan rencana pendapatan serta jumlah anggota timmu sendiri. Di skenario mana urutan biayanya berbalik?
+4. Buka game Godot yang pernah kamu buat atau mainkan. Di mana teks lisensi Godot dicantumkan? Kalau belum ada, pilih salah satu cara dari dokumentasi Godot dan tambahkan.

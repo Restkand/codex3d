@@ -1,0 +1,736 @@
+---
+title: "2.5D"
+description: "Tiga arti 2.5D, kamera ortografis dan perspektif, proyeksi isometrik dan dimetrik 2:1, koordinat dan urutan gambar peta isometrik, billboard dan artefaknya, sprite yang hidup di dunia 3D, kedalaman dari lapisan bidang, serta biayanya."
+fundamental: "Karakter sprite yang melayang di atas lantai 3D, bayangan yang hilang saat kamera berputar, atau tile isometrik yang tidak pernah pas di grid biasanya muncul karena dua cara menggambar dicampur tanpa aturan yang jelas. Gambar 2D dan dunia 3D masing-masing punya geometri sendiri. Kalau kamu paham proyeksi kamera dan cara GPU mengurutkan bidang datar, kamu bisa memilih campuran yang cocok dan memperbaiki artefaknya sendiri."
+kind: lesson
+minutes: 35
+status: draf
+lastReviewed: 2026-10-31
+terms:
+  - 2d/sprite
+  - 2d/tilemap
+  - 2d/sorting-layer
+  - 2d/parallax
+  - 2d/pixel-perfect
+  - ortho
+  - camera
+  - frustum
+  - transform
+  - depth-buffer
+  - blending
+  - normal
+  - normal-map
+  - shadow-map
+  - fog
+  - draw-call
+  - overdraw
+  - instancing
+krekit:
+  gambaran-besar: "Setiap kali ada yang terlihat aneh, tanyakan dulu: bagian ini digambar sebagai 2D atau 3D, dan siapa yang menentukan urutannya?"
+  tiga-arti-25d: "Sebutkan arti yang kamu maksud saat berdiskusi dengan tim. Tiga arti ini butuh aset dan alur kerja yang sangat berbeda."
+  kamera-ortografis-dan-perspektif: "Kamera ortografis membuang satu petunjuk kedalaman. Sisanya harus kamu sediakan lewat gambar, bayangan, dan urutan."
+  isometrik-dan-dimetrik: "Tile 2:1 itu dimetrik. Kalau kamu memadukannya dengan model 3D, pakai sudut kamera 30°, jangan 35,26°."
+  peta-isometrik-koordinat-dan-urutan-gambar: "Urutkan menurut titik pijak di tanah. Objek yang lebih besar dari satu sel butuh perhatian khusus."
+  billboard: "Pilih jenis billboard dari sudut kamera game-mu. Kamera yang menunduk tajam dan kamera yang hampir datar butuh jenis berbeda."
+  sprite-di-dunia-3d: "Untuk pixel art di dunia 3D, mulai dari alpha cut. Tepi tajamnya sudah cocok, dan sebagian besar masalah urutan langsung hilang."
+  kedalaman-dari-lapisan-bidang: "Dengan kamera perspektif, parallax datang gratis dari jarak. Dengan kamera ortografis, kamu harus menghitungnya sendiri."
+  biaya-di-game-25d: "Bidang datar memang murah, tapi transparansi, bayangan, dan jumlah objek tetap perlu diukur."
+  kesalahan-umum: "Uji dengan kamera yang bergerak dan berputar. Hampir semua kesalahan ini tidak terlihat dari satu sudut diam."
+sidebar:
+  order: 3
+  label: "3 · 2.5D"
+quiz:
+  - q: "Artist menggambar tile lantai 64×32 piksel dengan garis tepi berpola 2 piksel ke samping, 1 piksel ke bawah. Kamu ingin menaruh model 3D di atas tile itu dengan kamera ortografis yang diputar 45° di sumbu vertikal. Berapa sudut tunduk kamera yang membuat lantai 3D tepat cocok dengan tile?"
+    options:
+      - "35,26°, sudut isometrik sejati"
+      - "26,57°, sama dengan sudut garis tepi tile"
+      - "30°"
+      - "45°"
+    answer: 2
+    explain: "Lantai persegi yang diputar 45° tampil sebagai belah ketupat dengan perbandingan tinggi : lebar = sin(sudut tunduk). Agar 1 : 2, sin(sudut) = 0,5, jadi sudutnya 30°. Angka arctan(1/2) ≈ 26,57° adalah kemiringan garis tepi di layar. Sudut kamera dan sudut garis tidak sama. Sudut 35,26° menghasilkan isometrik sejati dengan perbandingan sekitar 1 : 1,73, sehingga tile 2:1 tidak akan pas."
+  - q: "Kamu menaruh gunung, pohon, dan rumah sebagai bidang datar di kedalaman berbeda (Z = 50, 20, dan 5) di depan kamera ortografis. Saat kamera bergeser ke samping, semua lapisan bergerak sama cepat. Kenapa?"
+    options:
+      - "Lapisan perlu diberi skala yang berbeda"
+      - "Proyeksi ortografis tidak bergantung pada jarak, jadi semua bidang bergeser sejauh pergeseran kamera, berapa pun kedalamannya"
+      - "Far plane kamera terlalu dekat"
+      - "Bidang harus memakai material transparan"
+    answer: 1
+    explain: "Di kamera perspektif, pergeseran di layar sebanding dengan 1 ÷ jarak, sehingga bidang jauh bergerak lebih lambat. Kamera ortografis membuang pembagian dengan jarak itu. Pilihannya: pakai kamera perspektif, atau geser setiap lapisan dengan skala gulir sendiri seperti parallax di game 2D."
+  - q: "Game kamu memakai kamera yang menunduk sekitar 60° ke lantai. Karakter sprite memakai billboard yang hanya berputar di sumbu Y (Y-Billboard di Godot). Di layar, karakter terlihat pendek dan gepeng. Apa penyebabnya?"
+    options:
+      - "pixel_size terlalu kecil"
+      - "Bidang sprite tetap tegak, jadi kamera yang menunduk melihatnya miring dan tingginya terpendekkan kira-kira sebesar cos(60°) = 0,5"
+      - "Filter tekstur masih linear"
+      - "Billboard Y selalu memperkecil sprite setengahnya"
+    answer: 1
+    explain: "Billboard sumbu Y hanya memutar bidang agar menghadap kamera di bidang horizontal. Dari kamera yang menunduk, bidang tegak itu terlihat condong menjauh, sehingga tingginya di layar mengecil. Billboard penuh membuat bidang sejajar layar dan tingginya utuh, dengan harga bidangnya ikut condong ke belakang di dunia 3D. Cara lain adalah memiringkan sprite atau memanjangkannya secara vertikal untuk mengimbangi sudut kamera."
+  - q: "Beberapa NPC sprite pixel art berdiri berdekatan di kota 3D. Saat kamera bergerak, urutan mereka kadang berkedip: kepala satu NPC tiba-tiba tertutup tubuh NPC lain. Material sprite memakai alpha blend biasa. Perbaikan apa yang paling tepat?"
+    options:
+      - "Naikkan render_priority satu NPC"
+      - "Pakai alpha cut (Discard di Godot, Alpha Clipping di Unity), supaya sprite menulis depth buffer dan tidak lagi bergantung pada urutan"
+      - "Matikan depth test pada semua NPC"
+      - "Gabungkan semua NPC ke satu atlas"
+    answer: 1
+    explain: "Objek transparan diurutkan dari belakang ke depan menurut satu titik per objek, dan tidak menulis depth. Saat kamera bergerak, jarak titik-titik itu bisa bertukar dan urutannya ikut bertukar. Pixel art hanya punya piksel penuh atau kosong, jadi alpha cut tidak mengubah tampilannya, dan depth buffer yang menentukan siapa di depan per piksel. Render priority membuat urutan tetap untuk semua posisi, dan mematikan depth test membuat NPC tembus dinding."
+  - q: "Di peta isometrik, sebuah rumah menempati 2×2 sel. Pivot rumah berada di sel paling belakang (kiri atas grid). Karakter yang berdiri di sel depan rumah justru tampil di belakang dinding rumah. Kenapa?"
+    options:
+      - "Rumah harus dipindah ke sorting layer UI"
+      - "Pengurutan membandingkan satu titik per objek. Titik di sel paling belakang membuat rumah dianggap lebih jauh dari posisi sebenarnya, jadi titiknya perlu dipindah ke sudut depan alas rumah, atau rumah dipotong per kolom sel"
+      - "Ukuran sel grid terlalu kecil"
+      - "Karakter perlu kamera tersendiri"
+    answer: 1
+    explain: "Y-sort di peta isometrik sama dengan mengurutkan menurut gx + gy. Objek multi-sel punya beberapa nilai gx + gy, tetapi pengurutan hanya memakai satu. Pivot di sudut depan alas membuat rumah diurutkan menurut bagian yang paling dekat ke kamera. Untuk objek yang sangat lebar, memotongnya per kolom membuat setiap potongan diurutkan sendiri."
+  - q: "Karakter sprite dengan billboard penuh memberi bayangan ke lantai lewat shadow map. Saat kamera berputar mengelilingi karakter, bentuk bayangannya ikut berubah dan kadang tinggal garis tipis. Apa cara yang umum untuk menghindarinya?"
+    options:
+      - "Naikkan resolusi shadow map"
+      - "Matikan bayangan dari sprite dan pakai bayangan bulat sederhana di bawah kaki, atau pakai bidang bayangan terpisah yang tidak ikut menghadap kamera"
+      - "Ganti kamera ke ortografis"
+      - "Nyalakan double sided"
+    answer: 1
+    explain: "Bayangan dari bidang datar bergantung pada arah bidang itu terhadap cahaya. Billboard memutar bidangnya mengikuti kamera, jadi bayangannya ikut berubah, dan menjadi garis saat bidang sejajar arah cahaya. Dokumentasi Godot mencatat bahwa billboard yang memberi bayangan ikut menghadap kamera saat bayangan dirender. Bayangan bulat di bawah kaki tidak bergantung pada arah kamera dan juga lebih murah."
+sources:
+  - title: "Camera3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_camera3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "SpriteBase3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_spritebase3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "Sprite3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_sprite3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "AnimatedSprite3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_animatedsprite3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "BaseMaterial3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_basematerial3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "Standard Material 3D and ORM Material 3D"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "3D rendering limitations"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/3d_rendering_limitations.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "TileSet"
+    url: "https://docs.godotengine.org/en/stable/classes/class_tileset.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "Using TileSets"
+    url: "https://docs.godotengine.org/en/stable/tutorials/2d/using_tilesets.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "Using TileMaps"
+    url: "https://docs.godotengine.org/en/stable/tutorials/2d/using_tilemaps.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "PhysicsBody3D"
+    url: "https://docs.godotengine.org/en/stable/classes/class_physicsbody3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "Camera Inspector window reference for URP"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/cameras/urp/camera-components-reference/camera-component-reference"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Camera.orthographicSize"
+    url: "https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/camera/orthographicsize"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Create an isometric tilemap"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/tilemaps/isometric-tilemap/create-isometric-tilemap"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Add 3D height to an isometric tilemap"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/tilemaps/isometric-tilemap/tilemap-renderer-isometric-modes"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Grid component reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/tilemaps/reference/grid"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Sprite Renderer component reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/sprite-renderer-reference"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "2D rendering order"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/sort-sprites/sort-sprites"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Change the sorting order of 2D GameObjects"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/sort-sprites/2d-renderer-sorting"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Lit Shader Material Inspector window reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/built-in/shaders-in-universalrp/reference/lit-shader"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Mesh Renderer component reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/assets-and-media/asset-types/mesh/components-reference/class-mesh-renderer"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Particle System Renderer module reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/visual-effects/particle-systems/particle-system-modules/part-sys-renderer-module"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Rigidbody component reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/physics-section/physics-overview/rigidbody/class-rigidbody"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menjelaskan arti 2.5D yang dimaksud dalam sebuah proyek, dan aset apa yang dibutuhkan masing-masing.
+- Memilih kamera ortografis atau perspektif, dan menyebutkan petunjuk kedalaman yang hilang atau tersisa di masing-masing.
+- Menghitung sudut kamera untuk tile isometrik sejati dan tile dimetrik 2:1, lalu menyiapkan grid isometrik di Unity atau Godot.
+- Mengubah koordinat grid isometrik ke layar dan sebaliknya, dan mengurutkan objek di peta isometrik.
+- Memilih jenis billboard dan mengenali artefaknya.
+- Menaruh sprite di dunia 3D dengan bayangan, cahaya, dan urutan gambar yang benar, serta memperkirakan biayanya.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: panggung boneka kertas">
+Bayangkan panggung teater kecil dengan lantai dan dinding sungguhan, lalu boneka kertas datar yang berdiri di atasnya. Penonton di kursi depan melihat boneka itu utuh. Kalau penonton pindah ke balkon atau ke samping panggung, boneka kertas mulai terlihat tipis, dan pengatur panggung harus memutarnya supaya tetap menghadap penonton. Hampir semua teknik 2.5D adalah cara mengatur posisi penonton dan arah boneka.
+</Aside>
+
+[Pelajaran 1](/belajar/seni-visual/01-pixel-art/) dan [Pelajaran 2](/belajar/seni-visual/02-game-2d/) membahas dunia yang seluruhnya datar: semua sprite berada di satu bidang, dan engine mengurutkannya dengan lapisan, nomor urut, dan posisi Y. Pelajaran ini membahas apa yang terjadi saat sprite dan dunia 3D bertemu, atau saat gambar 2D dibuat supaya terlihat punya kedalaman. Pivot, atlas, dan Y-sort tidak diulang di sini.
+
+Bagi GPU, sprite di dunia 3D tetap bidang datar bertekstur. Bedanya, bidang itu sekarang punya posisi kedalaman, bisa diputar ke segala arah, dan dilihat lewat kamera yang mungkin punya perspektif. Alurnya kira-kira seperti ini:
+
+```text title="Pseudocode: satu frame dunia 3D dengan sprite"
+untuk setiap sprite:
+    putar bidangnya, jika billboard            // menghadap kamera
+gambar semua objek padat, depth buffer menentukan siapa di depan
+urutkan objek transparan dari jauh ke dekat     // satu titik per objek
+gambar objek transparan tanpa menulis depth
+```
+
+Hampir semua keputusan di pelajaran ini menyentuh salah satu baris itu: jenis kamera menentukan bagaimana jarak terlihat di layar, billboard menentukan arah bidang, dan pilihan transparansi menentukan apakah urutan dikerjakan depth buffer atau pengurutan per objek.
+
+## Tiga arti 2.5D
+
+Istilah 2.5D dipakai untuk beberapa hal yang berbeda. Tiga yang paling sering:
+
+| Arti | Yang digambar 3D | Yang digambar 2D | Gerakan |
+| --- | --- | --- | --- |
+| **Gameplay 2D di dunia 3D** | Lingkungan dan sering juga karakter | Tidak ada, atau hanya UI | Terkunci di satu bidang, misalnya kiri-kanan dan atas-bawah |
+| **Dunia 3D dengan karakter sprite** | Lingkungan | Karakter, NPC, item, efek | Bebas di dunia 3D |
+| **Gambar 2D yang menyiratkan kedalaman** | Tidak ada | Semuanya, termasuk lantai dan dinding isometrik | Di grid 2D, dengan ketinggian dipalsukan |
+
+Arti pertama memakai renderer 3D biasa. Yang berbeda hanya gameplay-nya: posisi pemain dikunci ke satu bidang, sehingga logika dan desain level mirip game 2D. Kamera biasanya perspektif dan diam di jarak tetap, supaya latar mendapat kedalaman otomatis. Kalau physics 3D dipakai, kunci gerakan di sumbu kedalaman supaya tabrakan tidak mendorong karakter keluar dari bidang. Di Unity, **Rigidbody → Constraints → Freeze Position** bisa mengunci sumbu Z. Di Godot, `PhysicsBody3D` punya `axis_lock_linear_z`.
+
+Arti kedua menaruh bidang sprite di dalam dunia 3D. Di sinilah billboard, bayangan sprite, dan transparansi menjadi masalah utama. Sebagian besar pelajaran ini membahas arti ini.
+
+Arti ketiga tetap game 2D sepenuhnya. Kedalaman muncul dari sudut gambar (isometrik atau dimetrik) dan dari urutan gambar. Engine memperlakukannya seperti game 2D di [Pelajaran 2](/belajar/seni-visual/02-game-2d/), dengan grid khusus.
+
+Ketiganya bisa dicampur. Lingkungan 3D dengan kamera ortografis bersudut isometrik, misalnya, bisa terlihat sangat mirip tile isometrik 2D, sementara karakternya sprite.
+
+## Kamera ortografis dan perspektif
+
+[Kamera perspektif](/kamus/dasar/camera/) meniru mata: objek yang jauh tampil lebih kecil. Area pandangnya berbentuk [frustum](/kamus/dasar/frustum/), piramida terpotong yang melebar menjauhi kamera. [Kamera ortografis](/kamus/dasar/ortho/) memakai area pandang berbentuk kotak, sehingga ukuran di layar tidak bergantung pada jarak.
+
+Hitungannya kira-kira begini:
+
+```text title="Pseudocode: tinggi objek di layar"
+// perspektif: dibagi jarak
+tinggi_layar_px = tinggi_viewport_px * tinggi_objek / (2 * jarak * tan(fov_vertikal / 2))
+
+// ortografis: tidak ada jarak di rumus
+tinggi_layar_px = tinggi_viewport_px * tinggi_objek / tinggi_area_pandang
+```
+
+```text title="Ilustrasi: karakter 1,8 m di viewport setinggi 1080 piksel"
+perspektif, fov vertikal 60°, jarak 10 m   → sekitar 168 piksel
+perspektif, fov vertikal 60°, jarak 20 m   → sekitar 84 piksel
+ortografis, area pandang setinggi 10 m     → sekitar 194 piksel, di jarak berapa pun
+```
+
+### Petunjuk kedalaman di masing-masing kamera
+
+Mata membaca kedalaman dari banyak petunjuk. Kamera ortografis menghapus sebagian, dan sisanya harus disediakan dengan sengaja:
+
+| Petunjuk kedalaman | Perspektif | Ortografis |
+| --- | --- | --- |
+| Objek jauh tampak lebih kecil | Ya, otomatis | Tidak ada |
+| Garis sejajar bertemu di kejauhan | Ya | Tetap sejajar |
+| Objek jauh bergerak lebih lambat saat kamera bergeser (parallax) | Ya, otomatis | Tidak ada, harus dipalsukan |
+| Objek dekat menutupi objek jauh | Ya | Ya |
+| Posisi lebih tinggi di layar terasa lebih jauh | Ya | Ya, ini petunjuk utamanya |
+| Bayangan dan titik kontak dengan lantai | Ya | Ya, sangat penting |
+| Warna memudar dengan jarak ([Fog](/kamus/cahaya/fog/)) | Ya | Ya, jika diatur menurut kedalaman |
+
+Kehilangan itu juga punya keuntungan. Di kamera ortografis, jarak di layar sebanding dengan jarak di dunia di seluruh layar. Pemain bisa menilai jangkauan serangan atau jarak antar-unit dengan mudah, dan ini salah satu alasan kamera ortografis bersudut dipakai di game taktik dan strategi. Sprite pixel art juga bisa tetap [pixel-perfect](/kamus/2d/pixel-perfect/) di kamera ortografis, karena setiap sprite punya skala layar yang sama. Di kamera perspektif, sprite yang menjauh mengecil dengan faktor pecahan, dan aturan skala bulat dari [Pelajaran 1](/belajar/seni-visual/01-pixel-art/#scaling-dengan-kelipatan-bulat) tidak bisa dipenuhi.
+
+Ada jalan tengah: kamera perspektif dengan FOV sempit yang diletakkan jauh. Perbedaan ukuran antara objek dekat dan jauh menjadi kecil, tetapi masih ada sedikit parallax. Harganya, kamera harus jauh sekali dari scene, dan near serta far perlu diatur hati-hati supaya presisi [depth buffer](/kamus/geometri/depth-buffer/) cukup.
+
+<EngineTabs>
+<div slot="unity">
+
+Di komponen **Camera** (URP), **Projection** punya dua pilihan: **Perspective** dan **Orthographic**. **Field of View** hanya muncul untuk Perspective, dan **Size** hanya untuk Orthographic.
+
+Size adalah **setengah** tinggi area pandang dalam unit dunia. Menurut referensi `Camera.orthographicSize`, tinggi area pandang = `orthographicSize × 2`, dan lebarnya dihitung dari aspect ratio kamera. Untuk area pandang setinggi 10 unit, isi Size 5.
+
+Untuk tampilan dimetrik 2:1 dari dunia 3D, putar kamera ke (30, 45, 0). Unity memutar kamera ke bawah dengan nilai X positif. Untuk isometrik sejati, pakai (35.264, 45, 0).
+
+</div>
+<div slot="unreal">
+
+Komponen **Camera** punya **Projection Mode** dengan pilihan Perspective dan Orthographic. Dalam mode Orthographic, lebar area pandang diatur lewat **Ortho Width** dalam unit dunia (sentimeter).
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-31): nama properti Projection Mode dan Ortho Width pada Camera Component, bahwa Ortho Width mengukur lebar (bukan tinggi), dan satuannya sentimeter. */}
+
+</div>
+<div slot="godot">
+
+Di **Camera3D**, atur `projection` ke **Orthogonal** (bawaannya **Perspective**). Dokumentasi Godot menyebut orthogonal sebagai nama lain proyeksi ortografis.
+
+`size` (bawaan 1,0) adalah **seluruh** lebar atau tinggi area pandang dalam meter, tergantung `keep_aspect`. Bawaan `keep_aspect` adalah **Keep Height**, jadi `size` 10 berarti area pandang setinggi 10 m. Ini berbeda dari Unity, yang menyimpan setengahnya. `fov` (bawaan 75°) hanya berlaku di mode perspektif.
+
+Untuk tampilan dimetrik 2:1, atur rotasi Camera3D ke (-30, 45, 0) derajat. Kamera Godot melihat ke arah -Z, jadi nilai X negatif membuatnya menunduk. Untuk isometrik sejati, pakai (-35.264, 45, 0).
+
+</div>
+</EngineTabs>
+
+## Isometrik dan dimetrik
+
+Istilah "isometrik" di game sering dipakai untuk semua tampilan miring dari atas dengan sudut tetap. Dalam geometri, istilahnya lebih ketat.
+
+**Proyeksi isometrik** memperlihatkan ketiga sumbu dunia (X, Y, Z) dengan pemendekan yang sama, dan ketiganya membentuk sudut 120° di layar. Garis tanah miring 30° dari horizontal.
+
+**Proyeksi dimetrik** memperlihatkan dua sumbu dengan pemendekan yang sama, dan sumbu ketiga berbeda. Tile 2:1 yang paling umum di game termasuk di sini.
+
+### Dari mana angka 2:1
+
+Ambil lantai persegi, putar 45° di sumbu vertikal, lalu lihat dari kamera ortografis yang menunduk dengan sudut θ dari horizontal. Persegi itu tampil sebagai belah ketupat. Lebarnya tetap, tetapi tingginya dipendekkan sebesar sin θ:
+
+```text title="Pseudocode: bentuk belah ketupat dari sudut tunduk kamera"
+lebar  = sisi * sqrt(2)
+tinggi = sisi * sqrt(2) * sin(θ)
+tinggi / lebar = sin(θ)
+```
+
+Dari sini dua sudut bisa dihitung:
+
+| Gaya | Sudut tunduk kamera θ | Tinggi : lebar belah ketupat | Kemiringan garis tanah di layar |
+| --- | --- | --- | --- |
+| Isometrik sejati | arctan(1/√2) ≈ 35,264° | 1 : √3 ≈ 1 : 1,732 | 30° |
+| Dimetrik 2:1 | arcsin(1/2) = 30° | 1 : 2 | arctan(1/2) ≈ 26,565° |
+
+Jadi tile 64×32 piksel termasuk dimetrik. Tile isometrik sejati selebar 64 piksel tingginya sekitar 36,95 piksel, angka yang tidak bulat.
+
+Pixel art memilih 2:1 karena garisnya rapi. Garis dengan kemiringan 1 banding 2 tersusun dari anak tangga yang seragam: dua piksel ke samping, satu piksel ke bawah, berulang. Garis 30° tidak punya pola sesederhana itu, sehingga anak tangganya tidak rata dan tampak bergerigi.
+
+Sumbu vertikal juga ikut dipendekkan. Dengan sudut tunduk 30°, garis tegak sepanjang sisi tile tampil sepanjang `sisi × cos(30°)`, atau sekitar 0,61 kali lebar tile. Untuk tile selebar 64 piksel, kubus dengan sisi yang sama tingginya sekitar 39 piksel di layar. Artist sering membulatkan tinggi ini, dan itu tidak masalah selama semua aset memakai aturan yang sama. Angka ini baru penting saat aset 2D harus pas dengan model 3D yang dirender dengan kamera bersudut 30°.
+
+<Aside type="caution" title="Mencampur tile 2D dan model 3D">
+Jika tile digambar 2:1 tetapi kamera 3D diatur ke 35,264°, lantai 3D tidak akan pernah pas dengan tile, berapa pun ukuran kameranya. Samakan dulu sudutnya, baru atur skala.
+</Aside>
+
+### Ukuran tile
+
+Ukuran tile isometrik ditulis sebagai lebar × tinggi belah ketupat lantai, misalnya 32×16, 64×32, atau 128×64 untuk 2:1 (ilustrasi). Gambar tile yang punya tinggi, seperti dinding atau tebing, lebih tinggi dari belah ketupatnya. Bagian di atas lantai menjorok ke atas dan menutupi tile di belakangnya, sehingga tile seperti ini harus diurutkan dengan benar, tidak cukup digambar di grid.
+
+## Peta isometrik: koordinat dan urutan gambar
+
+Di peta isometrik, sumbu grid berjalan diagonal di layar. Mengubah koordinat grid ke posisi layar dan sebaliknya adalah dua rumus yang paling sering dipakai:
+
+```text title="Pseudocode: grid ke layar dan layar ke grid (tile 2:1, lebar w, tinggi h)"
+// grid (gx, gy) ke layar: titik sudut atas belah ketupat sel itu
+layar_x = (gx - gy) * (w / 2)
+layar_y = (gx + gy) * (h / 2)          // y layar ke bawah
+
+// layar ke grid, misalnya untuk tahu sel mana yang diklik
+a = layar_x / (w / 2)
+b = layar_y / (h / 2)
+gx = floor((b + a) / 2)
+gy = floor((b - a) / 2)
+```
+
+Kalau titik asal peta digeser atau kamera bergerak, kurangi dulu posisi layar dengan posisi titik asal sebelum memakai rumus kedua.
+
+### Urutan gambar
+
+Perhatikan baris `layar_y = (gx + gy) * (h / 2)`. Sel dengan nilai gx + gy lebih besar selalu lebih rendah di layar, dan berarti lebih dekat ke pemain. Jadi Y-sort dari [Pelajaran 2](/belajar/seni-visual/02-game-2d/#urutan-gambar) sama dengan menggambar peta per diagonal, dari gx + gy terkecil ke terbesar. Untuk peta yang punya ketinggian, tile yang lebih tinggi di sel yang sama digambar setelah tile di bawahnya.
+
+```text title="Pseudocode: urutan gambar peta isometrik dengan ketinggian"
+kunci = (gx + gy) * banyak_tingkat + tingkat_ketinggian
+urutkan(semua_tile_dan_objek, menurut = kunci)
+```
+
+Aturan "satu titik per objek" dari [Sorting Layer & Urutan Gambar](/kamus/2d/sorting-layer/) tetap berlaku. Karakter cukup diurutkan menurut sel tempat kakinya berdiri. Objek yang menempati beberapa sel, misalnya rumah 2×2, punya beberapa nilai gx + gy sekaligus. Dua cara yang umum:
+
+- Taruh titik urut di sudut depan alasnya, yaitu sel dengan gx + gy terbesar. Cukup untuk objek yang tidak terlalu lebar.
+- Potong objek menjadi beberapa sprite selebar satu kolom sel, dan urutkan setiap potongan sendiri. Lebih repot, tetapi benar untuk objek panjang seperti tembok.
+
+<EngineTabs>
+<div slot="unity">
+
+**Grid.** Di komponen **Grid**, **Cell Layout** punya empat pilihan: **Rectangle**, **Hexagon**, **Isometric**, dan **Isometric Z as Y**. Pada Isometric, semua tile di satu tilemap berada di permukaan tanah, jadi setiap tingkat ketinggian butuh tilemap terpisah dengan **Order in Layer** lebih tinggi dan **Tile Anchor** yang digeser. Pada Isometric Z as Y, setiap tile punya nilai z yang ditambahkan ke posisi y-nya, sehingga satu tilemap bisa memuat banyak ketinggian.
+
+**Impor sprite.** Dokumentasi *Create an isometric tilemap* menyarankan **Mesh Type: Tight** supaya sudut transparan tile tidak ikut digambar, **Pixels Per Unit** sama dengan lebar tile dalam piksel (satu unit = satu sel), dan **Pivot** kustom di tengah lantai tile, sehingga bagian yang menjorok ke bawah berada di luar sel.
+
+**Cell Size.** Nilai y dihitung dari tinggi lantai tile dibagi lebarnya. Bawaannya (1, 0.5), yaitu perbandingan 2:1. Isi nilai yang sama di Tile Palette dan di Grid.
+
+**Urutan.** Di aset 2D Renderer, atur **Transparency Sort Mode** ke **Custom Axis** dan **Transparency Sort Axis** ke (0, 1, 0). Untuk Isometric Z as Y, nilai z sumbu itu dihitung dari `Cell Size.y × -0,5 - 0,01`. Untuk Cell Size y 0,5, hasilnya -0,26. Tanpa nilai ini, tile yang lebih tinggi bisa tampil di depan tile yang lebih rendah. Halaman *Change the sorting order of 2D GameObjects* memberi contoh lain untuk game isometrik, yaitu sumbu diagonal (1, 1, 0). Pilih sumbu yang cocok dengan arah grid dan pivot aset kamu, lalu uji dengan karakter yang berjalan memutari objek tinggi.
+
+**Karakter di antara tile.** Tilemap Renderer memakai mode **Chunk** secara bawaan, sehingga sprite lain tidak bisa tampil di antara tile pada kedalaman berbeda. Ubah **Mode** ke **Individual** jika karakter harus bisa berjalan di belakang dinding dari tilemap. Dokumentasi mengingatkan bahwa mode ini bisa menurunkan performa, karena setiap tile digambar sendiri. Jika tetap memakai Chunk, kemas semua sprite tile ke satu atlas supaya tile dari tekstur berbeda tidak salah urut.
+
+</div>
+<div slot="unreal">
+
+Aset **Tile Map** Paper2D punya pilihan proyeksi isometrik untuk grid-nya.
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-31): pengaturan Projection Mode pada aset Paper2D Tile Map (Orthogonal, Isometric Diamond, Isometric Staggered, Hexagonal Staggered) dan cara pengurutannya. */}
+
+</div>
+<div slot="godot">
+
+**Bentuk tile.** Di resource **TileSet**, ubah `tile_shape` dari **Square** (bawaan) ke **Isometric**. `tile_size` (bawaan 16×16) adalah persegi panjang yang membungkus belah ketupat, jadi untuk tile 2:1 selebar 64 piksel isi 64×32.
+
+**Tata letak koordinat.** `tile_layout` menentukan cara sel diberi nomor. Bawaannya **Stacked**, yang membuat baris berselang-seling. Jika ingin sumbu grid berjalan diagonal seperti rumus di atas, pilih **Diamond Right** (sumbu horizontal ke kanan atas, vertikal ke kanan bawah) atau **Diamond Down** (horizontal ke kanan bawah, vertikal ke kiri bawah). `tile_offset_axis` menentukan arah pergeseran setengah tile.
+
+**Tile yang menjorok.** Untuk dinding atau tebing yang lebih tinggi dari selnya, geser gambarnya dengan **Rendering → Texture Origin** di editor TileSet.
+
+**Urutan.** Dokumentasi TileSet mencatat bahwa TileSet isometrik paling baik jika semua TileMapLayer bersaudara dan induk Node2D-nya menyalakan Y-sort. Nyalakan `y_sort_enabled` di setiap TileMapLayer dan induknya. **Y Sort Origin** per tile menggeser titik urutnya secara vertikal dalam piksel, berguna untuk tile tinggi. Karakter yang menjadi anak induk yang sama akan diurutkan bersama tile.
+
+</div>
+</EngineTabs>
+
+## Billboard
+
+**Billboard** adalah bidang yang selalu diputar menghadap kamera. Dengan begitu, sprite datar tidak pernah terlihat dari samping sebagai garis tipis. Ada dua jenis utama:
+
+- **Billboard penuh** (sering disebut *spherical*): bidang berputar di semua sumbu, sehingga selalu sejajar layar.
+- **Billboard sumbu tetap** (*axis-aligned* atau *cylindrical*): bidang hanya berputar di satu sumbu, biasanya sumbu vertikal, sehingga sprite tetap tegak di dunia.
+
+```text title="Pseudocode: dua jenis billboard"
+// penuh: salin rotasi kamera
+sprite.rotasi = kamera.rotasi
+
+// sumbu Y saja: arah kamera tanpa komponen vertikal
+arah = kamera.depan
+arah.y = 0
+jika panjang(arah) > 0:
+    sprite.rotasi = hadap(arah)
+```
+
+Keduanya bekerja lewat [transform](/kamus/ruang/transform/) biasa. Engine bisa melakukannya di CPU per objek, atau di vertex shader sehingga bidangnya diputar di GPU tanpa mengubah transform objek.
+
+### Menghadap bidang kamera atau posisi kamera
+
+Ada dua cara mendefinisikan "menghadap kamera":
+
+| Cara | Arah bidang | Akibat |
+| --- | --- | --- |
+| Sejajar bidang kamera | Semua billboard sejajar layar dan sejajar satu sama lain | Billboard yang berdekatan tidak pernah saling menembus. Di tepi layar dengan FOV lebar, sprite ikut tertarik oleh perspektif |
+| Menghadap posisi kamera | Setiap billboard menghadap titik kamera, arahnya sedikit berbeda | Lebih natural saat kamera berputar di tempat. Billboard yang berdekatan bisa saling menembus karena tidak sejajar |
+
+Partikel di Unity menunjukkan perbedaan ini. Properti **Render Alignment** punya pilihan **View** (menghadap bidang kamera) dan **Facing** (menghadap posisi kamera).
+
+### Artefak billboard
+
+**Kaki melayang atau tenggelam.** Billboard penuh condong ke belakang saat kamera menunduk. Jika pivot sprite di tengah, separuh bawahnya masuk ke lantai. Pivot di kaki membuat titik pijak tetap di lantai, tetapi bagian atas sprite condong menjauh.
+
+**Sprite gepeng dari kamera yang menunduk.** Billboard sumbu Y tetap tegak. Dari kamera yang menunduk dengan sudut α, tingginya di layar terpendekkan kira-kira sebesar cos α. Pada 60°, tingginya tinggal sekitar setengah. Solusinya: billboard penuh, memiringkan sprite ke arah kamera dengan sudut tetap, atau memanjangkan sprite secara vertikal sebesar 1 ÷ cos α.
+
+**Menembus dinding.** Saat berputar, separuh bidang billboard bisa masuk ke dinding di dekatnya dan terpotong oleh depth buffer. Jaga jarak karakter dari dinding dengan collider yang sedikit lebih lebar dari sprite, atau geser bidang sprite sedikit ke arah kamera saat digambar.
+
+**Tidak punya sisi lain.** Billboard selalu memperlihatkan gambar yang sama, walaupun kamera berputar ke belakang karakter. Untuk karakter yang perlu terlihat dari banyak arah, siapkan beberapa arah gambar dan pilih sesuai sudut antara arah hadap karakter dan arah kamera:
+
+```text title="Pseudocode: memilih satu dari 8 arah gambar"
+ke_kamera = posisi_kamera - posisi_karakter
+ke_kamera.y = 0
+sudut = sudut_bertanda(arah_hadap_karakter, ke_kamera)   // -180° sampai 180°
+indeks = round(sudut / 45) mod 8
+tampilkan(animasi[indeks])
+```
+
+Harganya, setiap animasi harus digambar untuk setiap arah. Delapan arah berarti sekitar delapan kali jumlah frame. Cara yang umum untuk menghematnya adalah menggambar lima arah lalu membalik tiga arah lainnya secara horizontal, dengan catatan karakter harus terlihat wajar saat dibalik, misalnya tidak memegang senjata di tangan tertentu.
+
+<EngineTabs>
+<div slot="unity">
+
+**Sprite Renderer** tidak punya pengaturan billboard. Cara yang umum adalah skrip kecil yang memutar sprite setelah kamera bergerak:
+
+```csharp
+using UnityEngine;
+
+public class SpriteBillboard : MonoBehaviour
+{
+    public bool hanyaSumbuY = true;
+    Camera cam;
+
+    void Start() => cam = Camera.main;
+
+    void LateUpdate()   // setelah kamera bergerak di Update
+    {
+        if (!hanyaSumbuY)
+        {
+            transform.rotation = cam.transform.rotation;   // sejajar bidang kamera
+            return;
+        }
+        Vector3 arah = cam.transform.forward;
+        arah.y = 0f;
+        if (arah.sqrMagnitude > 0.0001f)
+            transform.rotation = Quaternion.LookRotation(arah);
+    }
+}
+```
+
+Untuk partikel, modul **Renderer** pada Particle System punya **Render Mode**: **Billboard**, **Stretched Billboard**, **Horizontal Billboard** (sejajar lantai XZ), **Vertical Billboard** (tegak di sumbu Y dan berputar menghadap kamera), dan **Mesh**. Arah Billboard diatur di **Render Alignment**.
+
+</div>
+<div slot="unreal">
+
+Sprite Paper2D tidak menghadap kamera secara otomatis. Billboard biasanya dibuat lewat skrip yang memutar komponen setiap frame, atau lewat material yang memutar bidang di vertex shader. Unreal juga punya **Material Billboard Component** untuk bidang sederhana yang selalu menghadap kamera.
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-31): bahwa Paper Sprite Component tidak punya opsi billboard bawaan, keberadaan dan perilaku Material Billboard Component, dan pendekatan billboard lewat World Position Offset di material. */}
+
+</div>
+<div slot="godot">
+
+**Sprite3D** dan **AnimatedSprite3D** sama-sama turunan **SpriteBase3D**, jadi pengaturannya sama. Properti `billboard` (bawaan **Disabled**) memakai mode billboard material:
+
+- **Enabled:** sumbu Z objek selalu menghadap kamera (billboard penuh).
+- **Y-Billboard:** sumbu X objek selalu menghadap kamera, dan sprite tetap tegak (billboard sumbu Y).
+
+Mode yang sama ada di **StandardMaterial3D → Billboard → Billboard Mode** untuk mesh biasa, dengan tambahan **Particle Billboard** untuk partikel. Dokumentasi Godot mencatat bahwa mode billboard tidak cocok untuk VR, karena arah kiri-kanan kamera di headset tidak selalu horizontal.
+
+</div>
+</EngineTabs>
+
+## Sprite di dunia 3D
+
+Sprite yang berdiri di dunia 3D harus terlihat menyatu dengan lingkungannya. Tiga hal paling menentukan: bayangan, cahaya, dan urutan gambar.
+
+### Skala
+
+Tentukan dulu berapa piksel gambar yang setara dengan satu satuan dunia, sama seperti PPU di [Pelajaran 1](/belajar/seni-visual/01-pixel-art/#resolusi-dasar-dan-ukuran-tile). Di Godot, `pixel_size` (bawaan 0,01) berarti 100 piksel gambar = 1 m. Di Unity, angka ini adalah **Pixels Per Unit** di pengaturan impor sprite. Jika karakter setinggi 48 piksel harus setinggi 1,8 m, satu piksel bernilai 0,0375 m (ilustrasi). Semua sprite di dunia yang sama sebaiknya memakai angka ini.
+
+### Bayangan
+
+Titik kontak dengan lantai adalah petunjuk paling kuat bahwa sebuah objek berdiri di tanah. Tanpa bayangan, sprite di dunia 3D tampak melayang walaupun posisinya benar. Ada dua pendekatan:
+
+**Bayangan dari [shadow map](/kamus/cahaya/shadow-map/).** Sprite ikut digambar ke peta bayangan seperti mesh lain ([Pelajaran 5 Fondasi Engine](/belajar/fondasi-engine/05-bayangan-gi/#cara-kerja-shadow-map)). Bentuk bayangannya mengikuti siluet sprite. Masalahnya, bidang datar memberi bayangan setipis garis saat bidangnya sejajar arah cahaya. Pada billboard, arah bidang mengikuti kamera, sehingga bentuk bayangan ikut berubah saat kamera berputar. Dokumentasi Godot mencatat bahwa billboard yang memberi bayangan juga menghadap kamera saat bayangan dirender, dan hasilnya tidak terdefinisi jika ada beberapa kamera. Agar siluetnya tajam, bagian transparan harus dibuang dengan alpha cut (lihat [di bawah](#urutan-gambar-dan-transparansi)).
+
+**Bayangan bulat sederhana** (*blob shadow*). Bidang kecil dengan tekstur elips gelap di bawah kaki, atau decal yang diproyeksikan ke lantai. Tidak ikut berputar, tidak butuh render tambahan per cahaya, dan cocok dengan gaya pixel art. Angkat bidangnya sedikit di atas lantai, misalnya beberapa milimeter, supaya tidak berebut piksel dengan lantai (*z-fighting*, lihat [Depth Buffer](/kamus/geometri/depth-buffer/)).
+
+Kedua cara bisa digabung: bayangan bulat untuk karakter, dan shadow map untuk objek diam seperti pohon sprite yang tidak berputar.
+
+### Cahaya pada bidang datar
+
+Sprite bisa digambar tanpa terpengaruh cahaya (*unshaded*) atau diterangi cahaya scene (*shaded*).
+
+**Unshaded** menampilkan warna gambar apa adanya. Ini cocok jika lingkungan juga terang rata. Di scene malam atau gua, sprite unshaded tampak menyala sendiri dan terlihat seperti tempelan.
+
+**Shaded** menghitung cahaya dari [normal](/kamus/geometri/normal/) bidang. Bidang datar hanya punya satu arah normal, jadi seluruh sprite menerima cahaya yang sama, dan sisi karakter yang menghadap obor tidak lebih terang dari sisi sebaliknya. Pada billboard, normal ikut berputar bersama kamera, sehingga terang-gelap sprite bisa berubah hanya karena kamera bergerak. Beberapa cara memperbaikinya:
+
+- **[Normal map](/kamus/geometri/normal-map/)** memberi arah permukaan per piksel, sama seperti cahaya 2D di [Pelajaran 2](/belajar/seni-visual/02-game-2d/#cahaya-2d), tetapi kali ini dengan cahaya 3D.
+- **Normal yang dibengkokkan** seolah bidang itu permukaan bola, supaya cahaya jatuh bergradasi dari tengah ke tepi. Modul Renderer partikel Unity punya **Normal Direction** untuk ini: nilai 0 menghitung cahaya seolah billboard adalah bola, nilai 1 seolah bidang datar.
+- **Warna dari cahaya sekitar saja.** Sprite tetap unshaded, tetapi warnanya dikalikan dengan warna cahaya di posisinya, misalnya diambil dari probe cahaya atau zona di level. Karakter menjadi gelap di gua dan terang di luar, tanpa terang-gelap per sisi.
+
+### Urutan gambar dan transparansi
+
+Di game 2D, semua sprite diurutkan dari belakang ke depan. Di dunia 3D, objek padat tidak perlu diurutkan, karena [depth buffer](/kamus/geometri/depth-buffer/) menentukan per piksel siapa yang di depan. Sprite dengan tepi semi-transparan tidak bisa memakai cara ini, karena warnanya harus dicampur dengan warna di belakangnya ([Transparansi & Blending](/kamus/geometri/blending/)). Engine lalu menggambarnya setelah semua objek padat, diurutkan dari jauh ke dekat, tanpa menulis depth.
+
+Masalahnya, urutan itu dihitung dari **satu titik per objek**. Dokumentasi Godot menyebut objek transparan diurutkan menurut posisi node, tidak menurut posisi setiap titik mesh, sehingga objek yang bertumpuk sering salah urut. Unity mengurutkan sprite menurut jarak dari kamera. Untuk kamera perspektif, jarak dihitung dari titik kamera ke pusat objek, jadi memindahkan sprite ke tepi layar saja bisa mengubah urutannya. Akibatnya terlihat sebagai:
+
+- Dua sprite yang berdekatan bertukar urutan dan berkedip saat kamera bergerak.
+- Sprite besar, misalnya pohon, menutupi karakter yang sebenarnya di depan sebagian dahannya.
+- Sprite yang menembus sprite lain hanya bisa tampil sepenuhnya di depan atau di belakang.
+
+Ada tiga pilihan mode transparansi:
+
+| Mode | Cara kerja | Cocok untuk | Harganya |
+| --- | --- | --- | --- |
+| Alpha blend | Dicampur dengan warna di belakang, diurutkan per objek | Asap, kaca, tepi halus | Salah urut seperti di atas, overdraw |
+| Alpha cut (alpha test, alpha scissor) | Piksel di bawah ambang dibuang, sisanya padat dan menulis depth | Pixel art, daun, pagar | Tepi kasar tanpa antialiasing |
+| Depth pre-pass | Bagian padat ditulis ke depth lebih dulu, lalu tepi semi-transparan dicampur | Gambar dengan tepi halus yang tetap perlu urutan benar | Lebih lambat dari dua mode lain |
+
+Untuk pixel art, alpha cut hampir selalu pilihan pertama. Setiap piksel pixel art memang penuh atau kosong, jadi tidak ada yang hilang. Sprite menjadi objek padat bagi depth buffer, urutan per piksel menjadi benar, dan sprite bisa memberi bayangan dengan siluet yang tepat. Dokumentasi Godot menyebut mode ini lebih cepat dirender dan tidak punya masalah urutan transparansi.
+
+Untuk gambar beresolusi tinggi dengan tepi halus, alpha cut membuat tepinya bergerigi. Pilihannya: depth pre-pass, antialiasing layar, atau menerima alpha blend dan mengatur urutan secara manual untuk kasus yang bermasalah.
+
+<EngineTabs>
+<div slot="unity">
+
+**Sprite Renderer di scene 3D.** Sprite Renderer bisa ditaruh di scene 3D biasa. Halaman referensinya menyebut material bawaan `Sprite-Lit-Default`, material yang sama dengan yang dipakai cahaya 2D di [Pelajaran 2](/belajar/seni-visual/02-game-2d/#cahaya-2d). Sprite diurutkan menurut kriteria di *2D rendering order*: Sorting Layer, Order in Layer, Render Queue material, lalu jarak ke kamera. Material 2D bawaan memakai Render Queue 3000.
+
+**Sprite padat yang diterangi cahaya 3D.** Cara yang paling bisa diandalkan adalah bidang **Quad** dengan **Mesh Renderer** dan material **Lit** (URP):
+
+- **Surface Type: Opaque**, lalu nyalakan **Alpha Clipping** dengan **Threshold** (bawaan 0,5). Piksel dengan alpha di bawah ambang dibuang.
+- **Render Face: Both** jika sprite bisa terlihat dari belakang. Bawaannya **Front**.
+- **Receive Shadows** di material untuk menerima bayangan. Di Mesh Renderer, **Cast Shadows** punya pilihan **On**, **Off**, dan **Two-sided**. Two-sided membuat bidang satu sisi seperti Quad tetap memberi bayangan walaupun cahaya datang dari belakangnya.
+
+Atur filter tekstur ke **Point (no filter)** untuk pixel art, seperti di [Pelajaran 1](/belajar/seni-visual/01-pixel-art/#filter-tekstur-mipmap-dan-kompresi).
+
+</div>
+<div slot="unreal">
+
+Sprite Paper2D ditampilkan lewat **Paper Sprite Component** dan bisa ditaruh di level 3D seperti mesh lain. Paper2D menyediakan material bawaan untuk sprite unlit dan lit, serta varian yang memakai alpha masked (padat dengan potongan) dan translucent.
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-31): nama material bawaan Paper2D (DefaultSpriteMaterial, DefaultLitSpriteMaterial, MaskedUnlitSpriteMaterial, TranslucentUnlitSpriteMaterial), apakah Paper Sprite Component bisa memberi bayangan dengan material masked, dan perilaku pengurutan translucent untuk sprite di level 3D. */}
+
+</div>
+<div slot="godot">
+
+Pengaturan **SpriteBase3D** yang paling penting untuk sprite di dunia 3D:
+
+- `pixel_size` (bawaan 0,01): ukuran satu piksel gambar dalam meter.
+- `shaded` (bawaan `false`): jika `true`, cahaya 3D di scene memengaruhi sprite.
+- `transparent` (bawaan `true`) dan `alpha_cut` (bawaan **Disabled**, yaitu alpha blend biasa). Pilihan lain: **Discard** (alpha test, dengan ambang `alpha_scissor_threshold` bawaan 0,5), **Opaque Pre-Pass**, dan **Alpha Hash**.
+- `double_sided` (bawaan `true`): sprite tetap terlihat dari belakang.
+- `texture_filter` (bawaan **Linear Mipmap**). Ganti ke **Nearest** untuk pixel art.
+- `render_priority` (bawaan 0): mengatur urutan antar-objek transparan. Hanya berlaku jika `alpha_cut` Disabled, dan tidak memengaruhi urutan terhadap objek padat.
+- `no_depth_test` (bawaan `false`): jika `true`, sprite digambar menurut urutan render dan tampil di atas objek lain. Berguna untuk penanda di atas kepala, tidak untuk karakter.
+
+Untuk karakter beranimasi, **AnimatedSprite3D** memakai resource **SpriteFrames** yang sama dengan AnimatedSprite2D. Untuk objek transparan yang salah urut, dokumentasi *3D rendering limitations* menyarankan **Render Priority** di material atau **Sorting Offset** di node, dengan catatan keduanya belum tentu cukup.
+
+</div>
+</EngineTabs>
+
+## Kedalaman dari lapisan bidang
+
+Teknik 2.5D yang paling sederhana adalah menyusun bidang-bidang datar di kedalaman berbeda, seperti dekor panggung: langit paling belakang, gunung, pepohonan, lalu bidang tempat pemain berjalan.
+
+Dengan kamera perspektif, [parallax](/kamus/2d/parallax/) muncul otomatis. Pergeseran di layar sebanding dengan 1 ÷ jarak:
+
+```text title="Pseudocode: pergeseran bidang di layar saat kamera bergeser ke samping"
+geser_layar_px = geser_kamera * tinggi_viewport_px / (2 * jarak_bidang * tan(fov_vertikal / 2))
+```
+
+```text title="Ilustrasi: kamera bergeser 1 m, fov vertikal 60°, viewport 1080 piksel"
+bidang pemain di 10 m   → bergeser sekitar 94 piksel
+pepohonan di 20 m       → sekitar 47 piksel
+gunung di 100 m         → sekitar 9 piksel
+```
+
+Dengan kamera ortografis, semua bidang bergeser sama jauh, berapa pun kedalamannya. Parallax harus dibuat manual dengan skala gulir per lapisan, seperti di game 2D.
+
+Bidang yang lebih jauh juga tampil lebih kecil di kamera perspektif. Jika gunung harus tampil dengan ukuran tertentu di layar, perbesar bidangnya sebanding dengan jaraknya. Bidang di 100 m perlu sepuluh kali lebih besar dari bidang di 10 m untuk tampil sama besar. Untuk pixel art, ini berarti setiap lapisan punya skala piksel layar yang berbeda, kecuali gambarnya disiapkan dengan ukuran yang sudah memperhitungkan jaraknya.
+
+Keuntungan lain dari bidang di kedalaman nyata: kamera bisa bergerak maju-mundur atau berputar sedikit, misalnya saat transisi atau guncangan, dan semua lapisan bereaksi dengan benar tanpa kode tambahan. Harganya, setiap bidang yang transparan menambah [overdraw](/kamus/performa/overdraw/), dan latar setinggi layar yang bertumpuk lima lapis berarti setiap piksel layar digambar lima kali.
+
+## Biaya di game 2.5D
+
+Bidang datar memang murah dibanding model 3D detail, tetapi biayanya muncul di tempat lain. Cara mengukurnya ada di [Pelajaran 8 Fondasi Engine](/belajar/fondasi-engine/08-profiling/).
+
+| Sumber biaya | Dibayar di | Gejala | Yang bisa dilakukan |
+| --- | --- | --- | --- |
+| Banyak sprite 3D sebagai objek terpisah | CPU ([draw call](/kamus/performa/draw-call/)) | Waktu CPU naik seiring jumlah NPC, rumput, atau pohon sprite | Satu material dan atlas bersama, [instancing](/kamus/performa/instancing/), atau sistem partikel untuk objek kecil yang sangat banyak |
+| Sprite alpha blend | GPU (overdraw) dan CPU (pengurutan) | Lambat saat banyak sprite bertumpuk di depan kamera | Alpha cut untuk pixel art dan daun, kurangi area transparan kosong |
+| Bayangan dari sprite | GPU dan CPU (render tambahan ke shadow map per cahaya) | Draw call naik saat bayangan dinyalakan | Bayangan bulat untuk karakter, bayangan shadow map hanya dari cahaya utama |
+| Billboard di CPU | CPU | Waktu skrip naik seiring jumlah billboard | Billboard di shader atau mode bawaan engine |
+| Tilemap isometrik dengan urutan per tile | CPU | Draw call naik saat tile diurutkan bersama karakter | Pisahkan hanya tile tinggi ke tilemap dengan urutan per tile, biarkan lantai digambar per kelompok |
+| Arah gambar karakter | Memori dan waktu produksi | Atlas karakter membengkak | Kurangi jumlah arah, balik arah yang simetris |
+
+Ada juga biaya produksi yang sering lebih besar daripada biaya runtime. Game isometrik 2D yang kameranya bisa diputar 90° butuh setiap objek digambar dari empat sisi. Lingkungan 3D dengan kamera bersudut isometrik bisa diputar bebas tanpa gambar tambahan, tetapi tim butuh orang yang bisa membuat model 3D. Sebagian tim mengambil jalan tengah: memodelkan karakter dalam 3D, lalu merender model itu ke sprite sheet dari beberapa arah, sehingga gaya 2D tetap dipakai di game tetapi gambar per arah tidak dilukis satu per satu.
+
+## Kesalahan umum
+
+### Tile 2:1 tidak pas dengan lantai 3D
+
+```text title="✗ Keliru"
+tile 64×32 (2:1)
+kamera.rotasi = (35.264°, 45°, 0)     // sudut isometrik sejati
+```
+
+```text title="✓ Benar"
+tile 64×32 (2:1)
+kamera.rotasi = (30°, 45°, 0)         // sin(30°) = 0,5, cocok dengan 1:2
+```
+
+Tile 2:1 adalah proyeksi dimetrik. Sudut isometrik sejati menghasilkan belah ketupat 1 : 1,73.
+
+### Memindahkan kamera ortografis untuk zoom
+
+```text title="✗ Keliru"
+kamera.posisi += kamera.depan * 5     // tidak ada perubahan ukuran di layar
+```
+
+```text title="✓ Benar"
+Unity: orthographicSize = 3           // setengah tinggi area pandang
+Godot: size = 6                       // seluruh tinggi area pandang (keep_aspect Keep Height)
+```
+
+Ukuran di kamera ortografis tidak bergantung pada jarak. Memindahkannya terlalu dekat malah bisa memotong objek di near plane.
+
+### Pixel art di dunia 3D tampak buram dan berkedip urutannya
+
+```text title="✗ Keliru"
+Sprite3D.texture_filter = Linear Mipmap   // bawaan
+Sprite3D.alpha_cut = Disabled             // alpha blend, diurutkan per objek
+```
+
+```text title="✓ Benar"
+Sprite3D.texture_filter = Nearest
+Sprite3D.alpha_cut = Discard              // padat, menulis depth buffer
+```
+
+Pixel art punya piksel penuh atau kosong. Alpha cut tidak mengubah tampilannya, tetapi membuat depth buffer yang menentukan urutan per piksel.
+
+### Separuh karakter tenggelam di lantai
+
+```text title="✗ Keliru"
+billboard = penuh
+pivot sprite = tengah gambar           // separuh bawah condong masuk ke lantai saat kamera menunduk
+```
+
+```text title="✓ Benar"
+pivot sprite = di kaki
+billboard = sumbu Y untuk kamera yang hampir datar,
+            penuh atau dimiringkan untuk kamera yang menunduk tajam
+```
+
+Pivot di kaki menjaga titik pijak tetap di lantai, berapa pun sudut bidangnya.
+
+### Bayangan karakter berubah saat kamera berputar
+
+```text title="✗ Keliru"
+karakter billboard + cast_shadow dari shadow map
+```
+
+```text title="✓ Benar"
+karakter billboard tanpa cast_shadow
++ bidang bayangan bulat di bawah kaki, sedikit di atas lantai
+```
+
+Bayangan dari bidang datar bergantung pada arah bidang terhadap cahaya, dan billboard mengubah arah itu setiap kali kamera bergerak.
+
+### Karakter tampil di belakang rumah padahal di depannya
+
+```text title="✗ Keliru"
+rumah 2×2 sel, titik urut di sel paling belakang
+```
+
+```text title="✓ Benar"
+titik urut di sudut depan alas rumah (gx + gy terbesar)
+atau: rumah dipotong per kolom sel dan diurutkan per potongan
+```
+
+Pengurutan hanya membandingkan satu titik per objek, jadi titik itu harus mewakili bagian objek yang paling dekat ke kamera.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan di Unity (template Universal 3D atau Universal 2D, sesuai latihan) atau Godot. Pakai gambar buatanmu sendiri atau aset berlisensi jelas.
+
+1. **Dua kamera.** Buat scene berisi lantai, tiga kubus di jarak berbeda, dan satu karakter sprite. Bandingkan kamera perspektif dan ortografis dari sudut yang sama. Catat petunjuk kedalaman mana yang hilang di kamera ortografis, lalu tambahkan bayangan dan fog untuk mengembalikan kesan jaraknya.
+2. **Sudut 2:1.** Gambar satu tile lantai 64×32 dan satu kubus 3D selebar satu tile. Dengan kamera ortografis, cari rotasi yang membuat lantai kubus tepat menutupi tile. Coba juga 35,264° dan amati selisihnya.
+3. **Peta isometrik.** Buat peta 10×10 dengan grid isometrik (Isometric di Unity, `tile_shape` Isometric di Godot). Tambahkan beberapa dinding dan satu rumah 2×2, lalu jalankan karakter memutarinya. Perbaiki urutan yang salah dengan titik urut atau dengan memotong rumah. Tulis juga fungsi layar ke grid dan tampilkan sel di bawah kursor.
+4. **Billboard.** Taruh karakter sprite di dunia 3D dan ubah sudut tunduk kamera dari 10° sampai 70°. Bandingkan billboard penuh dan billboard sumbu Y. Di sudut berapa billboard sumbu Y mulai terlihat terlalu gepeng untuk game-mu?
+5. **Transparansi.** Taruh 20 sprite pohon pixel art yang saling bertumpuk. Jalankan kamera mengelilinginya dengan alpha blend, lalu dengan alpha cut. Catat perbedaan urutan dan waktu GPU per frame. Nyalakan bayangan dari matahari pada kedua versi dan bandingkan siluet bayangannya.
