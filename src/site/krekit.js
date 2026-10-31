@@ -773,6 +773,39 @@ export function createKrekit(scene, { reduceMotion = false, onSettle } = {}) {
     }
   }
 
+  /**
+   * Shading untuk Lab: 'toon' (bawaan), 'standard' (PBR), atau 'unlit' (tanpa cahaya).
+   * Material pengganti dibuat sekali dari warna dan tekstur yang sama, lalu ditukar di daftar mesh
+   * supaya wireframe tetap mengembalikan material yang sedang dipakai.
+   */
+  const SHADED = [mat.shellLower, mat.shellUpper, mat.shard]
+  const shadingSets = { toon: SHADED }
+  let shading = 'toon'
+  function setShading(mode) {
+    if (mode === shading || wireframe) return
+    shadingSets[mode] ??= SHADED.map((m) =>
+      mode === 'standard'
+        ? new THREE.MeshStandardMaterial({ color: m.color, map: m.map, side: m.side, roughness: 0.55, metalness: 0 })
+        : new THREE.MeshBasicMaterial({ color: m.color, map: m.map, side: m.side }),
+    )
+    const from = shadingSets[shading]
+    const to = shadingSets[mode]
+    meshes ??= collectMeshes(root)
+    for (const entry of meshes) {
+      const i = from.indexOf(entry.material)
+      if (i === -1) continue
+      entry.material = to[i]
+      entry.mesh.material = to[i]
+    }
+    shading = mode
+  }
+
+  /** Garis tepi (inverted hull) untuk Lab */
+  function setOutline(value) {
+    lowerHull.visible = value
+    upperHull.visible = value
+  }
+
   const topLocal = new THREE.Vector3(0, H * 2 + 0.25, 0)
   return {
     root,
@@ -791,6 +824,9 @@ export function createKrekit(scene, { reduceMotion = false, onSettle } = {}) {
     setColors,
     setStage,
     setWireframe,
+    setShading,
+    setOutline,
+    aura,
     update,
     topWorld: (target) => hop.localToWorld(target.copy(topLocal)),
   }
