@@ -1,0 +1,421 @@
+---
+title: "Mekanik, Dinamika, Estetika"
+description: "Kerangka MDA dari Hunicke, LeBlanc, dan Zubek: definisi mekanik, dinamika, dan estetika, sudut pandang desainer dan pemain, delapan jenis estetika, contoh dari makalahnya, cara memakainya untuk menganalisis dan merancang game, dinamika yang muncul tanpa direncanakan, serta batas kerangka ini."
+fundamental: "Desainer hanya bisa mengubah aturan, angka, dan isi game, sedangkan yang dinilai pemain adalah pengalaman yang muncul saat semua itu berjalan bersama. Di antara keduanya ada perilaku sistem yang sering tidak terduga. Kerangka MDA memberi nama untuk ketiga lapis itu, sehingga kamu bisa menelusuri dari perasaan pemain ke aturan yang menyebabkannya, dan sebaliknya."
+kind: lesson
+minutes: 30
+status: draf
+lastReviewed: 2026-10-31
+krekit:
+  gambaran-besar: "Coba ingat board game yang terakhir kamu mainkan. Isi kotaknya sama untuk semua orang, tapi malam permainannya tidak pernah sama."
+  tiga-lapis-menurut-makalah-mda: "Desainer hanya memegang lapis pertama. Dua lapis lainnya baru kelihatan saat game dimainkan."
+  dua-sudut-pandang: "Pemain jarang membaca aturanmu dulu. Mereka merasakan dulu, baru belakangan mencari tahu kenapa."
+  delapan-jenis-estetika: "Lain kali kamu ingin menulis \"seru\" di dokumen desain, coba ganti dengan salah satu dari delapan kata ini."
+  contoh-dari-makalahnya: "Contoh Monopoly di makalah ini enak dipakai karena hampir semua orang pernah mengalami babak akhirnya yang membosankan."
+  menganalisis-game-dengan-mda: "Mulai dari apa yang kamu rasakan, lalu tanya: aturan mana yang membuat ini terjadi?"
+  merancang-dengan-mda: "Mekanik dipilih untuk melayani pengalaman yang dituju. Kalau tidak jelas melayani apa, tanyakan kenapa mekanik itu ada."
+  dinamika-yang-tidak-direncanakan: "Kejutan dari playtest itu data, walaupun kadang menyebalkan."
+  batas-kerangka-mda: "Kerangka ini alat bantu berpikir. Ia tidak akan memberi tahu apakah game-mu bagus."
+  kesalahan-umum: "Kesalahan pertama paling sering kutemui di dokumen desain: tujuan pengalaman yang cuma ditulis \"seru dan menantang\"."
+sidebar:
+  order: 3
+  label: "3 · MDA"
+quiz:
+  - q: "Menurut makalah MDA, apa yang dimaksud dengan dinamika?"
+    options:
+      - "Komponen game di tingkat representasi data dan algoritma"
+      - "Perilaku mekanik saat game berjalan, yang bereaksi terhadap input pemain dan terhadap hasil mekanik lain dari waktu ke waktu"
+      - "Respons emosional yang diharapkan muncul pada pemain"
+      - "Animasi dan efek visual yang bergerak di layar"
+    answer: 1
+    explain: "Makalahnya mendefinisikan dinamika sebagai perilaku mekanik saat runtime, yang bekerja atas input pemain dan output satu sama lain seiring waktu. Pilihan pertama adalah definisi mekanik, dan pilihan ketiga adalah definisi estetika."
+  - q: "Dari sudut pandang pemain menurut makalah MDA, lapis mana yang dialami lebih dulu?"
+    options:
+      - "Mekanik, karena pemain membaca aturan sebelum bermain"
+      - "Dinamika, karena pemain melihat sistem bergerak"
+      - "Estetika, yang memberi kesan awal, lalu terlihat lewat dinamika dan akhirnya mekanik"
+      - "Ketiganya dialami bersamaan dan tidak bisa dibedakan"
+    answer: 2
+    explain: "Makalahnya menulis bahwa bagi pemain, estetika menentukan nuansa, yang kemudian tampak dalam dinamika yang bisa diamati, dan akhirnya mekanik yang bisa dioperasikan. Desainer bergerak ke arah sebaliknya, dari mekanik ke dinamika ke estetika."
+  - q: "Kamu ingin game kooperatif yang membuat pemain saling bergantung dan banyak berbicara. Dalam istilah MDA, estetika apa yang paling dituju, dan mekanik mana yang paling mungkin mendukungnya?"
+    options:
+      - "Sensation; efek ledakan yang lebih besar"
+      - "Fellowship; setiap pemain hanya melihat sebagian informasi, dan tujuan sulit dicapai sendirian"
+      - "Submission; timer harian yang panjang"
+      - "Narrative; cutscene di awal setiap level"
+    answer: 1
+    explain: "Makalah MDA memberi contoh bahwa Fellowship bisa didorong dengan membagi informasi hanya kepada sebagian anggota sesi (sebuah tim), atau dengan kondisi menang yang lebih sulit dicapai sendirian. Kedua mekanik itu memaksa pemain berkomunikasi."
+  - q: "Di Monopoly, pemain yang memimpin makin kaya dan makin mudah menghukum pemain lain, sementara pemain yang tertinggal makin miskin. Menurut makalah MDA, apa akibatnya pada pengalaman?"
+    options:
+      - "Ketegangan naik terus sampai akhir"
+      - "Hanya sedikit pemain yang benar-benar masih peduli, sehingga ketegangan dramatis dan rasa punya kendali hilang"
+      - "Pemain yang tertinggal makin bersemangat mengejar"
+      - "Game menjadi lebih singkat dan lebih seimbang"
+    answer: 1
+    explain: "Makalahnya menyebut ini sistem umpan balik. Saat jarak antarpemain melebar, hanya beberapa pemain, kadang hanya satu, yang benar-benar terlibat. Ketegangan dramatis dan agency hilang."
+  - q: "Kamu menambahkan pajak dengan rumus rumit untuk pemain kaya di game ekonomi, supaya pemain yang tertinggal bisa mengejar. Dalam playtest, pemain mulai tidak tahu siapa yang sedang unggul. Apa pelajaran MDA dari kasus ini?"
+    options:
+      - "Pajak memang tidak pernah berhasil"
+      - "Perubahan mekanik bisa memperbaiki satu dinamika tetapi merusak estetika lain, jadi efeknya perlu dicek lewat playtest dan penyetelan"
+      - "Mekanik tidak berhubungan dengan estetika"
+      - "Masalahnya ada di grafik, bukan di aturan"
+    answer: 1
+    explain: "Makalah MDA memakai contoh yang sama: jika pajak Monopoly butuh perhitungan rumit, rasa terlibat pemain bisa rusak karena ia sulit melacak uang, progres, dan posisi persaingan. Perubahan kecil di satu lapis bisa merambat ke lapis lain."
+  - q: "Frank Lantz mengkritik istilah \"aesthetics\" di MDA. Apa inti kritiknya?"
+    options:
+      - "Delapan kategori estetika terlalu sedikit"
+      - "Kata itu sangat melekat dengan tampilan visual, sehingga orang terus membacanya sebagai grafik walaupun MDA memakainya untuk seluruh kualitas pengalaman"
+      - "Estetika tidak penting dalam desain game"
+      - "Estetika seharusnya dirancang lebih dulu daripada mekanik"
+    answer: 1
+    explain: "Lantz menulis bahwa sekuat apa pun penjelasannya, orang tetap secara naluriah mengartikan aesthetics sebagai estetika visual. Ia setuju dengan usulan Lana Polansky untuk memakai kata affect sebagai gantinya."
+sources:
+  - title: "MDA: A Formal Approach to Game Design and Game Research"
+    url: "https://users.cs.northwestern.edu/~hunicke/MDA.pdf"
+    publisher: "Robin Hunicke, Marc LeBlanc, dan Robert Zubek, Northwestern University (2004)"
+    accessed: 2026-10-31
+  - title: "MDA"
+    url: "https://gamedesignadvance.com/?p=2995"
+    publisher: "Frank Lantz, Game Design Advance (2015)"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menjelaskan mekanik, dinamika, dan estetika sesuai definisi di makalah MDA, dan membedakan sudut pandang desainer dari sudut pandang pemain.
+- Memakai delapan jenis estetika dari makalah itu untuk menggambarkan pengalaman bermain dengan kata yang lebih tepat daripada "seru".
+- Menganalisis sebuah game dengan menelusuri dari estetika ke dinamika ke mekanik.
+- Merancang game dengan memulai dari pengalaman yang dituju, memilih mekanik, lalu menguji dinamikanya lewat prototipe.
+- Menyebutkan batas kerangka MDA dan cara menghindari salah paham terhadap istilahnya.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: isi kotak board game">
+Frank Lantz, yang bertahun-tahun terlibat di workshop desain game Marc LeBlanc di GDC, menceritakan bahwa LeBlanc kadang menjelaskan MDA dengan board game. Mekanik adalah seluruh isi kotak: buku aturan, papan, dan bidak. Dinamika adalah semua yang terjadi saat game dan para pemain bergerak di meja. Estetika adalah kualitas emosional dari pengalaman itu, yang membuat orang ingin bermain lagi atau tidak. Isi kotaknya sama untuk semua orang, tetapi setiap malam permainan berjalan berbeda.
+</Aside>
+
+Dua pelajaran sebelumnya membahas bagian-bagian game yang bisa langsung kamu sentuh: aksi yang diulang di [core loop](/belajar/desain-game/01-core-loop/), lalu angka dan efek yang membentuk [game feel](/belajar/desain-game/02-game-feel/). Pelajaran ini mundur selangkah dan bertanya: bagaimana semua bagian itu berubah menjadi pengalaman, dan bagaimana kamu bisa berpikir ke dua arah, dari aturan ke pengalaman dan dari pengalaman ke aturan?
+
+Kerangka yang paling sering dipakai untuk pertanyaan ini adalah **MDA**, singkatan dari *Mechanics, Dynamics, Aesthetics*. Kerangka ini ditulis sebagai makalah oleh Robin Hunicke, Marc LeBlanc, dan Robert Zubek. Menurut makalahnya, MDA dikembangkan dan diajarkan di Game Design and Tuning Workshop di Game Developers Conference, San Jose, dari 2001 sampai 2004. Para penulis menyebutnya pendekatan formal untuk memahami game, yang mencoba menjembatani desain dan pengembangan game, kritik game, dan riset teknis tentang game.
+
+Isi makalahnya pendek, lima halaman. Pelajaran ini merangkum definisi dan contohnya, lalu memakainya untuk menganalisis dan merancang game.
+
+## Tiga lapis menurut makalah MDA
+
+Makalah MDA berangkat dari satu pengamatan. Game dibuat oleh desainer atau tim pengembang, lalu dikonsumsi oleh pemain. Bedanya dengan buku, musik, atau film, konsumsi game relatif **tidak bisa diprediksi**: rangkaian kejadian selama bermain dan hasil akhirnya belum diketahui saat produk selesai dibuat.
+
+Untuk mengurai konsumsi itu, makalahnya memecah game menjadi tiga komponen dari sisi pemain, lalu memasangkan masing-masing dengan padanannya dari sisi desain:
+
+```text title="Pemetaan di makalah MDA"
+sisi pemain : Aturan    ──▶ Sistem    ──▶ "Keseruan"
+sisi desain : Mekanik   ──▶ Dinamika  ──▶ Estetika
+```
+
+Definisi ketiganya, dirangkum dari makalah:
+
+- **Mekanik** (*mechanics*) adalah komponen-komponen tertentu dari game, di tingkat representasi data dan algoritma. Di bagian lain makalahnya, mekanik juga dijelaskan sebagai berbagai aksi, perilaku, dan mekanisme kontrol yang tersedia bagi pemain dalam konteks game. Bersama isi game (level, aset, dan sebagainya), mekanik menopang dinamika.
+- **Dinamika** (*dynamics*) adalah perilaku mekanik saat game berjalan, yang bekerja atas input pemain dan atas hasil mekanik lain dari waktu ke waktu.
+- **Estetika** (*aesthetics*) adalah respons emosional yang diharapkan muncul pada pemain saat ia berinteraksi dengan sistem game.
+
+Perhatikan bahwa estetika di sini tidak berarti tampilan visual. Kata itu dipakai untuk kualitas pengalaman: tegang, penasaran, akrab dengan teman, tenggelam dalam cerita. Salah paham ini cukup sering sampai menjadi salah satu kritik utama terhadap MDA, yang dibahas di bagian [Batas kerangka MDA](#batas-kerangka-mda).
+
+Gagasan yang menurut para penulis menjadi dasar kerangka ini: game lebih mirip **artefak** daripada media. Menurut mereka, isi sebuah game adalah perilakunya, dan media yang mengalir darinya ke arah pemain tidak dianggap sebagai isinya. Grafik, suara, dan teks tetap penting, tetapi pengalaman bermain lahir dari cara sistem bereaksi terhadap pemain.
+
+Contoh kecil dari genre yang sudah dibahas di Pelajaran 1, game bertani:
+
+| Lapis | Contoh |
+| --- | --- |
+| Mekanik | Tanaman tumbuh dalam sekian hari, energi pemain berkurang setiap mencangkul, hari berakhir pada jam tertentu, harga jual berbeda per tanaman |
+| Dinamika | Pemain menyusun urutan kerja setiap pagi, memilih tanaman yang paling menguntungkan untuk sisa musim, pulang tepat sebelum hari berakhir |
+| Estetika | Rasa santai karena rutinitas, rasa puas saat rencana berhasil |
+
+Desainer hanya bisa menulis baris pertama secara langsung. Baris kedua muncul saat pemain bertemu aturan itu, dan baris ketiga terjadi di kepala pemain.
+
+## Dua sudut pandang
+
+Makalah MDA menyebut setiap komponen sebagai "lensa" atau "pandangan" terhadap game: terpisah, tetapi terhubung sebab akibat.
+
+```text title="Arah baca desainer dan pemain"
+desainer : Mekanik ──▶ Dinamika ──▶ Estetika
+pemain   : Mekanik ◀── Dinamika ◀── Estetika
+```
+
+Dari sudut pandang **desainer**, mekanik menghasilkan perilaku sistem yang dinamis, dan perilaku itu menghasilkan pengalaman estetis tertentu. Dari sudut pandang **pemain**, estetika menentukan nuansa lebih dulu. Nuansa itu kemudian terlihat dalam dinamika yang bisa diamati, dan akhirnya dalam mekanik yang bisa dioperasikan.
+
+Contohnya mudah dibayangkan. Orang yang mencoba game horor biasanya merasakan tegang lebih dulu (estetika). Setelah beberapa menit ia menyadari bahwa ia selalu berlari menjauh dan bersembunyi (dinamika). Baru belakangan ia tahu penyebabnya: senjata hampir tidak ada, amunisi sangat sedikit, dan musuh mendengar suara langkah (mekanik). Desainer game itu bekerja ke arah sebaliknya.
+
+Para penulis menyarankan memakai kedua sudut pandang sekaligus. Alasannya ada dua. Pertama, kamu bisa melihat bagaimana perubahan kecil di satu lapis merambat ke lapis lain. Kedua, memikirkan pemain mendorong desain yang **berangkat dari pengalaman**, sebagai lawan dari desain yang berangkat dari daftar fitur. Karena itu makalahnya membahas estetika lebih dulu, lalu dinamika, dan terakhir mekanik.
+
+## Delapan jenis estetika
+
+Kata "seru" tidak banyak membantu saat merancang. Makalah MDA menyebut kosakata tentang bermain relatif terbatas, lalu mengusulkan kosakata yang lebih terarah. Taksonominya berisi delapan jenis, dengan catatan bahwa daftar ini "termasuk tetapi tidak terbatas pada" yang tertulis:
+
+| No. | Estetika | Penjelasan di makalah | Contoh perasaan |
+| --- | --- | --- | --- |
+| 1 | **Sensation** (sensasi) | Game sebagai kenikmatan indra | Suara dan getaran yang enak, warna yang memanjakan mata |
+| 2 | **Fantasy** (fantasi) | Game sebagai dunia pura-pura | Menjadi penyihir, kapten kapal, atau pemilik toko |
+| 3 | **Narrative** (narasi) | Game sebagai drama | Penasaran apa yang terjadi selanjutnya pada tokoh |
+| 4 | **Challenge** (tantangan) | Game sebagai lintasan rintangan | Gagal berkali-kali lalu akhirnya berhasil |
+| 5 | **Fellowship** (kebersamaan) | Game sebagai wadah sosial | Bekerja sama, bercanda, saling ledek dengan teman |
+| 6 | **Discovery** (penemuan) | Game sebagai wilayah yang belum dipetakan | Menemukan ruang rahasia atau cara kerja sistem |
+| 7 | **Expression** (ekspresi) | Game sebagai penemuan diri | Menyusun rumah, karakter, atau gaya bermain sendiri |
+| 8 | **Submission** (pengisi waktu) | Game sebagai cara menghabiskan waktu | Bermain santai sambil mengobrol atau mendengarkan musik |
+
+Kolom "contoh perasaan" ditambahkan pelajaran ini sebagai ilustrasi dan tidak ada di makalahnya.
+
+Makalahnya lalu memberi contoh dari empat game. Tebak gaya (Charades) disebut mengejar Fellowship, Expression, dan Challenge, dengan Fellowship lebih menonjol daripada Challenge. Quake dibaca sebagai Challenge, Sensation, Competition, dan Fantasy, dengan Challenge sebagai unsur utama. The Sims dibaca sebagai Discovery, Fantasy, Expression, dan Narrative. Final Fantasy dibaca sebagai campuran enam unsur: Fantasy, Narrative, Expression, Discovery, Challenge, dan Submission.
+
+Dari contoh itu ada tiga hal yang bisa diambil:
+
+- **Setiap game mengejar beberapa estetika sekaligus**, dengan kadar yang berbeda. Analisis yang berguna menyebut mana yang utama dan mana yang pendukung.
+- **Daftarnya terbuka.** Contoh Quake memakai Competition (persaingan), yang tidak ada di daftar delapan. Kamu boleh menambah kata lain jika lebih tepat, asalkan kata itu menjelaskan jenis pengalaman, tidak sekadar memuji.
+- **Tidak ada rumus.** Para penulis menulis bahwa tidak ada teori besar yang menentukan kombinasi dan takaran unsur yang pasti menghasilkan keseruan. Menurut mereka, taksonomi ini membantu menjelaskan kenapa game yang berbeda menarik bagi pemain yang berbeda, atau bagi pemain yang sama di waktu yang berbeda.
+
+## Contoh dari makalahnya
+
+Makalah MDA memberi beberapa contoh yang memperlihatkan hubungan antarlapis. Contoh-contoh ini dirangkum di bawah dengan kata-kata pelajaran ini.
+
+### Model estetika: persaingan
+
+Tebak gaya dan Quake sama-sama kompetitif. Menurut makalahnya, game seperti ini berhasil jika para pemain atau tim benar-benar ingin mengalahkan satu sama lain. Syaratnya: ada lawan, dan semua pihak ingin menang. Dari situ terlihat dua hal yang wajib ada di game kompetitif: permainan yang saling berhadapan, dan umpan balik yang jelas tentang siapa yang sedang unggul. Jika pemain tidak melihat kondisi menang yang jelas, atau merasa tidak mungkin menang, game itu jauh kurang menarik.
+
+### Model dinamika: dinamika yang menghasilkan estetika
+
+Makalahnya memberi beberapa pasangan. **Challenge** muncul dari hal seperti tekanan waktu dan permainan lawan. **Fellowship** bisa didorong dengan membagi informasi hanya kepada sebagian anggota sesi (misalnya satu tim), atau dengan kondisi menang yang lebih sulit dicapai sendirian, seperti merebut markas musuh. **Expression** datang dari dinamika yang mendorong pemain meninggalkan jejaknya sendiri: membeli, membangun, atau mendapatkan item, merancang dan mengubah level atau dunia, dan membuat karakter yang unik. **Ketegangan dramatis** datang dari dinamika yang membangun ketegangan, melepasnya, lalu menutupnya.
+
+Para penulis juga ingin dinamika dibahas sekonkret mungkin, dengan model yang bisa memprediksi. Contohnya peluang dua dadu enam sisi di Monopoly. Dengan distribusi lemparan itu, kamu bisa memperkirakan rata-rata waktu yang dibutuhkan pemain untuk mengelilingi papan.
+
+### Umpan balik di Monopoly
+
+Contoh yang paling terkenal dari makalah ini adalah sistem umpan balik di Monopoly. Pemain yang memimpin makin kaya, sehingga makin efektif menghukum pemain lain. Pemain yang miskin makin miskin. Saat jaraknya melebar, hanya beberapa pemain, kadang hanya satu, yang masih benar-benar terlibat. Ketegangan dramatis dan rasa punya kendali atas permainan hilang.
+
+```text title="Rantai MDA pada masalah Monopoly"
+mekanik  : sewa properti dibayar ke pemiliknya, pemilik banyak properti menerima lebih banyak
+dinamika : yang kaya makin kaya, jarak antarpemain makin lebar
+estetika : ketegangan hilang, sebagian besar pemain berhenti peduli
+```
+
+Makalahnya lalu menimbang perbaikan di lapis mekanik. Pemain yang tertinggal bisa diberi bonus atau "subsidi", dan pemain kaya diberi penalti atau "pajak", misalnya dihitung saat melewati petak Go, keluar dari penjara, atau saat nilai monopolinya melewati ambang tertentu. Pilihan lain adalah menambah tekanan waktu supaya game lebih cepat selesai: menguras uang dengan pajak tetap (supaya orang cepat membelanjakan uangnya), menggandakan semua bayaran monopoli (supaya pemain cepat terpisah posisinya), atau membagikan secara acak semua properti di bawah nilai tertentu. Para penulis juga mengakui bahwa perubahan itu bisa mengurangi kemampuan game meniru praktik monopoli yang sebenarnya, dan menambahkan bahwa kenyataan tidak selalu menyenangkan.
+
+### Penyetelan
+
+Langkah terakhir dari analisis Monopoly itu adalah playtest dan penyetelan: mengubah nilai penalti, tarif pajak, atau ambang hadiah sedikit demi sedikit sampai permainan seimbang. Di sini kosakata estetika membantu menilai perubahan. Makalahnya memberi peringatan: jika pajak baru membutuhkan perhitungan rumit, pemain bisa kehilangan rasa terlibat karena sulit melacak uang, progres, dan posisinya dalam persaingan. Model dinamika juga membantu menemukan sumber masalah. Dengan model dadu tadi, perubahan ukuran atau tata letak papan bisa dinilai dari seberapa jauh ia memperpanjang atau memperpendek game.
+
+### Mekanik yang memunculkan dinamika
+
+Makalahnya memberi tiga contoh singkat. Mekanik permainan kartu, seperti mengocok kartu, mengambil trik, dan bertaruh, memunculkan dinamika seperti menggertak. Mekanik shooter, seperti senjata, amunisi, dan titik kemunculan, kadang memunculkan *camping* (menunggu di satu tempat untuk menyergap) dan menembak dari jauh. Mekanik golf, seperti bola, stik, jebakan pasir, dan rintangan air, kadang memunculkan stik yang patah atau tenggelam. Contoh terakhir itu jelas tidak ada di buku aturan golf, tetapi tetap lahir dari aturan dan benda yang ada.
+
+### Satu game kejar-kejaran, tiga desain
+
+Bagian terakhir makalahnya memakai satu ide, permainan petak umpet antara pengasuh dan bayi, lalu mengubah target estetikanya tiga kali. Contoh ini ditulis untuk programmer AI game, tetapi polanya berlaku untuk desain secara umum:
+
+| Versi | Estetika yang dituju | Akibat pada dinamika dan mekanik |
+| --- | --- | --- |
+| Pertama: untuk anak 3 sampai 7 tahun | Eksplorasi dan penemuan lebih penting daripada tantangan | Dinamika diarahkan agar bayi menunjukkan emosi seperti kaget, takut, dan menunggu. Tempat sembunyi dan jalurnya cukup ditandai manual. Mekaniknya antara lain berbicara ke bayi, mengejar, mengendap, dan menyentuh |
+| Kedua: versi untuk waralaba kartun, bagi anak perempuan 7 sampai 12 tahun | Lebih menantang, mungkin dengan cerita yang terbagi dalam beberapa level | Pemain mengurus beberapa karakter sekaligus. Ada tekanan waktu (semua harus tidur sebelum jam 9), faktor berantakan, atau emosi karakter yang memengaruhi poin. Jalur tetap tidak cukup lagi, jadi bayi perlu memilih tempat sembunyinya sendiri |
+| Ketiga: simulasi penyusupan militer untuk pria 14 sampai 35 tahun | Fantasi menjadi mata-mata elit, tantangan yang hampir menjadi Submission, plot penuh intrik | Pemain bisa mendapatkan atau membeli senjata dan peralatan, dan mengembangkan taktik bergerak diam-diam, menipu, menghindar, dan kabur. Mekaniknya mencakup pohon teknologi dan keterampilan yang luas, banyak jenis musuh, dan area dengan jangkauan gerak dan pandang yang berbeda |
+
+Kesimpulan para penulis: perubahan sederhana pada kebutuhan estetika sebuah game bisa memaksa perubahan mekanik pada AI-nya di banyak tingkat, kadang sampai butuh sistem navigasi, penalaran, dan strategi yang benar-benar baru. Dengan MDA, kamu bisa menimbang tujuan estetika secara eksplisit, menurunkan dinamika yang mendukungnya, lalu membatasi cakupan mekanik sesuai kebutuhan itu.
+
+## Menganalisis game dengan MDA
+
+Saat menganalisis game yang sudah ada, kamu memulai dari posisi pemain: estetika dulu, lalu ditelusuri ke bawah. Urutan kerja yang bisa dipakai:
+
+1. **Mainkan, lalu tulis apa yang kamu rasakan** dengan kosakata estetika. Pilih dua atau tiga yang paling kuat, urutkan dari yang utama. Hindari kata "seru" dan "bagus".
+2. **Catat dinamika yang kamu amati.** Apa yang dilakukan pemain berulang kali? Pola apa yang muncul setelah beberapa menit atau beberapa sesi? Apa yang dilakukan pemain lain, jika ada?
+3. **Cari mekanik yang menyebabkannya.** Untuk setiap dinamika, tanyakan aturan, angka, atau isi apa yang membuatnya terjadi.
+4. **Uji dengan pertanyaan "bagaimana jika".** Bayangkan satu mekanik dihapus atau diubah. Dinamika apa yang hilang, dan apakah estetikanya ikut berubah? Jika jawabannya "tidak ada yang berubah", mungkin mekanik itu tidak sepenting dugaanmu.
+
+Hasil analisis ini adalah dugaan dari sudut pandang pemain. Kamu tidak tahu niat desainernya, dan pemain lain bisa merasakan estetika yang berbeda dari game yang sama. Tulis hasilnya sebagai pengamatanmu, dan jangan menyajikannya sebagai fakta tentang tujuan pembuat game.
+
+Berikut contoh analisis untuk tiga genre umum. Contoh ini menggambarkan bentuk yang lazim di genre tersebut dan tidak merujuk ke game tertentu.
+
+### Party game lokal
+
+Beberapa pemain di satu layar, ronde yang singkat, kontrol sederhana.
+
+| Mekanik | Dinamika | Estetika |
+| --- | --- | --- |
+| Ronde 1 sampai 3 menit dengan aturan yang berganti-ganti | Pemain cepat beradaptasi, tidak ada yang sempat terlalu jago | Challenge yang ringan |
+| Semua pemain di satu layar, bisa saling dorong atau saling ganggu | Saling ledek, aliansi sesaat, pemain yang memimpin dikeroyok | Fellowship, Competition |
+| Kejadian acak dan bonus poin di akhir | Pemain yang tertinggal masih bisa membalik keadaan, sehingga semua tetap terlibat sampai akhir | Fellowship, ketegangan |
+| Kontrol satu atau dua tombol | Orang yang jarang bermain bisa langsung ikut | Fellowship |
+
+Perhatikan baris ketiga. Kejadian acak di sini bekerja seperti perbaikan Monopoly yang diusulkan makalah: menahan jarak antarpemain supaya ketegangan tidak hilang. Harganya, pemain yang menang karena keterampilan bisa merasa kemenangannya kurang berarti.
+
+### Satu run roguelike
+
+Satu permainan disebut *run*. Jika karakter mati, run selesai dan pemain mulai dari awal.
+
+| Mekanik | Dinamika | Estetika |
+| --- | --- | --- |
+| Kematian mengakhiri run, sebagian besar kemajuan hilang | Pemain menimbang risiko di setiap ruangan, makin hati-hati saat run sedang bagus | Challenge, ketegangan |
+| Ruangan dan item disusun acak setiap run | Pemain menyesuaikan strategi dengan apa yang didapat, tidak bisa menghafal | Discovery, Challenge |
+| Item yang saling berinteraksi | Pemain mencari kombinasi kuat, kadang menemukan kombinasi yang tidak disangka | Discovery, Expression |
+| Run relatif singkat | Pola "satu run lagi" | Submission, Challenge |
+| Kejadian berbeda di setiap run | Pemain menceritakan run terbaik atau terburuknya kepada orang lain | Narrative yang muncul dari permainan |
+
+Baris terakhir menarik. Cerita di sini tidak ditulis oleh desainer. Ia muncul dari dinamika, dan pemain sendiri yang merangkainya.
+
+### Game bertani
+
+Kembali ke contoh dari Pelajaran 1, kali ini dengan lensa MDA.
+
+| Mekanik | Dinamika | Estetika |
+| --- | --- | --- |
+| Waktu tumbuh tanaman, hari yang berakhir pada jam tertentu | Rutinitas pagi yang teratur, rencana untuk beberapa hari ke depan | Submission, rasa tenang |
+| Harga jual berbeda, alat yang bisa ditingkatkan | Pemain menghitung tanaman paling menguntungkan dan mengatur ulang ladang | Challenge yang ringan |
+| Tata letak ladang dan dekorasi bebas | Setiap ladang terlihat berbeda, pemain memamerkannya | Expression |
+| Tanaman, area, atau musim baru yang terbuka bertahap | Pemain penasaran apa yang ada berikutnya | Discovery |
+
+Jika tujuan estetika utamanya adalah Submission dan rasa tenang, mekanik yang menghukum keras (misalnya semua tanaman mati jika pemain lupa satu hari) akan bertabrakan dengannya. Analisis MDA membantu melihat tabrakan seperti ini sebelum pemain mengeluh.
+
+## Merancang dengan MDA
+
+Saat merancang, kamu bergerak dari sisi desainer, tetapi dengan tujuan dari sisi pemain. Makalah MDA meringkas urutannya: tentukan tujuan estetika secara eksplisit, turunkan dinamika yang mendukungnya, lalu batasi cakupan mekanik sesuai kebutuhan itu. Dalam praktik:
+
+1. **Tulis estetika yang dituju.** Pilih satu atau dua sebagai yang utama. Contoh: Fellowship sebagai utama, Challenge sebagai pendukung, untuk game kooperatif dua sampai empat orang.
+2. **Tulis dinamika yang kamu harapkan muncul.** Untuk Fellowship: pemain saling memanggil, berbagi tugas, menolong yang tertinggal. Untuk Challenge: tekanan waktu yang terasa di akhir setiap ronde.
+3. **Pilih mekanik yang mungkin memunculkan dinamika itu.** Mengikuti contoh makalah: setiap pemain hanya melihat sebagian peta, tujuan butuh dua orang yang menekan tuas bersamaan, ada timer ronde.
+4. **Buat prototipe dan amati.** Dinamika tidak bisa dibuat langsung, hanya bisa dipancing lewat mekanik. Satu-satunya cara memastikannya adalah melihat orang bermain. Prototipe greybox dari [Pelajaran 1](/belajar/desain-game/01-core-loop/) adalah alat yang tepat: murah dibuat dan murah dibuang.
+5. **Setel, lalu ulangi.** Jika pemain tidak berbicara satu sama lain, informasi yang dibagi mungkin tidak cukup penting. Jika mereka panik dan saling menyalahkan, timer mungkin terlalu ketat. Ubah satu hal, mainkan lagi.
+
+```text title="Kartu MDA: game kooperatif (ilustrasi)"
+estetika utama   : Fellowship
+estetika pendukung: Challenge
+dinamika target  : pemain saling memberi tahu apa yang mereka lihat,
+                   membagi tugas, panik bersama di detik terakhir
+mekanik          : peta dibagi per pemain, tuas yang perlu ditekan dua orang,
+                   timer 90 detik per ronde
+cara mengecek    : rekam playtest, hitung berapa kali pemain berbicara
+                   ke pemain lain per menit
+```
+
+Kartu ini melengkapi kartu loop dari Pelajaran 1. Kartu loop menjelaskan apa yang dilakukan pemain setiap beberapa detik. Kartu MDA menjelaskan kenapa aksi itu ada dan pengalaman apa yang ingin dicapai.
+
+Beberapa estetika sangat bergantung pada hal yang dibahas di pelajaran sebelumnya. **Sensation**, misalnya, banyak datang dari respons input, kamera, suara, dan efek, yang dibahas di [Pelajaran 2](/belajar/desain-game/02-game-feel/). Di sini terlihat juga kenapa Lantz mengusulkan agar mekanik dibaca luas, mencakup aset dan suara: efek pendaratan yang tepat waktu adalah bagian dari yang dirancang desainer, sama seperti aturan lompatnya.
+
+Satu catatan dari makalahnya: desain yang berangkat dari pengalaman adalah lawan dari desain yang berangkat dari fitur. Daftar fitur seperti "crafting, pertarungan, bangun markas, multiplayer" belum menjelaskan pengalaman apa pun. Tanyakan untuk setiap fitur: dinamika apa yang ingin dimunculkannya, dan estetika mana yang dilayaninya? Fitur yang tidak bisa menjawab adalah kandidat untuk dipotong, yang sekaligus menghemat cakupan produksi.
+
+## Dinamika yang tidak direncanakan
+
+Makalah MDA menekankan bahwa interaksi antarsubsistem dalam game menghasilkan perilaku yang kompleks, dinamis, dan sering tidak terduga. Para desainer dan peneliti, menurut makalahnya, perlu menimbang ketergantungan antarbagian dengan hati-hati sebelum mengubah sesuatu. Frank Lantz menyebut sifat tidak langsung ini sebagai kekuatan terbesar kerangka itu. Ia menulis bahwa salah satu hal tersulit dalam desain game adalah betapa rumit dan mengejutkannya perilaku sebuah game: kamu menambah satu unsur dengan harapan hasil tertentu, lalu melihat sesuatu yang sama sekali berbeda muncul begitu game berjalan.
+
+Kamu sudah melihat beberapa contohnya: camping di shooter, pemain yang memimpin dikeroyok di party game, dan cerita yang muncul dari run roguelike. Ketiganya tidak tertulis di aturan mana pun dan muncul dari pertemuan aturan dengan pemain.
+
+Dinamika tak terduga bisa jatuh ke dua sisi:
+
+- **Merusak estetika yang dituju.** Pemain menemukan satu strategi yang selalu menang, sehingga keputusan hilang dan Challenge runtuh. Atau, seperti Monopoly, pemain yang tertinggal tidak punya alasan untuk peduli lagi.
+- **Menambah estetika yang tidak direncanakan.** Pemain memakai sistem dengan cara kreatif yang ternyata menyenangkan. Kadang dinamika seperti ini layak dipertahankan, bahkan dijadikan bagian inti desain.
+
+Karena dinamika baru terlihat saat game dimainkan, cara utama menemukannya adalah mengamati orang lain bermain. Makalahnya menutup analisis Monopoly dengan playtest dan penyetelan untuk alasan yang sama. Beberapa kebiasaan yang membantu:
+
+- **Tulis dinamika yang kamu harapkan sebelum playtest.** Setelah sesi, bandingkan dengan yang benar-benar terjadi. Selisih di antara keduanya adalah bahan kerja berikutnya.
+- **Amati apa yang dilakukan pemain, tidak hanya apa yang mereka katakan.** Pemain bisa bilang suka, tetapi rekaman menunjukkan mereka mengulang satu strategi yang sama sepanjang sesi.
+- **Telusuri ke mekanik sebelum memperbaiki.** Saat dinamika bermasalah, cari aturan mana yang menyebabkannya. Menambah aturan baru di atas masalah sering memunculkan dinamika tak terduga berikutnya.
+- **Ubah satu mekanik sekali waktu**, seperti prinsip menyetel di Pelajaran 2. Kalau tiga aturan diubah bersamaan, kamu tidak tahu mana yang menggeser dinamika.
+
+Cara merencanakan dan menjalankan sesi playtest dibahas di pelajaran Playtesting pada jalur ini.
+
+## Batas kerangka MDA
+
+Para penulisnya sendiri menulis bahwa tidak ada teori besar tentang game atau rumus yang menjamin keseruan. MDA adalah cara berpikir, dan ada beberapa batas yang perlu kamu ketahui saat memakainya.
+
+**Istilah "estetika" mudah disalahpahami.** Dalam tulisannya tahun 2015, Frank Lantz mencatat bahwa kata *aesthetics* sangat melekat dengan kualitas visual. Menurutnya, sejelas apa pun kamu menjelaskan bahwa estetika di MDA mencakup persaingan, eksplorasi, cerita, humor, rasa takut, atau keakraban, orang tetap akan kembali membandingkan "gameplay dan estetika" seolah estetika berarti grafik. Setelah lama mencoba mengubah kebiasaan itu, Lantz menyimpulkan bahwa usaha itu kemungkinan tidak akan berhasil, dan ia setuju dengan usulan Lana Polansky untuk memakai kata *affect*. Dalam bahasa Indonesia masalahnya mirip, karena "estetika" juga sering diartikan sebagai keindahan visual. Saat memakai MDA bersama tim, sepakati dulu artinya.
+
+**Istilah "mekanik" punya dua arti, bahkan di makalahnya sendiri.** Lantz menunjukkan bahwa makalah MDA pertama kali mendefinisikan mekanik secara luas: komponen game di tingkat representasi data dan algoritma, yang mencakup semua benda di dalam game beserta aturannya. Di bagian lain, mekanik dijelaskan sebagai aksi, perilaku, dan mekanisme kontrol yang tersedia bagi pemain, yang bekerja bersama isi game (level, aset). Arti kedua lebih sempit, dan memisahkan aturan dari isi. Menurut Lantz, versi MDA yang paling berguna adalah versi luas, yang menempatkan aturan, grafik, bahasa, suara, dan semua bahan game di lapis yang sama, karena semuanya bisa diubah langsung oleh desainer. Ia sempat mengusulkan nama alternatif seperti *Materials/Dynamics/Affect*.
+
+**MDA tidak memberi tahu apa yang harus dibuat.** Lantz tetap menyebut dirinya penggemar MDA, dan menganggapnya alat konseptual yang kuat untuk banyak masalah desain. Ia juga menulis bahwa seperti kerangka desain mana pun, kegunaannya terbatas, dan MDA tidak bisa dijadikan proses lengkap untuk membuat game. Kerangka ini membantu kamu bertanya dengan lebih tepat. Jawabannya tetap datang dari prototipe, playtest, dan penyetelan.
+
+## Kesalahan umum
+
+### Tujuan estetika yang samar
+
+```text title="✗ Keliru"
+tujuan pengalaman: game yang seru dan menantang untuk semua orang
+```
+
+```text title="✓ Benar"
+estetika utama   : Challenge (gagal cepat, coba lagi cepat)
+estetika pendukung: Discovery (rute rahasia di setiap level)
+```
+
+Tujuan yang samar tidak bisa dipakai untuk memilih mekanik, dan tidak bisa dicek setelah playtest.
+
+### Merancang dari daftar fitur
+
+```text title="✗ Keliru"
+fitur: crafting, pertarungan, bangun markas, multiplayer, cuaca
+```
+
+```text title="✓ Benar"
+estetika  : Fellowship
+dinamika  : pemain membagi peran saat mempertahankan markas
+mekanik   : bahan bangunan hanya bisa dibawa satu jenis per orang
+(fitur lain ditambahkan hanya jika melayani estetika ini)
+```
+
+### Melompati lapis dinamika
+
+```text title="✗ Keliru"
+tambah pohon keterampilan → pemain pasti merasa berekspresi
+```
+
+```text title="✓ Benar"
+tambah pohon keterampilan → amati: apakah pemain memilih jalur berbeda,
+atau semua memilih jalur terkuat yang sama?
+```
+
+Mekanik tidak langsung menghasilkan estetika. Jika satu jalur jelas paling kuat, pohon keterampilan yang luas tetap menghasilkan dinamika yang seragam, dan Expression tidak muncul.
+
+### Menganggap estetika sama dengan grafik
+
+```text title="✗ Keliru"
+"Gameplay-nya sudah jadi, tinggal estetikanya dipoles."
+```
+
+```text title="✓ Benar"
+"Mekanik dan aset sudah ada. Dinamika yang muncul di playtest belum
+menghasilkan rasa tegang yang kita tuju."
+```
+
+### Memperbaiki satu dinamika sambil merusak estetika lain
+
+```text title="✗ Keliru"
+pemain tertinggal tidak bisa mengejar → tambah pajak dengan rumus lima langkah
+```
+
+```text title="✓ Benar"
+pemain tertinggal tidak bisa mengejar → tambah satu aturan yang mudah dilacak,
+lalu cek di playtest apakah pemain masih tahu siapa yang unggul
+```
+
+Makalah MDA memakai contoh yang sama: pajak yang rumit bisa merusak rasa terlibat karena pemain sulit melacak posisinya.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Latihan 1 sampai 3 cukup dikerjakan di kertas. Latihan 4 dikerjakan di engine pilihanmu atau sebagai prototipe kertas.
+
+1. Lengkapi tabel berikut. Untuk setiap mekanik, tulis satu dinamika yang mungkin muncul dan estetika yang paling mungkin dihasilkannya. Baris pertama sudah diisi sebagai contoh. Setelah selesai, bandingkan jawabanmu dengan teman. Jawaban yang berbeda itu wajar, dan justru menunjukkan bahwa dinamika bergantung pada pemain dan konteks.
+
+    | Mekanik | Dinamika | Estetika |
+    | --- | --- | --- |
+    | Timer 60 detik per ronde | Pemain terburu-buru di 10 detik terakhir | Challenge, ketegangan |
+    | Setiap pemain hanya melihat setengah peta | | |
+    | Item jatuh secara acak dari musuh | | |
+    | Pemain bisa mengecat dan menamai kendaraannya | | |
+    | Pemain yang tertinggal mendapat bonus kecepatan | | |
+    | Tidak ada musuh, tidak ada batas waktu, lagu yang tenang | | |
+
+2. Pilih satu game yang sering kamu mainkan. Analisis dengan urutan di bagian [Menganalisis game dengan MDA](#menganalisis-game-dengan-mda): tulis dua atau tiga estetika utama, tiga dinamika yang kamu amati, dan mekanik penyebab setiap dinamika. Lalu pilih satu mekanik, bayangkan mekanik itu dihapus, dan tulis apa yang berubah di dinamika dan estetikanya.
+3. Ambil contoh petak umpet dari makalah MDA dan buat versi keempat dengan estetika utama yang belum dipakai di tiga versi makalah, misalnya Fellowship untuk empat pemain atau Expression. Tulis kartu MDA-nya: estetika, dinamika yang diharapkan, dan tiga sampai lima mekanik.
+4. Buat prototipe dari kartu MDA di latihan 3, atau dari kartu game kooperatif di bagian [Merancang dengan MDA](#merancang-dengan-mda). Sebelum orang lain mencobanya, tulis tiga dinamika yang kamu harapkan. Setelah mereka bermain, tulis dinamika yang benar-benar muncul, termasuk yang tidak kamu duga. Untuk setiap selisih, tentukan mekanik mana yang akan kamu ubah lebih dulu.
