@@ -1,0 +1,533 @@
+---
+title: "Postmortem"
+description: "Kapan postmortem dan retrospektif dibuat, data yang dikumpulkan sebelum rapat, survei anonim, cara memfasilitasi rapat tanpa mencari kambing hitam, format diskusi seperti berjalan baik dan buruk, start stop continue, 5 whys, dan garis waktu, mengubah temuan menjadi tindakan, versi internal dan publik, serta templat yang bisa kamu salin."
+fundamental: "Postmortem adalah cara tim mengubah pengalaman satu proyek menjadi kebiasaan yang lebih baik di proyek berikutnya. Supaya orang mau jujur, pembahasannya diarahkan ke proses dan keputusan, tidak ke kesalahan pribadi. Kalau kamu paham kenapa data dikumpulkan sebelum rapat dan kenapa setiap tindakan perlu pemilik, kamu bisa menjalankan postmortem di tim dan proyek apa pun."
+kind: lesson
+minutes: 30
+status: draf
+lastReviewed: 2026-10-31
+krekit:
+  gambaran-besar: "Ingatan tentang proyek cepat berubah. Catat selagi masih segar, sebelum semua orang sibuk dengan proyek baru."
+  kapan-postmortem-dibuat: "Postmortem kecil yang benar-benar dijalankan lebih berguna daripada postmortem besar yang terus ditunda."
+  menyiapkan-bahan-sebelum-rapat: "Kalau angka sudah ada di meja sebelum rapat, waktu rapat bisa dipakai untuk memahami angka itu."
+  menjalankan-rapat: "Orang mau bicara jujur kalau ia yakin ceritanya tidak akan dipakai untuk menyalahkannya."
+  format-diskusi: "Pilih satu format yang cocok dengan pertanyaanmu. Mencoba semuanya dalam satu rapat biasanya cuma bikin lelah."
+  dari-temuan-ke-tindakan: "Tiga tindakan yang dikerjakan lebih berguna daripada lima belas yang hanya ditulis."
+  menulis-dokumennya: "Tulis versi internal dulu. Versi publik lebih mudah disusun dari dokumen yang sudah lengkap."
+  sisi-emosional: "Proyek yang melelahkan tetap perlu dibahas. Pembahasannya saja yang perlu dijaga supaya tidak melukai orang."
+  contoh-sari-dan-dimas-menjalankan-postmortem-sebulan-setelah-rilis: "Kejadiannya karangan. Perhatikan bagaimana kalimat yang menyalahkan diubah menjadi pertanyaan tentang proses."
+  kesalahan-umum: "Kalau tindakan dari postmortem lalu belum pernah dibuka lagi, mulailah dari situ."
+sidebar:
+  order: 6
+  label: "6 · Postmortem"
+quiz:
+  - q: "Menurut bab Postmortem Culture di buku Site Reliability Engineering dari Google, apa yang dimaksud dengan postmortem yang blameless?"
+    options:
+      - "Postmortem yang tidak pernah menyebut nama siapa pun dan tidak membahas kesalahan"
+      - "Postmortem yang fokus mencari penyebab yang berkontribusi tanpa menuduh individu atau tim, dengan anggapan semua orang berniat baik dan bertindak sesuai informasi yang mereka punya saat itu"
+      - "Postmortem yang hanya ditulis oleh manajer"
+      - "Postmortem yang hanya membahas hal yang berjalan baik"
+    answer: 1
+    explain: "Bab itu menyebut bahwa postmortem blameless tetap membahas tindakan yang menyebabkan masalah, tetapi tidak menuduh orang. Alasannya, kalau budaya menyalahkan berlaku, orang akan menyembunyikan masalah karena takut dihukum. Panduan Atlassian menambahkan bahwa blameless tidak berarti tidak pernah menyebut siapa yang membuat kesalahan."
+  - q: "Kenapa garis waktu dan data proyek sebaiknya disepakati di awal rapat, sebelum tim membahas penyebab?"
+    options:
+      - "Supaya rapat terlihat lebih resmi"
+      - "Karena kalau tim belum sepakat tentang apa yang terjadi, diskusi tentang penyebab mudah melenceng dan berubah menjadi adu ingatan"
+      - "Karena data proyek lebih penting daripada pendapat anggota tim"
+      - "Supaya fasilitator bisa menyimpulkan sendiri penyebabnya"
+    answer: 1
+    explain: "Panduan blameless postmortem dari Atlassian menyarankan memastikan semua orang punya gambaran yang sama tentang apa yang terjadi sebelum menggali penyebabnya, karena salah paham tentang masalah inti bisa membuat rapat cepat melenceng. Fakta dulu, tafsiran kemudian."
+  - q: "Rangkaian 5 whys tim berakhir di jawaban 'karena Dimas lupa menguji di Linux'. Apa langkah berikutnya yang paling berguna?"
+    options:
+      - "Menulis Dimas sebagai penyebab utama dan menutup diskusi"
+      - "Bertanya lagi kenapa proses tim memungkinkan pengujian Linux terlewat, misalnya apakah Linux ada di checklist dan apakah perangkat ujinya tersedia"
+      - "Meminta Dimas berjanji lebih teliti"
+      - "Menghapus Linux dari daftar platform"
+    answer: 1
+    explain: "Rangkaian yang berhenti di nama orang biasanya belum sampai ke penyebab yang bisa diperbaiki. Orang bisa lupa di proyek mana pun. Checklist, perangkat uji, dan pembagian tugas bisa diubah supaya lupa tidak langsung menjadi masalah."
+  - q: "Postmortem tim menghasilkan 14 usulan perbaikan. Apa yang sebaiknya dilakukan?"
+    options:
+      - "Mencatat semuanya sebagai tindakan supaya tidak ada yang terlewat"
+      - "Memilih sedikit tindakan yang konkret, memberi masing-masing satu pemilik dan waktu pemeriksaan, lalu menyimpan sisanya sebagai catatan"
+      - "Menunda semuanya sampai proyek berikutnya selesai"
+      - "Membiarkan setiap orang memilih sendiri usulan yang ingin dikerjakan"
+    answer: 1
+    explain: "Tim kecil punya waktu terbatas di awal proyek baru. Play 5 Whys dari Atlassian menyarankan memilih satu atau dua solusi, memberi pemilik untuk setiap solusi, dan menentukan kapan tim mendengar hasilnya. Usulan lain tetap berguna sebagai bahan, tetapi tidak dicatat sebagai janji."
+  - q: "Tim kamu akan menerbitkan postmortem di blog. Bagian mana yang paling perlu dikeluarkan dari versi publik?"
+    options:
+      - "Daftar hal yang berjalan baik"
+      - "Penilaian tentang kinerja pribadi seseorang, angka yang dirahasiakan, dan isi kontrak dengan pihak lain"
+      - "Garis waktu proyek"
+      - "Pelajaran untuk proyek berikutnya"
+    answer: 1
+    explain: "Versi publik ditulis untuk pembaca di luar tim. Penilaian pribadi bisa merugikan orang yang dibahas, angka tertentu mungkin terikat perjanjian dengan platform atau publisher, dan isi kontrak melibatkan pihak lain yang tidak ikut menyetujui publikasi. Pelajaran dan garis waktu justru bagian yang paling berguna untuk pembaca."
+  - q: "Apa hubungan antara retrospektif sprint dan postmortem di akhir proyek?"
+    options:
+      - "Keduanya sama persis, hanya beda nama"
+      - "Retrospektif adalah versi kecil yang dijalankan rutin di tengah proyek, sedangkan postmortem melihat seluruh proyek setelah selesai"
+      - "Retrospektif hanya untuk tim besar"
+      - "Kalau sudah rutin retrospektif, postmortem tidak perlu lagi"
+    answer: 1
+    explain: "Menurut Scrum Guide 2020, retrospektif menutup setiap sprint dan dibatasi paling lama tiga jam untuk sprint satu bulan. Postmortem memakai cara berpikir yang sama untuk rentang yang lebih panjang. Catatan dari retrospektif-retrospektif sebelumnya menjadi bahan postmortem yang sangat berguna."
+sources:
+  - title: "Chapter 15: Postmortem Culture: Learning from Failure (John Lunney dan Sue Lueder)"
+    url: "https://sre.google/sre-book/postmortem-culture/"
+    publisher: "Google, Site Reliability Engineering (O'Reilly Media, 2017)"
+    accessed: 2026-10-31
+  - title: "How to run a blameless postmortem"
+    url: "https://www.atlassian.com/incident-management/postmortem/blameless"
+    publisher: "Atlassian"
+    accessed: 2026-10-31
+  - title: "Incident postmortems (Incident Management Handbook)"
+    url: "https://www.atlassian.com/incident-management/handbook/postmortems"
+    publisher: "Atlassian"
+    accessed: 2026-10-31
+  - title: "5 Whys Analysis"
+    url: "https://www.atlassian.com/team-playbook/plays/5-whys"
+    publisher: "Atlassian Team Playbook"
+    accessed: 2026-10-31
+  - title: "Sprint Retrospectives"
+    url: "https://www.atlassian.com/team-playbook/plays/retrospective"
+    publisher: "Atlassian Team Playbook"
+    accessed: 2026-10-31
+  - title: "Start-stop-continue template"
+    url: "https://www.atlassian.com/software/confluence/templates/start-stop-continue"
+    publisher: "Atlassian"
+    accessed: 2026-10-31
+  - title: "The 2020 Scrum Guide"
+    url: "https://scrumguides.org/scrum-guide.html"
+    publisher: "Ken Schwaber dan Jeff Sutherland, scrumguides.org"
+    accessed: 2026-10-31
+  - title: "Developer Satisfaction Survey 2023: Summary Report"
+    url: "https://igda-website.s3.us-east-2.amazonaws.com/wp-content/uploads/2024/05/01161842/2023-04-14_IGSA-DSS-2023_SummaryReport.pdf"
+    publisher: "Johanna Weststar dan Ava Lentini, IGDA dan Western University (2024)"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menentukan kapan timmu perlu postmortem, dan kapan retrospektif kecil sudah cukup.
+- Mengumpulkan data dan pendapat anggota tim sebelum rapat, termasuk lewat survei anonim.
+- Memfasilitasi rapat yang membahas proses dan keputusan tanpa mencari orang untuk disalahkan.
+- Memilih format diskusi yang cocok, dari berjalan baik dan buruk sampai 5 whys dan garis waktu.
+- Mengubah temuan menjadi sedikit tindakan yang punya pemilik dan diperiksa lagi di proyek berikutnya.
+- Menulis versi internal dan versi publik dari postmortem dengan templat yang bisa dipakai ulang.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: evaluasi setelah pertandingan">
+Setelah pertandingan, tim sepak bola menonton ulang rekaman bersama pelatih. Mereka melihat kapan lini belakang terlalu maju, kapan umpan sering terputus, dan pola apa yang berhasil. Pembahasannya memakai rekaman supaya tidak bergantung pada ingatan siapa yang paling keras bicara. Tujuannya menyiapkan pertandingan berikutnya. Kalau setiap sesi berakhir dengan satu pemain dimarahi di depan semua orang, pemain akan mulai menyembunyikan kesalahan, dan rekaman berikutnya makin sulit dibaca.
+</Aside>
+
+Lima pelajaran sebelumnya membawa proyek dari [scope](/belajar/produksi/01-scope-vertical-slice/) sampai [rilis dan patch](/belajar/produksi/05-kualitas-rilis/). Di sepanjang jalan, tim membuat perkiraan, memotong fitur, membagi peran, dan memilih alat. Sebagian keputusan itu menolong, sebagian merugikan, dan sebagian baru terlihat dampaknya setelah game dimainkan banyak orang.
+
+**Postmortem** adalah evaluasi terstruktur setelah proyek atau tahap penting selesai: apa yang terjadi, kenapa terjadi, dan apa yang akan dilakukan berbeda. Di pelajaran [Studi Kasus dan Postmortem](/belajar/industri-karier/05-studi-kasus/), kamu belajar membaca postmortem buatan developer lain. Pelajaran ini membahas sisi sebaliknya: menjalankan dan menulis postmortem untuk timmu sendiri.
+
+Istilah ini juga dipakai tim operasional perangkat lunak setelah layanan mati atau data hilang. Buku *Site Reliability Engineering* dari Google mendefinisikannya sebagai catatan tertulis tentang sebuah insiden, dampaknya, tindakan untuk menyelesaikannya, akar penyebabnya, dan tindakan lanjutan supaya tidak terulang. Postmortem proyek game membahas rentang yang lebih panjang, tetapi banyak praktik dari dunia operasional tetap berlaku, terutama soal membahas kesalahan tanpa menyalahkan orang.
+
+## Kapan postmortem dibuat
+
+### Akhir proyek, milestone, dan game jam
+
+Waktu yang paling umum adalah **setelah rilis**, ketika hasilnya sudah terlihat tetapi ingatan belum kabur. Kamu bisa menunggu beberapa minggu supaya patch pertama selesai dan data awal dari pemain sudah ada. Kalau terlalu lama, anggota tim sudah pindah ke proyek lain, dan detail seperti "kenapa kita memotong fitur itu di bulan kelima" mulai hilang.
+
+Waktu lain yang layak:
+
+- **Setelah milestone besar**, misalnya vertical slice atau alpha. Hasilnya masih bisa mengubah sisa proyek yang sama.
+- **Setelah game jam.** Satu jam di hari terakhir sudah cukup, karena hampir semua kejadian masih segar.
+- **Setelah proyek dihentikan.** Proyek yang batal sering dilewati karena terasa menyakitkan, padahal pelajarannya bisa besar. Beri jeda kalau perlu, tetapi tetapkan tanggalnya.
+- **Setelah kejadian serius**, misalnya patch yang merusak file simpanan pemain. Ini lebih dekat ke postmortem insiden di dunia operasional.
+
+Bab Postmortem Culture di buku SRE menyarankan agar kriteria kapan postmortem dibuat ditetapkan sebelum insiden terjadi, supaya semua orang tahu kapan postmortem diperlukan. Untuk tim game, tuliskan di rencana proyek sejak awal, misalnya "postmortem setelah vertical slice dan sebulan setelah rilis". Postmortem yang sudah terjadwal tidak terasa seperti hukuman karena ada masalah.
+
+### Retrospektif sebagai versi kecil
+
+Kalau timmu bekerja dalam sprint seperti di pelajaran [Fase Produksi](/belajar/produksi/02-fase-produksi/#sprint), kamu mungkin sudah menjalankan versi kecilnya. Menurut Scrum Guide 2020, **retrospektif sprint** menutup setiap sprint. Tim membahas apa yang berjalan baik, masalah apa yang muncul, dan perubahan apa yang paling membantu. Panduan itu membatasi retrospektif paling lama tiga jam untuk sprint satu bulan, dan biasanya lebih singkat untuk sprint yang lebih pendek.
+
+| | Retrospektif | Postmortem |
+| --- | --- | --- |
+| Rentang | Satu sprint atau beberapa minggu terakhir | Seluruh proyek atau satu tahap besar |
+| Ritme | Rutin, misalnya setiap dua minggu | Sekali di akhir, ditambah di milestone besar |
+| Hasil | Satu atau dua perubahan untuk sprint berikutnya | Beberapa tindakan untuk proyek berikutnya, ditambah dokumen tertulis |
+| Siapa yang membaca | Tim itu sendiri | Tim, calon anggota tim, kadang publik |
+
+Catatan retrospektif adalah bahan postmortem yang berguna karena ditulis saat kejadiannya masih baru. Simpan di tempat yang sama dengan catatan keputusan tim.
+
+## Menyiapkan bahan sebelum rapat
+
+Rapat yang dimulai dengan "jadi, gimana proyeknya?" biasanya berubah menjadi adu ingatan. Orang yang paling banyak bicara menentukan cerita, dan kejadian di minggu terakhir terasa lebih penting daripada keputusan di bulan kedua.
+
+### Data yang dikumpulkan
+
+Satu orang, biasanya fasilitator, mengumpulkan bahan beberapa hari sebelum rapat. Kalau kamu mengikuti pelajaran sebelumnya, sebagian besar datanya sudah ada:
+
+| Data | Dari mana | Pertanyaan yang bisa dijawab |
+| --- | --- | --- |
+| Rencana dan kenyataan jadwal | Jadwal kasar dan hitung ulang dari [Scope dan Vertical Slice](/belajar/produksi/01-scope-vertical-slice/#langkah-6-hitung-ulang-di-tengah-produksi), garis waktu fase | Di tahap mana perkiraan paling meleset? Seberapa jauh? |
+| Scope yang direncanakan dan yang dirilis | Daftar must, should, could, won't | Apa yang dipotong, kapan, dan kenapa? |
+| Catatan keputusan | Dokumen keputusan dari [Peran dalam Tim Kecil](/belajar/produksi/03-peran-tim-kecil/#ritme-komunikasi) | Keputusan mana yang diambil dengan informasi yang cukup? |
+| Papan tugas | [Pelacak tugas](/belajar/produksi/04-alat-kerja/#pelacak-tugas) | Tugas apa yang paling sering molor atau tidak punya pemilik? |
+| Jumlah dan jenis bug | Papan bug dan hasil [triase](/belajar/produksi/05-kualitas-rilis/#triase-bug-dan-known-issues) | Bug apa yang lolos ke pemain? Kenapa tidak tertangkap? |
+| Catatan playtest dan retrospektif | Dokumen playtest, catatan sprint | Masukan atau masalah apa yang muncul berulang? |
+| Penjualan, wishlist, ulasan | Dasbor toko, kalau tim punya akses dan sudah ada datanya | Bagaimana hasilnya dibanding harapan tim? |
+
+Data penjualan tidak wajib. Untuk game jam, proyek belajar, atau game gratis, angka ini tidak ada atau tidak relevan, dan postmortem tetap berguna karena sebagian besar pelajaran datang dari cara tim bekerja. Kirim semua data sebelum rapat, supaya waktu rapat dipakai untuk memahami angka, tidak untuk membacakannya.
+
+### Garis waktu awal
+
+Dari data itu, fasilitator menyusun **garis waktu awal**: kejadian penting berurutan tanggal, misalnya gerbang fase, keputusan memotong fitur, orang baru masuk, build yang gagal, dan tanggal rilis. Anggota tim menambah dan mengoreksinya sebelum atau di awal rapat.
+
+Panduan blameless postmortem dari Atlassian menyarankan memastikan semua orang punya gambaran yang sama tentang apa yang terjadi sebelum menggali penyebabnya, karena salah paham tentang masalah inti bisa membuat postmortem cepat melenceng. Karena itu panduan tersebut menekankan penyusunan garis waktu.
+
+### Survei anonim
+
+Tidak semua orang nyaman bicara di rapat, terutama anggota yang lebih junior, freelancer, atau orang yang merasa bagiannya sering bermasalah. Play retrospektif sprint di Atlassian Team Playbook menyebut kurangnya masukan sebagai salah satu tantangan terbesar, dan menyarankan struktur sederhana serta masukan anonim.
+
+Survei pendek yang dikirim beberapa hari sebelum rapat bisa berisi:
+
+1. Satu hal yang paling membantu pekerjaanmu di proyek ini.
+2. Satu hal yang paling menghambat pekerjaanmu.
+3. Satu keputusan yang menurutmu perlu dibahas, dan kenapa.
+4. Seberapa berat beban kerjamu di tiga bulan terakhir, dan di bagian mana paling berat?
+5. Satu hal yang ingin kamu ubah di proyek berikutnya.
+
+Fasilitator mengelompokkan jawaban per tema sebelum rapat, tanpa menyebut siapa yang menulis. Di tim dua atau tiga orang, anonimitas sulit dijaga karena gaya tulisan mudah dikenali. Survei tetap berguna karena memberi waktu berpikir sebelum rapat, tetapi jangan janjikan anonimitas yang tidak bisa kamu jamin.
+
+## Menjalankan rapat
+
+### Fasilitator
+
+**Fasilitator** menjaga agenda dan waktu, memastikan semua orang mendapat giliran, dan mencatat. Fasilitator tidak harus orang yang paling senior. Di tim kecil, lebih mudah kalau fasilitator tidak memegang keputusan terbesar di proyek itu, supaya ia bisa netral saat keputusan itu dibahas. Kalau semua anggota terlibat di semua keputusan, minta orang luar yang dipercaya tim, atau gantian memimpin per bagian agenda.
+
+### Blameless: fokus pada sistem
+
+Bab Postmortem Culture di buku SRE menyebut postmortem yang **blameless** sebagai prinsip utama budaya SRE. Menurut bab itu, postmortem blameless berfokus mencari penyebab yang berkontribusi pada insiden tanpa menuduh individu atau tim. Postmortem seperti ini menganggap semua orang yang terlibat punya niat baik dan melakukan hal yang benar dengan informasi yang mereka punya saat itu. Alasannya praktis: kalau budaya menunjuk dan mempermalukan orang berlaku, orang tidak akan mengangkat masalah karena takut dihukum. Bab itu juga menulis bahwa kamu tidak bisa "memperbaiki" orang, tetapi kamu bisa memperbaiki sistem dan proses supaya orang lebih mudah mengambil pilihan yang tepat.
+
+Panduan Atlassian menambahkan bahwa blameless tidak berarti tidak pernah menyebut siapa yang membuat kesalahan. Rasa takut dihilangkan supaya orang bisa jujur tentang asumsi, harapan yang keliru, dan langkah yang salah. Dalam contoh panduan itu, setiap orang diminta menceritakan proses kerja dan cara berpikirnya, lalu tim mencari bagian proses yang bisa diperbaiki, misalnya dokumentasi yang membingungkan atau pemeriksaan yang bisa dibuat otomatis.
+
+Dalam praktik, bedanya terlihat dari cara kalimat ditulis:
+
+| Menyalahkan | Membahas proses |
+| --- | --- |
+| "Dimas telat terus kirim art." | "Biaya per level naik dari 4 ke 6 orang-hari, tetapi baru terlihat saat dihitung ulang di bulan kelima. Di bulan keenam, art level tertinggal dua minggu." |
+| "Sari harusnya menguji di Linux." | "Checklist uji tidak punya kasus folder dengan spasi, dan semua perangkat uji punya konfigurasi yang mirip." |
+
+Kolom kanan menyebut kejadian yang sama, dan nama orang tetap boleh muncul kalau perlu. Bedanya, kalimat itu membuka pertanyaan yang bisa dijawab: kenapa kenaikan biaya baru terlihat di bulan kelima, dan apa yang perlu masuk checklist.
+
+### Aturan dasar
+
+Sebutkan aturan dasar di awal rapat, atau tulis di undangan. Contoh yang bisa disesuaikan:
+
+- Kita membahas keputusan dan proses. Kinerja pribadi seseorang dibahas terpisah, berdua, di luar rapat ini.
+- Setiap orang menceritakan apa yang ia ketahui dan pikirkan saat itu, tidak apa yang baru ia ketahui sekarang.
+- Satu orang bicara pada satu waktu. Fasilitator boleh memotong kalau waktu habis.
+- Sepakati ke mana isi rapat dibagikan. Play retrospektif di Atlassian Team Playbook menyarankan menjelaskan di awal apa yang akan terjadi dengan informasi yang dibahas.
+- Keluhan yang tidak berujung pada tindakan tetap dicatat, tetapi tidak dibahas berulang-ulang.
+
+Aturan kedua penting karena **hindsight**: setelah hasil akhirnya diketahui, keputusan lama bisa terlihat jelas benar atau jelas salah. Pelajaran [Studi Kasus dan Postmortem](/belajar/industri-karier/05-studi-kasus/#membaca-dengan-kritis) membahas bias ini dari sisi pembaca. Di rapatmu, bias yang sama muncul saat seseorang berkata "harusnya kita sudah tahu dari awal". Pertanyaan yang lebih berguna: informasi apa yang ada saat keputusan diambil, dan apa yang bisa membuat informasi itu tersedia lebih cepat?
+
+### Agenda dan timebox
+
+**Timebox** adalah batas waktu untuk setiap bagian rapat. Tanpa batas, satu masalah yang paling panas bisa menghabiskan seluruh rapat.
+
+Play retrospektif di Atlassian Team Playbook menyebut panjang retrospektif bisa dari 45 menit sampai 3 jam, tergantung panjang sprint. Postmortem untuk proyek berbulan-bulan wajar berada di ujung atas rentang itu, atau dibagi menjadi dua sesi. Handbook incident management Atlassian menyarankan agenda seperti ini: ingatkan bahwa postmortem ini blameless dan alasannya, konfirmasi garis waktu, konfirmasi akar penyebab, susun tindakan dengan pertanyaan "apa yang bisa kita lakukan untuk mencegah masalah sejenis", lalu tanyakan apa yang berjalan baik, apa yang bisa lebih baik, dan di mana tim beruntung.
+
+Contoh agenda untuk tim kecil, dua setengah jam dengan satu istirahat:
+
+```text title="Agenda postmortem (contoh)"
+10 menit   pembukaan: tujuan, aturan dasar, ke mana hasilnya dibagikan
+25 menit   garis waktu: koreksi dan tambahan dari semua orang
+20 menit   data: jadwal, scope, bug, playtest, hasil rilis
+40 menit   diskusi dengan format pilihan (lihat bagian berikut)
+10 menit   istirahat
+30 menit   akar penyebab untuk 2 atau 3 tema terbesar
+15 menit   tindakan: pilih, beri pemilik, beri tanggal periksa
+5 menit    penutup: siapa menulis dokumen, kapan dibagikan
+```
+
+### Fakta dulu, tafsiran kemudian
+
+Urutan agenda di atas sengaja dimulai dari garis waktu dan data. Fakta bisa diperiksa bersama: "RC1 gagal karena bug simpan data". Tafsiran menjelaskan fakta: "kita terlalu terburu-buru membuat RC". Tafsiran tetap perlu, tetapi lebih mudah disepakati kalau faktanya sudah disepakati lebih dulu.
+
+Kalau dua orang ingat urutan kejadian yang berbeda, periksa catatan: riwayat commit, papan tugas, chat, atau catatan keputusan. Kalau catatannya tidak ada, tulis kedua versi dan tandai sebagai tidak pasti. Catatan yang tidak ada itu sendiri sudah menjadi temuan.
+
+## Format diskusi
+
+Format membantu diskusi tetap terarah. Pilih satu atau dua sesuai pertanyaan yang ingin dijawab tim.
+
+### Berjalan baik dan berjalan buruk
+
+Format yang sering ditemui di postmortem game, termasuk yang terbit di Game Developer, adalah **what went right** dan **what went wrong**. Setiap anggota menulis beberapa poin untuk masing-masing kolom, lalu tim mengelompokkan poin yang mirip dan membahas tema terbesar. Contoh bentuk dan variasi judulnya ada di bagian [Format yang umum](/belajar/industri-karier/05-studi-kasus/#format-yang-umum) di pelajaran Studi Kasus dan Postmortem.
+
+Handbook Atlassian menambahkan pertanyaan ketiga: di mana tim **beruntung**? Misalnya, bug yang hampir lolos tetapi kebetulan ditemukan di hari terakhir. Keberuntungan seperti ini terlihat seperti "berjalan baik", padahal prosesnya belum bisa diandalkan.
+
+Format ini mudah dimulai. Kekurangannya, cerita yang rumit terpotong menjadi poin, dan hal yang tidak jelas baik atau buruk sering tidak muncul.
+
+### Start, stop, continue
+
+Menurut halaman templat start-stop-continue dari Atlassian, latihan ini mencari perilaku yang perlu **dimulai**, yang perlu **dihentikan**, dan yang sudah benar sehingga perlu **dilanjutkan**. Halaman itu menyarankan sesi dengan timebox dan memakai hasilnya sebagai dasar perbaikan yang bisa diukur.
+
+Format ini langsung mengarah ke tindakan, jadi cocok untuk retrospektif rutin dan bagian akhir postmortem. Untuk memahami kenapa sesuatu terjadi, format berikutnya lebih membantu.
+
+### 5 whys dan batasannya
+
+**5 whys** adalah teknik bertanya "kenapa?" berulang kali untuk mencari penyebab di balik masalah. Dalam play 5 Whys di Atlassian Team Playbook, tim membawa satu pernyataan masalah, mengingatkan bahwa tujuannya menyelidiki dan tidak menyalahkan, lalu bertanya kenapa masalah itu terjadi. Setiap orang menulis jawabannya selama lima menit, tim memilih satu jawaban, dan jawaban itu menjadi masalah berikutnya. Play itu mencatat bahwa jumlah "kenapa" yang dibutuhkan bisa kurang atau lebih dari lima.
+
+Handbook Atlassian membedakan dua jenis penyebab. **Penyebab langsung** (*proximate cause*) adalah alasan yang langsung memicu masalah. **Akar penyebab** (*root cause*) adalah titik dalam rangkaian kejadian tempat perubahan bisa mencegah seluruh jenis masalah itu terulang. Contoh dari game:
+
+```text title="5 whys (ilustrasi)"
+Masalah: game tidak bisa dibuka di Linux kalau folder pengguna mengandung spasi.
+1. Kenapa?  Path file simpanan tidak diberi tanda kutip di satu fungsi.
+2. Kenapa tidak ketahuan?  Tidak ada kasus uji dengan folder berspasi.
+3. Kenapa tidak ada?  Checklist ditulis dari konfigurasi perangkat tim sendiri.
+4. Kenapa hanya dari perangkat tim?  Tidak ada data perangkat dari penguji beta.
+Akar penyebab yang dipilih: tim tidak tahu konfigurasi apa yang belum terwakili.
+Tindakan: formulir spesifikasi perangkat untuk penguji beta.
+```
+
+Penyebab langsungnya adalah baris kode di jawaban pertama, dan memperbaikinya menyelesaikan satu bug. Tindakan di akar penyebab membantu menangkap masalah sejenis yang belum terjadi.
+
+Teknik ini punya batasan:
+
+- **Masalah nyata sering punya beberapa penyebab.** Rangkaian satu jalur memaksa tim memilih satu cabang. Kalau ada dua jawaban yang sama kuat, telusuri keduanya terpisah. Play Atlassian punya variasi serupa: tim dibagi ke beberapa kelompok, masing-masing menelusuri satu pernyataan masalah.
+- **Rangkaian mudah berhenti di nama orang.** "Karena Dimas lupa" belum sampai ke penyebab yang bisa diperbaiki. Tanyakan lagi kenapa proses tim memungkinkan hal itu terlewat.
+- **Hasilnya bergantung pada siapa yang hadir.** Tanpa orang yang tahu bagian tertentu, rangkaian bisa berbelok ke jawaban yang terdengar masuk akal tetapi keliru. Periksa jawaban ke data kalau bisa.
+- **Angka lima hanya patokan.** Berhenti di titik yang bisa diubah dan masih dalam kendali tim. Jawaban seperti "karena dana kami terbatas" benar, tetapi tidak menghasilkan tindakan.
+
+Play 5 Whys juga menyarankan pemeriksaan di akhir: apakah memperbaiki akar penyebab ini akan mencegah masalah awal terulang? Kalau tim ragu, rangkaiannya mungkin melenceng.
+
+### Rekonstruksi garis waktu
+
+Format ini memakai garis waktu awal sebagai pusat diskusi. Tim berjalan dari awal sampai akhir proyek, berhenti di setiap kejadian penting, dan bertanya: apa yang kita ketahui saat itu, apa yang kita putuskan, dan apa akibatnya?
+
+Garis waktu cocok untuk proyek panjang, karena memaksa tim melihat bulan-bulan awal yang mudah terlupa, dan membantu menemukan pola seperti keputusan yang selalu terlambat. Kekurangannya, prosesnya lama, jadi pilih periode yang paling penting atau bagi menjadi dua sesi.
+
+Handbook Atlassian punya pertanyaan yang cocok untuk setiap titik garis waktu: apakah ada sesuatu di backlog yang bisa mencegah masalah ini atau mengurangi dampaknya, dan kalau ada, kenapa belum dikerjakan? Jawabannya sering menunjukkan cara tim menilai prioritas dan risiko.
+
+## Dari temuan ke tindakan
+
+Bab Postmortem Culture menulis bahwa postmortem yang tidak ditinjau sama saja dengan tidak pernah ada. Hal yang sama berlaku untuk tindakan yang tidak pernah dibuka lagi.
+
+Prinsip yang membantu:
+
+- **Sedikit tindakan.** Play 5 Whys menyarankan memilih satu atau dua solusi. Untuk postmortem seluruh proyek, tiga sampai lima tindakan sudah banyak untuk tim kecil. Usulan lain disimpan sebagai bahan, tidak sebagai janji.
+- **Konkret.** "Komunikasi lebih baik" tidak bisa diperiksa. "Setiap brief freelancer menyebut tenggat balasan feedback dari pihak kita" bisa diperiksa.
+- **Satu pemilik per tindakan.** Pemilik tidak harus mengerjakan semuanya, tetapi ia yang memastikan tindakan berjalan, sama seperti tabel pemilik keputusan di pelajaran [Peran dalam Tim Kecil](/belajar/produksi/03-peran-tim-kecil/#membuat-kepemilikan-jelas).
+- **Ada waktu pemeriksaan.** Play retrospektif dan play 5 Whys sama-sama menyarankan memberi pemilik dan tenggat, lalu memasukkan tindakan ke papan kerja tim.
+
+Untuk postmortem akhir proyek, waktu pemeriksaan yang paling penting adalah **awal proyek berikutnya**. Jadikan tindakan dari postmortem lalu sebagai agenda di rapat pembukaan proyek baru: mana yang sudah diterapkan, mana yang masih relevan, dan mana yang tidak cocok untuk proyek ini. Tanpa langkah ini, kesalahan yang sama mudah terulang, seperti risiko yang disebut di pelajaran [Fase Produksi](/belajar/produksi/02-fase-produksi/#pascarilis).
+
+## Menulis dokumennya
+
+### Versi internal dan versi publik
+
+**Versi internal** ditulis untuk tim dan orang yang akan bergabung nanti. Isinya lengkap: angka sebenarnya, keputusan yang sensitif, dan tindakan dengan pemiliknya. Bab Postmortem Culture menyebut tim di Google meninjau draf pertama secara internal sebelum membagikannya lebih luas, dan bahwa dokumen internal pun tidak pernah memuat informasi yang bisa mengidentifikasi pengguna. Prinsip ini berlaku juga untukmu: data pribadi pemain tidak masuk postmortem.
+
+**Versi publik** ditulis untuk pembaca di luar tim, misalnya di devlog, blog studio, atau talk. Handbook Atlassian menyebut postmortem yang sudah disetujui dijadikan tulisan blog supaya pelajarannya dibagikan lebih luas. Versi ini juga berguna untuk portofoliomu, seperti format studi kasus di pelajaran [Portofolio](/belajar/industri-karier/04-portofolio/#format-studi-kasus).
+
+Yang biasanya dikeluarkan dari versi publik:
+
+- **Penilaian tentang orang tertentu**, termasuk kesehatan, masalah keluarga, dan konflik pribadi. Ceritakan dampaknya pada proyek kalau perlu ("build bergantung pada satu orang"), tanpa membuka hal pribadi.
+- **Angka yang dirahasiakan.** Angka penjualan, pendapatan, atau anggaran bisa terikat perjanjian dengan platform, publisher, atau investor. Periksa perjanjianmu dulu. Kalau ragu, tulis tren tanpa angka mutlak.
+- **Isi kontrak.** Nilai pembayaran freelancer dan syarat dengan publisher melibatkan pihak lain yang tidak ikut menyetujui publikasi.
+- **Kritik terhadap pihak luar yang belum dibicarakan langsung** dengan mereka.
+
+Sebelum menerbitkan, minta semua orang yang disebut di tulisan itu membacanya. Ini sekaligus cara memeriksa fakta.
+
+### Templat
+
+Salin templat ini ke dokumen timmu. Bagian bertanda [internal] dikeluarkan atau diringkas di versi publik.
+
+```text title="Templat postmortem"
+POSTMORTEM: [nama proyek]
+Tanggal rapat     :
+Peserta           :
+Fasilitator       :
+Penulis dokumen   :
+Dibagikan ke      : [tim saja / tim dan calon anggota / publik setelah disunting]
+
+1. RINGKASAN
+   Game apa, untuk platform apa, tim berapa orang, berapa lama.
+   Dua sampai tiga kalimat tentang hasilnya.
+
+2. DATA PROYEK
+   Rencana dan kenyataan jadwal per fase
+   Scope yang direncanakan dan yang dirilis
+   Jumlah bug per severity di beta, dan bug yang lolos ke pemain
+   Patch yang dirilis setelah rilis
+   [internal] Penjualan, wishlist, pendapatan, anggaran
+
+3. GARIS WAKTU
+   Tanggal, kejadian, keputusan yang diambil
+
+4. YANG BERJALAN BAIK
+   3 sampai 5 poin, masing-masing dengan bukti dari data atau garis waktu
+
+5. YANG BERJALAN BURUK
+   3 sampai 5 poin, ditulis sebagai proses dan keputusan, tanpa menyalahkan orang
+
+6. YANG KEBETULAN BERUNTUNG
+   Hal yang berjalan baik tanpa proses yang bisa diandalkan
+
+7. AKAR PENYEBAB
+   Untuk 2 atau 3 tema terbesar: rangkaian penyebab dan titik yang bisa diubah
+
+8. TINDAKAN
+   Tindakan | Pemilik | Diperiksa kapan | Tanda selesai
+
+9. CATATAN TERBUKA
+   Pertanyaan yang belum terjawab, data yang belum ada
+
+[internal] 10. RINGKASAN SURVEI
+   Tema dari survei, tanpa nama
+```
+
+## Sisi emosional
+
+Postmortem sering dijalankan saat tim masih lelah. Bulan-bulan terakhir proyek bisa melibatkan lembur, perbedaan pendapat yang belum selesai, dan rasa kecewa kalau hasil rilis tidak sesuai harapan. Rapat yang membahas semua itu bisa membuka luka lama kalau tidak dijaga.
+
+Pelajaran [Peran dalam Tim Kecil](/belajar/produksi/03-peran-tim-kecil/#apa-kata-data-survei) mengutip ringkasan Developer Satisfaction Survey 2023 dari IGDA: 28% responden menyebut pekerjaannya melibatkan *crunch*, dan 25% lagi menyebut pekerjaannya menuntut periode jam kerja panjang yang tidak mereka sebut crunch. Pelajaran itu juga menjelaskan batas survei tersebut, termasuk responden yang didominasi Amerika Utara. Angka ini cukup untuk mengingatkan bahwa jam kerja panjang perlu dibicarakan, dan postmortem adalah salah satu tempatnya.
+
+Hal yang membantu:
+
+- **Bahas lembur sebagai data proyek**: kapan terjadi, berapa lama, dan apa pemicunya. Pelajaran [Fase Produksi](/belajar/produksi/02-fase-produksi/#menganggap-crunch-sebagai-bagian-normal-dari-rilis) menjelaskan bahwa lembur panjang sering menjadi gejala masalah perencanaan, misalnya scope yang tidak dihitung ulang.
+- **Pisahkan masalah proses dan masalah hubungan.** Perbedaan pendapat tentang keputusan bisa dibahas di rapat. Masalah pribadi antara dua orang lebih baik dibicarakan berdua, atau dengan bantuan orang yang dipercaya keduanya. Untuk perbedaan pendapat di antara pendiri, lihat [Saat pendiri tidak sepakat](/belajar/produksi/03-peran-tim-kecil/#saat-pendiri-tidak-sepakat).
+- **Beri jeda kalau suasana memanas.** Fasilitator boleh menghentikan satu topik dan menjadwalkannya ulang, dengan catatan supaya tidak hilang.
+- **Akui hal yang berat.** Kalimat seperti "dua minggu sebelum RC itu berat untuk kita semua" membuat orang merasa pengalamannya diakui sebelum dianalisis.
+- **Jangan paksa orang bicara.** Survei dan kesempatan menulis memberi jalan bagi orang yang tidak nyaman bicara di depan kelompok.
+- **Tahu batasnya.** Postmortem adalah rapat kerja. Kalau seseorang menunjukkan tanda kelelahan berat, ajak bicara secara pribadi dan sarankan bantuan tenaga profesional kesehatan mental.
+
+Freelancer juga bisa diundang untuk bagian yang menyangkut pekerjaan mereka. Pastikan mereka tahu tujuannya evaluasi proses, dan tidak berkaitan dengan pembayaran.
+
+## Contoh: Sari dan Dimas menjalankan postmortem sebulan setelah rilis
+
+<Aside type="caution" title="Ilustrasi, bukan data">
+Kejadian, angka, dan jawaban survei di bagian ini dibuat untuk menunjukkan cara berpikir, tidak berasal dari proyek nyata. Pilihan alat dan format di sini tidak berarti pilihan lain kurang cocok.
+</Aside>
+
+Sari (programmer dan desain) dan Dimas (art dan audio) adalah tim dua orang dari [contoh di pelajaran Kualitas dan Rilis](/belajar/produksi/05-kualitas-rilis/#contoh-sari-dan-dimas-menyiapkan-release-candidate-dan-patch-pertama). Platformer 2D tentang kurir di kota bertingkat itu sudah rilis di Steam untuk Windows dan Linux, dengan hotfix 1.0.2 di hari ketiga. Sebulan setelah rilis, sebelum mulai mengerjakan update 1.1.0, mereka menjalankan postmortem.
+
+**Seminggu sebelumnya.** Karena keduanya terlibat di semua keputusan besar, mereka meminta Raka, komposer lepas di proyek ini, menjadi fasilitator. Untuk bagian musik, Sari yang memimpin. Raka mengirim survei lima pertanyaan seperti di atas. Dengan dua orang, anonimitas tidak mungkin dijaga, jadi survei tidak anonim. Gunanya memberi waktu berpikir sebelum rapat.
+
+**Lima hari sebelumnya.** Sari mengumpulkan jadwal awal dan hitung ulang bulan kelima, daftar MoSCoW, papan bug dari beta, catatan keputusan, dan catatan dua retrospektif terakhir. Dimas menambahkan catatan playtest, ringkasan ulasan, serta angka wishlist dan penjualan bulan pertama dari dasbor Steamworks. Raka menyusun garis waktu awal dan mengirimnya ke keduanya.
+
+**Pembukaan dan garis waktu.** Raka membacakan aturan dasar dan menyebut bahwa dokumen akhirnya hanya untuk mereka bertiga. Saat mengoreksi garis waktu, Dimas menambahkan kejadian yang tidak ada di catatan mana pun: di bulan keenam, ia mengerjakan art level di akhir pekan karena merasa tertinggal. Sari tidak tahu soal itu. Kejadian ini masuk garis waktu dengan tanda "tidak tercatat di papan".
+
+**Diskusi.** Mereka memakai format berjalan baik, berjalan buruk, dan beruntung. Satu poin muncul di kedua jawaban survei dengan nada berbeda: Sari menulis "art sering terlambat", Dimas menulis "beban saya terlalu banyak di bulan keenam". Raka meminta mereka menulis ulang poin itu sebagai proses. Hasilnya: "biaya per level naik dari 4 ke 6 orang-hari dan baru terlihat di bulan kelima; di bulan keenam nama Dimas ada di enam baris tabel pemilik keputusan, dan kerja akhir pekannya tidak terlihat di papan."
+
+**Akar penyebab.** Untuk tema itu, mereka menjalankan 5 whys. Rangkaian sempat berhenti di "karena Dimas tidak bilang dari awal". Raka bertanya kenapa hal itu tidak terlihat dari proses. Jawabannya: papan tugas baru dipakai di bulan keenam, dan sebelum itu laju kerja per orang tidak dicatat. Akar penyebab yang dipilih: laju kerja tidak diukur ulang secara rutin setelah vertical slice. Tema kedua, bug Linux, sudah punya rangkaian dari catatan sebelumnya, jadi cukup dikonfirmasi.
+
+**Tindakan.** Dari sembilan usulan, mereka memilih tiga dan memasukkannya ke papan proyek berikutnya dengan label "postmortem". Enam lainnya masuk catatan terbuka.
+
+Dokumen internal yang ditulis Sari dua hari kemudian, disingkat:
+
+```text title="Postmortem internal (ilustrasi, disingkat)"
+POSTMORTEM: platformer kurir
+Tanggal rapat     : sebulan setelah rilis
+Peserta           : Sari, Dimas, Raka (fasilitator)
+Dibagikan ke      : tim saja. Versi publik disunting terpisah.
+
+1. RINGKASAN
+   Platformer 2D, Steam (Windows, Linux), 2 orang + 1 freelancer musik,
+   9 bulan sesuai rencana. Rilis tepat tanggal, 2 patch di minggu pertama.
+
+2. DATA PROYEK
+   Jadwal: biaya level 4 orang-hari di slice, rata-rata 6 di produksi.
+   Scope:  rencana 12 sampai 16 level; dirilis 12 level, 4 musuh, 1 boss.
+   Bug:    beta 61 bug (4 kritis, 13 mayor, 27 minor, 17 kosmetik).
+           RC1 gagal, RC2 dirilis. 1 bug kritis lolos (Linux), fix di 1.0.2.
+   [internal] Wishlist dan penjualan bulan pertama: lihat lampiran.
+
+3. GARIS WAKTU (sebagian)
+   bulan 5   hitung ulang, could have dilepas
+   bulan 6   art tertinggal 2 minggu, Dimas kerja akhir pekan (tidak
+             tercatat). Sari sakit 3 hari. Papan dan build harian mulai.
+   bulan 9   RC1 gagal, RC2 lolos, rilis, hotfix hari ke-3
+
+4. YANG BERJALAN BAIK
+   - Aturan pembekuan RC: satu-satunya perubahan setelah RC1 adalah
+     perbaikan simpan data.
+   - Build harian menangkap 4 build rusak sebelum dibagikan.
+
+5. YANG BERJALAN BURUK
+   - Laju kerja per level tidak diukur ulang sampai bulan ke-5.
+   - Beban menumpuk di satu orang tanpa terlihat di papan.
+   - Perangkat uji terlalu mirip satu sama lain.
+
+6. YANG KEBETULAN BERUNTUNG
+   - Bug simpan data ditemukan di langkah checklist RC1 yang hampir
+     dilewati karena dianggap aman.
+
+7. AKAR PENYEBAB
+   - Laju kerja: tidak ada jadwal rutin untuk mengukur ulang.
+   - Bug Linux: tim tidak tahu konfigurasi apa yang belum terwakili.
+
+8. TINDAKAN                                  Pemilik  Diperiksa
+   Ukur orang-hari per level tiap akhir bulan Dimas    check-in bulan 1
+   Formulir spesifikasi perangkat penguji     Sari     saat beta dibuka
+   Kerja akhir pekan dicatat di papan         Sari     check-in Senin
+
+[internal] 10. RINGKASAN SURVEI
+   Keduanya menyebut bulan ke-6 dan 2 minggu sebelum RC paling berat.
+```
+
+**Versi publik.** Dua minggu kemudian, Dimas menulis devlog di halaman komunitas game mereka: ringkasan, garis waktu, poin berjalan baik dan buruk, dan pelajaran untuk game berikutnya. Angka penjualan, wishlist, dan nilai kontrak Raka tidak dicantumkan. Kerja akhir pekan Dimas dan sakitnya Sari diceritakan sebagai dampak pada proyek ("beban art menumpuk di bulan keenam", "build bergantung pada satu orang"), tanpa detail pribadi. Raka membaca bagian tentang musik sebelum devlog terbit.
+
+**Tiga bulan kemudian.** Di rapat pembukaan proyek berikutnya, sebuah prototipe untuk game jam, tindakan berlabel "postmortem" menjadi agenda pertama. Formulir spesifikasi perangkat belum terpakai karena belum ada beta. Pengukuran orang-hari diganti orang-jam karena proyeknya jauh lebih pendek. Pencatatan kerja akhir pekan tetap dipakai.
+
+## Kesalahan umum
+
+### Postmortem dilewati karena tim langsung pindah proyek
+
+Setelah rilis, ada patch, update, dan ide proyek baru. Postmortem terus ditunda sampai detailnya terlupa. Jadwalkan tanggalnya di rencana proyek sejak awal, dan perlakukan seperti milestone.
+
+### Mencari siapa yang salah
+
+```text title="✗ Keliru"
+Yang berjalan buruk: Dimas lambat mengerjakan art.
+```
+
+```text title="✓ Benar"
+Yang berjalan buruk: biaya art per level naik dari 4 ke 6 orang-hari,
+tetapi laju kerja tidak diukur ulang sampai bulan ke-5, sehingga
+jadwal tidak menyesuaikan.
+```
+
+Kalimat pertama membuat orang yang disebut bertahan, dan tidak menunjukkan apa yang bisa diubah. Kalimat kedua memuat fakta yang sama dan langsung mengarah ke tindakan.
+
+### Daftar tindakan yang terlalu panjang
+
+Lima belas tindakan tanpa pemilik terasa produktif saat ditulis, lalu tidak ada yang dikerjakan. Pilih sedikit, beri satu pemilik dan waktu pemeriksaan, simpan sisanya sebagai catatan.
+
+### Tindakan tidak pernah diperiksa
+
+Dokumen postmortem tersimpan di folder dan tidak dibuka lagi. Jadikan tindakan dari postmortem lalu sebagai agenda pertama di rapat pembukaan proyek berikutnya.
+
+### Versi publik diterbitkan tanpa disunting
+
+Angka yang terikat perjanjian, isi kontrak, atau cerita pribadi anggota tim ikut terbit. Tulis versi publik terpisah dan minta semua orang yang disebut membacanya lebih dulu.
+
+### Hanya membahas yang buruk
+
+Kalau rapat hanya berisi kesalahan, tim tidak tahu kebiasaan mana yang perlu dipertahankan, dan suasananya cepat berat. Bahas yang berjalan baik dengan serius, termasuk buktinya, supaya kebiasaan itu sengaja diulang di proyek berikutnya.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan dengan proyek yang sudah selesai, game jam yang pernah kamu ikuti, atau proyek kecil yang kamu hentikan.
+
+1. Kumpulkan data proyek itu: rencana dan kenyataan jadwal, scope yang direncanakan dan yang selesai, dan bug yang lolos. Kalau datanya tidak ada, tulis data apa yang seharusnya kamu catat di proyek berikutnya.
+2. Susun garis waktu dengan minimal sepuluh kejadian penting. Tandai kejadian yang tidak tercatat di mana pun.
+3. Tulis lima pertanyaan survei untuk anggota timmu. Kalau kamu bekerja sendiri, jawab pertanyaan itu sendiri secara tertulis sebelum melanjutkan.
+4. Pilih satu masalah terbesar dan jalankan 5 whys. Periksa apakah rangkaianmu berhenti di nama orang. Kalau ya, lanjutkan sampai menemukan proses yang bisa diubah.
+5. Isi templat postmortem di atas. Pilih paling banyak tiga tindakan, masing-masing dengan pemilik, waktu pemeriksaan, dan tanda selesai.
+6. Tulis versi publik satu halaman dari dokumen itu. Tandai apa saja yang kamu keluarkan dan kenapa.
+7. Ini pelajaran terakhir di jalur Produksi. Buka kembali [daftar pelajaran jalur ini](/belajar/produksi/) dan pilih satu kebiasaan dari setiap pelajaran yang akan kamu pakai di proyek berikutnya. Masukkan daftarnya ke dokumen rencana proyek itu.
