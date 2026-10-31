@@ -165,6 +165,8 @@ main [data-krekit-say] {
 
 .section {
   min-height: 100vh;
+  /* Safari iPhone: 100vh dihitung saat bilah alamat tersembunyi, svh = tinggi saat bilah tampil */
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
