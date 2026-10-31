@@ -81,11 +81,11 @@ const filled = TRACKS.filter((t) => lessonCount(t.id) > 0).length
     <div class="tracks-grid">
       {
         EXTRA_TRACKS.map((track) => (
-          <a class="track-tile" href={withBase(`/belajar/${track.id}/`)}>
+          <a class:list={['track-tile', { 'is-outline': statusOf(track.id) === 'kerangka' }]} href={withBase(`/belajar/${track.id}/`)}>
             <span class="track-tile__num">+</span>
             <strong class="track-tile__title">{track.title}</strong>
             <span class="track-tile__blurb">{track.blurb}</span>
-            <span class="track-tile__status">{lessonCount(track.id)} pelajaran tersedia</span>
+            <span class="track-tile__status">{statusOf(track.id) === 'kerangka' ? 'Kerangka · menyusul setelah jalur inti terisi' : `${lessonCount(track.id)} pelajaran tersedia`}</span>
           </a>
         ))
       }
