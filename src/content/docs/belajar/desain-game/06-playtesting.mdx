@@ -1,0 +1,563 @@
+---
+title: "Playtesting"
+description: "Fungsi playtest di setiap tahap pengembangan, menentukan pertanyaan sebelum mencari playtester, memilih dan menghitung jumlah playtester, rencana sesi dan naskah, metode think-aloud, mengamati tanpa mengarahkan, apa yang dicatat, izin dan privasi, batas kuesioner, membedakan masalah desain dari masalah selera, mengolah hasil menjadi daftar masalah, serta playtest jarak jauh."
+fundamental: "Pembuat game hampir tidak mungkin melihat game-nya seperti orang yang baru pertama memainkannya, karena ia sudah tahu tombol mana yang harus ditekan dan ke mana harus pergi. Playtest memberi pandangan itu, asalkan kamu menentukan pertanyaannya sebelum sesi, menahan diri untuk tidak menjelaskan saat pemain bingung, dan memisahkan apa yang dilakukan pemain dari apa yang mereka katakan. Tanpa itu, sesi playtest mudah berubah menjadi demo yang hanya membuat pembuatnya merasa tenang."
+kind: lesson
+minutes: 40
+status: draf
+lastReviewed: 2026-10-31
+krekit:
+  gambaran-besar: "Bagian paling susah dari playtest buatku: diam saat pemain kebingungan di bagian yang menurutku sudah jelas."
+  playtest-di-setiap-tahap: "Pertanyaan untuk greybox dan untuk build menjelang rilis itu beda. Kalau pertanyaannya sama terus, mungkin kamu sedang menguji hal yang salah."
+  mulai-dari-pertanyaan: "Tulis pertanyaannya dulu. Kalau tidak bisa ditulis, sesi itu biasanya berakhir dengan catatan \"lumayan seru\"."
+  memilih-playtester: "Teman itu baik hati, dan itu masalahnya. Mereka sering tidak tega bilang bagian mana yang membosankan."
+  rencana-sesi-dan-naskah: "Kalau setiap orang mendengar kalimat pembuka yang sama, hasil antarsesi jadi bisa dibandingkan."
+  mengamati-tanpa-mengarahkan: "Kalau aku tergoda menjelaskan, aku hitung sampai sepuluh dalam hati. Hampir selalu pemainnya menemukan jalan sendiri, atau aku jadi tahu persis di mana masalahnya."
+  apa-yang-dicatat: "Catat apa yang terjadi dan kapan. Tafsirannya bisa menyusul setelah sesi."
+  izin-dan-privasi: "Kamera yang menyala tanpa izin bisa merusak kepercayaan lebih cepat daripada bug apa pun."
+  kuesioner-dan-batasnya: "Angka 4 dari 5 untuk \"seru\" enak dilihat. Tapi rekaman orang yang berhenti di menit kedelapan lebih jujur."
+  masalah-desain-dan-masalah-selera: "Satu orang tidak suka warnanya itu selera. Empat dari lima orang tidak melihat tombolnya itu masalah desain."
+  mengolah-hasil: "Daftar masalah yang tidak punya urutan prioritas biasanya berakhir sebagai daftar yang tidak pernah disentuh."
+  playtest-jarak-jauh-dan-program-playtest: "Playtest jarak jauh menjangkau lebih banyak orang, tapi kamu kehilangan wajah dan suara mereka. Minta rekaman kalau bisa."
+  contoh-dua-putaran-playtest-game-bertani: "Putaran kedua itu bagian yang sering dilupakan. Di sanalah kamu tahu apakah perbaikanmu benar-benar bekerja."
+  kesalahan-umum: "Kesalahan pertama paling sering kutemui: sesi playtest yang berubah jadi sesi presentasi."
+sidebar:
+  order: 6
+  label: "6 · Playtesting"
+quiz:
+  - q: "Saat playtest game bertanimu, playtester berhenti di depan ladang dan bertanya, \"Ini harus disiram dulu ya?\" Respons mana yang paling sesuai dengan teknik fasilitasi dari Nielsen Norman Group?"
+    options:
+      - "\"Iya, pakai penyiram di slot kedua.\""
+      - "\"Menurutmu bagaimana?\""
+      - "\"Nanti di versi final ada tutorialnya kok.\""
+      - "Diam saja dan pergi dari ruangan"
+    answer: 1
+    explain: "Ini teknik boomerang: pertanyaan pemain dikembalikan dengan pertanyaan umum yang tidak mengarahkan, supaya ia mencoba menyelesaikannya seperti saat bermain sendiri. Menjawab langsung atau menjanjikan tutorial menghapus informasi yang sedang kamu cari, yaitu apakah ladangnya bisa dipahami tanpa penjelasan."
+  - q: "Mana pertanyaan setelah sesi yang paling tidak mengarahkan?"
+    options:
+      - "\"Kamu kesulitan dengan menu toko, kenapa?\""
+      - "\"Tombol jual di pojok kanan itu terlalu kecil, ya?\""
+      - "\"Apa yang mudah atau sulit saat kamu ingin menjual hasil panen?\""
+      - "\"Kamu suka toko barunya, kan?\""
+    answer: 2
+    explain: "Artikel Nielsen Norman Group tentang pertanyaan yang mengarahkan menyarankan untuk tidak menyebut elemen antarmuka, tidak mengusulkan jawaban, dan tidak menganggap kamu tahu perasaan peserta. Pertanyaan ketiga memberi topik tanpa menyiratkan jawabannya."
+  - q: "Kamu menjalankan playtest dengan lima orang. Seorang playtester berkata grafiknya sebaiknya pixel art. Empat dari lima orang tidak sadar bahwa tanaman harus disiram, dan tanaman mereka layu. Mana yang paling tepat?"
+    options:
+      - "Keduanya sama penting karena sama-sama masukan pemain"
+      - "Ganti gaya grafis dulu karena itu yang diucapkan langsung"
+      - "Penyiraman yang tidak dipahami adalah masalah desain yang teramati berulang dan berdampak besar. Komentar gaya grafis dari satu orang dicatat sebagai pendapat"
+      - "Abaikan semuanya karena lima orang terlalu sedikit"
+    answer: 2
+    explain: "Masalah penyiraman terlihat dari perilaku, terjadi pada sebagian besar playtester, dan menghalangi loop inti. Komentar gaya grafis adalah pendapat satu orang tentang selera. Tetap catat, tetapi jangan perlakukan sama dengan masalah yang menghentikan pemain."
+  - q: "Menurut artikel Jakob Nielsen tahun 2000, kenapa lebih baik menjalankan tiga putaran dengan lima orang daripada satu putaran dengan lima belas orang, untuk menemukan masalah usability?"
+    options:
+      - "Karena lima belas orang terlalu mahal untuk dibayar"
+      - "Karena setelah perbaikan, putaran berikutnya memeriksa apakah perbaikannya berhasil, menemukan masalah baru, dan masalah yang lebih dalam yang sebelumnya tertutup"
+      - "Karena orang keenam dan seterusnya selalu berbohong"
+      - "Karena hasil usability tidak bisa dihitung"
+    answer: 1
+    explain: "Nielsen menulis bahwa tujuan pengujian adalah memperbaiki desain. Putaran kedua menguji apakah perbaikan bekerja, menangkap masalah yang tersisa, dan bisa menggali struktur yang lebih dalam. Ia juga mencatat bahwa angka lima berlaku untuk pengguna yang sebanding. Kelompok yang sangat berbeda perlu diuji masing-masing."
+  - q: "Di akhir sesi, playtester menyarankan \"tambahkan tombol panen otomatis\". Apa langkah yang paling berguna?"
+    options:
+      - "Langsung menambahkan tombol itu karena pemain yang memintanya"
+      - "Menolak karena pemain tidak paham desain"
+      - "Mencari masalah di balik usulan itu, misalnya memanen banyak petak terasa terlalu lama, lalu memeriksa apakah masalah yang sama terlihat di sesi lain"
+      - "Meminta playtester menggambar desain tombolnya"
+    answer: 2
+    explain: "The Level Design Book menulis bahwa usulan pemain bisa jadi solusi yang kurang baik, tetapi alasan di baliknya dan masalah yang ditunjukkannya hampir selalu nyata. Setelah masalahnya jelas, kamu yang memilih solusinya, misalnya mempersingkat animasi panen seperti hitungan durasi kali pengulangan di Pelajaran 1."
+  - q: "Kamu ingin merekam layar dan wajah playtester berusia 14 tahun. Apa yang perlu kamu siapkan?"
+    options:
+      - "Tidak ada, karena rekaman hanya untuk tim"
+      - "Izin dari playtester saja sudah cukup"
+      - "Penjelasan tertulis tentang tujuan dan penyimpanan rekaman, serta izin dari orang tua atau wali di samping persetujuan anak itu sendiri"
+      - "Cukup merekam tanpa suara"
+    answer: 2
+    explain: "Artikel Nielsen Norman Group tentang persetujuan menyebut anak di bawah umur mungkin belum bisa memberi persetujuan sendiri sehingga peneliti butuh persetujuan wali, dan menyarankan pilihan terpisah untuk rekaman audio dan video. Aturan hukum tentang data pribadi berbeda antarnegara, jadi periksa aturan yang berlaku untukmu."
+sources:
+  - title: "Playtesting"
+    url: "https://book.leveldesignbook.com/process/blockout/playtesting"
+    publisher: "The Level Design Book"
+    accessed: 2026-10-31
+  - title: "Why You Only Need to Test with 5 Users"
+    url: "https://www.nngroup.com/articles/why-you-only-need-to-test-with-5-users/"
+    publisher: "Jakob Nielsen, Nielsen Norman Group (2000)"
+    accessed: 2026-10-31
+  - title: "How Many Test Users in a Usability Study?"
+    url: "https://www.nngroup.com/articles/how-many-test-users/"
+    publisher: "Jakob Nielsen, Nielsen Norman Group (2012)"
+    accessed: 2026-10-31
+  - title: "Thinking Aloud: The #1 Usability Tool"
+    url: "https://www.nngroup.com/articles/thinking-aloud-the-1-usability-tool/"
+    publisher: "Jakob Nielsen, Nielsen Norman Group (2012)"
+    accessed: 2026-10-31
+  - title: "Talking with Participants During a Usability Test"
+    url: "https://www.nngroup.com/articles/talking-to-users/"
+    publisher: "Kara Pernice, Nielsen Norman Group (2014)"
+    accessed: 2026-10-31
+  - title: "Avoid Leading Questions to Get Better Insights from Participants"
+    url: "https://www.nngroup.com/articles/leading-questions/"
+    publisher: "Amy Schade, Nielsen Norman Group (2017)"
+    accessed: 2026-10-31
+  - title: "First Rule of Usability? Don't Listen to Users"
+    url: "https://www.nngroup.com/articles/first-rule-of-usability-dont-listen-to-users/"
+    publisher: "Jakob Nielsen, Nielsen Norman Group (2001)"
+    accessed: 2026-10-31
+  - title: "Obtaining Consent for User Research"
+    url: "https://www.nngroup.com/articles/informed-consent/"
+    publisher: "Therese Fessenden, Nielsen Norman Group (2022)"
+    accessed: 2026-10-31
+  - title: "Severity Ratings for Usability Problems"
+    url: "https://www.nngroup.com/articles/how-to-rate-the-severity-of-usability-problems/"
+    publisher: "Jakob Nielsen, Nielsen Norman Group (1994)"
+    accessed: 2026-10-31
+  - title: "Affinity Diagramming for Collaboratively Sorting UX Findings and Design Ideas"
+    url: "https://www.nngroup.com/articles/affinity-diagram/"
+    publisher: "Rachel Krause dan Kara Pernice, Nielsen Norman Group (2024)"
+    accessed: 2026-10-31
+  - title: "Steam Playtest"
+    url: "https://partner.steamgames.com/doc/features/playtest"
+    publisher: "Valve, Steamworks Documentation"
+    accessed: 2026-10-31
+  - title: "UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi"
+    url: "https://peraturan.bpk.go.id/Details/229798/uu-no-27-tahun-2022"
+    publisher: "JDIH BPK (Database Peraturan BPK)"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menjelaskan apa yang dicari playtest di tahap prototipe, vertical slice, dan menjelang rilis.
+- Menulis pertanyaan playtest sebelum mencari playtester, lalu memilih playtester yang cocok dengan pertanyaan itu.
+- Menyusun rencana sesi dan naskah pembuka, serta menjalankan sesi think-aloud.
+- Mengamati tanpa mengarahkan, termasuk menjawab pertanyaan pemain dengan kalimat netral.
+- Mencatat pengamatan, rekaman, dan angka sederhana dengan izin yang jelas dari playtester.
+- Membedakan masalah desain dari masalah selera, lalu mengolah temuan menjadi daftar masalah dengan tingkat keparahan.
+</Aside>
+
+<Aside type="note" title="Catatan tentang sumber">
+Sebagian sumber di pelajaran ini berasal dari riset usability untuk situs web dan aplikasi. Cara mengamati dan bertanyanya bisa dipakai untuk game, tetapi angka dari riset itu tidak otomatis berlaku untuk pertanyaan seperti "apakah game ini seru".
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: peta buatan sendiri">
+Bayangkan kamu menggambar peta menuju rumahmu untuk tamu. Bagimu peta itu jelas, karena kamu sudah ratusan kali melewati jalannya. Kamu tidak sadar bahwa belokan di depan warung tidak kamu gambar, karena kamu tidak pernah butuh petunjuk itu. Satu-satunya cara tahu apakah peta itu bekerja adalah memberikannya ke orang yang belum pernah ke rumahmu, lalu melihat di mana ia tersesat, tanpa ikut berjalan di sampingnya sambil menunjuk arah.
+</Aside>
+
+**Playtest** adalah sesi saat orang lain memainkan game-mu sementara kamu mengamati, dengan tujuan mencari tahu apakah desainnya bekerja. Playtest sudah muncul di setiap pelajaran jalur ini, dari menguji core loop di [Pelajaran 1](/belajar/desain-game/01-core-loop/#prototipe-greybox-sebelum-konten) sampai melihat di mana pemain tersesat di [Pelajaran 4](/belajar/desain-game/04-level-design/#playtest-level). Pelajaran ini membahas cara menjalankan sesinya dengan sengaja: menulis pertanyaan, memilih orang, mengamati, lalu memutuskan apa yang diubah.
+
+Perbedaan playtest dan QA sudah dibahas di bagian [Playtesting dan QA](/belajar/produksi/05-kualitas-rilis/#playtesting-dan-qa) jalur Produksi, jadi tidak diulang di sini. Contoh yang dipakai tetap game bertani dan platformer dengan pijakan rapuh dari pelajaran sebelumnya.
+
+## Playtest di setiap tahap
+
+Pertanyaan yang bisa dijawab playtest berubah mengikuti tahap pengembangan. Istilah prototipe dan vertical slice di bawah memakai arti dari [Pelajaran 1 Produksi](/belajar/produksi/01-scope-vertical-slice/#prototipe-vertical-slice-dan-mvp).
+
+| Tahap | Bentuk build | Pertanyaan yang cocok | Pertanyaan yang belum cocok |
+| --- | --- | --- | --- |
+| **Prototipe kertas dan greybox** | Kertas, kancing, kotak abu-abu | Apakah aksi inti menarik setelah diulang? Apakah ada keputusan di setiap putaran? | Apakah grafiknya menarik? |
+| **Vertical slice** | Satu bagian kecil dengan kualitas mendekati final | Apakah pemain baru paham tanpa dijelaskan? Apakah ritme satu level terasa pas? | Apakah game 10 jam ini seimbang dari awal sampai akhir? |
+| **Menjelang rilis** | Seluruh game atau sebagian besar | Di mana pemain berhenti? Apakah kurva kesulitan dan ekonomi bekerja selama berjam-jam? | Apakah core loop-nya perlu diganti? |
+
+Pertanyaan di kolom terakhir biasanya belum bisa dijawab di tahap itu, atau jawabannya datang terlalu terlambat. Mengetahui bahwa core loop terasa hambar di minggu terakhir sebelum rilis jarang berguna, karena hampir tidak ada yang bisa diubah.
+
+Playtester juga berubah. The Level Design Book mencatat bahwa orang awam sering kesulitan memainkan blockout, sehingga prototipe lebih cocok diuji sesama developer yang bisa melihat melewati aset sementara. Mulai vertical slice, kamu butuh orang yang belum pernah melihat game-mu. Menjelang rilis, sesi yang lebih panjang dan angka yang dicatat game membantu melihat pola yang baru muncul setelah berjam-jam, seperti koin yang menumpuk di [Pelajaran 5](/belajar/desain-game/05-ekonomi-progres/#inflasi).
+
+Playtest bisa menjadi kegiatan rutin. The Level Design Book mengutip Phil Co, level designer di Valve, yang menjelaskan bahwa kelompok kecil di timnya mem-playtest bagiannya setiap Jumat dengan orang dari luar tim, dan pekerjaan selama seminggu diarahkan ke playtest itu.
+
+## Mulai dari pertanyaan
+
+The Level Design Book menyarankan memperlakukan playtest seperti eksperimen: susun hipotesis, lalu rancang prosedurnya. Daftar persiapannya mencakup cakupan (bagian game mana dan berapa lama), fokus (pertanyaan terpenting), pengarahan untuk playtester, data yang dikumpulkan, dan cara mencatat.
+
+Pertanyaan yang baik punya dua sifat: bisa dijawab dengan mengamati, dan hasilnya akan mengubah keputusan.
+
+| Pertanyaan samar | Pertanyaan yang bisa diamati |
+| --- | --- |
+| "Apakah game ini seru?" | "Apakah pemain memanen lagi setelah panen pertama tanpa disuruh?" |
+| "Apakah ladangnya jelas?" | "Berapa lama sampai pemain menyiram petak pertama? Apakah ada yang tidak menyiram sama sekali?" |
+| "Apakah levelnya bagus?" | "Apakah pemain melompat dari pijakan rapuh sebelum runtuh, tanpa melihat teks petunjuk?" |
+| "Apakah ekonominya seimbang?" | "Di hari ke berapa pemain membeli perluasan lahan pertama, dan apakah ia tahu harganya sebelum menabung?" |
+
+Untuk setiap pertanyaan, tulis apa yang kamu harapkan terjadi, seperti saran di [Pelajaran 3](/belajar/desain-game/03-mda/#dinamika-yang-tidak-direncanakan), dan apa yang akan kamu lakukan dengan jawabannya. Jika tidak ada jawaban yang akan mengubah rencanamu, pertanyaan itu belum perlu diuji sekarang. Batasi jumlahnya: dua sampai empat pertanyaan per sesi biasanya sudah cukup memenuhi perhatianmu sebagai pengamat.
+
+## Memilih playtester
+
+Setelah pertanyaannya jelas, pilih orang yang bisa menjawabnya.
+
+### Teman, orang asing, dan calon pemain
+
+| Playtester | Kelebihan | Kekurangan | Cocok untuk |
+| --- | --- | --- | --- |
+| **Sesama developer** | Bisa melihat melewati aset sementara dan bug, bisa diajak berdiskusi tentang solusi | Sudah terbiasa dengan banyak game, sering tidak mewakili pemain baru | Prototipe, masalah desain yang rumit |
+| **Teman dan keluarga** | Mudah dicari, mau meluangkan waktu | Cenderung bersikap baik dan enggan mengkritik, sering tidak cocok dengan target pemain | Pemeriksaan awal yang cepat |
+| **Orang asing** | Tidak punya beban sosial terhadapmu, melihat game tanpa konteks | Butuh usaha untuk mencari dan menjadwalkan | Menguji pemahaman dan kejelasan |
+| **Calon pemain dari target** | Kebiasaan dan harapannya mirip pemain sungguhan | Paling sulit dicari, terutama sebelum game diumumkan | Vertical slice dan menjelang rilis |
+
+The Level Design Book menyebut playtest publik dengan orang yang bukan developer penting untuk menangkap masalah yang tidak kamu sadari ada, dan untuk jenis ini mengamati perilaku lebih penting daripada mendengar masukan. Buku itu juga mencatat dua kecenderungan: orang yang baru mengenal game sering terlalu sopan dan tidak mengucapkan rasa frustrasinya, sedangkan gamer berpengalaman bisa terlalu rewel dan membesar-besarkan masalah kecil.
+
+Untuk pertanyaan tentang pemahaman, playtester yang sudah memainkan versi sebelumnya kurang berguna karena ia sudah tahu jawabannya.
+
+### Berapa orang
+
+Untuk riset usability, Jakob Nielsen dari Nielsen Norman Group (NN/g) menulis pada tahun 2000 bahwa lima orang sudah memberi sebagian besar temuan. Menurut artikelnya, satu orang rata-rata menemukan sekitar 31% masalah usability (rata-rata dari banyak proyek yang mereka teliti), lima orang sekitar 85%, dan butuh setidaknya lima belas orang untuk menemukan semuanya. Karena itu ia menyarankan tiga putaran dengan lima orang daripada satu putaran dengan lima belas: putaran berikutnya memeriksa apakah perbaikan bekerja, menangkap masalah baru dari perbaikan itu, dan menggali masalah yang sebelumnya tertutup masalah di permukaan.
+
+Nielsen sendiri menyebut batasnya:
+
+- **Angka ini berlaku untuk pengguna yang sebanding.** Untuk kelompok yang sangat berbeda, misalnya anak dan orang tua, ia menyarankan tiga sampai empat orang per kelompok jika ada dua kelompok, dan tiga orang per kelompok jika lebih.
+- **Satu orang tidak cukup.** Satu orang bisa melakukan sesuatu secara kebetulan. Menurutnya, tiga orang sudah cukup untuk mulai membedakan perilaku yang unik dari yang umum.
+- **Studi kuantitatif butuh lebih banyak orang.** Dalam artikel tahun 2012, ia menyebut setidaknya 20 orang untuk studi yang bertujuan menghasilkan angka statistik.
+
+Untuk game, angka ini paling cocok untuk pertanyaan pemahaman, seperti apakah pemain tahu cara menyiram. Pertanyaan seperti "berapa persen pemain yang menyelesaikan dunia 2" bergantung pada variasi antarpemain dan butuh lebih banyak orang serta data yang dicatat otomatis.
+
+## Rencana sesi dan naskah
+
+Rencana sesi menjaga setiap playtester mendapat pengalaman yang sama, sehingga hasilnya bisa dibandingkan. Rencana ini cukup satu halaman.
+
+```text title="Rencana sesi (ilustrasi)"
+build        : farm_v0.3, hari 1 sampai 3 di dalam game
+durasi       : 25 menit bermain + 10 menit tanya jawab
+pertanyaan   : 1. apakah pemain menyiram tanpa disuruh?
+               2. apakah pemain menabung untuk perluasan lahan?
+harapan      : semua pemain menyiram dalam 2 menit pertama
+               sebagian besar membeli perluasan di hari 3
+data         : waktu sampai siraman pertama, hari pembelian
+               perluasan, tempat pemain berhenti lebih dari 10 detik
+alat         : lembar catatan, stopwatch, rekaman layar (jika diizinkan)
+pengarahan   : naskah pembuka di bawah, tanpa menjelaskan kontrol
+               selain tombol gerak
+peran        : fasilitator (bicara), pencatat (diam)
+```
+
+Jika timmu dua orang atau lebih, pisahkan peran **fasilitator** (menyambut dan menjawab pertanyaan) dan **pencatat** (hanya mencatat). Satu orang bisa memegang keduanya, tetapi catatannya biasanya lebih tipis.
+
+### Naskah pembuka
+
+Naskah pembuka adalah kalimat yang kamu ucapkan di awal setiap sesi, supaya setiap playtester mendapat pengarahan yang sama. The Level Design Book menyarankan pengarahan singkat: perkenalkan konsep dan lama sesi, beri tahu jika ada konten yang mungkin mengganggu seperti jump scare atau cahaya berkedip lalu minta persetujuannya, dan jangan berlama-lama minta maaf soal build yang belum selesai. Naskah biasanya juga menyebut bahwa yang diuji adalah game-nya, bahwa kamu jarang membantu, bahwa playtester boleh berhenti kapan saja, dan apa saja yang direkam. Contohnya ada di bagian berikutnya.
+
+### Think-aloud
+
+Dalam metode **think-aloud** (berpikir sambil bersuara), peserta diminta memakai sebuah produk sambil terus mengucapkan apa yang ia pikirkan. Nielsen, dalam artikel tahun 2012, menyebut metode ini mungkin yang paling berharga di antara metode usability. Menurutnya, studi think-aloud dasar hanya butuh tiga hal: merekrut pengguna yang mewakili, memberi mereka tugas yang mewakili, lalu diam dan membiarkan mereka berbicara. Keuntungannya, kamu mendengar salah paham saat itu juga. Pemain yang berkata "oh, ini mungkin tombol jual" sambil menekan tombol tanam memberi tahu apa yang salah dibaca.
+
+Nielsen juga mencatat kelemahannya. Kebanyakan orang tidak terbiasa berbicara sendiri terus-menerus, sehingga fasilitator perlu mengingatkan mereka. Peserta yang ingin terlihat pintar cenderung diam sampai selesai berpikir, padahal yang dicari adalah pikiran mentah. Pengingat dan pertanyaan dari fasilitator yang belum terlatih juga bisa mengubah perilaku peserta, dan Nielsen menyarankan menandai bagian sesi yang terpengaruh supaya bisa dibuang dari analisis.
+
+Untuk game, ada pertimbangan tambahan yang perlu kamu nilai sendiri: bagian yang menuntut reaksi cepat, seperti rangkaian lompatan di platformer, bisa terganggu jika pemain harus terus berbicara. Kamu bisa meminta think-aloud di bagian yang lebih tenang, seperti menu toko, lalu menanyakan bagian aksi setelah sesi sambil menonton rekamannya bersama.
+
+## Mengamati tanpa mengarahkan
+
+Saat playtester berputar-putar di ruangan yang menurutmu jelas, dorongan untuk menunjuk jalan sangat kuat. The Level Design Book menyarankan menahan dorongan untuk menyela, menjelaskan, atau minta maaf saat playtest berjalan buruk, dan baru turun tangan jika playtester benar-benar buntu atau levelnya memang rusak. Begitu kamu berkata "siram dulu tanamannya", kamu tidak akan pernah tahu berapa lama pemain itu butuh untuk menemukannya sendiri, atau apakah ia akan menemukannya sama sekali.
+
+### Yang sebaiknya tidak diucapkan
+
+Artikel NN/g tentang pertanyaan yang mengarahkan (Amy Schade, 2017) menjelaskan bahwa pertanyaan seperti itu menyisipkan jawaban yang diinginkan, sehingga peserta cenderung mengulang kata-kata penanya. Artikel itu memberi beberapa jebakan:
+
+| Jebakan | Contoh di game bertani | Versi yang lebih netral |
+| --- | --- | --- |
+| Mengulang dengan kata-katamu sendiri | "Tadi kamu bilang tokonya membingungkan, bagian mana?" (padahal pemain hanya berkata "hmm, toko") | "Tadi kamu menyebut toko...?" |
+| Mengusulkan jawaban | "Penyiramnya mempercepat pekerjaanmu, kan?" | "Bagaimana penyiram itu memengaruhi caramu bermain, kalau ada?" |
+| Menyebut elemen antarmuka | "Ikon kaleng di kanan bawah itu fungsinya apa?" | "Bagian ini [tunjuk area]. Ini apa?" |
+| Menganggap kamu tahu perasaannya | "Waktu kamu kesulitan menyiram tadi, apa yang terjadi?" | "Apa yang mudah atau sulit saat merawat ladang tadi?" |
+
+Hindari juga kalimat yang membela desain, seperti "nanti di versi final ada tutorialnya". Kalimat seperti ini bisa membuat playtester merasa salah dan lebih berhati-hati sepanjang sisa sesi.
+
+### Kalimat netral saat pemain bertanya
+
+Artikel NN/g oleh Kara Pernice (2014) memberi tiga teknik untuk menjawab pertanyaan peserta tanpa mengarahkan:
+
+- **Echo**: ulangi kata atau frasa terakhir yang diucapkan peserta dengan nada bertanya. Contoh: pemain berkata "ini aneh, aku nggak yakin..."; kamu menjawab "nggak yakin...?"
+- **Boomerang**: kembalikan pertanyaannya dengan pertanyaan umum, seperti "menurutmu bagaimana?" atau "kalau kamu main sendiri di rumah, apa yang akan kamu lakukan?"
+- **Columbo**: ajukan sebagian pertanyaan, lalu berhenti dan biarkan peserta melengkapinya. Contoh: "kamu sedang bertanya-tanya apakah... [jeda]".
+
+Artikel yang sama menyarankan memutuskan dulu apakah ucapan peserta memang pertanyaan yang perlu dijawab, atau hanya pikiran yang sedang disuarakan. Jika ragu, hitung sampai sepuluh dalam hati sebelum berbicara.
+
+### Contoh naskah
+
+Contoh berikut menunjukkan bagian pembuka dan beberapa respons selama sesi untuk game bertani. Ilustrasi, bukan naskah baku.
+
+```text title="Naskah sesi (ilustrasi)"
+PEMBUKA
+"Terima kasih sudah mau mencoba. Kami sedang menguji game-nya,
+bukan kemampuanmu. Kalau ada bagian yang membingungkan,
+itu justru yang ingin kami temukan.
+
+Selama main, coba ucapkan apa yang kamu pikirkan, misalnya
+'aku mau ke sini' atau 'ini apa ya'. Aku akan jarang membantu,
+karena ingin melihat apa yang terjadi saat kamu main sendiri.
+
+Sesi ini sekitar 25 menit, lalu ada beberapa pertanyaan.
+Kamu boleh berhenti kapan saja. Layar dan suaramu direkam
+untuk dianalisis tim, sesuai yang sudah kamu setujui di formulir."
+
+SELAMA SESI
+pemain diam lebih dari 20 detik  → "Apa yang sedang kamu pikirkan?"
+pemain: "ini harus disiram ya?"  → "Menurutmu bagaimana?"
+pemain: "hmm, aneh..."           → "Aneh...?"
+pemain buntu lebih dari 3 menit  → catat waktunya, lalu bantu seminimal
+                                   mungkin dan tandai di catatan bahwa
+                                   bagian setelahnya sudah terpengaruh
+
+SETELAH SESI
+"Apa yang paling kamu ingat dari sesi tadi?"
+"Apa yang mudah atau sulit saat merawat ladang?"
+"Kalau kamu menjelaskan game ini ke teman, kamu akan bilang apa?"
+```
+
+Pertanyaan "jelaskan game ini ke teman" memperlihatkan apakah core loop yang kamu rancang sama dengan yang ditangkap pemain.
+
+## Apa yang dicatat
+
+### Catatan pengamatan
+
+Catat apa yang terjadi, kapan, dan apa yang diucapkan pemain saat itu. Pisahkan pengamatan dari tafsiran. "Pemain menekan tombol jual tiga kali, lalu keluar tanpa menjual" adalah pengamatan. "Toko membingungkan" adalah tafsiran, dan tafsiran yang ditulis terlalu cepat bisa membuatmu berhenti memperhatikan penyebab lain.
+
+```text title="Format catatan (ilustrasi)"
+waktu  | kejadian                                  | ucapan pemain
+02:10  | berjalan melewati ladang, tidak menyiram  | "tanamannya kok nggak tumbuh"
+04:35  | membuka menu, menutupnya lagi             | (diam)
+06:50  | menyiram setelah tidak sengaja menekan E  | "oh! itu ternyata"
+```
+
+Waktu di kolom pertama memudahkanmu menemukan momen yang sama di rekaman.
+
+### Rekaman
+
+Rekaman layar memungkinkan kamu menonton ulang momen yang terlewat dan menunjukkannya ke anggota tim yang tidak hadir. Rekaman wajah dan suara menambah reaksi seperti kening berkerut atau tertawa. Keduanya butuh izin yang jelas dari orang yang direkam, dibahas di bagian berikutnya.
+
+### Telemetri sederhana
+
+**Telemetri** adalah data yang dikumpulkan game secara otomatis, misalnya waktu bermain, jumlah kematian, atau posisi pemain. The Level Design Book menyebut sebagian besar angka dasar seperti ini bisa dikumpulkan tanpa alat khusus, cukup dengan mencatat dengan teliti. Jika game-mu mencatat sendiri, versi sederhananya adalah file teks yang ditulis setiap kali sesuatu yang penting terjadi:
+
+```text title="Log kejadian (ilustrasi)"
+00:01:12  tanam      petak=3  benih=lobak
+00:02:10  panen_gagal petak=3  sebab=layu
+00:06:50  siram      petak=3
+00:31:05  beli       barang=perluasan_1  harga=200  hari=4
+```
+
+Log seperti ini menjawab "kapan" dan "berapa kali" dengan tepat, tetapi tidak menjawab "kenapa". Pemain yang belum membeli perluasan sampai hari ke-6 bisa jadi tidak tahu harganya atau sedang menabung untuk hal lain, jadi gabungkan log dengan pengamatan dan tanya jawab. Jika game yang sudah dirilis mengirim data seperti ini ke server, kamu juga perlu memberi tahu pemain dan mematuhi aturan privasi platform serta negara tempat game dijual.
+
+## Izin dan privasi
+
+Rekaman dan catatan tentang playtester adalah data pribadi. Artikel NN/g tentang persetujuan peserta (Therese Fessenden, 2022) menjelaskan **persetujuan berdasarkan informasi** (*informed consent*) sebagai pertukaran dua arah: peneliti menjelaskan apa yang akan dilakukan peserta dan apa akibatnya, lalu peserta memahami ketentuannya dan memutuskan dengan sukarela apakah ia mau ikut. Menurut artikel itu, formulir persetujuan biasanya memuat tujuan sesi secara umum, kegiatan dan lamanya, pernyataan bahwa peserta boleh berhenti kapan saja, dan cara data ditangani: siapa yang bisa mengakses, apakah akan dipublikasikan, kapan dihapus, dan apakah peserta bisa meminta datanya dihapus.
+
+Artikel itu juga menyarankan pilihan terpisah untuk setiap jenis rekaman, misalnya satu kotak centang untuk ikut sesi, satu untuk audio, dan satu untuk video, sehingga orang yang tidak mau direkam tetap bisa ikut. Jika ada imbalan, jelaskan bahwa imbalan itu tidak bergantung pada kemampuan bermain atau pada apakah masukannya positif.
+
+**Untuk anak di bawah umur**, artikel yang sama menyebut bahwa anak mungkin belum bisa memahami sepenuhnya atau memutuskan sendiri, sehingga peneliti butuh persetujuan orang tua atau wali, serendah apa pun risikonya. Formulirnya sebaiknya punya kolom tanda tangan khusus untuk orang tua atau wali. Jelaskan juga sesi itu kepada anaknya dengan bahasa yang ia pahami, dan hentikan sesi jika ia terlihat tidak nyaman.
+
+Di Indonesia, pelindungan data pribadi diatur oleh Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi, yang menurut Database Peraturan BPK berlaku sejak 17 Oktober 2022. Abstrak di halaman itu menyebut data anak sebagai salah satu data pribadi yang bersifat spesifik. Pelajaran ini tidak membahas pasal-pasalnya. Jika playtest-mu mengumpulkan banyak data, merekam anak, atau mengirim data ke luar negeri, periksa aturan yang berlaku dan konsultasikan dengan profesional.
+
+Kebiasaan sederhana yang membantu: kumpulkan data seperlunya (jika rekaman layar sudah cukup, kamera wajah tidak perlu menyala), beri nama file dengan kode seperti P1 dan P2, simpan rekaman di tempat yang hanya bisa dibuka tim, hapus sesuai janji di formulir, dan jangan unggah potongan rekaman ke media sosial tanpa izin terpisah.
+
+## Kuesioner dan batasnya
+
+Kuesioner terasa efisien karena banyak orang bisa mengisinya sekaligus. Batasnya ada pada jarak antara apa yang dikatakan orang dan apa yang dilakukannya.
+
+Dalam artikel tahun 2001, Nielsen merangkum aturan dasarnya: perhatikan apa yang benar-benar dilakukan orang, jangan percaya apa yang mereka katakan tentang perilakunya, dan terlebih lagi jangan percaya ramalan mereka tentang perilakunya nanti. Menurutnya, orang cenderung menyesuaikan jawaban dengan apa yang ingin didengar penanya, melaporkan apa yang ia ingat walaupun ingatannya tidak lengkap, dan merasionalisasi perilakunya. Contoh kalimat yang sering ia dengar: "Aku pasti melihat tombolnya kalau lebih besar." Yang pasti hanyalah bahwa pengguna itu tidak melihat tombolnya.
+
+Nielsen juga melaporkan korelasi sekitar 0,44 antara performa pengguna yang terukur dan preferensi yang mereka ucapkan, dari analisis 113 perbandingan antarmuka. Dalam pembaruan artikelnya, ia menyebut korelasi 0,53 untuk situs web, dan menyimpulkan bahwa dari seberapa suka orang pada sebuah desain, kamu hanya bisa memperkirakan sekitar seperempat dari seberapa baik desain itu bekerja. Untuk game, playtester yang memberi nilai 5 dari 5 untuk "seberapa seru" bisa saja berhenti di menit kedelapan jika tidak sedang diamati.
+
+Kuesioner tetap berguna jika:
+
+- **Diisi setelah bermain.** Nielsen menyarankan mengumpulkan preferensi hanya setelah orang benar-benar memakai desainnya.
+- **Menanyakan pemahaman.** The Level Design Book memberi contoh: "Kamu melihat lampu oranye di atas pintu? Menurutmu artinya apa?" Jawabannya bisa dicek.
+- **Dibaca berdampingan dengan pengamatan**, untuk perasaan yang memang subjektif seperti "apakah pertarungan bos terasa mudah atau sulit".
+- **Diulang di setiap putaran**, untuk melihat arah perubahan walaupun angka mutlaknya tidak terlalu berarti.
+
+Menurut ringkasan The Level Design Book, Adriaan de Jongh dalam talk GDC 2017 "Playtesting: Avoiding Evil Data" bahkan menyarankan tidak repot dengan formulir dan kuesioner, dan memilih pengamatan langsung yang sering dengan playtester yang beragam.
+
+## Masalah desain dan masalah selera
+
+**Masalah desain** terjadi saat game tidak bekerja seperti yang dimaksudkan untuk pemain yang dituju: pemain tidak paham aturan, melewatkan informasi penting, buntu, atau mendapat pengalaman yang berbeda dari tujuanmu. **Masalah selera** adalah preferensi pribadi tentang hal yang bekerja sesuai rancangan, seperti gaya grafis atau keinginan agar game ini menjadi jenis game lain.
+
+### Perilaku dan pendapat
+
+Cara paling sederhana untuk memisahkan keduanya adalah menandai sumber setiap catatan:
+
+| Catatan | Sumber | Jenis |
+| --- | --- | --- |
+| Tanaman layu karena tidak disiram (4 dari 5 orang) | Perilaku | Kemungkinan masalah desain |
+| "Aku nggak tahu tanaman harus disiram" | Ucapan, menjelaskan perilaku | Menguatkan catatan di atas |
+| "Grafiknya lebih bagus kalau pixel art" (1 orang) | Pendapat | Kemungkinan selera |
+| "Harusnya ada mode multipemain" (1 orang) | Pendapat, usulan fitur | Di luar pertanyaan sesi ini |
+| Pemain berhenti memanen dan hanya menghias rumah (1 orang) | Perilaku | Perlu diperiksa: masalah loop atau dinamika baru? |
+
+Pendapat tidak berarti salah, dan pendapat yang muncul berulang dari target pemainmu bisa menjadi tanda penting. Bedanya, pendapat butuh bukti tambahan, sedangkan perilaku yang berulang sudah menjadi bukti. Baris terakhir juga menunjukkan bahwa perilaku tak terduga belum tentu masalah. Seperti di [Pelajaran 3](/belajar/desain-game/03-mda/#dinamika-yang-tidak-direncanakan), dinamika yang tidak direncanakan bisa ternyata menyenangkan, jadi bandingkan dengan tujuan pengalamanmu.
+
+### Frekuensi dan tingkat keparahan
+
+Artikel Nielsen tahun 1994 tentang tingkat keparahan masalah usability memakai tiga faktor: **frekuensi** (umum atau jarang), **dampak** (mudah atau sulit diatasi pengguna), dan **kegigihan** (hanya sekali sampai pengguna tahu caranya, atau terus mengganggu). Ia menyebut dampak pasar sebagai pertimbangan tambahan, lalu memberi skala 0 sampai 4:
+
+| Nilai | Arti menurut Nielsen |
+| --- | --- |
+| 0 | Tidak setuju bahwa ini masalah usability |
+| 1 | Masalah kosmetik, tidak perlu diperbaiki kecuali ada waktu lebih |
+| 2 | Masalah kecil, prioritas rendah |
+| 3 | Masalah besar, penting diperbaiki, prioritas tinggi |
+| 4 | Bencana usability, wajib diperbaiki sebelum produk dirilis |
+
+Menurut artikel itu, penilaian satu orang terlalu tidak bisa diandalkan, sedangkan rata-rata dari tiga orang yang menilai secara terpisah sudah cukup untuk banyak keperluan praktis. Skala ini dibuat untuk usability, jadi untuk game kamu mungkin perlu menyesuaikan arti "dampak". Bos yang sulit dikalahkan bisa sesuai rancangan, sedangkan bos yang sulit karena pemain tidak tahu ia bisa menghindar adalah masalah pemahaman.
+
+### Usulan solusi dari pemain
+
+Playtester sering memberi usulan: "tambahkan peta", "kasih tombol panen otomatis". The Level Design Book menyarankan menerima usulan yang diberikan dengan niat baik secara ramah, karena walaupun usulannya bisa jadi solusi yang kurang baik, alasan di baliknya dan masalah yang ditunjukkannya hampir selalu nyata.
+
+Perlakukan usulan sebagai petunjuk ke masalah. "Tombol panen otomatis" bisa berarti memanen 30 petak terasa terlalu lama, yang mungkin lebih tepat diselesaikan dengan mempersingkat animasi panen (ingat hitungan durasi umpan balik dikali jumlah pengulangan di [Pelajaran 1](/belajar/desain-game/01-core-loop/#loop-dan-game-feel)). Setelah masalahnya jelas, tim yang memilih solusinya lalu mengujinya di putaran berikutnya.
+
+## Mengolah hasil
+
+### Mengelompokkan temuan
+
+**Affinity diagram** adalah cara mengelompokkan pengamatan, ide, atau temuan yang berkaitan. Artikel NN/g tentang affinity diagram (Rachel Krause dan Kara Pernice, 2024) menjelaskan tiga langkah:
+
+1. **Tulis setiap pengamatan di catatan tempel**, fisik atau digital, satu pengamatan per catatan. Artikel itu menyarankan setiap anggota tim menulis sendiri-sendiri dulu supaya tidak saling memengaruhi, dalam waktu sekitar 5 sampai 10 menit.
+2. **Kelompokkan catatan menjadi tema.** Gabungkan catatan yang mirip dulu, baru beri nama kelompoknya. Jangan meremehkan kelompok kecil hanya karena catatannya sedikit.
+3. **Prioritaskan kelompok dan tentukan langkah berikutnya**, termasuk satu orang yang memegang setiap tindak lanjut.
+
+Untuk playtest, tema yang muncul sering berupa bagian game ("penyiraman", "toko") atau jenis masalah ("tidak terlihat", "terlalu lama").
+
+### Daftar masalah
+
+Dari setiap kelompok, tulis satu baris di daftar masalah. Daftar ini terpisah dari daftar bug, seperti dijelaskan di [jalur Produksi](/belajar/produksi/05-kualitas-rilis/#playtesting-dan-qa).
+
+```text title="Daftar masalah (ilustrasi)"
+ID  | masalah                         | bukti                 | frekuensi | keparahan
+D1  | pemain tidak tahu cara menyiram | P1-P4 layu, P5 sadar  | 4/5       | 4
+D2  | harga perluasan tidak terlihat  | P2, P3 bertanya harga | 2/5       | 2
+D3  | memanen 30 petak terasa lama    | P1, P5 + 2 usulan     | 2/5       | 2
+S1  | ingin gaya pixel art            | ucapan P4             | 1/5       | selera
+```
+
+Kolom bukti menghubungkan setiap masalah ke catatan aslinya, sehingga saat ada yang bertanya "yakin ini masalah?", kamu bisa menunjuk ke rekamannya.
+
+### Memutuskan apa yang diubah
+
+Daftar masalah belum menjadi daftar perbaikan. Beberapa pertanyaan yang membantu:
+
+- **Apakah masalah ini menghalangi pertanyaan berikutnya?** Jika pemain tidak bisa menyiram, ekonomi tidak bisa diuji. Perbaiki yang menghalangi dulu.
+- **Apakah masalah ini bertentangan dengan tujuan pengalaman?** Kesulitan yang disengaja tidak perlu dihapus hanya karena pemain mengeluh.
+- **Berapa biaya perbaikannya?** Masalah kecil yang bisa diperbaiki dalam lima menit sering layak dikerjakan sekarang.
+- **Bagaimana kamu akan tahu perbaikannya berhasil?** Tulis pertanyaan untuk putaran berikutnya.
+
+Ubah sesedikit mungkin hal di antara dua putaran, sama seperti prinsip menyetel di [Pelajaran 2](/belajar/desain-game/02-game-feel/#menyetel-sambil-bermain). Jika tiga perubahan masuk bersamaan dan masalahnya hilang, kamu tidak tahu perubahan mana yang bekerja.
+
+## Playtest jarak jauh dan program playtest
+
+Playtest jarak jauh menjangkau lebih banyak orang dan jenis perangkat, tetapi kamu kehilangan wajah dan suara pemain kecuali mereka merekamnya. The Level Design Book menyarankan meminta playtester merekam layarnya lalu mengirim tautan privat ke videonya, atau lebih baik lagi menyiarkan siaran langsung privat sehingga kamu bisa bertanya lewat chat atau suara. Jika kamu mengamati langsung lewat panggilan video, naskah dan teknik netral di atas tetap berlaku. Jika playtester bermain sendiri lalu mengirim rekaman atau log, jadwalnya lebih mudah, tetapi kamu tidak bisa bertanya saat sesuatu yang menarik terjadi.
+
+Beberapa platform menyediakan alat untuk membagikan build ke playtester. Sebagai contoh netral, dokumentasi Steamworks menjelaskan **Steam Playtest** sebagai appID "anak" yang terpisah dari game utama, sehingga playtest bisa dijalankan tanpa memengaruhi ulasan pengguna game utama. Pemain mendaftar dari halaman toko game utama. Secara bawaan pendaftarannya terbatas: developer menambahkan pemain secara bertahap, dan Steam memilihnya secara acak dari yang sudah mendaftar. Developer juga bisa membagikan key playtest secara langsung. Menurut dokumen itu, Steam Playtest gratis bagi pemain, developer tidak boleh memungut bayaran untuk aksesnya, dan cara mengumpulkan masukan diserahkan ke developer, misalnya lewat tombol masukan di menu utama yang mengarah ke forum atau Discord.
+
+Dokumen yang sama memberi dua peringatan yang berlaku juga di luar Steam. Playtest rahasia untuk game yang belum diumumkan hanya serahasia playtester yang paling tidak menjaga rahasia, sehingga dokumen itu menyarankan mengumumkan game dulu sebelum playtest eksternal. Menutup playtest tanpa pemberitahuan juga bisa mengecewakan komunitas, jadi sampaikan rencananya sejak awal. Sisi teknis Steam dibahas di [Pelajaran 5 Produksi](/belajar/produksi/05-kualitas-rilis/).
+
+Program playtest besar menghasilkan banyak masukan tertulis yang sebagian besar berupa pendapat. Prinsip dari bagian sebelumnya tetap berlaku, dan program besar tidak menggantikan sesi kecil yang diamati langsung, karena keduanya menjawab pertanyaan yang berbeda.
+
+## Contoh: dua putaran playtest game bertani
+
+Contoh ini mengikuti tim dua orang, Dimas (programmer) dan Laras (desainer), yang menguji build awal game bertani dari pelajaran sebelumnya. **Ilustrasi, bukan data.** Nama, angka, dan temuan dibuat untuk menunjukkan prosesnya.
+
+**Persiapan putaran 1.** Build mencakup hari 1 sampai 3 di dalam game: menanam, menyiram, memanen, menjual, dan membeli perluasan lahan pertama. Laras menulis dua pertanyaan: apakah pemain menyiram tanpa disuruh, dan apakah pemain menabung untuk perluasan di hari ke-3. Harapannya: semua menyiram dalam 2 menit pertama, dan sebagian besar membeli perluasan di hari ke-3 seperti di spreadsheet Versi B dari [Pelajaran 5](/belajar/desain-game/05-ekonomi-progres/#merancang-ekonomi-di-spreadsheet).
+
+Mereka merekrut lima orang dari komunitas game lokal yang pernah memainkan game simulasi tetapi belum pernah melihat game ini. Formulir persetujuannya punya pilihan terpisah untuk rekaman layar dan suara. Satu orang tidak mau suaranya direkam, jadi Dimas mencatat ucapannya dengan tangan.
+
+**Hasil putaran 1.**
+
+| Pertanyaan | Harapan | Yang terjadi |
+| --- | --- | --- |
+| Menyiram tanpa disuruh | 5/5 dalam 2 menit | 1/5 dalam 2 menit. 3 orang menemukan penyiram setelah tanaman pertama layu, 1 orang tidak menemukannya sampai akhir sesi |
+| Membeli perluasan di hari ke-3 | Sebagian besar | 0/5. Karena panen pertama gagal, tabungan mereka tertinggal dari spreadsheet |
+
+Laras hampir menyimpulkan bahwa harga perluasan terlalu mahal. Log menunjukkan penyebab lain: pemain yang panennya gagal di hari pertama tidak punya cukup koin. Mereka memutuskan tidak menyentuh harga dulu. Catatan lain dari affinity diagram mereka:
+
+- Dua orang bertanya "perluasan harganya berapa?" sambil berdiri di depan papan toko. Harga hanya muncul setelah menu dibuka.
+- Satu orang berkata gaya grafisnya lebih cocok pixel art. Dicatat sebagai selera.
+- Dua orang mengusulkan panen otomatis. Saat menonton rekaman, mereka melihat kedua orang itu menunggu animasi panen di setiap petak.
+
+**Perubahan untuk putaran 2.** Mereka memilih dua perubahan saja: tanaman yang belum disiram diberi tanda tetesan air yang berkedip di atas petaknya, dan harga perluasan ditampilkan langsung di papan toko. Animasi panen sengaja belum diubah, supaya efek dua perubahan pertama terlihat jelas. Harga perluasan juga tetap.
+
+**Putaran 2.** Lima orang baru, dengan naskah dan pertanyaan yang sama, ditambah satu pertanyaan: apakah pemain tahu harga perluasan sebelum menabung.
+
+| Pertanyaan | Putaran 1 | Putaran 2 |
+| --- | --- | --- |
+| Menyiram dalam 2 menit pertama | 1/5 | 5/5 |
+| Membeli perluasan di hari ke-3 | 0/5 | 3/5, dua lainnya di hari ke-4 |
+| Tahu harga perluasan sebelum menabung | (tidak ditanyakan) | 4/5 |
+
+Penyiraman sekarang dipahami, dan ekonomi mendekati spreadsheet tanpa harga diubah sama sekali. Seperti yang ditulis Nielsen tentang putaran kedua, masalah yang sebelumnya tertutup mulai terlihat: setelah lahan diperluas, tiga orang mengeluh soal lamanya memanen, sesuai petunjuk dari dua usulan panen otomatis di putaran 1, dan satu orang berhenti memanen lalu hanya menghias rumah. Untuk putaran 3, Laras menulis pertanyaan tentang durasi panen dan menandai perilaku menghias rumah sebagai dinamika yang perlu dibandingkan dengan tujuan pengalaman mereka.
+
+## Kesalahan umum
+
+### Sesi berubah menjadi presentasi
+
+```text title="✗ Keliru"
+"Jadi di game ini kamu petani. Siram dulu tanamannya pakai E,
+terus nanti jual di toko. Oh, perluasan itu harganya 200 ya."
+```
+
+```text title="✓ Benar"
+naskah pembuka singkat, tanpa menjelaskan aturan
+→ catat kapan pemain menemukan penyiram dan toko sendiri
+```
+
+### Pertanyaan baru dipikirkan setelah sesi
+
+```text title="✗ Keliru"
+ajak lima teman main → tanya "gimana, seru nggak?"
+→ semua bilang seru, tidak ada yang diubah
+```
+
+```text title="✓ Benar"
+tulis 2 sampai 4 pertanyaan yang bisa diamati beserta harapannya
+→ pilih playtester yang cocok → bandingkan harapan dengan kenyataan
+```
+
+### Semua masukan diperlakukan sama
+
+```text title="✗ Keliru"
+daftar perbaikan: penyiram tidak dipahami, ganti ke pixel art,
+tambah multipemain, tombol panen otomatis
+```
+
+```text title="✓ Benar"
+tandai perilaku dan pendapat, hitung frekuensi, beri nilai keparahan
+→ selera dan usulan fitur dicatat terpisah
+→ usulan diterjemahkan ke masalah di baliknya
+```
+
+### Banyak perubahan sekaligus di antara dua putaran
+
+```text title="✗ Keliru"
+putaran 1 → ubah penanda siram, harga, animasi panen, dan peta
+→ putaran 2 lebih baik, tetapi tidak jelas perubahan mana yang bekerja
+```
+
+```text title="✓ Benar"
+putaran 1 → ubah hal yang menghalangi pertanyaan berikutnya
+→ putaran 2 dengan orang baru dan pertanyaan yang sama
+```
+
+### Merekam tanpa izin yang jelas
+
+```text title="✗ Keliru"
+kamera dan mikrofon menyala sejak playtester duduk,
+potongan rekaman lucu diunggah ke media sosial studio
+```
+
+```text title="✓ Benar"
+formulir dengan pilihan terpisah untuk audio dan video,
+izin orang tua atau wali untuk anak di bawah umur,
+rekaman disimpan dengan kode dan dihapus sesuai janji
+```
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Latihan 1 dan 2 cukup dikerjakan di kertas. Latihan 3 dan 4 membutuhkan prototipe yang bisa dimainkan, dari engine pilihanmu atau dari latihan di pelajaran sebelumnya.
+
+1. Ambil prototipe dari latihan pelajaran sebelumnya. Tulis rencana sesi satu halaman: dua sampai empat pertanyaan yang bisa diamati, harapan untuk setiap pertanyaan, data yang dicatat, dan apa yang akan kamu lakukan jika harapanmu meleset.
+2. Tulis ulang pertanyaan berikut supaya tidak mengarahkan: "Musuhnya terlalu cepat, ya?", "Kenapa kamu tidak memakai lompat ganda?", "Tombol peta di pojok kiri atas sudah kelihatan, kan?", dan "Bagian ini membosankan, ya?" Tulis jebakan mana dari tabel NN/g yang kamu hindari.
+3. Jalankan playtest dengan tiga sampai lima orang yang belum pernah melihat prototipemu. Pakai naskah pembuka, minta think-aloud di bagian yang tenang, dan siapkan formulir persetujuan jika kamu merekam. Catat waktu, kejadian, dan ucapan. Jangan menjelaskan apa pun kecuali pemain buntu lebih dari tiga menit, dan tandai jika itu terjadi.
+4. Olah hasil latihan 3 dengan affinity diagram menjadi daftar masalah dengan bukti, frekuensi, dan keparahan, terpisah dari selera dan usulan fitur. Perbaiki satu atau dua masalah yang paling menghalangi, lalu jalankan putaran kedua dengan orang baru dan pertanyaan yang sama. Bandingkan kedua putaran dalam satu tabel.

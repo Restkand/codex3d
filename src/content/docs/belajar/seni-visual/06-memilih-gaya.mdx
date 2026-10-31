@@ -1,0 +1,490 @@
+---
+title: "Memilih Gaya Visual"
+description: "Kerangka untuk memilih gaya visual: apa yang harus dikomunikasikan gambar, keahlian dan ukuran tim, biaya produksi per jenis aset, platform target, engine, perbandingan enam gaya, style guide, uji gaya, cara menghitung aset dan waktu, serta aksesibilitas warna dan kontras."
+fundamental: "Gaya visual menentukan berapa jam yang dibutuhkan setiap aset, siapa yang bisa membuatnya, dan apakah pemain bisa membaca layar dengan cepat. Keputusan ini mahal diubah setelah produksi berjalan, karena setiap aset yang sudah dibuat ikut terikat padanya. Kalau kamu bisa memecah pilihan gaya menjadi pertanyaan tentang komunikasi, orang, dan biaya per aset, kamu bisa mengujinya dengan angka dari timmu sendiri sebelum berkomitmen."
+kind: lesson
+minutes: 35
+status: draf
+lastReviewed: 2026-10-31
+terms:
+  - 2d/sprite
+  - 2d/sprite-sheet
+  - 2d/tilemap
+  - skeletal
+  - flat-shading
+  - toon-shading
+  - pbr
+  - segments
+  - texture
+krekit:
+  gambaran-besar: "Gaya yang tepat adalah gaya yang bisa dibuat timmu sampai aset terakhir dengan kualitas yang sama dengan aset pertama."
+  apa-yang-harus-dikomunikasikan-gambar: "Coba lihat screenshot game-mu dalam ukuran kecil atau dengan mata disipitkan. Yang masih terbaca di situ adalah yang benar-benar dikomunikasikan gaya itu."
+  tim-keahlian-dan-jumlah-orang: "Tulis siapa yang akan membuat setiap jenis aset sebelum memilih gaya. Gaya tanpa nama pembuat di sebelahnya adalah gaya yang belum bisa dibuat."
+  biaya-produksi-per-jenis-aset: "Hitung biaya per unit untuk jenis aset yang paling banyak jumlahnya. Biasanya di sanalah gaya menjadi murah atau mahal."
+  platform-target-dan-performa: "Uji gaya di perangkat paling lemah yang kamu dukung, di ukuran layar yang benar-benar dipakai pemain."
+  engine-dan-alat-kerja: "Engine mana pun bisa menampilkan gaya apa pun. Yang perlu dicek adalah seberapa banyak alat yang harus kamu buat sendiri."
+  pasar-dan-visibilitas: "Gaya yang mudah dikenali dari satu gambar kecil membantu di halaman toko, apa pun gayanya."
+  perbandingan-enam-gaya: "Tabel ini titik awal diskusi. Angka sebenarnya datang dari uji gaya timmu sendiri."
+  arah-seni-dan-style-guide: "Aturan yang ditulis bisa diperiksa. Aturan yang hanya ada di kepala artist utama hilang saat artist itu sibuk."
+  menguji-gaya-sebelum-produksi: "Beri uji gaya batas waktu yang tegas. Uji gaya yang tidak pernah selesai sudah memberi jawaban: gaya itu terlalu mahal untuk timmu."
+  menghitung-aset-dan-waktu: "Daftar aset yang jujur hampir selalu lebih panjang dari yang kamu bayangkan. Panjangnya daftar itu adalah informasi yang berguna untuk jadwal."
+  pixel-art-tidak-otomatis-murah: "Ukuran gambar yang kecil tidak sama dengan jam kerja yang sedikit. Yang perlu dihitung adalah jumlah frame dan arah."
+  aksesibilitas-gaya-visual: "Kalau sebuah informasi hanya dibedakan dengan warna, tambahkan bentuk, pola, ikon, atau teks."
+  ilustrasi-tim-tiga-orang-memilih-gaya: "Keputusan yang baik mencatat alasannya, sehingga tim tahu kapan keputusan itu perlu ditinjau ulang."
+  kesalahan-umum: "Sebagian besar kesalahan di sini baru terasa di bulan keenam produksi. Uji gaya di bulan pertama jauh lebih murah."
+sidebar:
+  order: 6
+  label: "6 · Memilih Gaya Visual"
+quiz:
+  - q: "Tim dua orang ingin membuat game aksi dengan 20 jenis musuh. Artist mereka berpengalaman di pixel art, dan kamera tidak pernah berputar. Langkah apa yang paling masuk akal sebelum memutuskan gaya?"
+    options:
+      - "Langsung memilih pixel art karena gambarnya kecil sehingga pasti murah"
+      - "Membuat satu musuh lengkap dengan semua animasinya dalam gaya yang dipertimbangkan, mencatat waktunya, lalu mengalikannya dengan 20 ditambah cadangan"
+      - "Memilih gaya yang sedang paling banyak dipakai di halaman toko"
+      - "Memilih 3D realistis karena hasilnya paling detail"
+    answer: 1
+    explain: "Biaya gaya paling terasa di jenis aset yang jumlahnya banyak. Satu musuh lengkap dengan kualitas final memberi angka per unit dari timmu sendiri, dan angka itu bisa dikalikan. Ukuran gambar tidak memberi tahu berapa jam yang dibutuhkan, karena animasi frame demi frame digambar satu per satu."
+  - q: "Game top-down membedakan teman dan musuh hanya dengan garis tepi hijau dan merah. Menurut Xbox Accessibility Guidelines dan Game Accessibility Guidelines, apa perbaikan yang tepat?"
+    options:
+      - "Membuat warna merah lebih terang"
+      - "Menambahkan filter warna yang menggeser seluruh palet game"
+      - "Menambahkan setidaknya satu penanda lain seperti bentuk, ikon, pola, atau teks, dan bila perlu membiarkan pemain memilih warna"
+      - "Mengganti hijau dengan biru tua, tanpa perubahan lain"
+    answer: 2
+    explain: "XAG 103 menyebut warna tidak boleh menjadi satu-satunya cara menyampaikan informasi, dan informasi penting butuh setidaknya satu penanda tambahan seperti bentuk, pola, ikon, atau label teks. Game Accessibility Guidelines menyarankan warna sebagai pendukung penanda lain, dan menyebut filter yang menggeser seluruh palet sering diterima buruk oleh pemain buta warna."
+  - q: "Kenapa style guide yang tertulis penting, bahkan untuk tim yang artist-nya hanya satu orang?"
+    options:
+      - "Karena engine membutuhkan file style guide untuk mengimpor aset"
+      - "Karena aturan yang tertulis bisa dipakai untuk memeriksa aset baru, menjaga konsistensi selama berbulan-bulan, dan membantu orang lain melanjutkan pekerjaan"
+      - "Karena style guide menggantikan uji gaya"
+      - "Karena style guide menentukan harga jual game"
+    answer: 1
+    explain: "Konsistensi lebih terlihat daripada tingkat detail. Aset yang dibuat di bulan pertama dan bulan kesepuluh sering bergeser tanpa disadari. Palet, bentuk, proporsi, dan aturan cahaya yang tertulis menjadi alat ukur, dan membantu freelancer atau anggota baru membuat aset yang cocok."
+  - q: "Artist tunggal Dead Cells menjelaskan kenapa ia membuat karakter pixel art dari model 3D yang dirender kecil. Alasan mana yang ia tulis?"
+    options:
+      - "Karena engine tidak bisa menampilkan sprite gambar tangan"
+      - "Karena 3D selalu lebih cepat daripada 2D untuk semua jenis aset"
+      - "Karena revisi animasi menjadi mudah, animasi bisa dipakai ulang di model lain, dan aset lama bisa dipakai ulang untuk monster baru, sehingga satu artist bisa mengikuti perubahan gameplay"
+      - "Karena pemain lebih menyukai karakter 3D"
+    answer: 2
+    explain: "Thomas Vasseur menulis bahwa ia satu-satunya artist selama setahun. Alur 3D membuatnya tidak perlu menggambar ulang setiap frame, bisa memakai animasi yang sama di beberapa model, dan bisa mengubah timing serangan dengan menggeser keyframe. Ia menyebut kemudahan revisi sebagai keuntungan terpenting. Ini contoh satu tim dengan kebutuhannya sendiri, tidak berlaku umum."
+  - q: "Sebuah perkiraan menyebut 30 jenis prop × 1 sampai 2 orang-hari = 30 sampai 60 orang-hari. Apa yang paling sering terlewat dari hitungan seperti ini?"
+    options:
+      - "Tidak ada, perkiraan sudah lengkap"
+      - "Pekerjaan di luar membuat aset itu sendiri: revisi, impor dan pengaturan di engine, penempatan di level, UI, efek, dan cadangan untuk hal yang belum diketahui"
+      - "Biaya lisensi engine"
+      - "Waktu render trailer"
+    answer: 1
+    explain: "Daftar aset sering hanya memuat aset yang terlihat jelas. Revisi setelah playtest, impor, pengaturan material, penempatan, ikon UI, dan efek ikut memakan waktu. Karena itu metode di pelajaran ini menambahkan baris untuk pekerjaan pendukung dan cadangan, dan mengganti angka per unit dengan hasil uji gaya."
+  - q: "Kenapa uji gaya sebaiknya diberi batas waktu yang tegas?"
+    options:
+      - "Supaya artist bekerja lebih cepat"
+      - "Karena waktu yang dibutuhkan untuk mencapai kualitas yang diinginkan adalah data. Kalau batas waktu habis sebelum hasilnya memuaskan, itu tanda gaya tersebut terlalu mahal atau perlu disederhanakan"
+      - "Karena engine membatasi waktu impor aset"
+      - "Supaya tidak perlu membuat style guide"
+    answer: 1
+    explain: "Uji gaya mengukur dua hal: seperti apa hasilnya, dan berapa lama membuatnya. Tanpa batas waktu, tim bisa menghabiskan berminggu-minggu memoles satu scene, lalu mengira kualitas itu bisa diulang untuk ratusan aset."
+sources:
+  - title: "Ensure no essential information is conveyed by a fixed colour alone"
+    url: "https://gameaccessibilityguidelines.com/ensure-no-essential-information-is-conveyed-by-a-colour-alone/"
+    publisher: "Game Accessibility Guidelines"
+    accessed: 2026-10-31
+  - title: "Provide high contrast between text/UI and background"
+    url: "https://gameaccessibilityguidelines.com/provide-high-contrast-between-text-ui-and-background/"
+    publisher: "Game Accessibility Guidelines"
+    accessed: 2026-10-31
+  - title: "Xbox Accessibility Guideline 102: Contrast"
+    url: "https://learn.microsoft.com/en-us/gaming/accessibility/xbox-accessibility-guidelines/102"
+    publisher: "Microsoft Learn"
+    accessed: 2026-10-31
+  - title: "Xbox Accessibility Guideline 103: Additional channels for visual and audio cues"
+    url: "https://learn.microsoft.com/en-us/gaming/accessibility/xbox-accessibility-guidelines/103"
+    publisher: "Microsoft Learn"
+    accessed: 2026-10-31
+  - title: "Art Design Deep Dive: Using a 3D pipeline for 2D animation in Dead Cells (Thomas Vasseur, Motion Twin)"
+    url: "https://www.gamedeveloper.com/production/art-design-deep-dive-using-a-3d-pipeline-for-2d-animation-in-i-dead-cells-i-"
+    publisher: "Game Developer (dahulu Gamasutra)"
+    accessed: 2026-10-31
+  - title: "Illustrative Rendering in Team Fortress 2 (Jason Mitchell, Moby Francke, Dhabih Eng, NPAR 2007)"
+    url: "https://cdn.akamai.steamstatic.com/apps/valve/2007/NPAR07_IllustrativeRenderingInTeamFortress2.pdf"
+    publisher: "Valve"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Memecah pilihan gaya visual menjadi pertanyaan tentang komunikasi, tim, biaya per aset, platform, dan engine.
+- Membandingkan pixel art, 2D lukis atau vektor, 2.5D, low-poly 3D, stylized 3D, dan 3D realistis dengan kriteria yang sama.
+- Menyusun style guide sederhana: palet, bahasa bentuk, proporsi, garis, aturan cahaya, dan papan referensi.
+- Merancang uji gaya dengan batas waktu, lalu memakai hasilnya untuk memperkirakan jumlah aset dan waktu produksi.
+- Memeriksa gaya visual terhadap pedoman kontras dan buta warna.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: memilih bahan bangunan">
+Arsitek tidak memilih bata, kayu, atau baja hanya dari foto rumah yang indah. Ia bertanya dulu: rumah ini untuk iklim apa, tukangnya terbiasa dengan bahan apa, berapa ruangan yang harus dibangun, dan berapa lama waktunya. Bahan yang sama bisa menjadi pilihan tepat untuk satu proyek dan pilihan yang membuat proyek lain mandek di tengah jalan.
+</Aside>
+
+Lima pelajaran sebelumnya membahas cara kerja setiap gaya: [pixel art](/belajar/seni-visual/01-pixel-art/), [game 2D](/belajar/seni-visual/02-game-2d/), [2.5D](/belajar/seni-visual/03-2-5d/), [aset 3D](/belajar/seni-visual/04-aset-3d/), dan [jalur dari aplikasi ke engine](/belajar/seni-visual/05-aplikasi-ke-engine/). Pelajaran ini tidak mengulang tekniknya. Isinya kerangka untuk memilih di antara gaya-gaya itu, dengan tautan kembali ke bagian yang relevan.
+
+Pilihan gaya bisa dipecah menjadi beberapa pertanyaan yang dijawab berurutan:
+
+```text title="Pseudocode: kerangka memilih gaya visual"
+kebutuhan = apa yang harus terbaca pemain (kamera, genre, suasana)
+tim       = siapa yang bisa membuat apa, dan berapa jam per minggu
+kandidat  = gaya yang memenuhi kebutuhan DAN bisa dibuat tim
+untuk setiap kandidat:
+    uji_gaya   = satu scene final dengan batas waktu
+    biaya_unit = waktu per jenis aset, diukur dari uji gaya
+    total      = jumlah aset × biaya_unit + pekerjaan pendukung + cadangan
+    cek platform, performa, dan aksesibilitas
+pilih kandidat yang total-nya muat di jadwal, lalu tulis style guide
+```
+
+Urutan ini penting. Kalau tim memilih gaya karena suka melihatnya lalu baru menghitung di tengah produksi, puluhan aset sudah terlanjur dibuat, dan mengganti gaya berarti membuang semuanya. Tidak ada gaya yang paling murah atau paling bagus untuk semua game, jadi setiap bagian di bawah memberi pertanyaan untuk proyekmu sendiri.
+
+## Apa yang harus dikomunikasikan gambar
+
+Gaya visual pertama-tama adalah alat komunikasi. Sebelum soal indah atau tidak, pemain harus bisa menjawab pertanyaan seperti: di mana karakterku, mana musuh, mana yang bisa diinjak, dan apa yang bisa diambil.
+
+**Keterbacaan.** Makalah Valve tentang rendering *Team Fortress 2* menjelaskan bahwa pemain harus bisa mengenali pemain lain dengan sangat cepat dari berbagai jarak dan sudut. Sembilan kelas karakter dirancang supaya siluetnya berbeda satu sama lain, dan desain karakter divalidasi di fase konsep dengan melihat siluet hitam tanpa detail di dalamnya. Proporsi tubuh, senjata, topi, dan lipatan baju sengaja dipakai untuk membentuk siluet yang unik. Tes siluet ini berlaku untuk gaya apa pun: kalau dua musuh hanya berbeda di detail kecil, pemain akan tertukar saat layar ramai.
+
+**Kamera.** Jarak dan sudut kamera menentukan berapa piksel yang dimiliki sebuah objek di layar. Detail yang tidak mendapat cukup piksel tidak akan terlihat. Kamera yang bisa diputar bebas membuat sprite 2D perlu digambar dari banyak arah, seperti dibahas di [Pelajaran 3](/belajar/seni-visual/03-2-5d/#billboard). Kamera tetap dari samping atau atas membuat gaya 2D jauh lebih masuk akal.
+
+**Konvensi genre.** Setiap genre punya kebiasaan visual yang sudah dipelajari pemain. Game strategi sering memakai sudut atas atau isometrik supaya banyak unit terbaca sekaligus, dan platformer butuh batas tegas antara lantai dan latar dekoratif. Melanggar konvensi boleh, asal kamu tahu apa penggantinya.
+
+**Suasana.** Palet, kontras, dan tingkat detail membentuk perasaan. Garis tegas dan warna jenuh terasa lain dari palet pudar dengan kabut tebal. Game horor yang gelap pun tetap perlu membuat ancaman dan jalan keluar terlihat saat dibutuhkan.
+
+Cara cepat menguji keterbacaan: ambil screenshot atau mockup, kecilkan sampai seukuran thumbnail, lalu ubah ke hitam-putih. Kalau karakter pemain, musuh, dan jalan masih bisa dibedakan, gaya itu berkomunikasi lewat bentuk dan nilai terang-gelap, tidak hanya lewat warna.
+
+## Tim: keahlian dan jumlah orang
+
+Gaya yang tepat untuk sebuah game adalah gaya yang bisa dibuat timnya. Pertanyaan yang perlu dijawab jujur:
+
+- **Siapa yang akan membuat setiap jenis aset?** Karakter, animasi, lingkungan, UI, dan efek sering butuh keahlian berbeda. Satu artist yang kuat di ilustrasi belum tentu nyaman dengan rigging atau UV.
+- **Berapa jam per minggu yang tersedia untuk art?** Di tim kecil, artist sering juga memegang desain, audio, atau komunitas. Pembagian peran seperti ini dibahas di [Pelajaran 3 Produksi](/belajar/produksi/03-peran-tim-kecil/#bagaimana-peran-bertumpuk-menurut-ukuran-tim).
+- **Apa yang perlu dipelajari dulu?** Belajar alat baru di tengah produksi bisa saja, tetapi waktunya harus masuk perkiraan. Aset pertama dalam gaya yang baru hampir selalu lebih lambat dan lebih kasar daripada aset kesepuluh.
+- **Apa yang terjadi kalau satu orang berhalangan?** Gaya yang hanya bisa dikerjakan satu orang membuat proyek bergantung pada orang itu. Style guide dan file sumber yang rapi mengurangi risiko ini ([Pelajaran 3 Produksi](/belajar/produksi/03-peran-tim-kecil/#bus-factor-dan-dokumentasi)).
+
+Thomas Vasseur, artist di Motion Twin, menulis bahwa selama setahun ia satu-satunya artist di *Dead Cells*, dan mengerjakan arah seni, karakter, monster, animasi, efek, dan sebagian besar latar. Ia menyebut dirinya bukan animator ahli dan masih baru di pixel art, jadi tim memilih alur yang sesuai: model 3D sederhana dengan kerangka tulang, dirender sangat kecil tanpa antialiasing supaya tampak seperti pixel art. Karena karakter di game hanya setinggi sekitar 50 piksel, menurutnya detail model 3D yang tinggi tidak sepadan dengan waktunya.
+
+Kalau sebagian aset dikerjakan freelancer, gaya dengan aturan tertulis lebih mudah dititipkan, karena brief bisa menyebut palet, ukuran, dan contoh aset jadi.
+
+## Biaya produksi per jenis aset
+
+Biaya sebuah gaya paling jelas terlihat kalau dihitung per jenis aset. Satu gaya bisa murah untuk lingkungan dan mahal untuk animasi, atau sebaliknya. Tiga jenis biaya yang paling sering menentukan:
+
+### Animasi
+
+| Cara | Pose baru berarti | Revisi timing | Dipakai ulang di karakter lain | Dibahas di |
+| --- | --- | --- | --- | --- |
+| 2D frame demi frame | Menggambar gambar baru, per arah kamera | Bisa dengan mengubah durasi frame, tetapi pose baru digambar ulang | Hampir tidak bisa | [Pelajaran 1](/belajar/seni-visual/01-pixel-art/#animasi-frame-demi-frame) |
+| 2D rig tulang | Menggerakkan tulang dari potongan yang sama | Menggeser keyframe | Bisa, jika potongan dan kerangkanya serupa | [Pelajaran 2](/belajar/seni-visual/02-game-2d/#animasi-tulang-2d) |
+| 3D dengan rig | Menggerakkan tulang, satu animasi berlaku untuk semua sudut kamera | Menggeser keyframe | Bisa, jika kerangkanya sama | [Pelajaran 4](/belajar/seni-visual/04-aset-3d/#rigging-dan-skinning-untuk-artist) |
+
+Frame demi frame memberi kendali penuh atas setiap gambar, dan banyak game memilihnya justru karena rasa itu. Harganya, setiap pose, setiap arah, dan setiap revisi dibayar dengan gambar baru. Rig tulang dan 3D memindahkan biaya ke depan: membuat rig pertama butuh waktu dan keahlian, tetapi animasi berikutnya lebih cepat, dan revisi lebih murah.
+
+Vasseur menulis bahwa keuntungan terpenting alur 3D di *Dead Cells* adalah kemudahan revisi. Kalau programmer gameplay ingin serangan lebih lambat, ia cukup menggeser keyframe dan menyesuaikan pose. Di proyek sebelumnya dengan animasi gambar tangan, revisi seperti itu terlalu mahal, dan gameplay ikut menanggung akibatnya. Ia juga menyebut pemakaian ulang aset lama untuk monster baru menghemat ratusan jam kerja.
+
+### Lingkungan dan pemakaian ulang
+
+Lingkungan biasanya mengisi bagian terbesar layar. Gaya yang mendukung pemakaian ulang membuat level baru lebih murah:
+
+- **Tilemap 2D** menyusun dunia dari satu set tile. Satu tileset bisa mengisi banyak level, dan aturan penyambungan otomatis mempercepat penyusunan ([Pelajaran 2](/belajar/seni-visual/02-game-2d/#tilemap-dan-tileset)).
+- **Modul 3D** seperti dinding, lantai, dan sudut yang ukurannya mengikuti grid bisa disusun ulang menjadi ruangan baru. Tekstur palet di gaya low-poly memungkinkan satu material dipakai seluruh level ([Pelajaran 4](/belajar/seni-visual/04-aset-3d/#gaya-visual-dan-biayanya)).
+- **Ilustrasi latar yang dilukis utuh** memberi hasil paling khas per layar, tetapi hampir tidak bisa dipakai ulang. Setiap layar baru berarti lukisan baru.
+
+Makalah Valve tentang *Team Fortress 2* menyebut tim sengaja menghindari model lingkungan yang terlalu rumit, karena menambah kebisingan visual dan titik yang memakan memori, dan menjaga struktur berulang seperti rangka jembatan seminimal mungkin. Penyederhanaan seperti ini membantu keterbacaan dan biaya sekaligus.
+
+### Anggaran teknis
+
+Gaya juga menentukan berapa banyak pekerjaan teknis per aset. Gaya 3D realistis biasanya membutuhkan high poly, baking, beberapa peta [PBR](/kamus/geometri/pbr/), dan [LOD](/belajar/seni-visual/04-aset-3d/#lod). [Pelajaran 4](/belajar/seni-visual/04-aset-3d/#ilustrasi-anggaran-satu-set-prop-stylized) menunjukkan cara menghitung segitiga dan ukuran atlas untuk satu set prop, dan [Pelajaran 5](/belajar/seni-visual/05-aplikasi-ke-engine/#menghitung-memori-tekstur) menunjukkan cara menghitung memori tekstur. Lakukan hitungan itu untuk setiap gaya kandidat, karena selisihnya bisa beberapa kali lipat.
+
+Prinsip umum dari bagian ini sejalan dengan [Pelajaran 1 Produksi](/belajar/produksi/01-scope-vertical-slice/#konten-dan-sistem-punya-biaya-berbeda): konten dibayar per unit lalu dikalikan jumlahnya. Gaya yang menurunkan biaya per unit untuk jenis aset yang paling banyak jumlahnya hampir selalu berpengaruh paling besar ke jadwal.
+
+## Platform target dan performa
+
+Gaya yang terlihat bagus di monitor besar bisa sulit dibaca di layar ponsel, dan bisa terlalu berat untuk perangkat yang lebih lemah. Pertanyaan yang perlu dijawab:
+
+- **Ukuran layar dan jarak pandang.** Detail halus hilang di layar kecil, sedangkan garis tebal, siluet sederhana, dan kontras tinggi bertahan lebih baik.
+- **Memori dan bandwidth.** Pixel art dan low-poly dengan tekstur palet umumnya ringan di memori, sedangkan 3D realistis dengan banyak tekstur besar membutuhkan kompresi dan batas ukuran yang disengaja ([Pelajaran 5](/belajar/seni-visual/05-aplikasi-ke-engine/#pengaturan-impor-tekstur-di-engine)).
+- **Biaya per piksel.** Gaya 2D tidak otomatis ringan. Sprite besar yang bertumpuk, cahaya 2D, dan partikel transparan membebani GPU, seperti di tabel [biaya game 2D](/belajar/seni-visual/02-game-2d/#biaya-di-game-2d) dan [biaya game 2.5D](/belajar/seni-visual/03-2-5d/#biaya-di-game-25d).
+- **Resolusi dan rasio layar.** Pixel art butuh skala kelipatan bulat, yang lebih rumit di layar dengan rasio tidak biasa ([Pelajaran 1](/belajar/seni-visual/01-pixel-art/#scaling-dengan-kelipatan-bulat)).
+
+Anggaran performa ditentukan dari profiling di perangkat target ([Pelajaran 8 Fondasi Engine](/belajar/fondasi-engine/08-profiling/#perangkat-target-dan-anggaran-frame)), dan uji gaya di bawah adalah saat yang tepat untuk mengukurnya.
+
+## Engine dan alat kerja
+
+Unity, Godot, dan Unreal bisa menampilkan semua gaya di pelajaran ini. Perbedaannya ada di alat bawaan dan seberapa banyak yang harus disiapkan tim sendiri. Pertanyaan yang lebih berguna daripada "engine mana yang paling cocok untuk gaya X":
+
+{/* Belum diverifikasi ke dokumentasi Epic (situs Epic diblokir proxy saat ditulis, 2026-10-31): bahwa Unreal mendukung semua gaya di pelajaran ini, termasuk 2D dan pixel art lewat plugin Paper2D (lihat juga komentar serupa di Pelajaran 1). */}
+
+- Apakah alat yang dibutuhkan gaya ini sudah ada di engine, tersedia sebagai paket atau plugin, atau harus dibuat sendiri? Contohnya tilemap, rig tulang 2D, cahaya 2D, toon shading, dan alat untuk kamera pixel-perfect.
+- Apakah tim sudah pernah memakai alat itu? Nama opsi dan alur kerjanya berbeda di setiap engine, seperti terlihat di Pelajaran 1 sampai 5.
+- Bagaimana aset masuk dari aplikasi pembuatnya, dan apakah ekspor ulang bisa dilakukan tanpa kejutan ([Pelajaran 5](/belajar/seni-visual/05-aplikasi-ke-engine/#ekspor-ulang-tanpa-kejutan))?
+
+Gaya kadang membutuhkan alat buatan sendiri. Tim *Dead Cells* membuat program kecil untuk merender model 3D ke ukuran kecil tanpa antialiasing, dan sistem cahaya supaya bayangan tidak digambar per frame. Waktu membuat alat seperti ini termasuk biaya gaya.
+
+## Pasar dan visibilitas
+
+Calon pemain sering melihat game pertama kali sebagai gambar kecil di halaman toko, potongan video, atau screenshot di media sosial. Beberapa hal yang bisa kamu pertimbangkan tanpa bergantung pada angka:
+
+- **Mudah dikenali dari satu gambar.** Gaya dengan siluet, palet, dan bentuk yang khas lebih mudah diingat. Ini berlaku untuk pixel art maupun 3D realistis.
+- **Terbaca di ukuran kecil.** Uji screenshot dan ikon di ukuran yang benar-benar dipakai halaman toko. Detail yang hilang di ukuran itu tidak membantu orang memutuskan.
+- **Ramai atau sepi.** Gaya yang sangat sering dipakai di sebuah genre membantu pemain langsung paham genrenya, tetapi game-mu harus menonjol di antara banyak game yang mirip.
+
+Klaim seperti "gaya X lebih laku" jarang punya sumber yang bisa diperiksa. Kalau kamu menemukan data, periksa siapa yang mengumpulkannya, dari platform mana, dan untuk genre apa, sesuai [Standar konten](/kontribusi/standar-konten/).
+
+## Perbandingan enam gaya
+
+<Aside type="caution" title="Panduan umum">
+Tabel ini perbandingan kasar antar-gaya untuk tim kecil, disusun dari pembahasan di Pelajaran 1 sampai 5. Satu game dalam gaya yang sama bisa sangat berbeda biayanya dari game lain, tergantung jumlah animasi, sudut kamera, dan keahlian tim. Pakai sebagai bahan diskusi, lalu ganti dengan hasil uji gaya timmu.
+</Aside>
+
+| Gaya | Keahlian utama | Kecepatan iterasi | Biaya animasi | Saat konten bertambah |
+| --- | --- | --- | --- | --- |
+| **Pixel art** | Gambar per piksel, palet terbatas, animasi frame demi frame | Cepat untuk aset diam yang kecil, lambat saat pose dan arah bertambah | Tinggi per pose dan per arah, karena digambar satu per satu | Tileset dipakai ulang dengan baik. Karakter dan animasi berlipat sesuai jumlahnya |
+| **2D lukis atau vektor** | Ilustrasi, desain karakter, sering rig tulang 2D | Sedang. Gambar resolusi tinggi lebih lama dibuat dan direvisi | Tinggi jika frame demi frame, sedang jika rig tulang | Rig dan potongan bisa dipakai ulang. Latar lukis utuh sulit dipakai ulang |
+| **2.5D** | Campuran 2D dan 3D, kamera, urutan gambar | Sedang. Dua alur kerja harus berjalan bersama | Sprite: seperti 2D, berlipat sesuai jumlah arah. Lingkungan 3D: sekali buat untuk semua sudut | Lingkungan 3D modular dipakai ulang. Karakter sprite berlipat sesuai arah |
+| **Low-poly 3D** | Modeling dasar, UV sederhana atau tekstur palet, rigging | Cepat. Bentuk sederhana mudah diubah | Sedang. Rig pertama mahal, animasi berikutnya bisa dipakai ulang | Modul dan material bersama dipakai ulang dengan baik |
+| **Stylized 3D** | Modeling, texturing tangan atau PBR sederhana, shader seperti toon shading | Sedang | Sedang sampai tinggi. Gaya ekspresif sering butuh pose yang dilebihkan | Konsistensi warna dan bentuk antar-aset perlu dijaga ketat |
+| **3D realistis** | High poly, baking, PBR, LOD, pencahayaan, sering juga pemindaian | Lambat. Setiap aset melewati banyak langkah | Tinggi. Gerakan harus meyakinkan, sering butuh motion capture atau animator berpengalaman | Biaya per aset tinggi, dan ketidakcocokan kecil antar-aset langsung terlihat |
+
+Kolom-kolomnya saling memengaruhi: gaya dengan animasi mahal bisa tetap murah untuk game dengan sedikit karakter. Gaya juga bisa dicampur, seperti karakter 3D yang dirender menjadi sprite di [Pelajaran 3](/belajar/seni-visual/03-2-5d/#biaya-di-game-25d) atau alur *Dead Cells* di atas, dengan biaya sendiri yang juga perlu diuji.
+
+## Arah seni dan style guide
+
+**Arah seni** (*art direction*) adalah keputusan tentang bagaimana game terlihat, dan aturan yang menjaga keputusan itu selama produksi. Aturan itu biasanya ditulis dalam **style guide** atau **art bible**: dokumen yang bisa dibuka siapa pun di tim untuk memeriksa apakah sebuah aset sudah sesuai.
+
+### Isi style guide
+
+| Bagian | Isi | Contoh pertanyaan yang dijawab |
+| --- | --- | --- |
+| Palet | Warna utama, warna aksen, warna yang dilarang, dan aturan pemakaiannya | Warna apa yang hanya boleh dipakai untuk bahaya? |
+| Bahasa bentuk | Bentuk dasar untuk setiap kelompok: bulat, kotak, segitiga, bersudut, lengkung | Apa yang membedakan bentuk bangunan musuh dan bangunan teman? |
+| Proporsi | Rasio kepala dan badan, ukuran karakter terhadap pintu dan tile | Berapa tinggi karakter dalam piksel atau meter? |
+| Garis | Ada garis tepi atau tidak, tebalnya, warnanya | Garis tepi hitam, berwarna, atau tidak ada? |
+| Aturan cahaya | Arah cahaya utama, warna bayangan, seberapa banyak cahaya yang dilukis di tekstur | Bayangan cenderung ke warna dingin atau hanya lebih gelap? |
+| Detail dan tekstur | Seberapa banyak detail di permukaan, ukuran tekstur, texel density | Apakah retak di dinding digambar atau dibiarkan polos? |
+| Aturan teknis | Resolusi dasar, PPU, anggaran segitiga, format ekspor, aturan nama | Berapa ukuran tile dan tekstur maksimum? |
+| Papan referensi | Gambar acuan dari dunia nyata, karya seni, dan aset final yang sudah disetujui | Seperti apa "kayu" di game ini? |
+
+Makalah Valve memberi contoh bahasa bentuk dan palet yang ditulis sebagai aturan. Markas tim merah memakai warna hangat, bahan alami, dan geometri bersudut. Markas tim biru memakai warna dingin, bahan industri, dan bentuk tegak lurus. Warna di karakter dan dunia mendekati realistis, tetapi dengan saturasi dan kontras terang-gelap yang lebih tinggi, dan warna pudar mendominasi dengan area kecil warna jenuh untuk menarik perhatian. Aturan seperti ini bisa dipakai untuk memeriksa setiap aset baru.
+
+Aturan teknis seperti resolusi dasar dan texel density ([Pelajaran 1](/belajar/seni-visual/01-pixel-art/#resolusi-dasar-dan-ukuran-tile), [Pelajaran 4](/belajar/seni-visual/04-aset-3d/#uv-unwrapping-dan-texel-density)) sebaiknya ikut masuk, supaya semua aturan ada di satu tempat. Untuk tim kecil, beberapa halaman dan satu papan referensi sudah cukup, asal diperbarui setiap kali tim mengambil keputusan visual baru.
+
+### Konsistensi lebih penting daripada detail
+
+Pemain jarang memperhatikan bahwa sebuah game kurang detail kalau semua asetnya mengikuti aturan yang sama. Mereka langsung memperhatikan satu aset yang tidak cocok: pohon yang jauh lebih detail dari pohon lain, ikon dengan garis tepi berbeda, atau karakter dengan kepadatan piksel lain (*mixel*, dibahas di [Pelajaran 1](/belajar/seni-visual/01-pixel-art/#resolusi-dasar-dan-ukuran-tile)). Karena itu, gaya sederhana yang konsisten sering terlihat lebih rapi daripada gaya detail yang berubah-ubah.
+
+Konsistensi juga soal waktu. Aset bulan pertama dan bulan kesepuluh cenderung bergeser karena keterampilan dan selera artist berubah, jadi bandingkan aset baru dengan papan referensi secara berkala.
+
+### Mencampur gaya
+
+Banyak game mencampur gaya dengan sengaja: UI vektor di atas pixel art, karakter sprite di dunia 3D, atau latar lukis di belakang karakter 3D. Campuran bisa berhasil kalau ada aturan yang menyatukannya, misalnya palet yang sama, arah cahaya yang sama, atau kepadatan piksel yang sama.
+
+Risikonya: kepadatan piksel atau tingkat detail yang berbeda membuat satu lapisan tampak menempel, cahaya yang dilukis di tekstur bisa bertentangan dengan cahaya dinamis engine ([Pelajaran 4](/belajar/seni-visual/04-aset-3d/#gaya-visual-dan-biayanya)), dan tim harus merawat dua alur produksi sekaligus ([Pelajaran 3](/belajar/seni-visual/03-2-5d/#sprite-di-dunia-3d)). Campuran yang terjadi tanpa sengaja, misalnya dari beberapa paket aset dengan gaya berbeda, biasanya yang paling terlihat janggal.
+
+## Menguji gaya sebelum produksi
+
+**Uji gaya** (*style test*) adalah potongan kecil game yang dibuat dalam gaya kandidat sampai kualitas mendekati final, sehingga tabel dan style guide di atas bisa diperiksa dengan data. Ini versi art dari [vertical slice](/belajar/produksi/01-scope-vertical-slice/#vertical-slice): sempit, tetapi menembus semua lapisan visual. Scene hasilnya bisa dijadikan **golden scene**, yaitu acuan kualitas untuk semua aset berikutnya.
+
+Isi golden scene sebaiknya mewakili game, termasuk bagian yang sulit: karakter pemain dengan animasi utama (diam, jalan, satu aksi, terkena serangan), satu atau dua musuh dengan animasinya, satu potong lingkungan dengan beberapa prop, UI utama, satu efek, serta pencahayaan dan kamera yang akan dipakai di game.
+
+Aturan untuk uji gaya:
+
+1. **Tetapkan batas waktu sebelum mulai,** misalnya satu atau dua minggu. Kalau hasil yang diinginkan tidak tercapai dalam batas itu, gaya tersebut perlu disederhanakan, atau tim perlu menerima bahwa produksinya akan lebih lama.
+2. **Catat waktu setiap aset** per jenis: karakter, animasi per klip, prop, tile atau modul, UI, efek. Pakai alur yang akan diulang selama produksi, tanpa lembur atau trik manual ([Pelajaran 1 Produksi](/belajar/produksi/01-scope-vertical-slice/#pipeline-bisa-diulang-dan-diukur)).
+3. **Uji di engine dan perangkat target.** Gaya yang bagus di kanvas bisa buram, berkedip, atau berat di engine.
+4. **Uji keterbacaan dan aksesibilitas,** dengan tes siluet, tes hitam-putih, dan simulator buta warna yang dibahas di bawah.
+5. **Kalau ada dua kandidat, uji keduanya dengan isi scene yang sama,** supaya hasilnya bisa dibandingkan.
+
+Vasseur menulis bahwa alur 3D *Dead Cells* berakar dari prototipe game jam sebelumnya. Saat membuat prototipe itu, ia mendapati bahwa alur animasi tradisional tidak bisa mengikuti kecepatan tim, sehingga tim beralih ke animasi 3D. Ia menyarankan eksperimen seperti itu, karena tim jadi tahu lebih awal alat apa yang harus dibuat.
+
+## Menghitung aset dan waktu
+
+Setelah uji gaya, kamu punya angka per jenis aset. Metodenya:
+
+1. **Daftar semua aset** dari dokumen desain: karakter, musuh, animasi per karakter, tile atau modul, prop, UI, efek, dan ilustrasi.
+2. **Tentukan waktu per unit** dalam orang-hari dari hasil uji gaya, sebagai rentang.
+3. **Kalikan** jumlah dengan waktu per unit.
+4. **Tambahkan pekerjaan pendukung:** revisi setelah playtest, impor dan pengaturan di engine, penempatan di level.
+5. **Tambahkan cadangan** untuk hal yang belum diketahui. Besarnya bergantung pada seberapa baru gaya itu bagi tim, seperti dijelaskan di [Pelajaran 1 Produksi](/belajar/produksi/01-scope-vertical-slice/#tulis-rentang-dan-sisakan-cadangan).
+6. **Bandingkan** dengan kapasitas art tim, lalu potong atau sederhanakan kalau tidak muat.
+
+<Aside type="caution" title="Ilustrasi, bukan data">
+Jumlah aset dan waktu per unit di tabel berikut adalah contoh untuk menunjukkan cara menghitung. Angka sebenarnya harus datang dari uji gaya timmu sendiri.
+</Aside>
+
+| Jenis aset | Jumlah | Orang-hari per unit | Total orang-hari |
+| --- | --- | --- | --- |
+| Karakter pemain (desain, model atau sprite dasar) | 1 | 4 sampai 6 | 4 sampai 6 |
+| Animasi karakter pemain (per klip) | 12 | 1 sampai 2 | 12 sampai 24 |
+| Musuh (desain dan aset dasar) | 8 | 2 sampai 3 | 16 sampai 24 |
+| Animasi musuh (per klip, 4 klip per musuh) | 32 | 0,5 sampai 1,5 | 16 sampai 48 |
+| Tile atau modul lingkungan (per set bioma) | 3 | 5 sampai 8 | 15 sampai 24 |
+| Prop | 40 | 0,25 sampai 0,5 | 10 sampai 20 |
+| UI dan ikon (per layar atau set) | 6 | 1 sampai 2 | 6 sampai 12 |
+| Efek | 15 | 0,5 sampai 1 | 7,5 sampai 15 |
+| **Subtotal aset** | | | **86,5 sampai 173** |
+| Pekerjaan pendukung (anggap 20%) | | | 17,3 sampai 34,6 |
+| Cadangan (anggap 25% dari subtotal ditambah pendukung) | | | 26 sampai 52 |
+| **Total** | | | **sekitar 130 sampai 260** |
+
+Membaca tabel ini:
+
+- **Rentangnya lebar** karena masih banyak yang belum diketahui. Persempit dengan catatan waktu sebenarnya setelah beberapa minggu produksi.
+- **Animasi sering menjadi kelompok terbesar.** Di contoh ini, animasi pemain dan musuh bersama-sama menyumbang sekitar sepertiga sampai dua perlima subtotal. Mengubah cara animasi, misalnya dari frame demi frame ke rig, atau mengurangi jumlah arah, mengubah baris ini paling banyak.
+- **Bandingkan dengan kapasitas.** Kalau satu artist bekerja penuh untuk art sekitar 4 hari per minggu (angka ilustrasi), 260 orang-hari berarti sekitar 65 minggu. Kalau jadwal hanya punya 40 minggu untuk art, ada yang harus dipotong.
+- **Potong lebar sebelum dalam.** Mengurangi jumlah musuh atau bioma biasanya lebih aman daripada menurunkan kualitas semua aset, seperti dibahas di [Pelajaran 1 Produksi](/belajar/produksi/01-scope-vertical-slice/#potong-lebar-sebelum-dalam).
+
+Lakukan hitungan yang sama untuk setiap gaya kandidat, dengan angka per unit dari uji gaya masing-masing.
+
+## Pixel art tidak otomatis murah
+
+Pixel art sering dipilih karena terlihat sederhana: gambarnya kecil, warnanya sedikit, dan alatnya terjangkau. Untuk aset diam yang kecil, kesan itu sering benar. Untuk game dengan banyak animasi, hitungannya bisa berbalik.
+
+Beberapa sumber biaya yang sering terlewat:
+
+- **Setiap frame digambar dengan tangan.** Seperti dibahas di [Pelajaran 1](/belajar/seni-visual/01-pixel-art/#animasi-frame-demi-frame), lebih banyak frame membuat gerakan lebih halus, tetapi setiap frame adalah gambar baru.
+- **Setiap arah adalah set gambar baru.** Karakter top-down dengan 8 arah dan 6 animasi berarti 48 klip. Membalik arah yang simetris membantu, tetapi tidak menghapus pekerjaannya ([Pelajaran 3](/belajar/seni-visual/03-2-5d/#biaya-di-game-25d)).
+- **Revisi mahal.** Mengubah desain karakter setelah animasinya selesai berarti mengubah setiap frame. Mengubah resolusi dasar di tengah produksi berarti menggambar ulang ([Pelajaran 1](/belajar/seni-visual/01-pixel-art/#resolusi-dasar-dan-ukuran-tile)).
+- **Keterampilan khusus.** Pixel art yang terbaca baik di 16 × 16 piksel adalah keahlian tersendiri. Setiap piksel ikut menentukan bentuk, sama seperti setiap segitiga di low-poly.
+
+Untuk tim yang artist-nya kuat di pixel art, dengan kamera tetap dan jumlah animasi terkendali, gaya ini bisa sangat efisien. Keputusannya sebaiknya diambil dari hitungan jumlah frame dan arah, karena ukuran gambar hampir tidak memberi tahu apa pun tentang jam kerja. *Dead Cells* menunjukkan jalan lain: tampilan pixel art dengan banyak animasi dibuat dari model 3D, karena satu artist tidak sanggup menggambar setiap frame.
+
+## Aksesibilitas gaya visual
+
+Gaya visual menentukan apakah pemain dengan gangguan penglihatan bisa memainkan game. Keputusan palet dan kontras paling murah diambil di style guide, sebelum ratusan aset dibuat.
+
+### Warna tidak boleh menjadi satu-satunya penanda
+
+Game Accessibility Guidelines menyebut kesulitan membedakan merah dan hijau sangat umum, memengaruhi sekitar 8 sampai 10% laki-laki, dan ada kondisi lain yang memengaruhi warna lain, termasuk katarak. Saran pedoman itu:
+
+- Pakai warna sebagai pendukung penanda lain, seperti teks, simbol, pola, atau bentuk, lalu periksa desain dengan simulator buta warna.
+- Kalau ketergantungan pada warna tidak bisa dihindari, izinkan pemain mengubah warna elemen tersebut. Filter yang menggeser seluruh palet game sering diterima buruk oleh pemain buta warna, karena ikut mengubah elemen yang tidak perlu diubah.
+- Untuk kebutuhan sederhana seperti membedakan dua tim, oranye lawan biru bisa dibedakan oleh tiga jenis buta warna yang paling umum, dan perbedaan terang-gelap (biru muda lawan oranye tua) menambah cakupannya.
+
+Xbox Accessibility Guidelines (XAG) 103 menegaskan bahwa warna tidak boleh dipakai sendirian untuk menyampaikan informasi, dan informasi penting butuh setidaknya satu penanda tambahan seperti bentuk, pola, ikon, atau label teks. Pedoman itu juga mengingatkan bahwa simulator tidak menggantikan pengujian dengan pemain buta warna. Tes siluet di [awal pelajaran](#apa-yang-harus-dikomunikasikan-gambar) membantu di sini: kalau teman dan musuh berbeda bentuk, warna menjadi penanda kedua.
+
+### Kontras
+
+Xbox Accessibility Guidelines 102 memberi batas rasio kontras antara elemen dan latarnya:
+
+| Elemen | Rasio kontras minimum menurut XAG 102 |
+| --- | --- |
+| Teks dan elemen visual berukuran standar yang memberi informasi penting | 4,5:1 |
+| Teks dan elemen visual berukuran besar | 3:1 |
+| Teks pada elemen yang tidak aktif | 3:1 |
+| Semua elemen UI saat mode kontras tinggi aktif | 7:1 |
+
+Pedoman itu menyebut teks besar sebagai, misalnya, 36 piksel di 1080p untuk PC dan 52 piksel di 1080p untuk konsol. Game Accessibility Guidelines juga merujuk ke rasio 4,5:1, dan menyarankan latar polos yang kontras di belakang teks dan UI, atau garis tepi dan bayangan yang jelas.
+
+XAG 102 juga berlaku untuk elemen gameplay seperti ikon target, indikator arah serangan, peta mini, dan karakter, dengan contoh pilihan garis tepi putih pada karakter dan platform. Untuk gaya visual, artinya: tulis di style guide bagaimana elemen penting dipisahkan dari latar (garis tepi, nilai terang-gelap, atau saturasi), beri aturan kontras sendiri untuk elemen gameplay di atas gaya yang sengaja berkontras rendah seperti palet pastel atau kabut tebal, dan ukur rasio kontras dengan alat pengukur, tidak hanya dengan mata.
+
+## Ilustrasi: tim tiga orang memilih gaya
+
+<Aside type="caution" title="Ilustrasi, bukan data">
+Tim, game, dan semua angka di bagian ini adalah contoh. Tujuannya menunjukkan cara memakai kerangka di pelajaran ini. Pelajaran ini tidak menyarankan gaya tertentu.
+</Aside>
+
+**Timnya.** Ayu memegang kode dan produksi. Fajar artist yang sudah tiga tahun membuat pixel art, tetapi baru sedikit memakai Blender. Nadia desainer level yang bisa modeling dasar di Blender dan membuat UI. Mereka punya sekitar 12 bulan, dan dari hitungan kapasitas Ayu, art mendapat sekitar 200 orang-hari.
+
+**Gamenya.** Petualangan top-down di enam pulau, dengan sekitar 12 jenis makhluk. Makhluk harus mudah dibedakan dari jauh, jalan dan tebing harus terbaca jelas, dan suasananya hangat. Desain awal meminta kamera yang bisa diputar 90° supaya pemain bisa melihat jalan di balik bangunan.
+
+**Dua kandidat.** Fajar mengusulkan pixel art karena keahliannya, dan semua orang awalnya menganggap pixel art lebih murah. Nadia mengusulkan low-poly 3D dengan tekstur palet, karena kamera yang berputar.
+
+**Uji gaya.** Tim memberi masing-masing kandidat dua minggu, dengan isi yang sama: satu karakter pemain dengan empat animasi, satu makhluk dengan tiga animasi, satu potong pantai dengan prop, dan bar nyawa. Hasil yang mereka catat:
+
+```text title="Ilustrasi: catatan uji gaya, dalam orang-hari"
+                          pixel art           low-poly 3D
+karakter pemain           3                   5 (termasuk rig pertama)
+animasi pemain, per klip  1,5 (4 arah)        1
+makhluk pertama           2                   3 (rig baru)
+animasi makhluk, per klip 1 (4 arah)          0,75
+modul pantai              4                   5
+prop, per buah            0,3                 0,4
+kamera berputar 90°       semua bangunan       tidak butuh gambar tambahan
+                          digambar 4 sisi
+```
+
+**Menghitung.** Dengan daftar aset dari dokumen desain (12 makhluk, 4 klip per makhluk, 10 klip pemain, 6 set pulau, sekitar 60 prop, ditambah UI dan efek), lalu ditambah 20% pekerjaan pendukung dan 25% cadangan, tim mendapat perkiraan kasar:
+
+```text title="Ilustrasi: perkiraan total art"
+pixel art, kamera berputar     sekitar 290 sampai 340 orang-hari
+pixel art, kamera tetap        sekitar 190 sampai 230 orang-hari
+low-poly 3D, kamera berputar   sekitar 200 sampai 250 orang-hari
+kapasitas art                  sekitar 200 orang-hari
+```
+
+Biaya terbesar pixel art di sini datang dari bangunan yang harus digambar dari empat sisi dan dari animasi empat arah. Ukuran gambarnya hampir tidak berpengaruh. Low-poly lebih mahal di awal karena rig pertama dan karena Fajar perlu belajar, tetapi makhluk berikutnya bisa memakai kerangka dan sebagian animasi yang sama.
+
+**Pertanyaan yang diajukan tim.** Apakah kamera berputar memang penting? Ayu dan Nadia mencoba prototipe gameplay dengan kamera tetap dan bangunan yang menjadi transparan saat pemain di belakangnya. Hasil playtest dengan lima teman menunjukkan bahwa pemain tidak merasa kehilangan apa-apa.
+
+**Keputusan.** Tim memilih pixel art dengan kamera tetap, dan mencatat alasannya: perkiraannya paling dekat dengan kapasitas, keahlian utama tim ada di pixel art, dan kamera berputar dipotong berdasarkan playtest. Untuk menutup selisih yang tersisa, arah kiri makhluk dibuat dengan membalik arah kanan, dan dua pulau ditandai *could* di daftar MoSCoW. Tim juga mencatat kapan keputusan ini ditinjau ulang: kalau jumlah makhluk naik di atas 15, atau kalau playtest menunjukkan pemain kesulitan melihat jalan di balik bangunan. Tim lain dengan artist 3D berpengalaman, atau dengan game yang benar-benar butuh kamera berputar, bisa sampai ke keputusan berbeda dengan cara hitung yang sama.
+
+**Style guide pertama.** Fajar menulis halaman pertama dari golden scene: resolusi dasar 384 × 216 dengan tile 16 piksel, palet 32 warna dengan dua warna khusus bahaya, garis tepi gelap satu piksel untuk makhluk dan karakter, cahaya dari kiri atas, makhluk ramah berbentuk bulat dan makhluk berbahaya bersudut. Makhluk berbahaya juga diberi ikon kecil saat menyerang, supaya bahaya tidak hanya dibedakan dengan warna.
+
+## Kesalahan umum
+
+### Memilih gaya dari selera, menghitung belakangan
+
+```text title="✗ Keliru"
+"kita suka gaya game X, ayo pakai itu"
+tiga bulan kemudian: animasi baru selesai seperempat
+```
+
+```text title="✓ Benar"
+uji gaya dengan batas waktu → angka per jenis aset
+jumlah aset × angka per unit + pendukung + cadangan
+bandingkan dengan kapasitas sebelum berkomitmen
+```
+
+Selera tetap penting, karena tim harus betah dengan gayanya selama berbulan-bulan. Hitungan memastikan selera itu bisa dibiayai.
+
+### Golden scene yang tidak mewakili game
+
+```text title="✗ Keliru"
+golden scene: satu karakter diam di depan latar yang dilukis lama
+tanpa animasi, tanpa UI, tanpa efek, tidak diuji di engine
+```
+
+```text title="✓ Benar"
+karakter dan musuh dengan animasi utama, lingkungan, UI, efek
+diuji di engine, di perangkat target, dengan kamera game sebenarnya
+```
+
+Scene yang hanya berisi bagian paling mudah memberi angka yang terlalu optimistis.
+
+### Hanya warna yang membedakan informasi penting
+
+```text title="✗ Keliru"
+teman bergaris hijau, musuh bergaris merah, tanpa perbedaan lain
+```
+
+```text title="✓ Benar"
+bentuk atau ikon berbeda untuk teman dan musuh
+warna sebagai penanda kedua, bisa diubah pemain
+kontras diukur, minimal 4,5:1 untuk elemen berukuran standar (XAG 102)
+```
+
+Pemain buta warna kehilangan informasi yang hanya disampaikan lewat warna.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan untuk game yang sedang kamu rencanakan, atau untuk ide game kecil yang kamu buat khusus untuk latihan ini.
+
+1. **Kebutuhan dan tim.** Tulis lima hal yang harus bisa dibaca pemain dalam satu detik, dan bagaimana masing-masing dibedakan (bentuk, terang-gelap, warna, gerakan, posisi). Lalu buat tabel jenis aset dengan nama pembuatnya, dan tandai yang belum punya pembuat.
+2. **Dua kandidat.** Pilih dua gaya dari [tabel perbandingan](#perbandingan-enam-gaya). Untuk setiap gaya, tulis isi setiap kolom khusus untuk game-mu, misalnya berapa arah dan animasi per karakter.
+3. **Uji gaya kecil.** Dengan batas waktu tiga hari, buat satu karakter dengan dua animasi dan satu potong lingkungan. Catat waktu setiap aset, impor ke engine, dan uji di perangkat target.
+4. **Hitung jadwal.** Pakai metode di bagian [menghitung aset dan waktu](#menghitung-aset-dan-waktu) dengan angka dari latihan 3. Bandingkan dengan waktu yang kamu punya, lalu tulis apa yang dipotong lebih dulu.
+5. **Style guide satu halaman.** Tulis palet (dengan warna khusus bahaya), bahasa bentuk, proporsi, garis, dan arah cahaya. Uji screenshot dari latihan 3 dengan tes hitam-putih dan simulator buta warna, lalu ukur kontras teks UI dan bandingkan dengan tabel XAG 102.

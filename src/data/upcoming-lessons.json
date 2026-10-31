@@ -3,29 +3,13 @@
   "lanskap-engine": [],
   "desain-game": [
     {
-      "num": 6,
-      "title": "Playtesting",
-      "subtitle": "Merencanakan sesi, mengamati tanpa mengarahkan, dan memilah masukan."
-    },
-    {
       "num": 7,
       "title": "Dokumentasi Desain",
       "subtitle": "Dari dokumen desain panjang ke one-pager dan prototipe."
     }
   ],
-  "produksi": [
-    {
-      "num": 6,
-      "title": "Postmortem",
-      "subtitle": "Menulis evaluasi proyek yang jujur dan berguna untuk proyek berikutnya."
-    }
-  ],
+  "produksi": [],
   "bisnis-indie": [
-    {
-      "num": 6,
-      "title": "Legal dan IP",
-      "subtitle": "Badan usaha, kontrak, kepemilikan aset, merek, dan lisensi aset pihak ketiga."
-    },
     {
       "num": 7,
       "title": "Bekerja dengan Publisher dan Mitra",
@@ -33,13 +17,7 @@
     }
   ],
   "industri-karier": [],
-  "seni-visual": [
-    {
-      "num": 6,
-      "title": "Memilih Gaya Visual",
-      "subtitle": "Menimbang pixel art, 2D, 2.5D, dan 3D untuk tim dan jadwalmu."
-    }
-  ],
+  "seni-visual": [],
   "web-threejs": [
     {
       "num": 5,
