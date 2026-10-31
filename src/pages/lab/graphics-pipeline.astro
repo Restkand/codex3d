@@ -1,12 +1,12 @@
 ---
 /**
- * Lab 3D: halaman mandiri (tanpa LearnLayout), memuat eksperimen Three.js layar penuh.
+ * Lab Graphics Pipeline (scene lama yang dibedah di Bab Tambahan Web & Three.js): halaman mandiri (tanpa LearnLayout), memuat eksperimen Three.js layar penuh.
  * Seluruh logika ada di src/experiment/, dimulai dari main.js.
  */
-import { SITE } from '../site.config.mjs'
-import SocialMeta from '../components/SocialMeta.astro'
-import { withBase } from '../lib/inline.js'
-import BottomNav from '../components/BottomNav.astro'
+import { SITE } from '../../site.config.mjs'
+import SocialMeta from '../../components/SocialMeta.astro'
+import { withBase } from '../../lib/inline.js'
+import BottomNav from '../../components/BottomNav.astro'
 ---
 
 <!doctype html>
@@ -14,9 +14,9 @@ import BottomNav from '../components/BottomNav.astro'
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Lab 3D · {SITE.name}</title>
+    <title>Graphics Pipeline · Lab · {SITE.name}</title>
     <meta name="description" content="Scene WebGL interaktif dengan Three.js dan GSAP, dibedah di Bab Tambahan Web & Three.js." />
-    <SocialMeta title={`Lab 3D · ${SITE.name}`} description="Scene WebGL interaktif dengan Three.js dan GSAP, dibedah di Bab Tambahan Web & Three.js." />
+    <SocialMeta title={`Graphics Pipeline · Lab · ${SITE.name}`} description="Scene WebGL interaktif dengan Three.js dan GSAP, dibedah di Bab Tambahan Web & Three.js." />
   </head>
   <body>
     <!-- Kanvas fixed di belakang; konten HTML di bawah ini yang membuat halaman bisa di-scroll -->
@@ -56,12 +56,12 @@ import BottomNav from '../components/BottomNav.astro'
         <p class="section__eyebrow">03 &middot; Raycaster</p>
         <h2 class="section__title">Sinar dari kursor</h2>
         <p class="section__text">Sebuah sinar ditembakkan dari kamera melewati posisi kursor. Jika sinar mengenai objek, objek bereaksi.</p>
-        <a class="section__link" href={withBase('/')}>Kembali ke {SITE.name} →</a>
+        <a class="section__link" href={withBase("/lab/")}>Kembali ke Lab Krekit →</a>
       </section>
     </main>
 
     <script>
-      import '../experiment/main.js'
+      import '../../experiment/main.js'
     </script>
     <BottomNav />
   </body>

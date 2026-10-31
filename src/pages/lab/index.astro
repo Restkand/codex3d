@@ -1,0 +1,288 @@
+---
+/**
+ * Lab Krekit: "Bedah Krekit". Satu panggung 3D dengan Krekit dan lima percobaan yang bisa diubah.
+ * Setiap percobaan memperlihatkan satu fundamental (segitiga, shading, delta time, easing, shader)
+ * dan menautkan ke pelajaran yang membahasnya. Logika ada di src/site/lab.js.
+ * Scene lama (dibedah di Bab Tambahan Web & Three.js) pindah ke /lab/graphics-pipeline/.
+ */
+import { SITE } from '../../site.config.mjs'
+import SocialMeta from '../../components/SocialMeta.astro'
+import BottomNav from '../../components/BottomNav.astro'
+import { withBase } from '../../lib/inline.js'
+import '@fontsource-variable/bricolage-grotesque/opsz.css'
+import '../../site/lab.css'
+
+const description = 'Bedah Krekit: lihat segitiganya, ganti shading, atur frame rate dan delta time, coba easing, dan ubah shader auranya.'
+
+/** Lapisan percobaan Segitiga: Krekit dibangun dari wireframe sampai tampilan akhirnya (dipakai juga oleh lab.js) */
+const layers = [
+  { label: 'Segitiga', caption: 'Inilah Krekit di mata GPU: kumpulan segitiga. Belum ada warna, belum ada cahaya.' },
+  { label: 'Permukaan', caption: 'Segitiga diisi warna dan tekstur. Tanpa cahaya, bentuknya terlihat datar seperti tempelan kertas.' },
+  { label: 'Cahaya', caption: 'Cahaya dihitung untuk setiap permukaan. Sisi yang menghadap cahaya lebih terang, jadi bentuk bulatnya mulai terasa.' },
+  { label: 'Detail', caption: 'Garis tepi dan aura ditambahkan. Inilah Krekit yang kamu kenal. Coba ketuk dia.' },
+]
+
+const experiments = [
+  {
+    id: 'segitiga',
+    label: 'Segitiga',
+    title: 'Semua bentuk 3D tersusun dari segitiga',
+    text: [
+      'GPU hanya tahu cara menggambar segitiga. Sebelum Krekit terlihat seperti telur yang kamu kenal, ia melewati beberapa lapisan: bentuk dari segitiga, permukaan berwarna, perhitungan cahaya, lalu detail akhir.',
+      'Ketuk Krekit atau tombol Lanjut untuk membangunnya selangkah demi selangkah.',
+    ],
+    links: [
+      { href: '/belajar/fondasi-engine/03-permukaan/#mesh-titik-dan-segitiga', label: 'Pelajaran: Mesh, Material, dan Cahaya' },
+      { href: '/kamus/geometri/mesh/', label: 'Kamus: Mesh' },
+    ],
+  },
+  {
+    id: 'shading',
+    label: 'Shading',
+    title: 'Cahaya menentukan warna permukaan',
+    text: [
+      'Shading menghitung warna setiap titik permukaan dari arah cahaya. Krekit memakai toon shading: terang dan gelapnya dibuat bertingkat seperti kartun.',
+      'Mode standar memakai model PBR yang lebih realistis. Tanpa cahaya, yang tersisa hanya warna dasar, jadi bentuknya terlihat datar.',
+      'Garis tepi gelap dibuat dengan trik inverted hull: salinan mesh yang sedikit lebih besar, digambar dari sisi dalam dengan warna gelap.',
+    ],
+    links: [
+      { href: '/belajar/fondasi-engine/03-permukaan/#material-dan-pbr', label: 'Pelajaran: Material dan PBR' },
+      { href: '/kamus/shader/toon-shading/', label: 'Kamus: Toon shading' },
+    ],
+  },
+  {
+    id: 'delta',
+    label: 'Delta time',
+    title: 'Kecepatan yang adil di semua layar',
+    text: [
+      'Game menggambar ulang layar puluhan kali per detik. Kalau Krekit diputar sejumlah tetap di setiap frame, putarannya ikut melambat saat frame rate turun.',
+      'Dengan delta time, putaran dikalikan waktu sejak frame sebelumnya. Hasilnya, Krekit berputar sama cepat di HP lama maupun monitor 144 Hz.',
+      'Coba pilih 15 FPS, lalu matikan delta time dan bandingkan kecepatannya.',
+    ],
+    links: [
+      { href: '/belajar/fondasi-engine/01-frame/#delta-time-kecepatan-yang-adil-di-semua-layar', label: 'Pelajaran: Bagaimana Sebuah Frame Lahir' },
+      { href: '/kamus/dasar/delta-time/', label: 'Kamus: Delta time' },
+    ],
+  },
+  {
+    id: 'easing',
+    label: 'Easing',
+    title: 'Gerakan yang terasa punya berat',
+    text: [
+      'Easing mengatur percepatan sebuah gerakan. Lompatan linear bergerak dengan kecepatan tetap, jadi terasa kaku seperti robot.',
+      'Squash and stretch membuat Krekit memipih saat mendarat dan memanjang saat melompat, sehingga lompatannya terasa punya berat.',
+    ],
+    links: [
+      { href: '/belajar/fondasi-engine/07-animasi/#tween-dan-easing-rasa-sebuah-gerakan', label: 'Pelajaran: Animasi' },
+      { href: '/belajar/desain-game/02-game-feel/#umpan-balik-yang-menguatkan-aksi', label: 'Pelajaran: Game Feel' },
+      { href: '/kamus/animasi/easing/', label: 'Kamus: Easing' },
+    ],
+  },
+  {
+    id: 'shader',
+    label: 'Shader',
+    title: 'Aura yang digambar oleh shader',
+    text: [
+      'Aura di sekitar Krekit digambar oleh shader, program kecil yang dijalankan GPU untuk setiap titik dan setiap piksel.',
+      'Slider di bawah mengubah uniform, yaitu nilai yang dikirim dari JavaScript ke shader. Waktu juga dikirim sebagai uniform di setiap frame, itulah yang membuat auranya bergelombang.',
+    ],
+    links: [
+      { href: '/belajar/fondasi-engine/04-shader/#data-yang-masuk-ke-shader-uniform-attribute-varying', label: 'Pelajaran: Shader' },
+      { href: '/kamus/shader/uniform/', label: 'Kamus: Uniform' },
+    ],
+  },
+]
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0b10" />
+    <title>Lab · {SITE.name}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <SocialMeta title={`Bedah Krekit · Lab · ${SITE.name}`} description={description} />
+  </head>
+  <body class="lab">
+    <header class="labbar">
+      <a class="labbar__brand" href={withBase('/')}>
+        <img src={withBase('/favicon.svg')} alt="" width="22" height="22" />
+        <span>{SITE.name}</span>
+      </a>
+      <nav class="labbar__nav" aria-label="Utama">
+        <a href={withBase('/belajar/')}>Belajar</a>
+        <a href={withBase('/kamus/')}>Kamus</a>
+        <a href={withBase('/lab/')} aria-current="page">Lab</a>
+        <a href={SITE.repo}>GitHub</a>
+      </nav>
+    </header>
+
+    <main class="labmain">
+      <div class="labstage" data-stage>
+        <canvas class="labstage__canvas" data-lab-canvas role="img" aria-label="Krekit dalam 3D. Ketuk Krekit untuk melompat."></canvas>
+        <p class="labstage__hint" data-hint>Ketuk Krekit untuk melompat</p>
+        <output class="labstage__readout" data-readout></output>
+        <p class="labstage__fallback" data-fallback hidden>Browser ini belum bisa menampilkan 3D (WebGL). Penjelasan setiap percobaan tetap bisa kamu baca di bawah.</p>
+      </div>
+
+      <section class="labpanel" aria-labelledby="lab-title">
+        <p class="labpanel__eyebrow">Lab</p>
+        <h1 class="labpanel__title" id="lab-title">Bedah Krekit</h1>
+        <p class="labpanel__lead">Krekit dibangun dari bahan yang sama dengan game 3D lainnya. Pilih satu percobaan, ubah pengaturannya, lalu lihat apa yang berubah.</p>
+
+        <div class="labtabs" role="tablist" aria-label="Percobaan" id="lab-tabs">
+          {
+            experiments.map((exp, i) => (
+              <button class="labtab" type="button" role="tab" id={`tab-${exp.id}`} aria-controls={`exp-${exp.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-tab={exp.id}>
+                <span class="labtab__num">{String(i + 1).padStart(2, '0')}</span>
+                <span class="labtab__label">{exp.label}</span>
+              </button>
+            ))
+          }
+        </div>
+
+        {
+          experiments.map((exp, i) => (
+            <article class="labexp" role="tabpanel" id={`exp-${exp.id}`} aria-labelledby={`tab-${exp.id}`} data-exp={exp.id} hidden={i !== 0}>
+              <h2 class="labexp__title">{exp.title}</h2>
+              {exp.text.map((paragraph) => (
+                <p>{paragraph}</p>
+              ))}
+
+              <div class="labctl">
+                {exp.id === 'segitiga' && (
+                  <>
+                    <p class="labctl__label" id="label-layer">Lapisan</p>
+                    <div class="layers" role="radiogroup" aria-labelledby="label-layer" data-choice="layer" data-layers={JSON.stringify(layers)}>
+                      {layers.map((layer, n) => (
+                        <button type="button" role="radio" aria-checked={n === 0 ? 'true' : 'false'} data-value={String(n + 1)}>
+                          <span class="layers__num">{n + 1}</span>
+                          {layer.label}
+                        </button>
+                      ))}
+                    </div>
+                    <p class="layers__caption" data-layer-caption aria-live="polite">
+                      {layers[0].caption}
+                    </p>
+                    <button class="btn" type="button" data-action="layer-next">
+                      Lanjut: {layers[1].label} →
+                    </button>
+                  </>
+                )}
+
+                {exp.id === 'shading' && (
+                  <>
+                    <p class="labctl__label" id="label-shading">Model shading</p>
+                    <div class="seg" role="radiogroup" aria-labelledby="label-shading" data-choice="shading">
+                      <button type="button" role="radio" aria-checked="true" data-value="toon">Toon</button>
+                      <button type="button" role="radio" aria-checked="false" data-value="standard">Standar (PBR)</button>
+                      <button type="button" role="radio" aria-checked="false" data-value="unlit">Tanpa cahaya</button>
+                    </div>
+                    <button class="toggle" type="button" aria-pressed="true" data-toggle="outline">
+                      Garis tepi
+                    </button>
+                  </>
+                )}
+
+                {exp.id === 'delta' && (
+                  <>
+                    <p class="labctl__label" id="label-fps">Frame rate</p>
+                    <div class="seg" role="radiogroup" aria-labelledby="label-fps" data-choice="fps">
+                      <button type="button" role="radio" aria-checked="false" data-value="15">15 FPS</button>
+                      <button type="button" role="radio" aria-checked="false" data-value="30">30 FPS</button>
+                      <button type="button" role="radio" aria-checked="true" data-value="0">Ikuti layar</button>
+                    </div>
+                    <button class="toggle" type="button" aria-pressed="true" data-toggle="delta">
+                      Pakai delta time
+                    </button>
+                  </>
+                )}
+
+                {exp.id === 'easing' && (
+                  <>
+                    <p class="labctl__label" id="label-ease">Easing</p>
+                    <div class="seg" role="radiogroup" aria-labelledby="label-ease" data-choice="ease">
+                      <button type="button" role="radio" aria-checked="false" data-value="linear">Linear</button>
+                      <button type="button" role="radio" aria-checked="true" data-value="halus">Halus</button>
+                      <button type="button" role="radio" aria-checked="false" data-value="memantul">Memantul</button>
+                      <button type="button" role="radio" aria-checked="false" data-value="elastis">Elastis</button>
+                    </div>
+                    <figure class="curve">
+                      <svg viewBox="0 0 120 80" aria-hidden="true">
+                        <path class="curve__grid" d="M10 70H110M10 10V70" />
+                        <path class="curve__line" data-curve d="" />
+                      </svg>
+                      <figcaption>Kurva easing: posisi (atas) terhadap waktu (kanan)</figcaption>
+                    </figure>
+                    <button class="toggle" type="button" aria-pressed="true" data-toggle="squash">
+                      Squash and stretch
+                    </button>
+                    <button class="btn" type="button" data-action="hop">
+                      Lompat
+                    </button>
+                  </>
+                )}
+
+                {exp.id === 'shader' && (
+                  <>
+                    <label class="range">
+                      <span>Tinggi gelombang <code>uWaveAmp</code></span>
+                      <input type="range" min="0" max="0.15" step="0.005" value="0.03" data-uniform="uWaveAmp" />
+                    </label>
+                    <label class="range">
+                      <span>Rapat gelombang <code>uWaveFreq</code></span>
+                      <input type="range" min="1" max="16" step="0.5" value="6" data-uniform="uWaveFreq" />
+                    </label>
+                    <label class="range">
+                      <span>Kecerahan <code>uOpacity</code></span>
+                      <input type="range" min="0" max="0.6" step="0.01" value="0.1" data-uniform="uOpacity" />
+                    </label>
+                    <p class="labctl__label" id="label-color">Warna aura</p>
+                    <div class="swatches" role="radiogroup" aria-labelledby="label-color" data-choice="color">
+                      <button type="button" role="radio" aria-checked="true" data-value="#7ff0ff" style="--c:#7ff0ff" aria-label="Sian" />
+                      <button type="button" role="radio" aria-checked="false" data-value="#ffcc33" style="--c:#ffcc33" aria-label="Kuning" />
+                      <button type="button" role="radio" aria-checked="false" data-value="#ff5ce1" style="--c:#ff5ce1" aria-label="Merah muda" />
+                      <button type="button" role="radio" aria-checked="false" data-value="#7cff6b" style="--c:#7cff6b" aria-label="Hijau" />
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <ul class="labexp__links">
+                {exp.links.map((link) => (
+                  <li>
+                    <a href={withBase(link.href)}>{link.label} →</a>
+                  </li>
+                ))}
+              </ul>
+
+              <nav class="labnext" aria-label="Pindah percobaan">
+                {i > 0 && (
+                  <button class="labnext__prev" type="button" data-go={experiments[i - 1].id}>
+                    ← {experiments[i - 1].label}
+                  </button>
+                )}
+                {i < experiments.length - 1 && (
+                  <button class="labnext__next" type="button" data-go={experiments[i + 1].id}>
+                    Berikutnya: {experiments[i + 1].label} →
+                  </button>
+                )}
+              </nav>
+            </article>
+          ))
+        }
+
+        <p class="labpanel__foot">
+          Mencari scene lama? <a href={withBase('/lab/graphics-pipeline/')}>Graphics Pipeline</a> masih ada dan dibedah di Bab Tambahan Web &amp; Three.js.
+        </p>
+      </section>
+    </main>
+
+    <script>
+      import '../../site/lab.js'
+    </script>
+    <BottomNav />
+  </body>
+</html>

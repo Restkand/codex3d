@@ -1,0 +1,586 @@
+/* =========================================================================
+   Lab Krekit (Bedah Krekit)
+   Desktop (≥900px): panggung 3D di kiri, panel percobaan di kanan, satu layar penuh.
+   HP: panggung menempel di atas saat di-scroll, panel di bawahnya, navigasi bawah dari BottomNav.
+   ========================================================================= */
+
+:root {
+  --bg: #0b0b10;
+  --panel: #14141c;
+  --panel-2: #1f1f2b;
+  --line: rgba(255, 255, 255, 0.09);
+  --text: #f2f2f5;
+  --muted: #a3a3b5;
+  --accent: #ffcc33;
+  --glow: #7ff0ff;
+  --mono: ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace;
+  --display: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+  --bar-h: 56px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+a {
+  color: var(--glow);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Bilah atas ---------- */
+
+.labbar {
+  position: relative;
+  z-index: 5;
+  height: var(--bar-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 clamp(16px, 3vw, 32px);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.labbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  text-decoration: none;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 19px;
+  letter-spacing: -0.02em;
+}
+
+.labbar__nav {
+  display: flex;
+  gap: 22px;
+}
+
+.labbar__nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.labbar__nav a:hover,
+.labbar__nav a[aria-current='page'] {
+  color: var(--text);
+}
+
+/* ---------- Panggung 3D ---------- */
+
+.labstage {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(60% 55% at 50% 52%, rgba(0, 229, 255, 0.1), transparent 70%),
+    linear-gradient(rgba(127, 240, 255, 0.045) 1px, transparent 1px) 0 0 / 100% 40px,
+    var(--bg);
+}
+
+.labstage__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+  cursor: pointer;
+}
+
+.labstage__hint,
+.labstage__readout {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.labstage__hint {
+  top: 14px;
+  color: var(--muted);
+}
+
+.labstage__readout {
+  bottom: 14px;
+  padding: 7px 12px;
+  border: 1px solid rgba(127, 240, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(11, 11, 16, 0.75);
+  color: var(--glow);
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: 13px;
+}
+
+.labstage__readout:empty {
+  display: none;
+}
+
+.labstage__fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 24px;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* ---------- Panel percobaan ---------- */
+
+.labpanel {
+  padding: 24px clamp(16px, 4vw, 32px) 32px;
+}
+
+.labpanel__eyebrow {
+  margin: 0 0 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.labpanel__title {
+  margin: 0 0 10px;
+  font-family: var(--display);
+  font-size: clamp(32px, 4vw, 44px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.labpanel__lead {
+  margin: 0 0 20px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.labtabs {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
+}
+
+.labtabs::-webkit-scrollbar {
+  display: none;
+}
+
+.labtab {
+  flex: none;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  scroll-snap-align: start;
+}
+
+.labtab__num {
+  margin-right: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.labtab[aria-selected='true'] {
+  border-color: var(--accent);
+  background: rgba(255, 204, 51, 0.12);
+}
+
+.labtab[aria-selected='true'] .labtab__num {
+  color: var(--accent);
+}
+
+.labexp__title {
+  margin: 0 0 10px;
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.labexp p {
+  margin: 0 0 12px;
+  line-height: 1.6;
+  color: rgba(242, 242, 245, 0.86);
+}
+
+.labctl {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+}
+
+.labctl .labctl__label {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Tombol pilihan bersebelahan */
+.seg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.seg button,
+.toggle,
+.btn {
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.seg button {
+  flex: 1 1 auto;
+}
+
+.seg button[aria-checked='true'] {
+  border-color: var(--glow);
+  background: rgba(127, 240, 255, 0.12);
+  color: var(--glow);
+}
+
+/* Sakelar: titik di kiri menyala saat aktif */
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+}
+
+.toggle::before {
+  content: '';
+  flex: none;
+  width: 34px;
+  height: 20px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 10px 50%, var(--muted) 6px, transparent 7px),
+    rgba(255, 255, 255, 0.08);
+  transition: background 0.2s;
+}
+
+.toggle[aria-pressed='true']::before {
+  background:
+    radial-gradient(circle at 24px 50%, var(--bg) 6px, transparent 7px),
+    var(--glow);
+}
+
+.btn {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #1a1400;
+  font-weight: 700;
+}
+
+.btn:active,
+.seg button:active,
+.toggle:active,
+.labtab:active {
+  transform: translateY(1px);
+}
+
+/* Kurva easing */
+.curve {
+  margin: 0;
+}
+
+.curve svg {
+  display: block;
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+}
+
+.curve__grid {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.18);
+  stroke-width: 1;
+}
+
+.curve__line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.curve figcaption {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Slider uniform */
+.range {
+  display: grid;
+  gap: 6px;
+  font-size: 15px;
+}
+
+.range code {
+  margin-left: 6px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--glow);
+}
+
+.range input {
+  width: 100%;
+  height: 32px;
+  accent-color: var(--glow);
+}
+
+.swatches {
+  display: flex;
+  gap: 10px;
+}
+
+.swatches button {
+  width: 44px;
+  height: 44px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--c) 0 13px, transparent 14px), var(--panel-2);
+  cursor: pointer;
+}
+
+.swatches button[aria-checked='true'] {
+  border-color: var(--c);
+}
+
+/* Lapisan percobaan Segitiga: empat langkah bernomor */
+.layers {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.layers button {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  min-height: 56px;
+  padding: 8px 4px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel-2);
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.layers__num {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.layers button[aria-checked='true'] {
+  border-color: var(--glow);
+  background: rgba(127, 240, 255, 0.12);
+  color: var(--glow);
+}
+
+.layers .layers__caption,
+.layers__caption {
+  margin: 0;
+  min-height: 3em;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.labexp__links {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.labexp__links a {
+  display: inline-block;
+  padding: 4px 0;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.labexp__links a:hover {
+  text-decoration: underline;
+}
+
+/* Pindah ke percobaan sebelumnya / berikutnya */
+.labnext {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.labnext button {
+  min-height: 48px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.labnext .labnext__next {
+  flex: 1 1 auto;
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 700;
+  text-align: right;
+}
+
+.labpanel__foot {
+  margin: 28px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* ---------- Tata letak ---------- */
+
+@media (min-width: 900px) {
+  .lab {
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .labmain {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 420px;
+    height: calc(100svh - var(--bar-h));
+  }
+
+  .labpanel {
+    overflow-y: auto;
+    border-left: 1px solid var(--line);
+    background: rgba(20, 20, 28, 0.6);
+  }
+
+  .labtabs {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 899px) {
+  /* Panggung menempel di atas: perubahan langsung terlihat saat mengatur kontrol di bawahnya */
+  .labstage {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    height: min(44svh, 420px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* Kelima percobaan terlihat sekaligus sebagai deretan langkah, tanpa perlu digeser */
+  .labtabs {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    overflow: visible;
+    scroll-margin-top: calc(min(44svh, 420px) + 12px);
+  }
+
+  .labtab {
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    min-height: 58px;
+    padding: 8px 2px;
+    border-radius: 12px;
+    font-size: 12px;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .labtab__num {
+    margin: 0;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 767px) {
+  /* Navigasi utama pindah ke bilah bawah (BottomNav) */
+  .labbar__nav {
+    display: none;
+  }
+
+  .labbar {
+    --bar-h: 52px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle::before {
+    transition: none;
+  }
+}
