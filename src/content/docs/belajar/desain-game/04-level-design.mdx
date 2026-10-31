@@ -1,0 +1,529 @@
+---
+title: "Level Design"
+description: "Apa yang dikerjakan sebuah level, player metrics sebagai titik awal, jalur kritis dan jalur opsional, landmark dan cara mengarahkan perhatian, mengajarkan mekanik tanpa tutorial, ritme dan grafik intensitas, penempatan tantangan, alur kerja dari blockout ke art pass, perbedaan level 2D dan 3D, serta playtest level."
+fundamental: "Saat pemain tersesat atau mati berulang kali di tempat yang sama, penyebabnya sering ada di susunan level: bahaya muncul sebelum pemain sempat memahami alatnya, jarak lompat tidak cocok dengan kemampuan karakter, atau tidak ada yang menarik pandangan ke arah yang benar. Masalah seperti ini bisa ditemukan saat level masih berupa kotak abu-abu, asalkan kamu merencanakan apa yang dipelajari pemain di setiap bagian dan mengukurnya dari gerak karakter."
+kind: lesson
+minutes: 40
+status: draf
+lastReviewed: 2026-10-31
+terms:
+  - tilemap
+  - trigger
+  - character-controller
+  - camera
+krekit:
+  gambaran-besar: "Ingat level pertama dari game yang paling kamu suka. Kamu mungkin tidak sadar sedang diajari apa pun di sana."
+  apa-yang-dikerjakan-sebuah-level: "Coba tanyakan ke setiap bagian levelmu: bagian ini sedang mengajar, menguji, memberi hadiah, atau memberi napas?"
+  mulai-dari-player-metrics: "Ukur lompatanmu dulu. Celah yang dirancang dengan perasaan saja biasanya meleset."
+  tata-letak-dan-alur: "Pemain melihat ke arah ia bergerak. Kalau ada yang penting di atas kepala, beri alasan untuk menengadah."
+  mengajar-tanpa-tutorial: "Kenalkan mekanik di tempat yang aman. Bahaya bisa menunggu sampai pemain paham."
+  ritme-dan-pacing: "Tegang terus-menerus lama-lama terasa datar. Bagian yang tenang membuat bagian tegang terasa lagi."
+  menempatkan-tantangan: "Kalau pemain harus mengulang dua menit untuk mencoba satu lompatan lagi, yang ia rasakan biasanya kesal, jarang tertantang."
+  dari-blockout-ke-art-pass: "Godaan terbesar di tahap ini: menghias level yang belum pernah dimainkan orang lain."
+  level-2d-dan-3d: "Di game 2D kamera biasanya milikmu. Di game 3D, sering kali milik pemain."
+  playtest-level: "Diam itu sulit saat playtester tersesat di levelmu. Justru momen itu yang paling banyak mengajarimu."
+  contoh-merancang-satu-level-platformer-2d: "Satu mekanik, satu level. Kedengarannya sedikit, tapi cukup untuk berlatih semua yang ada di pelajaran ini."
+  kesalahan-umum: "Kesalahan pertama paling sering kutemui di level buatan pemula: bahaya yang muncul di layar bersamaan dengan mekanik barunya."
+sidebar:
+  order: 4
+  label: "4 · Level Design"
+quiz:
+  - q: "Di platformer-mu, karakter bisa melompat paling jauh 5 petak saat berlari penuh. Celah pertama di level 1 dibuat 5 petak dengan lubang mematikan di bawahnya. Apa masalah utamanya?"
+    options:
+      - "Tidak ada, celah 5 petak masih bisa dilompati"
+      - "Celah itu menuntut lompatan sempurna di batas kemampuan karakter, padahal pemain baru belum menguasai kontrolnya, dan kegagalan langsung dihukum"
+      - "Celahnya terlalu kecil dan membosankan"
+      - "Lubang mematikan seharusnya tidak pernah dipakai di platformer"
+    answer: 1
+    explain: "Player metrics menunjukkan batas kemampuan karakter. Celah di batas itu cocok untuk tantangan akhir, jarang untuk pembuka. Untuk awal level, pilih jarak yang jauh di bawah batas, dan taruh bahaya ringan atau tanpa bahaya di bawahnya."
+  - q: "Kamu ingin memperkenalkan pijakan rapuh yang runtuh setelah diinjak. Penempatan mana yang paling sesuai prinsip perkenalan yang aman?"
+    options:
+      - "Di atas lubang mematikan, supaya pemain langsung paham akibatnya"
+      - "Di atas tanah padat yang rendah, dengan koin di atasnya, sehingga pemain menginjaknya, melihatnya runtuh, dan jatuh tanpa kehilangan apa pun"
+      - "Di level terakhir, supaya ada kejutan"
+      - "Di layar tutorial berisi teks panjang sebelum level dimulai"
+    answer: 1
+    explain: "Pemain belajar paling cepat saat bisa mencoba dan gagal tanpa hukuman. Koin memberi alasan untuk naik, tanah padat membuat runtuhnya aman, dan pemain sempat melihat pijakan muncul lagi. Setelah itu baru mekaniknya digabung dengan bahaya."
+  - q: "Dalam pola teach, test, twist dari The Level Design Book, langkah twist berarti apa?"
+    options:
+      - "Mengulang aktivitas yang sama persis untuk ketiga kalinya"
+      - "Mengubah bingkai aktivitas yang sudah dipelajari, dengan petunjuk yang lebih sedikit, untuk melihat apakah pemain bisa mengingat dan memakainya"
+      - "Menambahkan cutscene yang menjelaskan mekanik"
+      - "Menghapus mekanik itu dari sisa game"
+    answer: 1
+    explain: "Teach mengenalkan aktivitas, test menguji apakah pemain bisa mengulang dan mengenalinya dengan bantuan petunjuk, dan twist mengubah konteksnya dengan petunjuk yang lebih sedikit. The Level Design Book juga mencatat bahwa beat twist sering diberi jarak, tidak langsung setelah test."
+  - q: "Grafik intensitas levelmu menunjukkan pertarungan berat tanpa jeda selama 12 menit. Dalam playtest, pemain mulai bermain asal-asalan di menit ke-8. Apa perbaikan yang paling masuk akal?"
+    options:
+      - "Menambah jumlah musuh supaya pemain kembali fokus"
+      - "Menyelipkan bagian berintensitas rendah, seperti area eksplorasi atau teka-teki ringan, di antara pertarungan"
+      - "Memperpanjang level supaya pemain terbiasa"
+      - "Menghapus grafik intensitas karena tidak ilmiah"
+    answer: 1
+    explain: "The Level Design Book menulis bahwa pemain menyesuaikan diri dengan intensitas tinggi yang berlangsung lama, lalu menjadi mati rasa. Bagian yang tenang berfungsi sebagai kontras. Angka intensitas memang perkiraan, tetapi tetap berguna untuk melihat pola seperti ini sebelum dan sesudah playtest."
+  - q: "Waktu produksi levelmu hampir habis. Di layout, ada ruangan samping berisi koin bonus yang tidak berada di jalur kritis. Bagaimana jalur kritis membantu keputusan ini?"
+    options:
+      - "Jalur kritis tidak berhubungan dengan cakupan produksi"
+      - "Area di luar jalur kritis hanya dilihat sebagian pemain, jadi bisa dipertimbangkan untuk dipotong, asalkan tujuan pengalaman level tetap tercapai"
+      - "Semua area di luar jalur kritis wajib dihapus"
+      - "Ruangan samping harus dipindahkan ke jalur kritis supaya semua pemain melihatnya"
+    answer: 1
+    explain: "The Level Design Book memakai jalur kritis sebagai alat cakupan: bagian yang tidak dilalui semua pemain bisa dipertanyakan nilainya. Jawabannya tetap bergantung pada tujuan pengalaman. Jika level ini memang mengejar rasa penasaran dan penemuan, ruangan samping bisa jadi justru yang paling penting."
+  - q: "Saat playtest publik, playtester berputar-putar di satu ruangan selama dua menit dan tidak menemukan jalan keluar. Apa yang sebaiknya kamu lakukan?"
+    options:
+      - "Langsung menunjuk pintu keluar dan menjelaskan maksud desainmu"
+      - "Mengamati dan mencatat ke mana ia melihat dan mencoba pergi, lalu baru membantu jika ia benar-benar buntu atau levelnya rusak"
+      - "Menghentikan playtest karena levelnya jelas gagal"
+      - "Meminta playtester membaca dokumen desain dulu"
+    answer: 1
+    explain: "Untuk playtest publik, The Level Design Book menyebut perilaku pemain lebih penting daripada komentarnya, dan menyarankan menahan diri untuk tidak menyela atau menjelaskan. Catatan tentang ke mana pemain mencari jalan adalah bahan untuk memperbaiki penunjuk arah di level."
+sources:
+  - title: "How to make a level"
+    url: "https://book.leveldesignbook.com/process/overview"
+    publisher: "Robert Yang dkk., The Level Design Book"
+    accessed: 2026-10-31
+  - title: "Metrics"
+    url: "https://book.leveldesignbook.com/process/blockout/metrics"
+    publisher: "Robert Yang dkk., The Level Design Book"
+    accessed: 2026-10-31
+  - title: "Layout"
+    url: "https://book.leveldesignbook.com/process/layout"
+    publisher: "Robert Yang dkk., The Level Design Book"
+    accessed: 2026-10-31
+  - title: "Flow"
+    url: "https://book.leveldesignbook.com/process/layout/flow"
+    publisher: "Robert Yang dkk., The Level Design Book"
+    accessed: 2026-10-31
+  - title: "Critical path"
+    url: "https://book.leveldesignbook.com/process/layout/criticalpath"
+    publisher: "Robert Yang dkk., The Level Design Book"
+    accessed: 2026-10-31
+  - title: "Wayfinding"
+    url: "https://book.leveldesignbook.com/process/blockout/wayfinding"
+    publisher: "Robert Yang dkk., The Level Design Book"
+    accessed: 2026-10-31
+  - title: "Pacing"
+    url: "https://book.leveldesignbook.com/process/preproduction/pacing"
+    publisher: "Robert Yang dkk., The Level Design Book"
+    accessed: 2026-10-31
+  - title: "Blockout"
+    url: "https://book.leveldesignbook.com/process/blockout"
+    publisher: "Robert Yang dkk., The Level Design Book"
+    accessed: 2026-10-31
+  - title: "Playtesting"
+    url: "https://book.leveldesignbook.com/process/blockout/playtesting"
+    publisher: "Robert Yang dkk., The Level Design Book"
+    accessed: 2026-10-31
+  - title: "The Structure of Fun: Learning from Super Mario 3D Land's Director"
+    url: "https://www.gamedeveloper.com/design/the-structure-of-fun-learning-from-i-super-mario-3d-land-i-s-director"
+    publisher: "Christian Nutt, wawancara dengan Koichi Hayashida, Game Developer (2012)"
+    accessed: 2026-10-31
+  - title: "Ten Principles of Good Level Design (Part 1)"
+    url: "https://www.gamedeveloper.com/design/ten-principles-of-good-level-design-part-1-"
+    publisher: "Dan Taylor, blog di Game Developer (2013)"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menjelaskan apa yang dikerjakan sebuah level bagi pemain: mengajar, menguji, memberi hadiah, dan mengatur ritme pengalaman.
+- Memakai player metrics sebagai dasar ukuran celah, tinggi, dan jarak di level.
+- Merencanakan jalur kritis, jalur opsional, landmark, dan penunjuk arah yang membantu pemain menemukan jalannya.
+- Menyusun urutan yang mengajarkan satu mekanik tanpa layar tutorial, dimulai dari perkenalan yang aman.
+- Merencanakan ritme dengan grafik intensitas, lalu menempatkan tantangan dan checkpoint dengan kenaikan kesulitan yang wajar.
+- Menjalankan alur kerja dari layout, blockout, dan playtest sampai art pass.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: guru dan ruang kelas">
+Bayangkan guru yang baik di hari pertama pelajaran baru. Ia tidak langsung memberi ujian. Ia memperlihatkan satu contoh, membiarkan murid mencoba soal mudah, menaikkan kesulitan sedikit demi sedikit, menyelipkan soal yang memakai konsep itu dengan cara tak terduga, lalu menutup dengan soal yang menggabungkan semuanya. Di sela-selanya ada jeda. Level yang dirancang dengan baik bekerja dengan cara yang mirip, hanya saja papan tulisnya berupa pijakan, musuh, dan ruangan.
+</Aside>
+
+Tiga pelajaran sebelumnya membahas apa yang dilakukan pemain berulang kali ([core loop](/belajar/desain-game/01-core-loop/)), bagaimana aksi itu terasa di tangan ([game feel](/belajar/desain-game/02-game-feel/)), dan bagaimana aturan berubah menjadi pengalaman ([MDA](/belajar/desain-game/03-mda/)). Pelajaran ini membahas tempat semua itu terjadi: **level**, ruang yang disusun desainer supaya mekanik punya konteks.
+
+Di kartu loop Pelajaran 1 ada baris "yang berubah dari putaran ke putaran". Untuk banyak game, level adalah jawaban utama baris itu. Lompatan yang sama terasa berbeda saat celahnya melebar, saat pijakan bergerak, atau saat ada musuh di bawah. Dalam istilah MDA, level adalah bagian dari lapis mekanik yang paling sering diubah desainer untuk memancing dinamika tertentu.
+
+The Level Design Book, buku daring gratis tentang level design yang ditulis Robert Yang dan para kontributornya, membagi pembuatan level menjadi beberapa tahap: praproduksi, desain pertarungan (untuk game yang memakainya), layout, blockout, scripting, pencahayaan, seni lingkungan, dan rilis. Pelajaran ini mengikuti urutan kasar yang sama, dengan fokus pada keputusan desain yang paling sering dihadapi pemula.
+
+## Apa yang dikerjakan sebuah level
+
+Sebuah level punya beberapa tugas sekaligus. Saat merancang, ada gunanya menamai tugas setiap bagian:
+
+| Tugas | Artinya bagi pemain | Contoh di platformer |
+| --- | --- | --- |
+| **Mengajar** | Pemain memahami mekanik atau aturan baru | Pijakan rapuh pertama, di tempat yang aman |
+| **Menguji** | Pemain membuktikan ia bisa memakai yang sudah dipelajari | Rangkaian pijakan rapuh di atas lubang |
+| **Memberi hadiah** | Usaha pemain dibalas | Koin di jalur sulit, ruang rahasia, pemandangan dari puncak |
+| **Mengatur ritme** | Pemain mengalami naik turun tegang dan lega | Area aman dengan checkpoint setelah bagian sulit |
+
+Dan Taylor, dalam tulisannya tentang sepuluh prinsip level design yang baik, menulis bahwa sebuah level sebaiknya memperkenalkan mekanik baru atau memberi sentuhan baru pada mekanik lama, sehingga pemain menilai ulang cara bermainnya. Ia juga menulis bahwa level yang baik memberi tahu pemain apa yang harus dilakukan, tetapi tidak harus memberi tahu caranya. Tujuan yang jelas memberi arah, dan cara yang terbuka memberi ruang bagi pemain untuk menemukan solusinya sendiri.
+
+Sebelum menggambar apa pun, The Level Design Book menyarankan menulis setidaknya satu **tujuan pengalaman**: apa yang harus dipelajari, dirasakan, atau dilakukan pemain di level ini. Contoh dari buku itu, "ajari pemain lompat ganda di saluran air bertema fiksi ilmiah selama 5 menit", jauh lebih mudah dirancang daripada tujuan yang abstrak. Makin spesifik tujuannya, makin mudah setiap bagian level dinilai: bagian ini membantu tujuan atau tidak?
+
+## Mulai dari player metrics
+
+Semua ukuran di level bergantung pada kemampuan gerak karakter. Pelajaran 1 sudah menyinggung ini di bagian [prototipe greybox](/belajar/desain-game/01-core-loop/#prototipe-greybox-sebelum-konten) dan di Kesalahan umum-nya: setel lompatan dulu, baru susun level.
+
+The Level Design Book membedakan dua jenis ukuran:
+
+- **Player metrics** (disebut juga physics metrics): angka faktual yang diukur di engine, seperti ukuran karakter, kecepatan lari, dan tinggi lompat maksimum. Angka ini bisa diukur dan diverifikasi.
+- **Building metrics**: pedoman ukuran yang kamu tetapkan sendiri sesuai tujuan pengalaman, misalnya lebar lorong "biasa". Angka ini adalah keputusan desain.
+
+Untuk platformer 2D, player metrics yang paling sering dipakai:
+
+| Ukuran | Cara mengukur | Dipakai untuk |
+| --- | --- | --- |
+| Tinggi lompat maksimum | Lompat di tempat dengan tombol ditahan penuh, catat titik tertinggi kaki | Tinggi pijakan, tinggi dinding yang tidak boleh terlewati |
+| Tinggi lompat minimum | Tekan tombol lompat sesingkat mungkin | Langit-langit rendah, celah sempit di atas kepala |
+| Jarak lompat maksimum | Lompat dari lari penuh, catat jarak mendarat di tanah yang rata | Celah terlebar yang masih mungkin |
+| Kecepatan lari | Waktu tempuh untuk jarak tertentu | Waktu reaksi terhadap bahaya, durasi bagian level |
+| Ukuran tubuh karakter | Lebar dan tinggi [collider](/kamus/fisika/collider/) | Lebar lorong dan celah yang bisa dilewati |
+
+Jika level dibangun dengan [tilemap](/kamus/2d/tilemap/), tulis semua angka itu dalam satuan petak. Contoh: "tinggi lompat 3 petak, jarak lompat maksimum 5 petak". Dengan cara ini kamu bisa merancang di kertas kotak-kotak, dan susunan di kertas langsung cocok dengan grid di engine.
+
+Dari angka itu kamu bisa menentukan pedoman sendiri, misalnya celah **nyaman** (jauh di bawah batas, hampir semua pemain berhasil), celah **menantang** (mendekati batas), dan celah **mustahil** (di atas batas, dipakai untuk menghalangi). Celah mustahil sama pentingnya: jika dinding seharusnya tidak bisa dilompati, tingginya harus jelas di atas tinggi lompat maksimum, dengan sedikit selisih untuk berjaga-jaga.
+
+The Level Design Book memberi dua peringatan. Pertama, ukuran sebaiknya ditetapkan di tahap blockout, karena ukuran tidak bisa diuji di sketsa kertas, dan jika baru diubah setelah art pass, perubahannya makan banyak waktu, bahkan bisa memaksa level dirancang ulang. Kedua, angka tidak menjamin hasil. Menurut buku itu, pengalaman bermain yang bagus tidak bisa dicapai hanya dengan mengikuti ukuran. Metrics membantu mengambil keputusan, dan rasa yang benar tetap harus dicek dengan bermain.
+
+Angka-angka ini juga bergantung pada game feel. Coyote time, jump buffer, dan lompatan yang bisa diatur dari [Pelajaran 2](/belajar/desain-game/02-game-feel/#respons-input) mengubah seberapa mudah celah tertentu dilompati. Jika kamu mengubah salah satunya, ukur ulang lompatanmu.
+
+## Tata letak dan alur
+
+The Level Design Book memakai kata **layout** untuk dua hal: struktur keseluruhan level, dan gambar rencana level dari atas (atau dari samping untuk game 2D). Gambar layout bisa sesederhana coretan di serbet. Buku itu mengingatkan bahwa gambar layout tidak bisa memberi tahu apakah levelmu berhasil. Pemain tidak pernah memainkan gambarmu, jadi hanya blockout dan playtest yang bisa mulai menjawab pertanyaan itu.
+
+Konsep yang paling berguna saat menggambar layout adalah **flow**: bagaimana rasanya bergerak di dalam level. Apakah jalannya lurus atau berkelok, cepat atau lambat, mulus atau tersendat? Buku itu menekankan bahwa flow yang tidak efisien tidak otomatis buruk. Belokan tajam dan jalan buntu bisa menambah ketegangan di game horor, sedangkan game balap arkade lebih cocok dengan belokan lebar yang mulus. Flow yang baik adalah flow yang mendukung tujuan pengalaman.
+
+<Aside type="caution" title="Dua arti kata flow">
+The Level Design Book juga mengingatkan agar flow dalam level design tidak tertukar dengan teori *flow* dalam desain game secara umum, yaitu kondisi pemain yang sangat larut saat keterampilan dan tantangan seimbang. Di pelajaran ini, flow selalu berarti rasa bergerak di dalam level.
+</Aside>
+
+### Jalur kritis dan jalur opsional
+
+**Jalur kritis** (*critical path*, kadang disebut *golden path*) adalah rute utama yang harus dilalui pemain untuk menyelesaikan level. Di gambar layout, tandai titik awal, pintu keluar, dan beat penting dengan nomor, lalu gambar rute pemain dengan panah.
+
+The Level Design Book menyebut dua kegunaan jalur kritis. Pertama, ia mengomunikasikan ritme level kepada anggota tim lain: apa yang terjadi, dan di mana. Kedua, ia membantu mengatur cakupan produksi. Bagian yang tidak berada di jalur kritis hanya dilihat sebagian pemain, jadi kamu bisa bertanya apakah bagian itu sepadan dengan biaya membuatnya. Buku itu juga mengingatkan bahwa jalur kritis adalah rencana ideal. Kenyataannya, banyak pemain berkeliaran, menjelajah, berlama-lama, atau bingung.
+
+**Jalur opsional** adalah rute di luar jalur kritis: ruang rahasia, cabang yang lebih sulit, jalan memutar dengan hadiah. Jalur ini cocok untuk dua jenis pemain sekaligus. Pemain yang ingin cepat selesai tetap punya jalan yang jelas, sedangkan pemain yang suka menjelajah mendapat sesuatu untuk dicari. Dalam istilah MDA, jalur opsional sering melayani estetika Discovery dan Challenge tanpa memaksakannya ke semua pemain.
+
+Beberapa pedoman untuk jalur opsional:
+
+- **Jalur kritis harus tetap terbaca.** Jika cabang opsional terlihat lebih menarik daripada jalan utama, pemain bisa tersesat dan mengira cabang itu jalan yang benar.
+- **Hadiah sepadan dengan usaha.** Cabang yang sulit tetapi hanya berisi satu koin terasa seperti jebakan.
+- **Jalan kembali ke jalur kritis jelas.** Cabang yang berakhir buntu tanpa jalan pulang membuat pemain harus mengulang perjalanan.
+
+### Landmark dan garis pandang
+
+The Level Design Book memakai istilah **wayfinding** untuk proses pemain mengetahui di mana ia berada (orientasi) dan menemukan rute ke tujuannya (navigasi). Buku itu merujuk riset tentang peta mental, yang menyebut **landmark** sebagai salah satu unsurnya: benda yang mudah dikenali dan dipakai sebagai titik acuan.
+
+Di level, landmark bisa berupa menara di kejauhan, pohon besar yang berbeda dari pohon lain, atau bangunan dengan warna mencolok. Landmark yang terlihat dari banyak tempat membantu pemain membangun gambaran levelmu di kepalanya. Ia bisa berkata "pintu keluarnya di dekat menara itu" tanpa melihat peta.
+
+**Garis pandang** (*sightline*) adalah apa yang bisa dilihat pemain dari posisi tertentu. Garis pandang yang panjang ke arah tujuan memungkinkan pemain merencanakan rute sebelum bergerak. Garis pandang yang terhalang menyembunyikan apa yang ada di depan, yang berguna untuk kejutan, tetapi bisa membingungkan jika dipakai di jalur kritis tanpa penunjuk lain.
+
+The Level Design Book memberi contoh dari Half-Life 2. Saat pemain keluar dari stasiun kereta di awal game, kusen pintu diarahkan ke alun-alun kota dan sekawanan burung tiba-tiba terbang ke atas, sehingga perhatian pemain tertuju ke menara besar di tengah kota. Dari contoh itu buku tersebut menarik tiga pedoman komposisi:
+
+- Pemain tidak menengadah kecuali ada sesuatu yang menarik pandangannya.
+- Pemain melihat ke arah ia bergerak.
+- Pemain memperhatikan kontras, baik warna, bentuk, cahaya, maupun gerakan.
+
+### Mengarahkan perhatian
+
+Setiap benda di level memberi informasi. The Level Design Book menulis bahwa dinding membuat pemain memutarinya, dan tangga menjanjikan ruang lain di atas atau di bawah. Beberapa alat yang paling sering dipakai untuk membantu pemain menemukan jalan:
+
+- **Cahaya.** Pintu masuk dan keluar yang terang, atau lampu yang ditaruh di sepanjang jalan, menarik pemain ke arahnya. Area gelap terasa seperti tempat yang belum boleh atau belum perlu didatangi.
+- **Warna.** Warna yang kontras dengan sekitarnya menonjol. Contoh dari buku itu: pintu biru terang di tengah lanskap oranye gelap. Jika satu warna konsisten dipakai untuk benda yang bisa dipanjat atau diinjak, pemain mempelajari bahasanya.
+- **Komposisi.** Bingkai jendela yang mengarah ke pemandangan tertentu, garis atap atau rel yang menuju satu titik, dan landmark yang tinggi di ujung garis pandang.
+- **Affordance.** Bentuk yang memberi tahu apa yang bisa dilakukan dengannya. Contoh di tabel buku itu antara lain papan yang menjulur dari tepi tebing dan tanda goresan di tepian yang bisa dipanjat. Di platformer 2D, tepi pijakan yang tebal dan rata terbaca sebagai tempat berdiri, sedangkan duri dan warna merah terbaca sebagai bahaya.
+- **Benda yang dikumpulkan.** Barisan koin atau item membentuk jejak yang diikuti pemain, dan buku itu menilai cara ini jauh lebih pasti terlihat daripada penunjuk yang halus.
+
+Taylor menulis hal yang serupa: tata letak, cahaya, tanda, dan petunjuk visual menciptakan flow yang membimbing pemain, dan level-level dalam satu game sebaiknya memakai bahasa visual yang konsisten lewat warna dan bentuk supaya pemain bisa mempelajarinya.
+
+The Level Design Book menyusun berbagai alat ini dari yang paling halus (misalnya suara di kejauhan atau detail kecil yang tidak biasa) sampai yang paling langsung (dinding yang tidak bisa ditembus, penanda tujuan di HUD), dengan perkiraan kasar berapa banyak pemain yang akan menangkapnya. Sarannya: mulai dari cara yang halus, lalu tambahkan cara yang lebih jelas sesuai hasil playtest. Buku itu juga mengkritik anggapan lama bahwa tugas level designer adalah "mengarahkan" pemain secara diam-diam. Menurut buku itu, pemain bermain dengan banyak cara, termasuk sengaja menjauh dari jalur kritis, dan tugas desainer adalah memberi informasi yang membantu mereka memakai level.
+
+## Mengajar tanpa tutorial
+
+Layar tutorial berisi teks panjang sering dilewati, dan yang dibaca pun cepat dilupakan. Cara yang lebih tahan lama adalah membiarkan pemain menemukan mekanik lewat susunan level: situasi yang membuat pemain mencoba sesuatu, melihat hasilnya, lalu menyimpulkan aturannya sendiri. Ini cocok dengan skill atom dari Pelajaran 1: setiap aksi memberi umpan balik, dan pemain memperbarui model mentalnya.
+
+### Perkenalan yang aman
+
+Saat sebuah mekanik muncul pertama kali, pisahkan dari bahaya. Pemain sedang mencari tahu cara kerjanya, dan kegagalan di tahap ini adalah bagian dari belajar. Jika kegagalan pertama langsung berarti mati dan mengulang, pemain tidak sempat mengamati apa yang terjadi.
+
+Ciri perkenalan yang aman:
+
+- **Tidak ada hukuman saat gagal**, atau hukumannya sangat ringan. Pijakan rapuh pertama ditaruh di atas tanah padat, tidak di atas lubang.
+- **Alasan untuk mencoba.** Koin, jalan yang jelas, atau tujuan yang terlihat mengundang pemain berinteraksi dengan mekanik itu.
+- **Umpan balik yang jelas.** Pemain bisa melihat apa yang terjadi dan kenapa. Pijakan bergetar sebelum runtuh, lalu muncul lagi di tempat yang sama.
+- **Satu hal baru dalam satu waktu.** Jangan memperkenalkan musuh baru di layar yang sama dengan mekanik gerak baru.
+- **Bisa diulang.** Jika pemain belum paham, ia bisa mencoba lagi di tempat yang sama tanpa harus memutar jauh.
+
+Setelah pemain terlihat paham, baru mekaniknya digabung dengan bahaya: pijakan rapuh di atas lubang, atau di dekat musuh.
+
+### Teach, test, twist
+
+The Level Design Book menyebut **teach, test, twist** sebagai pola tiga beat yang umum dalam level design:
+
+| Beat | Menurut The Level Design Book | Contoh pijakan rapuh |
+| --- | --- | --- |
+| **Teach** | Mengajarkan sebuah aktivitas kepada pemain | Pijakan rapuh di atas tanah padat |
+| **Test** | Menguji apakah pemain bisa mengulang dan mengenali aktivitas itu, masih dengan petunjuk | Dua pijakan rapuh di atas lubang dangkal |
+| **Twist** | Mengubah bingkai aktivitas dengan petunjuk yang lebih sedikit, untuk melihat apakah pemain bisa mengingatnya | Pijakan rapuh harus sengaja diruntuhkan supaya pemain jatuh ke lorong di bawahnya |
+
+Buku itu memberi contoh dari Portal. Di salah satu ruang uji, pemain mempelajari lompatan sederhana memakai portal, lalu di ruang yang sama melakukan versi yang lebih dalam. Beberapa ruang kemudian, pemain melakukannya dari ketinggian yang lebih tinggi, lalu dua kali di udara. Buku itu mencatat bahwa beat twist ini diberi jarak dan tidak langsung menyusul beat test.
+
+### Pola empat langkah dari Nintendo
+
+Koichi Hayashida, sutradara Super Mario 3D Land, menjelaskan pola yang mirip dalam wawancaranya dengan Christian Nutt di Game Developer (2012). Ia menggambarkan langkah-langkah pemain menguasai satu elemen gameplay dalam satu level: pertama, pemain belajar memakai mekanik itu. Kedua, level memberi situasi yang sedikit lebih rumit. Ketiga, sesuatu yang tidak terduga terjadi, sehingga pemain memikirkan mekanik itu dengan cara yang belum pernah ia bayangkan. Keempat, pemain menunjukkan penguasaannya.
+
+Hayashida menghubungkan pola ini dengan struktur cerita komik empat panel yang dikenal di Jepang sebagai *kishōtenketsu*: panel pertama memperkenalkan konsep, panel kedua mengembangkannya, panel ketiga membawa perubahan, dan panel keempat menutup dengan kesimpulan. Menurutnya, Shigeru Miyamoto, yang menggambar komik sejak kecil, sering membicarakan pentingnya langkah ketiga itu, kejutan yang mengubah cara pandang. Hayashida juga mengakui bahwa ia sendiri baru benar-benar menyadari pola ini belakangan.
+
+Dua pola ini tidak perlu dipakai persis. Yang sama dari keduanya: mekanik diperkenalkan di situasi sederhana, dipakai lagi dengan tuntutan yang naik, lalu muncul dalam konteks yang mengubah cara pemain memandangnya. Versi empat langkah menambahkan penutup, bagian tempat pemain memakai semua yang sudah dipelajari.
+
+## Ritme dan pacing
+
+The Level Design Book mendefinisikan **pacing** sebagai urutan dan ritme aktivitas dan kejadian di sebuah level. Unit terkecilnya disebut **beat**: satu area, kejadian, aktivitas, atau elemen yang berdiri sendiri. Buku itu membandingkannya dengan ketukan dalam lagu. Ada ketukan yang berulang secara teratur, ada yang diberi tekanan, dan ada jeda yang membuat tekanan berikutnya terasa lagi.
+
+### Tegang dan lega
+
+Dua saran pacing dari buku itu paling relevan untuk level pertama:
+
+- **Mulai pelan dan tenang.** Mulai level dengan sesuatu yang berintensitas rendah, misalnya eksplorasi tanpa taruhan besar. Buku itu mencatat bahwa bahkan shooter cepat seperti Doom dan Quake dimulai dengan ruangan tenang tempat pemain bisa mencoba kontrol sebelum masuk ke pertarungan.
+- **Selang-seling tinggi dan rendah.** Menurut buku itu, pemain menyesuaikan diri dengan intensitas tinggi yang berlangsung lama, sehingga pertarungan bos yang intens pun terasa melelahkan setelah lebih dari 10 menit. Jeda sesekali berfungsi sebagai kontras. Setelah bagian yang berat, area berintensitas rendah juga terasa seperti hadiah.
+
+Buku itu juga menyarankan agar pertarungan atau tantangan terakhir tidak dibuat dengan intensitas paling tinggi. Contohnya dari game yang disebut di sana: teka-teki terakhir Portal 1 dan 2 punya solusi sederhana yang sudah diisyaratkan sebelumnya, dan tidak termasuk teka-teki tersulit di game itu.
+
+### Grafik intensitas
+
+Salah satu cara merencanakan ritme adalah menggambar **grafik intensitas**: sumbu horizontal untuk waktu (atau urutan beat), sumbu vertikal untuk seberapa tegang atau menuntut bagian itu. The Level Design Book menyebut bahwa desainer Valve untuk Half-Life 2: Episode Two dan Left 4 Dead mengelompokkan beat menjadi empat jenis (eksplorasi, pertarungan, adegan yang dikoreografi, dan teka-teki), lalu memetakan intensitasnya dengan skala sederhana seperti 0 sampai 5 atau 0 sampai 10.
+
+```text title="Grafik intensitas sederhana (ilustrasi)"
+intensitas
+  5 │                          ██
+  4 │           ██             ██
+  3 │      ██   ██        ██   ██
+  2 │      ██   ██        ██   ██   ██
+  1 │ ██   ██   ██   ██   ██   ██   ██
+    └────────────────────────────────────
+      1    2    3    4    5    6    7
+
+beat 1 pembuka, 3 tantangan, 4 istirahat, 6 puncak, 7 penutup
+```
+
+Dua catatan dari buku itu tentang grafik ini. Pertama, angka intensitas adalah perkiraan yang muncul dari mengenal game dan mengamati playtest, dan buku itu sendiri menyebutnya tidak ilmiah. Kedua, setiap proyek perlu menentukan sendiri apa arti intensitas. Buku itu memberi contoh Journey, yang membedakan intensitas dari tingkat kesulitan: adegan kematian tokoh yang dicintai bisa tanpa input sama sekali, tetapi intensitas emosinya tinggi.
+
+Grafik ini berguna di dua waktu. Sebelum membangun, ia membantu melihat bagian yang terlalu lama datar atau terlalu lama tegang. Setelah playtest, kamu bisa menggambar grafik kedua dari pengamatan (di mana pemain diam, tegang, banyak mati) lalu membandingkannya dengan rencana.
+
+### Area istirahat
+
+Area istirahat adalah beat berintensitas rendah setelah bagian yang menuntut. Di platformer, bentuknya bisa berupa tanah datar tanpa bahaya dengan checkpoint, pemandangan ke bagian level berikutnya, atau ruang kecil dengan koin yang mudah diambil. Area seperti ini punya beberapa fungsi:
+
+- Pemain sempat menurunkan ketegangan sebelum bagian berikutnya.
+- Checkpoint di sini membuat kegagalan di bagian berikutnya tidak terlalu mahal.
+- Garis pandang dari area yang aman memberi pemain waktu membaca apa yang akan datang dan merencanakan rute, termasuk melihat landmark tujuan.
+
+## Menempatkan tantangan
+
+Pemain merasakan kesulitan dari seberapa besar lompatan tuntutan antara satu bagian dan bagian berikutnya. Jika lompatannya terlalu besar, kegagalan terasa tidak adil. Pedoman berikut membantu menjaga kenaikannya:
+
+- **Ubah satu variabel sekali waktu.** Variabel tantangan di platformer antara lain lebar celah, jendela waktu (berapa lama pijakan bertahan), bahaya di bawah, jumlah rintangan berurutan, dan kehadiran musuh. Jika lebar celah dan bahaya di bawahnya naik bersamaan dengan munculnya musuh baru, pemain tidak tahu mana yang membuatnya gagal.
+- **Ukur dari player metrics.** Tantangan awal memakai jarak yang nyaman. Jarak yang mendekati batas karakter disimpan untuk akhir level atau jalur opsional.
+- **Perhatikan biaya kegagalan.** Tantangan yang sama terasa berbeda jika gagal berarti mengulang 5 detik dibanding 3 menit. Taruh checkpoint sebelum bagian sulit, dan jangan menaruh bagian mudah yang panjang di antara checkpoint dan tantangan yang sering gagal. Mengulang bagian mudah berkali-kali hanya menambah rasa kesal.
+- **Beri waktu membaca.** Bahaya perlu terlihat cukup lama sebelum pemain harus bereaksi. Bagian Level 2D dan 3D di bawah membahas cara menghitungnya.
+- **Selingi naik dengan sedikit turun.** Setelah tantangan baru yang berat, bagian berikutnya bisa sedikit lebih mudah sebelum naik lagi. Ini menyambung dengan saran selang-seling tinggi dan rendah di bagian pacing.
+- **Taruh tantangan paling sulit di luar jalur kritis.** Pemain yang mencari tantangan bisa mengambilnya, dengan hadiah yang jelas, tanpa menghalangi pemain lain menyelesaikan level.
+
+Tingkat kesulitan di sini dibahas pada skala satu level. Kurva kesulitan di sepanjang game, bersama hadiah dan progres, dibahas di pelajaran Ekonomi dan progres pada jalur ini.
+
+## Dari blockout ke art pass
+
+Blockout (disebut juga greybox) sudah dibahas di [Pelajaran 1](/belajar/desain-game/01-core-loop/#prototipe-greybox-sebelum-konten) sebagai cara menguji core loop. Untuk level, alasannya sama. The Level Design Book menulis bahwa geometri blockout murah untuk dihapus atau dibangun ulang, sedangkan pekerjaan seni yang sudah final mahal untuk dibuang. Selama kamu belum yakin dengan struktur level, pertahankan semuanya tetap murah. Buku itu juga menekankan bahwa kamu tidak bisa mem-playtest dokumen desain atau sketsa layout, tetapi kamu bisa mem-playtest blockout.
+
+Alur kerja untuk satu level, diringkas dari tahapan di The Level Design Book:
+
+```text title="Alur kerja satu level"
+tujuan pengalaman ──▶ layout ──▶ blockout ──▶ playtest ──┐
+                         ▲           ▲                   │
+                         └───────────┴──── perbaiki ◀────┘
+                                     │
+                     (struktur sudah teruji)
+                                     ▼
+                     scripting ──▶ pencahayaan ──▶ art pass ──▶ playtest lagi
+```
+
+Beberapa catatan untuk setiap tahap:
+
+- **Layout.** Gambar kasar dari atas atau dari samping, dengan jalur kritis, beat bernomor, dan catatan. Untuk proyek kecil sendirian, coretan sederhana sering cukup. Buku itu juga mencatat bahwa banyak level designer melompati gambar layout dan langsung ke blockout.
+- **Blockout.** Bangun dengan bentuk sederhana sesuai player metrics. Di game 2D, ini bisa berupa tilemap dengan satu atau dua jenis petak polos. Pakai [trigger](/kamus/fisika/trigger/) sederhana untuk checkpoint dan zona bahaya, supaya level sudah bisa dimainkan dari awal sampai akhir.
+- **Playtest dan perbaiki.** Ulangi sampai struktur level bekerja. Buku itu mengutip artikel Game Informer tentang Neon White: timnya membuat level yang dibuang kira-kira dua kali lipat dari 100 lebih level yang dirilis, dan satu level saja diubah lebih dari 50 kali.
+- **Scripting dan pencahayaan.** Pintu, platform bergerak, dan kejadian lain mulai dipasang. Menurut buku itu, pencahayaan punya fungsi gameplay: membantu pemain memahami bentuk ruang dan memperkirakan jarak.
+- **Art pass.** Tambahkan detail visual setelah struktur dan flow cukup pasti. Buku itu memperingatkan bahwa art pass yang terlalu cepat mengunci kesalahan desain awal, karena mengubah level berarti mengulang semua pekerjaan seninya.
+
+Setelah art pass, periksa lagi apakah penunjuk arah masih terbaca. Dekorasi bisa menutupi landmark, menyamarkan tepi pijakan, atau membuat benda latar terlihat seperti benda yang bisa diinjak. Playtest setelah art pass menangkap masalah semacam ini.
+
+## Level 2D dan 3D
+
+Prinsip di pelajaran ini berlaku untuk keduanya, tetapi beberapa hal bekerja berbeda.
+
+**Di level 2D**, [kamera](/kamus/dasar/camera/) biasanya dikendalikan game, dan pemain melihat potongan level dari samping atau dari atas. Ini memudahkan banyak hal: kamu tahu persis apa yang terlihat pemain di setiap posisi, dan grid tilemap membuat player metrics mudah diterapkan. Hal yang perlu diperhatikan:
+
+- **Jarak pandang ke depan terbatas.** Hitung waktu baca dari lebar layar dan kecepatan karakter. Jika kamera menampilkan 12 petak di depan karakter dan karakter berlari 8 petak per detik, bahaya yang baru muncul di tepi layar memberi waktu sekitar 1,5 detik sebelum karakter sampai di sana. Look-ahead kamera dari [Pelajaran 2](/belajar/desain-game/02-game-feel/#kamera) menambah jarak ini ke arah gerak.
+- **Keterbacaan latar dan depan.** Pemain harus bisa membedakan pijakan yang bisa diinjak dari dekorasi latar. Kontras warna dan kecerahan antara lapisan depan dan latar sangat membantu.
+- **Bagian di luar layar.** Jalur opsional di atas atau di bawah layar bisa tidak terlihat sama sekali. Beri isyarat, misalnya koin yang setengah terlihat di tepi layar.
+
+**Di level 3D**, pemain sering mengendalikan kamera sendiri dan bisa melihat ke mana saja. Penunjuk arah dan komposisi jadi lebih penting, karena kamu tidak bisa memastikan pemain melihat ke arah tertentu. Ingat dua pedoman dari The Level Design Book di atas: pemain tidak menengadah kecuali ada yang menarik pandangannya, dan pemain melihat ke arah ia bergerak. Memperkirakan jarak dan kedalaman juga lebih sulit di layar datar, sehingga lompatan yang di 2D mudah bisa terasa tidak pasti di 3D. Buku itu juga mencatat bahwa ukuran di dunia game 3D sering tidak mengikuti ukuran dunia nyata. Ruangan dan dunia yang terasa besar sering jauh lebih kecil dari padanannya di dunia nyata, dan karakter bergerak jauh lebih cepat dari manusia biasa, tetapi tetap terasa wajar di dalam game. Ukuran yang tepat hanya bisa dipastikan dengan berjalan di dalam blockout, dengan [character controller](/kamus/fisika/character-controller/) yang sudah disetel.
+
+## Playtest level
+
+Satu-satunya cara memastikan level bekerja adalah melihat orang lain memainkannya. The Level Design Book menyarankan beberapa jenis playtest dengan tujuan berbeda: memainkan level sendiri setiap hari untuk menangkap masalah yang jelas, meminta sesama developer bermain lalu berdiskusi, dan playtest publik dengan orang yang bukan developer. Untuk playtest publik, buku itu menulis bahwa mengamati perilaku pemain lebih penting daripada mendengar komentarnya.
+
+Kebiasaan umum yang membantu saat playtest level:
+
+- **Tentukan pertanyaannya dulu.** Misalnya: apakah pemain memahami pijakan rapuh tanpa penjelasan? Apakah pintu keluar terlihat dari area istirahat?
+- **Jangan menyela atau menjelaskan.** Buku itu menyarankan menahan dorongan untuk menjelaskan atau meminta maaf saat playtest berjalan buruk, dan baru membantu jika pemain benar-benar buntu atau levelnya rusak.
+- **Catat angka sederhana.** Waktu menyelesaikan setiap bagian, jumlah kematian, dan tempat pemain mati. Menurut buku itu, sebagian besar data seperti ini tidak butuh alat khusus, cukup catatan yang teliti.
+- **Tandai di peta.** Game besar sering mengumpulkan data otomatis (telemetri) dan menampilkannya sebagai *heatmap*: peta yang menunjukkan di mana pemain sering lewat atau mati. Untuk proyek kecil, kamu bisa membuat versi manualnya: cetak layout level, lalu beri titik setiap kali playtester mati atau berhenti lama. Setelah tiga atau empat orang, titik yang menumpuk menunjukkan bagian yang perlu dilihat lagi.
+- **Bandingkan dengan rencana.** Gambar grafik intensitas dari pengamatan, lalu bandingkan dengan grafik rencana. Bandingkan juga rute yang benar-benar diambil pemain dengan jalur kritis di layout.
+
+Cara merencanakan sesi, mengamati tanpa mengarahkan, dan membedakan masalah desain dari masalah selera dibahas lebih lengkap di pelajaran Playtesting pada jalur ini.
+
+## Contoh: merancang satu level platformer 2D
+
+Contoh ini merencanakan satu level pendek yang mengajarkan satu mekanik: **pijakan rapuh**, yang runtuh 0,6 detik setelah diinjak dan muncul lagi 3 detik kemudian. Semua angka di bawah adalah ilustrasi. Ganti dengan angka dari greybox-mu sendiri.
+
+```text title="Kartu level (ilustrasi)"
+tujuan pengalaman : pemain memahami pijakan rapuh tanpa teks tutorial,
+                    lalu memakainya dengan percaya diri di atas lubang
+player metrics    : tinggi lompat 3 petak, jarak lompat maksimum 5 petak,
+                    lari 8 petak/detik, kamera menampilkan 12 petak ke depan
+pedoman celah     : nyaman ≤ 3 petak, menantang 4 petak, mustahil ≥ 6 petak
+durasi target     : 2 sampai 3 menit
+landmark          : menara bendera finish, terlihat dari area istirahat
+```
+
+Rencana per bagian, dari kiri ke kanan:
+
+| Bagian | Isi | Tugas | Intensitas (0 sampai 5) | Catatan desain |
+| --- | --- | --- | --- | --- |
+| A. Pemanasan | Tanah datar, dua celah 2 petak, beberapa koin | Mengatur ritme | 1 | Tanpa bahaya. Pemain mencoba lari dan lompat. |
+| B. Perkenalan | Satu pijakan rapuh 1 petak di atas tanah padat, koin di atasnya | Mengajar | 1 | Pemain naik untuk koin, pijakan bergetar lalu runtuh, pemain jatuh 1 petak tanpa kehilangan apa pun. Pijakan muncul lagi di depan matanya. |
+| C. Pengembangan | Dua pijakan rapuh berurutan di atas lubang dangkal, jarak 3 petak | Menguji | 2 | Jatuh berarti mendarat di dasar lubang dan naik lewat tangga kecil, tanpa mati. Pemain belajar tidak berdiam di atas pijakan. |
+| D. Istirahat | Tanah datar, checkpoint, garis pandang ke menara finish | Mengatur ritme, memberi hadiah | 1 | Jalur opsional di atas: pijakan rapuh 4 petak di atas tanah aman, berujung koin besar. |
+| E. Twist | Jalan ke depan tertutup dinding setinggi 7 petak. Lantainya berupa deretan pijakan rapuh | Mengajar ulang dengan cara baru | 3 | Pemain harus sengaja membiarkan pijakan runtuh supaya jatuh ke lorong di bawahnya. Runtuh yang tadinya ancaman kini menjadi jalan. Checkpoint di lorong bawah. |
+| F. Penutup | Tiga pijakan rapuh berjarak 3 petak di atas lubang mematikan, diakhiri satu celah 4 petak ke tanah padat | Menguji | 4 | Bagian paling menuntut di jalur kritis, langsung setelah checkpoint. Tidak memakai jarak maksimum 5 petak. |
+| G. Finish | Tanah datar menuju menara bendera | Memberi hadiah | 1 | Jeda singkat sebelum level selesai. |
+
+```text title="Sketsa samping bagian B (ilustrasi)"
+            ○            ← koin, mengundang pemain naik
+          [≈≈]           ← pijakan rapuh, 1 petak di atas tanah
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓   ← tanah padat: jatuh tidak berbahaya
+```
+
+```text title="Grafik intensitas rencana (ilustrasi)"
+intensitas
+  4 │                          ██
+  3 │                     ██   ██
+  2 │           ██        ██   ██
+  1 │ ██   ██   ██   ██   ██   ██   ██
+    └────────────────────────────────────
+      A    B    C    D    E    F    G
+```
+
+Beberapa keputusan dari tabel ini dan alasannya:
+
+- **Bagian B memisahkan mekanik dari bahaya.** Pemain melihat seluruh siklus pijakan (bergetar, runtuh, muncul lagi) tanpa risiko.
+- **Bagian C menaikkan satu variabel.** Bahayanya naik sedikit (lubang dangkal), tetapi jaraknya tetap nyaman, dan kegagalan tidak berarti mati.
+- **Bagian E memakai pola twist.** Pijakan yang sama dipakai dengan arti terbalik. Dinding 7 petak jelas di atas tinggi lompat maksimum, sehingga pemain tidak membuang waktu mencoba melompatinya.
+- **Bagian F tidak memakai jarak maksimum karakter.** Celah 4 petak masih menuntut, tetapi tidak menuntut lompatan sempurna. Jarak 5 petak bisa dipakai di jalur opsional atau di level berikutnya.
+- **Checkpoint ada tepat sebelum bagian yang paling sering gagal.** Pemain yang jatuh di F mengulang dari lorong di bawah E, tanpa harus melewati bagian mudah lagi.
+- **Kamera dan kecepatan cocok.** Dengan 12 petak terlihat ke depan dan lari 8 petak per detik, setiap pijakan rapuh di F terlihat sekitar 1,5 detik sebelum pemain sampai di sana jika berlari penuh.
+
+Setelah rencana ini dibuat sebagai blockout, pertanyaan untuk playtest pertama sudah jelas: apakah pemain memahami pijakan rapuh di bagian B tanpa penjelasan, apakah mereka menemukan jalan turun di bagian E, dan di mana titik kematian paling menumpuk.
+
+## Kesalahan umum
+
+### Bahaya muncul bersamaan dengan mekanik baru
+
+```text title="✗ Keliru"
+pijakan rapuh pertama → di atas lubang mematikan, dengan musuh terbang di dekatnya
+```
+
+```text title="✓ Benar"
+pijakan rapuh pertama → di atas tanah padat, koin di atasnya
+pijakan rapuh berikutnya → di atas lubang dangkal
+baru kemudian → di atas lubang mematikan
+```
+
+Pemain yang mati di percobaan pertama belum sempat melihat cara kerja mekaniknya.
+
+### Ukuran level ditebak, tidak diukur
+
+```text title="✗ Keliru"
+celah dibuat "kira-kira pas", lalu dicoba sendiri sampai berhasil
+```
+
+```text title="✓ Benar"
+jarak lompat maksimum = 5 petak (diukur)
+tinggi lompat maksimum = 3 petak (diukur)
+celah nyaman ≤ 3, menantang 4, mustahil ≥ 6 petak
+dinding penghalang: jelas lebih tinggi dari 3 petak, ditambah selisih
+```
+
+Desainer yang memainkan levelnya ratusan kali akan menganggap celah di batas kemampuan karakter terasa mudah. Pemain baru tidak.
+
+### Seluruh level di intensitas tinggi
+
+```text title="✗ Keliru"
+intensitas: 4 4 5 4 5 5 4 5 (tanpa jeda sampai akhir)
+```
+
+```text title="✓ Benar"
+intensitas: 1 2 3 1 3 4 1 4 2 (ada jeda, puncak tidak di ujung paling akhir)
+```
+
+### Penunjuk arah hilang setelah art pass
+
+```text title="✗ Keliru"
+blockout: pintu keluar di ujung lorong terang → art pass: lorong diisi
+dekorasi dan lampu di mana-mana, pintu keluar tidak lagi menonjol
+```
+
+```text title="✓ Benar"
+art pass dilanjutkan dengan playtest, dan cahaya serta warna yang kontras
+dipertahankan di jalur kritis
+```
+
+### Checkpoint jauh dari bagian yang sering gagal
+
+```text title="✗ Keliru"
+checkpoint → 90 detik bagian mudah → lompatan sulit (sering gagal)
+```
+
+```text title="✓ Benar"
+bagian mudah → checkpoint → lompatan sulit
+```
+
+### Menjelaskan level saat playtest
+
+```text title="✗ Keliru"
+"Oh, kamu harus lompat ke atas situ. Nanti di versi final ada tandanya kok."
+```
+
+```text title="✓ Benar"
+catat: "pemain berputar 2 menit di ruang 3, tidak melihat pijakan di atas"
+→ perbaiki penunjuk arahnya, lalu uji lagi dengan orang lain
+```
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Latihan 1 dan 2 cukup dikerjakan di kertas. Latihan 3 dan 4 dikerjakan di engine pilihanmu.
+
+1. Pilih satu level dari game yang sering kamu mainkan. Gambar layout kasarnya dari ingatan atau sambil bermain, lalu tandai jalur kritis, jalur opsional, dan landmark. Tulis bagian mana yang mengajar, menguji, memberi hadiah, dan memberi napas. Gambar juga grafik intensitas dari pengalamanmu sendiri.
+2. Rencanakan satu level pendek untuk mekanik lain, misalnya pegas yang melontarkan karakter tinggi, atau pintu yang hanya terbuka selama tombol diinjak. Buat kartu level dan tabel per bagian seperti di contoh, dengan perkenalan yang aman, satu twist, dan penutup. Tulis player metrics yang kamu asumsikan.
+3. Bangun level dari contoh di pelajaran ini, atau dari latihan 2, sebagai blockout dengan tilemap polos. Ukur dulu player metrics karaktermu dan sesuaikan semua jarak. Lalu minta dua atau tiga orang memainkannya tanpa penjelasan. Cetak layout-nya dan beri titik di setiap tempat mereka mati atau berhenti lama.
+4. Dari hasil latihan 3, gambar grafik intensitas berdasarkan pengamatan, lalu bandingkan dengan grafik rencanamu. Pilih satu perbedaan terbesar, ubah satu hal di level (posisi checkpoint, lebar satu celah, atau satu penunjuk arah), lalu uji lagi dengan orang yang belum pernah memainkannya.

@@ -1,0 +1,738 @@
+---
+title: "Aset 3D untuk Game"
+description: "Gaya low-poly sampai PBR realistis dan biayanya, topologi dan anggaran segitiga, baking dari high poly ke low poly, UV dan texel density, tekstur PBR dan channel packing, LOD, rigging untuk artist, serta ekspor dari Blender dan impor ke Unity, Unreal, dan Godot."
+fundamental: "Model yang tampak rapi di aplikasi 3D bisa masuk ke engine seratus kali lebih kecil, gelap di satu sisi, atau berat walaupun hanya tampil kecil di layar. Setiap langkah dari modeling sampai impor menyimpan data yang dibaca engine dengan aturannya sendiri. Kalau kamu tahu data apa yang dihasilkan setiap langkah, kamu bisa menemukan langkah mana yang salah tanpa menebak."
+kind: lesson
+minutes: 40
+status: draf
+lastReviewed: 2026-10-31
+terms:
+  - mesh
+  - vertex
+  - triangle
+  - normal
+  - flat-shading
+  - side
+  - uv
+  - texture
+  - texture-filtering
+  - normal-map
+  - ao-map
+  - pbr
+  - roughness
+  - metalness
+  - color-space
+  - toon-shading
+  - segments
+  - skeletal
+  - coords
+  - transform
+  - global-illumination
+  - draw-call
+krekit:
+  gambaran-besar: "Setiap tahap menyerahkan data ke tahap berikutnya. Kalau hasil di engine aneh, telusuri mundur: tahap mana yang pertama kali menghasilkan data yang salah?"
+  gaya-visual-dan-biayanya: "Pilih gaya dari jumlah orang dan waktu yang kamu punya, lalu cek apakah perangkat target sanggup."
+  modeling-untuk-game: "GPU biasanya menghitung lebih banyak vertex daripada yang tampil di aplikasi 3D. Cek jumlahnya setelah diimpor."
+  high-poly-ke-low-poly-baking: "Detail kecil yang tidak mengubah siluet cukup disimpan di tekstur. Siluet tetap urusan segitiga."
+  uv-unwrapping-dan-texel-density: "Tentukan satu angka texel density untuk satu set aset, lalu pegang angka itu untuk semua prop di set yang sama."
+  tekstur-pbr: "Satu tekstur bisa memuat tiga data sekaligus. Pastikan urutan channel-nya sama dengan yang diharapkan engine."
+  lod: "LOD paling berguna untuk objek yang sering terlihat jauh. Prop kecil yang selalu dekat jarang perlu LOD."
+  rigging-dan-skinning-untuk-artist: "Apply transform sebelum rigging, dan kembalikan ke rest pose sebelum ekspor."
+  ekspor-dan-impor: "Satu meter di aplikasi 3D harus tetap satu meter di engine. Perbaiki di file sumber, jangan di setiap objek yang ditaruh di scene."
+  penamaan-dan-susunan-file: "Nama objek bisa dibaca importer. Akhiran _LOD1 atau -col punya arti khusus."
+  memeriksa-aset-di-engine: "Taruh kubus 1 meter di sebelah aset baru. Masalah skala langsung terlihat."
+  ilustrasi-anggaran-satu-set-prop-stylized: "Hitung dulu di kertas. Angka kasar sebelum modeling lebih murah daripada merombak aset setelah jadi."
+  kesalahan-umum: "Sebagian besar masalah impor berasal dari transform yang belum di-apply atau satuan yang tidak cocok."
+sidebar:
+  order: 4
+  label: "4 · Aset 3D"
+quiz:
+  - q: "Dua peti kayu memakai tekstur 1024×1024 piksel, dan masing-masing sisi depannya mengisi seluruh ruang UV. Peti A lebarnya 0,5 m, peti B lebarnya 2 m. Saat keduanya berdiri berdampingan di game, apa yang terlihat?"
+    options:
+      - "Keduanya sama tajam, karena resolusi teksturnya sama"
+      - "Peti B tampak jauh lebih buram, karena texel density-nya 512 piksel per meter, sedangkan peti A 2048 piksel per meter"
+      - "Peti A tampak lebih buram, karena teksturnya dipadatkan"
+      - "Peti B tampak lebih tajam, karena permukaannya lebih luas"
+    answer: 1
+    explain: "Texel density = piksel tekstur yang menutupi satu meter permukaan. Peti A: 1024 ÷ 0,5 = 2048 piksel per meter. Peti B: 1024 ÷ 2 = 512 piksel per meter. Dari jarak yang sama, peti B punya empat kali lebih sedikit piksel per meter di setiap arah, jadi tampak lebih buram. Resolusi tekstur saja tidak menentukan ketajaman. Yang menentukan adalah resolusi itu dibanding ukuran permukaan di dunia."
+  - q: "Artist mengekspor satu tekstur ORM gaya glTF: R = ambient occlusion, G = roughness, B = metallic. Tekstur itu dipasang ke Metallic Map pada material Lit URP di Unity. Hasilnya permukaan tampak salah. Kenapa?"
+    options:
+      - "Unity tidak mendukung tekstur RGBA"
+      - "Lit URP membaca metallic dari R, occlusion dari G, dan smoothness dari A. Urutan channel-nya berbeda dari glTF, dan Unity memakai smoothness, kebalikan roughness"
+      - "Tekstur ORM harus diimpor sebagai Normal Map"
+      - "Resolusi tekstur ORM harus dua kali base color"
+    answer: 1
+    explain: "Dokumentasi Unity untuk channel packing di URP memakai R = metallic, G = occlusion, B tidak dipakai, A = smoothness. glTF menaruh occlusion di R, roughness di G, dan metallic di B. Tekstur ORM gaya glTF harus dikemas ulang untuk Unity, dan roughness perlu dibalik menjadi smoothness. Matikan juga sRGB (Color Texture) untuk tekstur data seperti ini."
+  - q: "Normal map hasil baking tampak benar di Godot. Saat dipakai di engine lain, lekukan baut terlihat menonjol dan tonjolan terlihat cekung, tetapi hanya saat cahaya datang dari atas atau bawah. Apa penyebab yang paling mungkin?"
+    options:
+      - "Normal map diimpor dengan sRGB aktif"
+      - "Engine itu memakai konvensi sumbu hijau (Y) yang berlawanan, sehingga channel hijau perlu dibalik"
+      - "UV map terbalik secara horizontal"
+      - "Resolusi normal map terlalu kecil"
+    answer: 1
+    explain: "Godot dan glTF memakai normal map dengan +Y ke atas (gaya OpenGL). Engine atau alat yang memakai konvensi sebaliknya membaca arah atas-bawah terbalik. Karena hanya komponen Y yang berbeda, kesalahannya terlihat dari cahaya yang datang dari atas atau bawah. Unity punya opsi Flip Green Channel di pengaturan impor tekstur Normal Map untuk kasus ini."
+  - q: "Artist mencerminkan separuh model dengan skala X = -1 di Blender, lalu mengekspornya tanpa apply transform. Di engine, sisi hasil cermin tampak gelap atau bolong. Perbaikan apa yang paling tepat?"
+    options:
+      - "Nyalakan double sided di material"
+      - "Apply skala di Blender (Ctrl+A) dengan Corrective Flip Normals aktif, atau balik normal sisi itu, lalu ekspor ulang"
+      - "Naikkan intensitas lampu"
+      - "Ubah Scale Factor di importer menjadi -1"
+    answer: 1
+    explain: "Skala negatif membalik urutan titik segitiga, sehingga sisi depan dan belakang tertukar dan normal menghadap ke dalam. Manual Blender menjelaskan bahwa Corrective Flip Normals membalik normal saat skala negatif di-apply, untuk mencegah shading terbalik. Double sided hanya menyembunyikan gejala, menambah kerja GPU, dan cahayanya tetap salah."
+  - q: "Tim baru mulai membuat game untuk ponsel kelas menengah. Artist bertanya berapa jumlah segitiga maksimal untuk karakter utama. Jawaban mana yang paling bisa dipertanggungjawabkan?"
+    options:
+      - "Angka standar industri yang sama untuk semua game"
+      - "Sebanyak mungkin, karena GPU modern kuat"
+      - "Ditentukan bersama programmer dari anggaran frame di perangkat target: berapa karakter yang tampil bersamaan, seberapa besar di layar, dan hasil profiling scene uji"
+      - "Sama dengan jumlah segitiga high poly dibagi sepuluh"
+    answer: 2
+    explain: "Dokumentasi Unity menyebut jumlah poligon yang tepat bergantung pada kualitas visual dan platform target, dan juga pada apa lagi yang bersaing di layar. Sepuluh karakter di layar dengan masing-masing 20.000 segitiga punya biaya berbeda dari satu karakter. Anggaran yang baik dimulai dari pengukuran di perangkat target, lalu dibagi per jenis aset."
+  - q: "Sebuah meja memakai UV yang sebagian tumpang tindih: keempat kakinya berbagi area tekstur yang sama untuk menghemat ruang. Setelah lightmap di-bake, cahaya di satu kaki ikut muncul di kaki lain. Apa solusinya?"
+    options:
+      - "Naikkan resolusi tekstur base color"
+      - "Sediakan UV kedua khusus lightmap tanpa tumpang tindih, misalnya lewat Generate Lightmap UVs di Unity atau Light Baking: Static Lightmaps di Godot"
+      - "Matikan bayangan di meja"
+      - "Gabungkan semua kaki ke satu objek"
+    answer: 1
+    explain: "UV pertama boleh tumpang tindih karena kaki-kaki memang memakai warna kayu yang sama. Lightmap menyimpan cahaya yang berbeda di setiap tempat, jadi setiap permukaan butuh area sendiri. Dokumentasi Unity mensyaratkan UV lightmap berada di ruang 0 sampai 1, tanpa tumpang tindih, dan dengan jarak antar-pulau yang cukup. Unity menyimpannya di Mesh.uv2, dan Godot membuat UV2 saat Light Baking diatur ke Static Lightmaps."
+sources:
+  - title: "Model tab Import Settings reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/assets-and-media/asset-types/models/importing/fbximporter-model"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Rig tab Import Settings reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/assets-and-media/asset-types/models/importing/fbximporter-rig"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Model file formats reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/assets-and-media/asset-types/models/creating-dccassets/3d-formats"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Creating models for optimal performance"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/assets-and-media/asset-types/models/creating-dccassets/modeling-optimized-characters"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Generate lightmap UVs"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/lighting-overview/direct-and-indirect-lighting/lightmapping/lighting-gi-uvs/generating-lightmapping-uvs"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Importing textures"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/importing-textures"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Default texture type Import Settings reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/textures-reference/texture-type-default"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Normal map texture type Import Settings reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/textures/textures-reference/texture-type-normal-map"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Lit Shader Material Inspector window reference"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/built-in/shaders-in-universalrp/reference/lit-shader"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Assign a channel-packed texture to a URP material"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/materials-and-shaders/built-in/shaders-in-universalrp/channel-packed-texture"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Import meshes with LOD levels"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/analysis/graphics-performance-profiling/simplifying-distant-meshes-with-level-of-detail-lod/importing-lod-meshes"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Scene view View Options overlay"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/working-with-scenes/scenes-manage-gameobjects/overlays/view-modes"
+    publisher: "Unity Documentation"
+    accessed: 2026-10-31
+  - title: "Available 3D formats"
+    url: "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "Model export considerations"
+    url: "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/model_export_considerations.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "Import configuration"
+    url: "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/import_configuration.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "Node type customization using name suffixes"
+    url: "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/node_type_customization.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "ResourceImporterScene"
+    url: "https://docs.godotengine.org/en/stable/classes/class_resourceimporterscene.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "Standard Material 3D and ORM Material 3D"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "Introduction to 3D"
+    url: "https://docs.godotengine.org/en/stable/tutorials/3d/introduction_to_3d.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "Viewport"
+    url: "https://docs.godotengine.org/en/stable/classes/class_viewport.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-10-31
+  - title: "Apply (Object)"
+    url: "https://docs.blender.org/manual/en/latest/scene_layout/object/editing/apply.html"
+    publisher: "Blender Manual"
+    accessed: 2026-10-31
+  - title: "Scene Properties (Units)"
+    url: "https://docs.blender.org/manual/en/latest/scene_layout/scene/properties.html"
+    publisher: "Blender Manual"
+    accessed: 2026-10-31
+  - title: "Render Baking"
+    url: "https://docs.blender.org/manual/en/latest/render/cycles/baking.html"
+    publisher: "Blender Manual"
+    accessed: 2026-10-31
+  - title: "FBX (Legacy)"
+    url: "https://docs.blender.org/manual/en/latest/files/import_export/fbx_legacy.html"
+    publisher: "Blender Manual"
+    accessed: 2026-10-31
+  - title: "glTF 2.0"
+    url: "https://docs.blender.org/manual/en/latest/addons/scene_gltf2.html"
+    publisher: "Blender Manual"
+    accessed: 2026-10-31
+  - title: "glTF 2.0 Specification"
+    url: "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html"
+    publisher: "Khronos Group"
+    accessed: 2026-10-31
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+import EngineTabs from '~/components/EngineTabs.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Membandingkan gaya low-poly, hand-painted, stylized PBR, dan PBR realistis dari sisi waktu produksi dan beban di perangkat.
+- Menjelaskan kenapa anggaran segitiga ditentukan bersama programmer, dan membedakan topologi untuk karakter dan prop diam.
+- Menjelaskan alur high poly ke low poly dan apa yang disimpan normal map serta AO map hasil baking.
+- Menghitung texel density dan memakainya untuk menyamakan ketajaman satu set aset.
+- Menyiapkan tekstur PBR, termasuk tekstur yang dikemas per channel, sesuai harapan Unity, Godot, dan glTF.
+- Mengekspor model dari Blender dengan satuan dan sumbu yang benar, lalu memeriksanya di engine.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: jalur perakitan dengan surat jalan">
+Bayangkan pabrik mebel. Bagian desain membuat sketsa, bagian ukir membuat bentuk, bagian cat memberi warna, lalu bagian pengiriman mengemas dan mengirimnya ke toko. Setiap bagian menitipkan surat jalan: ukuran, jenis kayu, kode warna. Kalau toko menerima lemari yang terlalu kecil, mereka tidak bisa memperbaikinya dengan memotong ulang. Yang perlu dicek adalah surat jalan mana yang salah tulis.
+</Aside>
+
+[Pelajaran 3 Fondasi Engine](/belajar/fondasi-engine/03-permukaan/) menjelaskan apa yang dibaca engine dari sebuah model: [mesh](/kamus/geometri/mesh/) berisi titik dan segitiga, [normal](/kamus/geometri/normal/), [UV](/kamus/geometri/uv/), dan material PBR. Pelajaran ini melihat sisi sebaliknya: bagaimana artist menghasilkan data itu, dan keputusan apa di setiap langkah yang memengaruhi tampilan dan biaya di game.
+
+Alur umumnya seperti ini. Tidak semua aset melewati semua langkah. Prop low-poly sederhana, misalnya, sering melompati sculpt dan baking.
+
+```text title="Pseudocode: alur aset 3D dari konsep ke engine"
+konsep        → gambar acuan, ukuran, anggaran
+blockout      → bentuk kasar dengan ukuran sebenarnya
+high poly     → sculpt detail (opsional)
+low poly      → mesh yang dipakai game: topologi dan jumlah segitiga
+UV            → membuka permukaan ke bidang datar
+baking        → detail high poly disimpan ke tekstur (opsional)
+texturing     → base color, normal, roughness, metallic, AO
+rig dan skin  → tulang dan bobot (hanya untuk aset yang bergerak)
+ekspor        → satuan, sumbu, transform, format file
+impor         → pengaturan importer di engine, lalu periksa
+```
+
+Setiap baris menghasilkan data yang dipakai baris berikutnya. Skala yang salah di blockout terbawa sampai impor. UV yang berantakan membuat baking dan texturing ikut bermasalah. Karena itu, banyak tim mengimpor versi blockout ke engine sejak awal, sebelum detail apa pun dibuat.
+
+## Gaya visual dan biayanya
+
+Gaya visual menentukan berapa lama satu aset dibuat dan seberapa berat aset itu di perangkat. Empat gaya yang paling sering dipakai:
+
+| Gaya | Ciri | Data utama | Waktu produksi per aset | Beban di perangkat |
+| --- | --- | --- | --- | --- |
+| **Low-poly** | Bentuk bersudut, warna rata, sering [flat shading](/kamus/geometri/flat-shading/) | Mesh dengan warna per titik atau tekstur palet kecil | Rendah | Rendah: tekstur kecil, banyak objek bisa berbagi satu material |
+| **Hand-painted** | Cahaya, bayangan, dan detail dilukis langsung di tekstur | Satu tekstur warna, sering tanpa normal map | Sedang, sebagian besar waktunya di melukis | Rendah sampai sedang: shader sederhana, tetapi tekstur warna perlu resolusi cukup |
+| **Stylized PBR** | Proporsi dilebihkan, detail disederhanakan, tetapi material bereaksi pada cahaya | Peta PBR lengkap, bentuk sederhana | Sedang sampai tinggi | Sedang: beberapa tekstur per material |
+| **PBR realistis** | Meniru material nyata | High poly, baking, peta PBR beresolusi tinggi, kadang hasil pindai | Tinggi | Tinggi: memori tekstur besar, segitiga lebih banyak, biasanya butuh LOD |
+
+Kolom waktu dan beban di tabel itu hanya perbandingan kasar antar-gaya. Game low-poly dengan ribuan objek tetap bisa berat, dan game realistis bisa ringan kalau adegannya kecil.
+
+Beberapa catatan yang sering terlewat:
+
+- **Low-poly** murah per aset, tetapi siluetnya terlihat jelas. Setiap segitiga ikut membentuk gaya, jadi letak segitiga perlu dipikirkan. Teknik yang umum adalah tekstur palet: satu gambar kecil berisi kotak-kotak warna, dan UV setiap bidang diletakkan di atas kotak warna yang diinginkan. Satu material dan satu tekstur bisa dipakai seluruh level, yang membantu mengurangi [draw call](/kamus/performa/draw-call/).
+- **Hand-painted** menyimpan cahaya di tekstur. Kalau game punya siklus siang-malam atau lampu yang bergerak, cahaya yang dilukis bisa bertentangan dengan cahaya engine. Gaya ini sering dipadukan dengan shader unlit atau cahaya yang sangat lembut.
+- **Stylized PBR** memakai alur PBR dari [Pelajaran 3 Fondasi Engine](/belajar/fondasi-engine/03-permukaan/#material-dan-pbr), tetapi bentuk dan warnanya disederhanakan. Banyak game juga memakai [toon shading](/kamus/shader/toon-shading/) untuk memberi batas terang-gelap yang tegas.
+- **PBR realistis** paling mahal di produksi. Satu prop bisa melewati semua langkah di alur di atas, dan ketidakcocokan kecil antar-aset (warna kayu, tingkat kilap) langsung terlihat.
+
+Pilihan gaya juga bergantung pada orang di tim. Satu artist yang bekerja sendiri bisa menghasilkan satu set prop low-poly dalam waktu yang jauh lebih singkat daripada set PBR realistis. Pelajaran 6 jalur ini akan membahas cara memilih gaya visual secara lebih lengkap.
+
+## Modeling untuk game
+
+Model untuk game berbeda dari model untuk render film. Engine harus menggambarnya puluhan kali per detik, bersama ratusan objek lain, sehingga setiap segitiga dan setiap material ikut dihitung.
+
+### Topologi: untuk melentur atau untuk diam
+
+**Topologi** adalah susunan titik dan tepi di permukaan mesh. Susunan ini paling penting untuk bagian yang melentur.
+
+- **Karakter dan objek yang berdeformasi** butuh loop tepi yang mengikuti arah lenturan, misalnya beberapa cincin tepi di sekitar siku, lutut, bahu, dan mulut. Tanpa tepi tambahan, sendi yang ditekuk akan mengempis seperti selang yang dilipat. Cara tulang menarik titik dijelaskan di bagian [rigging](#rigging-dan-skinning-untuk-artist).
+- **Prop diam** seperti peti, batu, atau dinding tidak pernah melentur. Topologinya cukup mempertahankan siluet dan shading yang benar. Tepi yang tidak mengubah bentuk atau shading bisa dibuang.
+
+Di kedua jenis, perhatikan [smoothing](/kamus/geometri/flat-shading/): tepi yang ditandai keras (*hard edge*) memecah titik menjadi beberapa salinan dengan normal berbeda. Ini memengaruhi jumlah vertex, seperti dibahas di bawah.
+
+### Anggaran segitiga ditentukan bersama
+
+Tidak ada angka jumlah segitiga yang benar untuk semua game. Dokumentasi Unity menyebut bahwa jumlah poligon yang tepat bergantung pada kualitas visual yang dibutuhkan dan platform target, dan juga pada apa lagi yang bersaing di layar. Karakter yang tampil sendirian di layar pemilihan karakter dan karakter yang tampil bersama tiga puluh musuh lain punya anggaran yang berbeda, walaupun modelnya sama.
+
+Anggaran biasanya diputuskan seperti ini:
+
+1. Programmer menentukan anggaran frame di perangkat target, misalnya dari hasil [profiling scene uji](/belajar/fondasi-engine/08-profiling/#perangkat-target-dan-anggaran-frame).
+2. Tim membagi anggaran itu per jenis aset: karakter pemain, musuh, prop besar, prop kecil, lingkungan.
+3. Artist membuat aset dalam batas itu, lalu aset diuji di scene yang mendekati kondisi game sebenarnya.
+4. Kalau aset melewati anggaran tetapi terlihat penting, anggaran digeser dari jenis aset lain, tidak dinaikkan diam-diam.
+
+Ingat juga bahwa segitiga jarang menjadi satu-satunya biaya. Jumlah material, ukuran tekstur, jumlah tulang, dan jumlah objek di layar sering lebih menentukan.
+
+### Jumlah di aplikasi 3D dan jumlah di engine
+
+Dokumentasi Unity mencatat bahwa jumlah vertex di engine biasanya lebih besar dari yang ditampilkan aplikasi 3D. Aplikasi 3D menghitung sudut geometri. GPU butuh satu vertex untuk setiap kombinasi posisi, normal, UV, dan warna yang berbeda. Titik yang berada di hard edge atau di batas pulau UV (*UV seam*) dipecah menjadi dua atau lebih. Itu sebabnya kubus dengan 8 sudut tercatat 24 vertex di [Pelajaran 3 Fondasi Engine](/belajar/fondasi-engine/03-permukaan/#flat-dan-smooth-shading).
+
+Akibatnya untuk artist: seam UV dan hard edge sebaiknya diletakkan di tempat yang sama bila memungkinkan, supaya pemecahan titik terjadi sekali saja.
+
+### Segitiga dan quad saat impor
+
+Artist biasanya bekerja dengan quad (bidang empat titik), karena loop tepi lebih mudah dipilih dan diedit. GPU hanya menggambar [segitiga](/kamus/geometri/triangle/), jadi setiap quad dan N-gon (bidang dengan lebih dari empat titik) harus dipecah sebelum dirender.
+
+Dokumentasi Godot menyarankan triangulasi dilakukan di aplikasi 3D sebelum ekspor, karena hasil triangulasi saat impor bisa tidak terduga, terutama untuk N-gon. Di Blender, caranya dengan modifier **Triangulate** dan opsi **Apply Modifiers** saat ekspor, atau opsi **Triangulate Faces** di eksporter FBX. Unity mengubah quad menjadi segitiga kecuali opsi **Keep Quads** dinyalakan, dan N-gon selalu diubah menjadi segitiga.
+
+Arah pemecahan quad bisa mengubah shading dan bentuk, terutama pada quad yang tidak datar atau pada bagian yang melentur. Triangulasi di aplikasi 3D membuat kamu bisa melihat dan membetulkan hasilnya sebelum sampai di engine.
+
+## High poly ke low poly: baking
+
+Detail kecil seperti goresan, jahitan, atau baut biasanya tidak dibuat dari segitiga di model game. Alurnya:
+
+1. Buat **high poly**: model dengan detail penuh, sering hasil sculpt dengan jutaan segitiga.
+2. Buat **low poly**: model game yang siluetnya mengikuti high poly, dengan jumlah segitiga sesuai anggaran.
+3. Buka UV low poly.
+4. **Bake**: untuk setiap texel di tekstur low poly, aplikasi menembakkan sinar ke high poly dan mencatat arah permukaan atau informasi lain di titik yang kena.
+
+Dua tekstur yang paling sering di-bake:
+
+- **[Normal map](/kamus/geometri/normal-map/)** menyimpan arah permukaan high poly relatif terhadap permukaan low poly. Saat dirender, cahaya dihitung dengan arah itu, sehingga low poly tampak punya lekukan dan baut.
+- **[Ambient occlusion map](/kamus/geometri/ao-map/)** menyimpan seberapa tertutup setiap titik dari cahaya sekitar. Celah dan sudut menjadi lebih gelap.
+
+Normal map hanya mengubah cahaya. Siluet tetap ditentukan segitiga low poly. Tepi bulat yang terlihat bersudut di siluet hanya bisa diperbaiki dengan segitiga tambahan. Normal map yang lebih detail tidak mengubah siluet.
+
+### Di Blender
+
+Baking ada di **Render → Bake** pada mesin render Cycles. Pilih high poly, lalu low poly sebagai objek aktif, dan nyalakan **Selected to Active**. Menurut manual Blender, sinar ditembakkan dari low poly ke arah dalam menuju high poly. Kalau high poly tidak sepenuhnya terbungkus low poly, atur **Max Ray Distance** atau **Extrusion**, atau pakai **Cage**: salinan low poly yang digelembungkan sebagai titik awal sinar.
+
+Untuk normal map, **Space** bawaannya **Tangent**. Manual Blender menyebut tangent space sebagai pilihan yang tepat di hampir semua kasus karena normal map tetap benar pada objek yang dianimasikan. **Margin** di bagian Output menambah piksel di sekitar pulau UV, supaya tidak ada garis di seam saat tekstur difilter dan di-mipmap.
+
+### Konvensi yang harus cocok
+
+Normal map tangent space hanya benar jika engine membacanya dengan aturan yang sama dengan saat baking.
+
+- **Arah sumbu hijau.** Spesifikasi glTF menetapkan normal map dengan +X ke kanan dan +Y ke atas. Dokumentasi Godot menyebut Godot memakai konvensi yang sama (gaya OpenGL), dan normal map gaya DirectX perlu dibalik sumbu Y-nya. Unity punya opsi **Flip Green Channel** untuk normal map dengan konvensi yang berbeda dari yang diharapkan Unity.
+- **Tangent.** Normal map tangent space butuh data tangent di setiap vertex. Unity bisa menghitungnya dengan **Calculate Mikktspace**, dan Godot membuatnya dengan Mikktspace lewat **Ensure Tangents** jika file tidak membawa tangent. Dokumentasi Godot menyarankan tangent diekspor dari aplikasi 3D bila memungkinkan, supaya sama dengan yang dipakai saat baking.
+
+Gejala konvensi yang tidak cocok mudah dikenali: tonjolan tampak cekung, tetapi hanya saat cahaya datang dari arah tertentu. Seam yang terlihat jelas di normal map biasanya tanda tangent di engine berbeda dari tangent saat baking.
+
+## UV unwrapping dan texel density
+
+**UV unwrapping** adalah membuka permukaan 3D menjadi potongan datar di bidang tekstur, seperti membuka kardus menjadi lembaran. Setiap potongan disebut **pulau UV** (*UV island*), dan garis potongnya disebut **seam**. Ruang UV berjalan dari 0 sampai 1 di kedua sumbu, berapa pun resolusi teksturnya.
+
+Hal yang perlu dijaga saat membuka UV:
+
+- **Seam di tempat yang jarang terlihat**, misalnya di bawah, di belakang, atau di lipatan. Seam juga sebaiknya bertepatan dengan hard edge, seperti dibahas di atas.
+- **Distorsi kecil.** Kotak-kotak pola uji (*checker*) di permukaan harus tetap persegi, tidak memanjang.
+- **Jarak antar-pulau (*padding*).** Mipmap mencampur piksel di sekitar tepi pulau. Tanpa jarak yang cukup, warna pulau sebelah ikut masuk. Lihat [Texture Filtering & Mipmap](/kamus/geometri/texture-filtering/).
+- **Tumpang tindih yang disengaja.** Bagian yang identik, misalnya empat kaki meja atau dua sisi peti yang dicerminkan, boleh berbagi area tekstur yang sama untuk menghemat ruang. Bagian itu tidak bisa punya detail berbeda, dan tidak boleh tumpang tindih di UV lightmap (lihat di bawah).
+
+### Texel density
+
+**Texel density** adalah jumlah texel (piksel tekstur) yang menutupi satu satuan panjang permukaan di dunia, biasanya ditulis dalam piksel per meter. Angka ini yang menentukan seberapa tajam tekstur terlihat, lebih dari resolusi teksturnya sendiri.
+
+```text title="Pseudocode: menghitung texel density satu permukaan"
+panjang_di_uv  = panjang sisi pulau di ruang UV        // 0..1
+panjang_dunia  = panjang sisi yang sama di model, dalam meter
+resolusi       = lebar tekstur dalam piksel
+
+texel_density  = panjang_di_uv * resolusi / panjang_dunia   // piksel per meter
+```
+
+```text title="Ilustrasi: tekstur 1024 piksel, sisi pulau mengisi seluruh lebar UV"
+peti 0,5 m   → 1 * 1024 / 0,5 = 2048 piksel per meter
+peti 2 m     → 1 * 1024 / 2   =  512 piksel per meter
+```
+
+Dua peti itu memakai tekstur dengan resolusi sama, tetapi peti besar tampak empat kali lebih buram per arah. Kalau keduanya berdiri berdampingan, perbedaan ini langsung terlihat.
+
+Karena itu, tim biasanya menetapkan satu **texel density target** untuk satu set aset yang dilihat dari jarak serupa, lalu semua prop di set itu diatur ke angka yang sama. Angka targetnya bergantung pada jarak kamera dan resolusi layar. Game orang pertama yang memperlihatkan dinding dari dekat butuh angka yang lebih tinggi daripada game strategi dengan kamera jauh. Aplikasi 3D dan add-on UV umumnya punya alat untuk mengukur dan menyamakan texel density antar-objek.
+
+Bagian yang jarang terlihat, misalnya bagian bawah meja, sering diberi texel density lebih rendah dengan sengaja untuk menghemat ruang. Keputusan ini sebaiknya dicatat, supaya tidak dianggap kesalahan oleh orang berikutnya.
+
+### UV kedua untuk lightmap
+
+Kalau game memakai cahaya yang di-bake ke lightmap ([Global Illumination & Lightmap](/kamus/cahaya/global-illumination/)), mesh butuh **UV kedua** khusus lightmap. Alasannya: UV pertama boleh tumpang tindih karena bagian identik memakai warna yang sama, tetapi cahaya di setiap tempat berbeda. Dokumentasi Unity mensyaratkan UV lightmap berada di dalam ruang 0 sampai 1, tanpa bidang yang tumpang tindih, dengan jarak yang cukup antar-pulau, dan dengan distorsi sudut serta skala yang kecil.
+
+UV kedua bisa dibuat sendiri di aplikasi 3D, atau dibuat otomatis saat impor (lihat [Ekspor dan impor](#ekspor-dan-impor)). Format OBJ tidak menyimpan UV2 menurut dokumentasi Godot, jadi pakai glTF atau FBX untuk aset yang butuh lightmap.
+
+## Tekstur PBR
+
+Material PBR di engine membaca beberapa tekstur. Nilainya dijelaskan di [Pelajaran 3 Fondasi Engine](/belajar/fondasi-engine/03-permukaan/#material-dan-pbr). Dari sisi artist, yang penting adalah isi setiap tekstur dan cara menyimpannya.
+
+| Tekstur | Isi | Color space | Catatan untuk artist |
+| --- | --- | --- | --- |
+| **Base color** | Warna permukaan tanpa cahaya dan bayangan | sRGB | Jangan lukis bayangan atau kilap di sini untuk gaya PBR |
+| **Normal** | Arah permukaan per texel | Linear (data) | Hasil baking atau dilukis, perhatikan konvensi sumbu hijau |
+| **[Roughness](/kamus/geometri/roughness/)** | Kasar atau licin, 0 sampai 1 | Linear (data) | Unity memakai Smoothness, kebalikannya |
+| **[Metallic](/kamus/geometri/metalness/)** | Logam atau bukan, hampir selalu 0 atau 1 | Linear (data) | Nilai di antara keduanya biasanya hanya di batas karat atau kotoran |
+| **[Ambient occlusion](/kamus/geometri/ao-map/)** | Celah yang sulit dijangkau cahaya sekitar | Linear (data) | Hanya memengaruhi cahaya tidak langsung menurut spesifikasi glTF |
+
+Tekstur warna dibaca sebagai sRGB, dan tekstur data dibaca linear. Kalau tekstur data diimpor sebagai warna, nilainya bergeser dan material tampak terlalu kasar atau terlalu licin. Penjelasannya ada di [Color Space](/kamus/cahaya/color-space/). Di Unity, matikan **sRGB (Color Texture)** untuk tekstur data.
+
+### Channel packing
+
+Roughness, metallic, dan AO masing-masing hanya butuh satu angka per texel. Menyimpannya di tiga gambar abu-abu terpisah memboroskan memori, jadi ketiganya sering dikemas ke satu tekstur, satu data per channel warna. Masalahnya, setiap engine dan format memakai urutan yang berbeda:
+
+| | R | G | B | A |
+| --- | --- | --- | --- | --- |
+| glTF 2.0 (occlusion + metallicRoughness) | Occlusion | Roughness | Metallic | |
+| Unity URP Lit | Metallic | Occlusion | Tidak dipakai | Smoothness |
+
+Spesifikasi glTF menaruh roughness di channel hijau dan metallic di channel biru, dan occlusion di channel merah supaya bisa berbagi satu gambar dengan keduanya. Dokumentasi Unity untuk URP memakai urutan sendiri, dan smoothness di alpha adalah kebalikan roughness. Godot punya ORMMaterial3D, yang membaca occlusion, roughness, dan metallic dari satu tekstur ORM. Dokumentasi Godot menyebut aplikasi texturing seperti Substance Painter dan ArmorPaint bisa mengekspor format ini lewat preset untuk Unreal, yang juga memakai tekstur ORM.
+
+Akibatnya, satu tekstur ORM tidak bisa langsung dipakai di semua engine. Atur preset ekspor di aplikasi texturing per engine tujuan, dan tulis urutan channel di nama file atau dokumentasi proyek.
+
+### Ukuran tekstur
+
+Dokumentasi Unity menyarankan ukuran tekstur berupa pangkat dua di setiap sisi (256, 512, 1024, 2048, dan seterusnya), tidak harus persegi. Alasannya: tekstur yang bukan pangkat dua umumnya memakai sedikit lebih banyak memori dan bisa lebih lambat dibaca GPU. Di platform yang tidak mendukungnya, Unity memperbesar dan menambal tekstur ke pangkat dua berikutnya, sehingga memori dan waktu muat bertambah. Opsi **Non Power of 2** di pengaturan impor menentukan cara Unity menskalakan tekstur seperti ini.
+
+Memori tekstur naik kuadratik dengan sisinya. Menggandakan sisi berarti empat kali memori:
+
+```text title="Ilustrasi: satu tekstur RGBA 8 bit tanpa kompresi"
+1024 × 1024 × 4 byte = 4 MiB      (+ sekitar 1/3 untuk mipmap)
+2048 × 2048 × 4 byte = 16 MiB
+4096 × 4096 × 4 byte = 64 MiB
+```
+
+Kompresi tekstur GPU memperkecil angka ini jauh, dan formatnya berbeda per platform. Pelajaran 5 jalur ini membahas format file, kompresi, dan biaya memorinya secara lebih lengkap. Prinsip untuk artist: tentukan ukuran tekstur dari texel density target dan ukuran objek. Resolusi terbesar yang bisa diekspor aplikasi texturing jarang menjadi pilihan yang tepat.
+
+## LOD
+
+**Level of detail (LOD)** mengganti mesh dengan versi yang lebih sederhana saat objek tampil makin kecil di layar. Cara engine memilih LOD dan biayanya dijelaskan di [Pelajaran 8 Fondasi Engine](/belajar/fondasi-engine/08-profiling/#lod-dan-impostor) dan di Kamus [Segments](/kamus/geometri/segments/). Dari sisi artist, ada dua jalur:
+
+- **LOD buatan tangan.** Artist membuat beberapa versi mesh, misalnya dengan mengurangi loop tepi dan menyatukan bagian kecil. Hasilnya bisa dikontrol: siluet dijaga, detail kecil yang tidak terlihat dari jauh dibuang lebih dulu.
+- **LOD otomatis dari engine.** Godot membuat LOD saat impor jika **Generate LODs** aktif (bawaannya aktif). Ini cepat, tetapi hasilnya perlu dicek, terutama pada model low-poly yang setiap segitiganya ikut membentuk gaya.
+
+Beberapa pedoman umum:
+
+- Semua LOD sebaiknya memakai UV dan material yang sama, supaya tekstur tidak berganti saat LOD berpindah.
+- Pertahankan siluet di LOD menengah. Pemain lebih mudah melihat siluet yang tiba-tiba berubah daripada detail di dalamnya.
+- Objek yang selalu dekat dengan kamera, misalnya senjata di tangan pemain di game orang pertama, jarang butuh LOD.
+
+Untuk LOD buatan tangan, Unity mengenali nama mesh yang berakhiran `_LOD0`, `_LOD1`, `_LOD2`, dan seterusnya di file FBX. Unity lalu membuat komponen LOD Group secara otomatis. `_LOD0` adalah versi paling detail.
+
+## Rigging dan skinning untuk artist
+
+Cara kerja tulang, bind pose, dan bobot dijelaskan di [Pelajaran 7 Fondasi Engine](/belajar/fondasi-engine/07-animasi/#skeletal-animation-tulang-bind-pose-dan-skinning) dan di Kamus [Skeletal Animation & Skinning](/kamus/animasi/skeletal/). Bagian ini membahas keputusan yang diambil artist saat menyiapkan aset untuk engine.
+
+**Apply transform sebelum rigging.** Manual Blender menyarankan transform di-apply sebelum rigging dan animasi. Menerapkan transform pada armature yang sudah dianimasikan tidak mengubah pose, kurva animasi, atau constraint, sehingga hasilnya bisa tidak cocok lagi.
+
+**Batasi jumlah tulang per titik.** Dokumentasi Unity menyarankan linear blend skinning dengan paling banyak empat pengaruh tulang per titik untuk alasan performa. Di tab **Rig** pada importer Unity, **Skin Weights** bawaannya **Standard (4 Bones)**. Pilihan **Custom** memunculkan **Max Bones/Vertex**. Di Godot, impor file `.blend` punya opsi **Skins**: **4 Influences (Compatible)** cocok untuk semua renderer, dan **All Influences** memakai sampai 8 pengaruh dengan risiko tidak didukung semua renderer. Kalau bobot di aplikasi 3D memakai lebih banyak tulang per titik daripada batas di engine, jumlahnya dibatasi saat impor, dan lipatan di sendi bisa berbeda dari yang terlihat di aplikasi 3D. Batasi bobot di aplikasi 3D supaya yang kamu lihat sama dengan yang dirender.
+
+**Sedikit tulang, satu mesh berkulit.** Dokumentasi Unity menyarankan tulang sesedikit mungkin dan satu Skinned Mesh Renderer per karakter. Menurut dokumentasi itu, memakai dua mesh berkulit untuk satu karakter bisa kira-kira menggandakan waktu render model tersebut. Pakaian atau aksesori yang bisa dilepas tetap mungkin dibuat terpisah, dengan biaya yang perlu diukur.
+
+**Pisahkan tulang deformasi.** Rig di aplikasi 3D sering punya tulang bantu untuk kontrol, IK, atau target. Engine hanya butuh tulang yang menggerakkan mesh. Eksporter FBX Blender punya opsi **Only Deform Bones**. Untuk glTF, dokumentasi Godot memperingatkan bahwa model dengan blend shape perlu opsi **Export Deformation Bones Only** aktif, karena tulang non-deformasi yang ikut diekspor bisa membuat shading salah. Dokumentasi Unity juga menyarankan hierarki IK dan FK dipisah, karena Unity memanggang IK menjadi FK saat impor dan simpul IK yang tersisa tetap ikut dihitung.
+
+**Ekspor dalam rest pose.** Dokumentasi Godot mengingatkan bahwa mesh tidak boleh sedang ditekuk tulang saat diekspor. Kembalikan kerangka ke pose T atau rest pose bawaannya sebelum ekspor.
+
+**Arah depan karakter.** Spesifikasi glTF menetapkan bahwa depan aset menghadap +Z. Dokumentasi Godot menerjemahkannya untuk Blender: depan aset menghadap -Y. Karakter yang dimodelkan menghadap arah lain akan berjalan menyamping atau mundur di engine.
+
+## Ekspor dan impor
+
+Engine dan aplikasi 3D tidak memakai sistem koordinat yang sama. Tabel lengkapnya ada di Kamus [Sistem Koordinat 3D](/kamus/ruang/coords/). Untuk alur Blender ke Unity atau Godot, yang penting:
+
+| | Sumbu atas | Satuan |
+| --- | --- | --- |
+| Blender | +Z (manual eksporter FBX: Y depan, Z atas) | Diatur di Scene → Units |
+| glTF 2.0 | +Y, depan aset +Z, tangan kanan | Meter |
+| Unity | +Y | Physics mengharapkan 1 unit = 1 m |
+| Godot | +Y, tangan kanan | 1 unit = 1 m |
+
+### Sebelum ekspor dari Blender
+
+1. **Satuan.** Di **Properties → Scene → Units**, pakai **Unit System** Metric. Manual Blender mencatat bahwa **Unit Scale** hanya mengubah angka yang ditampilkan di antarmuka, tidak mengubah perilaku di dalam, jadi biarkan 1,0 kecuali kamu tahu alasannya. Blockout dengan ukuran sebenarnya (pintu sekitar 2 m, meja sekitar 0,75 m) membuat kesalahan skala cepat terlihat.
+2. **Apply transform.** Di Object Mode, **Object → Apply** (Ctrl+A) memindahkan lokasi, rotasi, dan skala objek ke data mesh. Setelahnya rotasi menjadi 0 dan skala menjadi 1, tanpa mengubah tampilan objek. Dokumentasi Godot menyarankan transform di-apply sebelum ekspor. Untuk objek dengan skala negatif, opsi **Corrective Flip Normals** membalik normal supaya shading tidak terbalik.
+3. **Titik asal (origin).** Letakkan origin di titik yang masuk akal untuk dipakai di engine, misalnya di dasar tengah untuk prop yang diletakkan di lantai, atau di engsel untuk pintu.
+4. **Triangulasi dan modifier.** Aktifkan **Apply Modifiers** saat ekspor supaya modifier seperti Mirror atau Triangulate ikut diterapkan.
+5. **Back-face culling.** Dokumentasi Godot mencatat bahwa material Blender secara bawaan tidak membuang sisi belakang, dan hasil ekspor glTF ikut membawa pengaturan itu. Akibatnya material di Godot menggambar kedua sisi, yang menambah kerja GPU. Nyalakan **Backface Culling** di tab material Blender sebelum ekspor. Lihat [Back-face Culling](/kamus/geometri/side/).
+
+### Format
+
+- **Godot** menyebut glTF 2.0 sebagai format yang direkomendasikan, baik `.gltf` (teks) maupun `.glb` (biner). File `.blend` juga bisa diimpor langsung, dengan cara Godot memanggil eksporter glTF Blender di belakang layar, sehingga semua anggota tim perlu memasang Blender. FBX didukung lewat pustaka ufbx, yang menjadi metode bawaan untuk file FBX baru sejak Godot 4.3.
+- **Unity** memakai `.fbx` di rantai impor internalnya, dan dokumentasinya menyarankan `.fbx` bila memungkinkan. Daftar format standar bawaan Unity adalah `.fbx`, `.dae`, `.dxf`, dan `.obj`. File `.blend` bisa diimpor jika Blender terpasang di komputer setiap anggota tim, dan Unity mengubahnya ke FBX lebih dulu.
+
+Untuk eksporter glTF Blender, opsi **Y Up** di bagian Transform mengekspor dengan konvensi glTF. Untuk eksporter FBX, manual Blender menjelaskan opsi **Forward** dan **Up** sebagai konversi sumbu, dengan contoh: aplikasi yang memakai Y sebagai sumbu atas butuh -Z Forward dan Y Up. Opsi lain di bagian Transform adalah **Scale**, **Apply Scaling**, **Apply Unit**, dan **Apply Transform**.
+
+### Di engine
+
+<EngineTabs>
+<div slot="unity">
+
+Pilih model di jendela Project, lalu buka tab **Model** di Inspector.
+
+**Scene**
+
+- **Scale Factor**: skala global untuk model yang skalanya tidak cocok dengan proyek. Dokumentasi Unity menegaskan bahwa physics mengharapkan 1 m di dunia game sama dengan 1 unit di file yang diimpor.
+- **Convert Units**: mengonversi skala yang tercatat di file model ke skala Unity.
+- **Bake Axis Conversion**: memanggang konversi sumbu langsung ke data vertex dan animasi saat sistem sumbu file berbeda dari Unity. Jika dimatikan, Unity mengimbanginya lewat Transform objek akar. Kalau model dari Blender masuk dengan rotasi tambahan di objek akarnya, opsi ini yang perlu dicek.
+
+**Meshes**
+
+- **Read/Write**: bawaannya mati. Biarkan mati kecuali skrip perlu membaca data mesh, karena jika aktif data mesh disimpan di memori CPU dan GPU sekaligus.
+- **Mesh Compression**: Off, Low, Medium, High. Kompresi lebih tinggi menurunkan presisi mesh.
+- **Generate Colliders**: menambahkan mesh collider otomatis. Cocok untuk geometri lingkungan yang diam, tidak untuk objek yang bergerak.
+
+**Geometry**
+
+- **Keep Quads**: mencegah quad dipecah menjadi segitiga. Biasanya dibiarkan mati.
+- **Weld Vertices**: menggabungkan titik di posisi sama yang semua datanya sama. Bawaannya aktif.
+- **Normals**: bawaannya **Import**, yaitu memakai normal dari file. Dokumentasi Unity menyarankan smoothing diatur di aplikasi 3D lalu diimpor dengan pilihan ini, daripada mengandalkan **Smoothing Angle**.
+- **Tangents**: **Calculate Mikktspace** menghitung tangent dengan MikkTSpace. Pilihan **Import** memakai tangent dari file.
+- **Generate Lightmap UVs**: membuat UV kedua untuk lightmap di `Mesh.uv2` (disebut juga "UV1").
+
+Di tab **Rig**, **Animation Type** menentukan sistem animasi: **None**, **Legacy**, **Generic**, atau **Humanoid**. **Skin Weights** dibahas di bagian rigging di atas.
+
+</div>
+<div slot="unreal">
+
+Unreal memakai sumbu Z sebagai sumbu atas dan 1 unit = 1 cm, seperti tercatat di Kamus [Sistem Koordinat 3D](/kamus/ruang/coords/). Dialog impor FBX punya pengaturan skala seragam dan konversi sistem koordinat scene, serta pilihan untuk membuat UV lightmap dan membaca atau menghitung normal. Unreal juga umumnya mengharapkan normal map dengan konvensi sumbu hijau gaya DirectX, berlawanan dengan Godot dan glTF.
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-31): nama opsi dialog impor FBX (Import Uniform Scale, Convert Scene, Convert Scene Unit, Generate Lightmap UVs, Normal Import Method) dan nilai bawaannya, konvensi normal map gaya DirectX (green channel -Y) di Unreal, dan perilaku Interchange untuk glTF di versi terbaru. */}
+
+</div>
+<div slot="godot">
+
+Pilih file di dock FileSystem, lalu atur di dock **Import**. Untuk pengaturan per objek dan per material, klik dua kali file itu untuk membuka **Advanced Import Settings**.
+
+**Skala**
+
+- **Root Scale** (bawaan 1,0): skala seragam untuk akar scene. Nilai 1,0 tidak mengubah skala apa pun.
+- **Apply Root Scale** (bawaan aktif): skala diterapkan langsung ke mesh dan animasi, sementara skala node akar tetap (1, 1, 1). Jika dimatikan, Root Scale dikalikan ke skala node akar.
+
+Dokumentasi Godot menyebut 1 unit = 1 meter, dan physics serta sistem lain disetel untuk skala ini. Penskalaan setelah impor biasanya berhasil, tetapi kadang menimbulkan masalah [presisi floating point](/kamus/ruang/float-precision/). Lebih aman memperbaiki skala di aplikasi 3D.
+
+**Meshes**
+
+- **Ensure Tangents** (bawaan aktif): membuat tangent dengan Mikktspace jika file tidak membawanya.
+- **Generate LODs** (bawaan aktif): membuat versi mesh dengan detail lebih rendah untuk jarak jauh.
+- **Light Baking**: jika diatur ke **Static Lightmaps**, mesh diberi mode GI Static dan UV2 dibuat saat impor untuk baking lightmap. **Lightmap Texel Size** (bawaan 0,2) muncul di mode ini. Nilai lebih kecil menghasilkan lightmap lebih detail, dengan harga ukuran lightmap dan waktu bake yang lebih besar.
+
+**FBX → Importer**: **ufbx** membaca FBX langsung. **FBX2glTF** butuh program terpisah dan menurut dokumentasi Godot tidak disarankan kecuali ada alasan khusus.
+
+**Khusus file `.blend`**: opsi **Modifiers** (No Modifiers atau All Modifiers), **Skins**, dan **Export Bones Deforming Mesh Only** muncul di dock Import.
+
+</div>
+</EngineTabs>
+
+## Penamaan dan susunan file
+
+Penamaan yang konsisten membantu tim mencari aset, dan sebagian importer membaca nama objek untuk menentukan perlakuannya. Aturan di bawah ini praktik umum yang tidak dibakukan oleh engine mana pun. Yang penting adalah tim memakai satu aturan yang sama.
+
+**Nama file dan objek.** Pola yang umum adalah awalan jenis, nama, lalu varian, misalnya `SM_Tong_Kayu_A` untuk static mesh, `SK_Pedagang` untuk mesh berkerangka, dan `T_Tong_Kayu_BaseColor` untuk tekstur. Hindari spasi dan huruf di luar ASCII, karena sebagian alat dan sistem build memperlakukannya berbeda.
+
+**Akhiran yang dibaca importer.**
+
+- Unity membuat LOD Group otomatis dari mesh berakhiran `_LOD0`, `_LOD1`, dan seterusnya.
+- Godot membaca akhiran pada nama objek saat impor. `-col` menambahkan collision dari mesh yang sama, `-colonly` mengganti mesh dengan collision saja, `-convcol` membuat bentuk convex, `-noimp` membuang objek itu saat impor, dan `-navmesh` mengubahnya menjadi navigation mesh. Dokumentasi Godot menyebut akhiran ini bisa ditulis dengan `-`, `$`, atau `_`, dan tidak membedakan huruf besar-kecil. Fitur ini bisa dimatikan lewat opsi impor `nodes/use_node_type_suffixes`.
+
+**Akhiran tekstur.** Tulis isi tekstur di akhir nama: `_BaseColor`, `_Normal`, `_ORM`, `_AO`. Untuk tekstur yang dikemas per channel, catat urutan channel-nya, karena seperti dibahas di atas, Unity dan glTF memakai urutan yang berbeda.
+
+**Susunan folder.** Dua cara yang umum: dikelompokkan per jenis file (semua mesh di satu folder, semua tekstur di folder lain), atau per aset (satu folder berisi mesh, tekstur, dan material untuk satu prop). Kelompok per aset memudahkan memindahkan atau menghapus satu aset tanpa meninggalkan file yatim. Simpan file sumber yang besar, misalnya file sculpt dan file aplikasi texturing, di luar folder proyek engine jika engine tidak butuh membacanya.
+
+## Memeriksa aset di engine
+
+Aset yang lolos impor tanpa pesan error belum tentu benar. Periksa beberapa hal ini setiap kali aset baru masuk:
+
+1. **Skala.** Taruh kubus 1 m atau kapsul setinggi orang dewasa di sebelah aset. Pintu yang setinggi lutut atau gelas sebesar meja langsung terlihat. Periksa juga skala di Transform objek akar: idealnya (1, 1, 1).
+2. **Rotasi dan arah depan.** Rotasi objek akar idealnya (0, 0, 0). Karakter harus menghadap arah depan yang dipakai programmer.
+3. **Wireframe.** Lihat susunan segitiga dan bandingkan dengan anggaran. Segitiga yang sangat rapat di bagian kecil, atau segitiga panjang tipis, sering terlihat di sini.
+4. **Normal.** Putar lampu di sekitar aset. Sisi yang gelap dari semua arah biasanya punya normal terbalik. Tampilan normal buffer membantu melihat arah normal langsung.
+5. **Tekstur.** Pasang tekstur pola kotak-kotak sementara untuk memeriksa distorsi UV dan texel density, lalu bandingkan dengan aset lain di set yang sama.
+6. **Material dan draw call.** Hitung jumlah material per objek. Setiap material biasanya menjadi satu draw call sendiri, seperti dibahas di [Pelajaran 3 Fondasi Engine](/belajar/fondasi-engine/03-permukaan/#mesh-titik-dan-segitiga).
+
+<EngineTabs>
+<div slot="unity">
+
+Di Scene view, overlay **Draw Modes** punya **Wireframe** (hanya garis) dan **Shaded Wireframe** (tekstur dengan garis di atasnya). Selama Play mode, tombol **Stats** di Game view menampilkan jumlah segitiga dan vertex per frame (lihat Kamus [Triangle](/kamus/geometri/triangle/)).
+
+</div>
+<div slot="unreal">
+
+Viewport level punya mode tampilan **Wireframe** dan beberapa mode visualisasi lain untuk memeriksa mesh. Static Mesh Editor menampilkan jumlah segitiga, vertex, dan LOD untuk mesh yang dibuka.
+
+{/* Belum diverifikasi ke dokumentasi Epic (dev.epicgames.com diblokir proxy saat ditulis, 2026-10-31): nama mode tampilan Wireframe di viewport level, dan informasi jumlah segitiga, vertex, dan LOD di Static Mesh Editor. */}
+
+</div>
+<div slot="godot">
+
+Di menu kiri atas viewport 3D, pilih **Display Wireframe** untuk melihat segitiga. Mode debug draw lain di kelas Viewport, **Normal Buffer**, menampilkan objek tanpa cahaya dengan warna dari arah normal, dan **Overdraw** memperlihatkan area yang digambar berulang. Jumlah primitif per frame bisa dilihat di tab **Debugger → Monitors** (lihat Kamus [Triangle](/kamus/geometri/triangle/)).
+
+</div>
+</EngineTabs>
+
+## Ilustrasi: anggaran satu set prop stylized
+
+Semua angka di bagian ini ilustrasi. Tujuannya menunjukkan cara menghitung, dan angka sebenarnya ditentukan dari profiling di perangkat target.
+
+Sebuah game stylized PBR butuh satu set prop untuk interior kedai: tong, peti, meja, kursi, lentera, dan gelas. Kamera berada di ketinggian mata, dan prop paling dekat tampil sekitar 1 sampai 3 m dari kamera. Tim memutuskan:
+
+- Satu material dan satu set tekstur untuk seluruh set (atlas), supaya semua prop bisa berbagi material dan draw call bisa dikurangi.
+- Texel density target 512 piksel per meter.
+- Tiga tekstur: base color, normal, dan ORM yang urutan channel-nya diatur sesuai engine.
+
+```text title="Ilustrasi: anggaran segitiga dan luas permukaan per prop"
+prop      segitiga   luas permukaan unik di UV
+tong         600        2,3 m²
+peti         200        0,7 m²   (sisi yang sama berbagi area UV)
+meja         400        2,0 m²
+kursi        300        1,2 m²
+lentera      350        0,3 m²
+gelas        150        0,1 m²
+total       2000        6,6 m²
+```
+
+Berapa piksel tekstur yang dibutuhkan?
+
+```text title="Ilustrasi: dari texel density ke ukuran atlas"
+512 px per meter → 512 × 512 = 262.144 piksel per m²
+6,6 m² × 262.144     ≈ 1,73 juta piksel
+
+atlas 2048 × 2048    = 4,19 juta piksel
+anggap 70% terisi pulau UV (sisanya jarak dan celah) ≈ 2,94 juta piksel
+1,73 juta < 2,94 juta → muat, dengan sisa ruang
+
+atlas 1024 × 1024    = 1,05 juta piksel, 70% ≈ 0,73 juta piksel
+1,73 juta > 0,73 juta → tidak muat pada 512 px per meter
+```
+
+Kalau memori sempit, tim bisa menurunkan texel density ke 256 piksel per meter. Kebutuhan piksel turun menjadi seperempatnya, sekitar 0,43 juta piksel, dan muat di atlas 1024. Harganya, prop terlihat lebih buram dari dekat.
+
+Memori tekstur tanpa kompresi:
+
+```text title="Ilustrasi: memori atlas sebelum kompresi"
+2048 × 2048 × 4 byte = 16 MiB per tekstur, ≈ 21,3 MiB dengan mipmap
+3 tekstur            ≈ 64 MiB
+
+1024 × 1024 × 4 byte = 4 MiB per tekstur, ≈ 5,3 MiB dengan mipmap
+3 tekstur            ≈ 16 MiB
+```
+
+Kompresi tekstur GPU memperkecil angka ini beberapa kali lipat, dan detailnya ada di Pelajaran 5 jalur ini. Perhitungan di atas tetap berguna untuk membandingkan pilihan, karena perbandingannya tetap empat kali lipat setiap sisi tekstur digandakan.
+
+Dari sisi segitiga: kedai dengan 6 tong, 4 meja, 16 kursi, 10 gelas, 4 lentera, dan 3 peti berisi sekitar 6 × 600 + 4 × 400 + 16 × 300 + 10 × 150 + 4 × 350 + 3 × 200 = 13.500 segitiga untuk prop. Angka ini lalu dibandingkan dengan anggaran yang disepakati untuk prop di satu ruangan. Karena semua prop memakai satu material, programmer bisa memakai [instancing](/kamus/performa/instancing/) atau batching untuk kursi dan gelas yang berulang.
+
+Keputusan yang tidak diambil di set ini juga perlu dicatat. Prop ini tidak diberi LOD, karena ruangan kecil dan prop tidak pernah tampil jauh. Kalau kemudian ada adegan luar ruangan yang memperlihatkan kedai dari kejauhan, keputusan itu ditinjau ulang.
+
+## Kesalahan umum
+
+### Model masuk seratus kali terlalu kecil atau terlalu besar
+
+```text title="✗ Keliru"
+Blender: objek diperbesar dengan skala 100 di Object Mode, lalu diekspor
+engine: setiap salinan di scene diberi skala 0,01 supaya pas
+```
+
+```text title="✓ Benar"
+Blender: Unit System Metric, modelkan dengan ukuran sebenarnya
+         Object → Apply → Scale (Ctrl+A), skala menjadi 1
+engine:  objek akar berskala (1, 1, 1)
+         jika masih perlu, atur sekali di importer: Scale Factor (Unity), Root Scale (Godot)
+```
+
+Skala di file sumber terbawa ke setiap tempat aset dipakai, termasuk collider dan physics. Memperbaikinya di sumber berarti cukup sekali.
+
+### Rotasi 90° yang tersisa di objek akar
+
+```text title="✗ Keliru"
+model dari Blender tampil rebah atau objek akarnya membawa rotasi X
+objek anak ditambahkan di engine, ikut miring
+```
+
+```text title="✓ Benar"
+Blender: apply rotasi sebelum ekspor
+glTF:    opsi Y Up aktif (konvensi glTF, +Y ke atas)
+FBX:     atur Forward dan Up sesuai engine, atau di Unity nyalakan Bake Axis Conversion
+```
+
+Sistem sumbu Blender (Z atas) berbeda dari Unity dan Godot (Y atas). Konversinya harus terjadi di data mesh, tidak di transform objek.
+
+### Sisi cermin tampak gelap atau bolong
+
+```text title="✗ Keliru"
+separuh model dicerminkan dengan skala X = -1, diekspor tanpa apply
+material diberi double sided untuk menutupi lubangnya
+```
+
+```text title="✓ Benar"
+Object → Apply → Scale dengan Corrective Flip Normals aktif
+atau pakai modifier Mirror, lalu Apply Modifiers saat ekspor
+periksa arah normal sebelum ekspor
+```
+
+Skala negatif membalik urutan titik segitiga, sehingga sisi depan dan belakang tertukar. Double sided menambah kerja GPU dan cahayanya tetap dihitung dari normal yang salah.
+
+### Tekstur kebesaran untuk objek kecil
+
+```text title="✗ Keliru"
+gelas setinggi 10 cm memakai tekstur 4096 × 4096 sendiri
+```
+
+```text title="✓ Benar"
+gelas masuk ke atlas set prop, dengan texel density yang sama seperti prop lain
+```
+
+Tekstur 4096 tanpa kompresi memakan 64 MiB, untuk objek yang hanya menempati beberapa puluh piksel di layar. Ukur kebutuhan dari texel density.
+
+### Tekstur ORM dipasang dengan urutan channel yang salah
+
+```text title="✗ Keliru"
+tekstur ORM gaya glTF (R = AO, G = roughness, B = metallic)
+dipasang langsung ke Metallic Map pada Lit URP Unity
+```
+
+```text title="✓ Benar"
+Unity URP: R = metallic, G = occlusion, A = smoothness (1 - roughness)
+           sRGB (Color Texture) dimatikan
+glTF:      R = AO, G = roughness, B = metallic
+```
+
+Aplikasi texturing bisa mengekspor beberapa preset. Pilih preset per engine tujuan.
+
+### Lightmap bocor antar-bagian yang berbagi UV
+
+```text title="✗ Keliru"
+empat kaki meja berbagi area UV yang sama
+lightmap di-bake dari UV pertama
+```
+
+```text title="✓ Benar"
+UV kedua tanpa tumpang tindih untuk lightmap
+Unity: Generate Lightmap UVs → Mesh.uv2
+Godot: Light Baking → Static Lightmaps (membuat UV2)
+```
+
+Tekstur warna boleh berbagi area, tetapi cahaya di setiap tempat berbeda.
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Kerjakan dengan Blender dan Unity (template Universal 3D) atau Godot. Pakai model buatanmu sendiri atau aset berlisensi jelas.
+
+1. **Skala dan sumbu.** Modelkan peti 1 × 1 × 1 m di Blender, ekspor sekali tanpa apply transform setelah diperbesar dan diputar, lalu sekali lagi setelah apply. Impor keduanya ke engine dan bandingkan Transform objek akar. Taruh kubus bawaan engine di sebelahnya sebagai pembanding.
+2. **Texel density.** Buat dua peti, 0,5 m dan 2 m, dengan tekstur pola kotak-kotak yang sama. Hitung texel density masing-masing, lalu atur UV peti besar supaya texel density-nya sama dengan peti kecil. Catat ukuran tekstur yang dibutuhkan.
+3. **Baking.** Sculpt beberapa baut dan goresan di sebuah pelat high poly, lalu bake normal map dan AO ke pelat low poly berisi dua segitiga. Impor ke engine dan putar lampu. Coba balik channel hijau normal map dan amati perbedaannya.
+4. **Channel packing.** Siapkan roughness, metallic, dan AO sebagai tiga gambar abu-abu, lalu kemas menjadi satu tekstur dua kali: sekali dengan urutan glTF (R = AO, G = roughness, B = metallic), sekali dengan urutan URP untuk Unity. Pastikan hasilnya sama dengan memakai tiga tekstur terpisah.
+5. **Anggaran set prop.** Rancang tiga sampai lima prop untuk satu ruangan di game-mu. Tetapkan texel density target, hitung luas permukaan unik, lalu tentukan ukuran atlas seperti di bagian ilustrasi. Buat satu prop sampai selesai dan periksa di engine dengan daftar di bagian [Memeriksa aset di engine](#memeriksa-aset-di-engine).
