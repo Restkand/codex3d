@@ -5,7 +5,7 @@ fundamental: "Model yang diimpor kadang tampak hitam di satu sisi walaupun lampu
 kind: lesson
 minutes: 30
 status: draf
-lastReviewed: 2026-10-30
+lastReviewed: 2026-11-01
 terms:
   - mesh
   - geometry
@@ -219,7 +219,7 @@ Semua bentuk 3D di game, dari kotak kayu sampai wajah karakter, disimpan sebagai
 
 Setiap titik membawa lebih dari sekadar posisi:
 
-- **Posisi**: letak titik, relatif terhadap titik pusat objek (ruang lokal, seperti di Pelajaran 2).
+- **Posisi**: letak titik, relatif terhadap titik pusat objek (ruang lokal, seperti di [Pelajaran 2](/belajar/fondasi-engine/02-ruang/)).
 - **Normal**: arah hadap permukaan di titik itu. Dibahas di bagian berikutnya.
 - **[UV](/kamus/geometri/uv/)**: koordinat 2D yang menunjuk ke bagian mana dari sebuah [tekstur](/kamus/geometri/texture/) (gambar) yang ditempel di titik itu.
 - Kadang juga warna per titik, atau data tambahan untuk animasi.
@@ -231,7 +231,7 @@ titik   = [ (0,0,0), (1,0,0), (1,1,0), (0,1,0) ]   // 4 titik
 indeks  = [ 0,1,2,   0,2,3 ]                        // 2 segitiga, 6 indeks
 ```
 
-Jumlah segitiga (sering disebut *poly count*) memengaruhi kerja GPU, tetapi jarang menjadi satu-satunya penyebab game lambat. Pelajaran 8 membahas cara mengukurnya.
+Jumlah segitiga (sering disebut *poly count*) memengaruhi kerja GPU, tetapi jarang menjadi satu-satunya penyebab game lambat. [Pelajaran 8](/belajar/fondasi-engine/08-profiling/) membahas cara mengukurnya.
 
 <EngineTabs>
 <div slot="unity">

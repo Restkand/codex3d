@@ -5,7 +5,7 @@ fundamental: "Gambar yang tampak sama di layar bisa memakan memori GPU empat kal
 kind: lesson
 minutes: 35
 status: draf
-lastReviewed: 2026-10-31
+lastReviewed: 2026-11-01
 terms:
   - texture
   - texture-filtering
@@ -258,7 +258,7 @@ proyek-game/
     prop/tong_kayu/tong_kayu_basecolor.png
 ```
 
-**Huruf kecil dan tanpa spasi.** Dokumentasi Godot menyarankan `snake_case` untuk nama folder dan file, karena Windows dan macOS umumnya tidak membedakan huruf besar-kecil, sedangkan sistem file virtual PCK di game Godot yang sudah diekspor membedakannya. File bernama `Tong.png` yang dipanggil sebagai `tong.png` bisa berjalan di editor lalu gagal di build. Tim yang memakai pola lain, misalnya awalan `T_` dan `SM_` seperti di Pelajaran 4, tetap aman asal penulisannya konsisten.
+**Huruf kecil dan tanpa spasi.** Dokumentasi Godot menyarankan `snake_case` untuk nama folder dan file, karena Windows dan macOS umumnya tidak membedakan huruf besar-kecil, sedangkan sistem file virtual PCK di game Godot yang sudah diekspor membedakannya. File bernama `Tong.png` yang dipanggil sebagai `tong.png` bisa berjalan di editor lalu gagal di build. Tim yang memakai pola lain, misalnya awalan `T_` dan `SM_` seperti di [Pelajaran 4](/belajar/seni-visual/04-aset-3d/), tetap aman asal penulisannya konsisten.
 
 **Simpan file sumber di tempat yang tidak diimpor engine.** Unity mengimpor file gambar di dalam folder `Assets`, dan Godot mengimpor semua file yang bisa diimpornya di folder proyek. File sumber yang ikut terimpor menambah waktu impor dan bisa ikut terbawa ke build. Dua pilihan yang umum:
 

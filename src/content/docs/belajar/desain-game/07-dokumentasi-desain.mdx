@@ -1,0 +1,575 @@
+---
+title: "Dokumentasi Desain"
+description: "Alasan menulis desain, dokumen desain panjang dan kenapa sering usang, one-pager, pilar desain, spesifikasi fitur dan sistem, level brief, wiki dan log keputusan, prototipe dan spreadsheet sebagai dokumen, diagram, menulis untuk pembaca yang berbeda, menjaga dokumen tetap hidup, serta apa yang tidak perlu ditulis."
+fundamental: "Dokumen desain berguna sejauh ia dibaca dan dipercaya oleh orang yang membuat game-nya. Dokumen yang pendek, punya pemilik, dan memuat alasan di balik setiap keputusan biasanya bertahan lebih lama daripada dokumen tebal yang ditulis sekali di awal proyek. Tulis yang membantu orang lain bekerja tanpa harus bertanya kepadamu, dan biarkan prototipe menjawab hal yang hanya bisa dijawab dengan bermain."
+kind: lesson
+minutes: 40
+status: draf
+lastReviewed: 2026-11-01
+terms:
+  - state-machine
+krekit:
+  gambaran-besar: "Dokumen desain pertamaku tebal sekali. Yang membacanya sampai habis cuma aku, dan itu pun waktu menulisnya."
+  kenapa-desain-perlu-ditulis: "Tiga bulan lagi, kamu sendiri akan lupa kenapa harga perluasan lahan naik bertahap. Tulis alasannya sekarang."
+  dokumen-desain-panjang-dan-kenapa-sering-usang: "Begitu satu bagian dokumen ketahuan salah, orang mulai ragu pada bagian lainnya juga."
+  one-pager: "Kalau satu halaman saja susah diisi, coba periksa lagi idenya. Biasanya ada bagian yang belum kamu putuskan."
+  pilar-desain: "Pilar paling berguna saat dipakai untuk menolak sesuatu, termasuk ide yang kamu sukai."
+  spesifikasi-fitur-dan-sistem: "Bagian pertanyaan terbuka itu yang paling sering kubaca ulang. Di sanalah tempat diskusi berikutnya."
+  level-brief: "Satu kartu level yang jelas sering lebih berguna bagi level designer daripada sepuluh halaman cerita dunia."
+  wiki-dan-log-keputusan: "Aku menulis log keputusan untuk orang yang bergabung enam bulan lagi, supaya ia tidak perlu menebak."
+  prototipe-dan-spreadsheet-sebagai-dokumen: "Kadang jawaban terbaik untuk \"gimana rasanya?\" adalah build yang bisa langsung dimainkan."
+  diagram: "Kalau panah di diagram saling silang tak keruan, sistemnya mungkin memang sedang kusut."
+  menulis-untuk-pembaca-yang-berbeda: "Programmer, artist, dan publisher bisa membaca halaman yang sama dan mencari hal yang berbeda sama sekali."
+  menjaga-dokumen-tetap-hidup: "Nama pemilik dan tanggal di bagian atas dokumen itu kecil, tapi dari situ orang tahu apakah isinya masih bisa dipercaya."
+  yang-tidak-perlu-ditulis: "Angka yang sudah ada di engine tidak perlu disalin ke dokumen. Cukup tulis di mana angkanya disimpan."
+  kesalahan-umum: "Kesalahan pertama paling sering kutemui: dokumen ditulis sekali di awal, lalu tidak pernah disentuh lagi."
+sidebar:
+  order: 7
+  label: "7 · Dokumentasi Desain"
+quiz:
+  - q: "Tim dua orang baru mulai membuat game bertani. Dokumen apa yang paling masuk akal ditulis lebih dulu?"
+    options:
+      - "Dokumen desain 80 halaman yang mencakup semua fitur, cerita, dan menu"
+      - "One-pager berisi hook, target pemain, core loop, pilar, dan referensi, lalu prototipe untuk mengujinya"
+      - "Spesifikasi teknis untuk setiap sistem sebelum ada prototipe"
+      - "Tidak menulis apa pun sampai game hampir selesai"
+    answer: 1
+    explain: "Di awal proyek, banyak hal masih akan berubah setelah playtest pertama. One-pager memberi gambaran bersama yang cukup untuk mulai, dan prototipe menguji apakah core loop-nya bekerja. Dokumen yang lebih rinci ditulis untuk sistem yang sudah siap dibangun."
+  - q: "Pilar desain game bertanimu adalah \"pagi yang tenang\", \"ladang milikmu\", dan \"selalu ada yang baru\". Seseorang mengusulkan hama yang menghancurkan setengah ladang secara acak setiap malam. Bagaimana pilar membantu?"
+    options:
+      - "Pilar tidak berhubungan dengan fitur, jadi usulan itu dinilai dari jumlah pekerjaannya saja"
+      - "Usulan itu langsung diterima karena menambah tantangan"
+      - "Tim bisa menanyakan pilar mana yang dilayani fitur itu. Kerusakan acak yang besar bertabrakan dengan \"pagi yang tenang\", jadi usulan itu perlu diubah atau ditolak"
+      - "Pilar diganti supaya fitur baru muat"
+    answer: 2
+    explain: "The Level Design Book menyebut pilar membantu tim menjaga visi yang utuh dan menahan pekerjaan yang tidak mendukung tujuan utama. Pilar paling berguna saat dipakai menyaring usulan. Kalau ide hama tetap menarik, versinya bisa dibuat lebih ringan, misalnya hama yang terlihat datang dan bisa diusir."
+  - q: "Mana isi yang paling penting di bagian \"pertanyaan terbuka\" sebuah spesifikasi sistem?"
+    options:
+      - "Daftar semua ide yang pernah muncul tentang sistem itu"
+      - "Hal yang belum diputuskan, siapa yang akan memutuskan, dan bagaimana jawabannya akan dicari (misalnya lewat playtest berikutnya)"
+      - "Ringkasan cerita game"
+      - "Bagian ini sebaiknya kosong supaya spesifikasi terlihat lengkap"
+    answer: 1
+    explain: "Spesifikasi yang menyembunyikan ketidakpastian membuat pembaca mengira semuanya sudah final. Pertanyaan terbuka yang punya pemilik dan cara menjawabnya memberi tahu programmer bagian mana yang sebaiknya dibuat mudah diubah."
+  - q: "Programmer baru bergabung dan bertanya kenapa tanaman yang tidak disiram tidak langsung layu. Tidak ada yang ingat alasannya. Dokumen apa yang paling membantu mencegah situasi ini?"
+    options:
+      - "Log keputusan berisi tanggal, keputusan, alasan, dan status"
+      - "Dokumen desain yang lebih tebal"
+      - "Notulen lengkap setiap rapat"
+      - "Rekaman layar semua sesi playtest"
+    answer: 0
+    explain: "Michael Nygard menulis bahwa tanpa alasan di balik keputusan lama, orang baru hanya punya dua pilihan: menerimanya begitu saja atau mengubahnya begitu saja. Log keputusan menyimpan alasan itu dalam bentuk pendek, dan keputusan yang diganti tetap disimpan dengan tanda bahwa ia sudah digantikan."
+  - q: "Di mana sebaiknya angka penyetelan seperti harga perluasan lahan disimpan?"
+    options:
+      - "Disalin ke setiap dokumen yang menyebutnya, supaya pembaca tidak perlu membuka file lain"
+      - "Hanya diingat oleh desainer"
+      - "Di satu tempat yang menjadi sumbernya, misalnya spreadsheet ekonomi atau file data game, dan dokumen lain menautkan ke sana"
+      - "Di pesan chat tim"
+    answer: 2
+    explain: "Angka yang disalin ke banyak tempat cepat berbeda satu sama lain setelah penyetelan, dan pembaca tidak tahu mana yang benar. Simpan di satu sumber, lalu tautkan. Spreadsheet ekonomi dari Pelajaran 5 adalah contoh sumber seperti ini."
+  - q: "Kamu menulis ringkasan desain untuk calon publisher dan untuk artist di timmu. Apa yang paling tepat?"
+    options:
+      - "Kirim dokumen yang sama persis ke keduanya"
+      - "Untuk publisher, tekankan hook, target pemain, cakupan, dan risiko. Untuk artist, tekankan suasana, referensi visual, daftar aset, dan batas teknis"
+      - "Untuk artist cukup kirim daftar fitur"
+      - "Publisher tidak perlu dokumen, cukup demo"
+    answer: 1
+    explain: "Tim Ryan menulis bahwa dokumentasi berarti hal berbeda bagi setiap anggota tim, dan proposal untuk pihak yang mendanai memuat analisis pasar, teknis, dan biaya. Isi intinya bisa sama, tetapi urutan dan detailnya disesuaikan dengan apa yang perlu diputuskan oleh pembacanya."
+sources:
+  - title: "One-Page Designs"
+    url: "https://www.gdcvault.com/play/1012356/One-Page"
+    publisher: "Stone Librande, GDC 2010 (GDC Vault)"
+    accessed: 2026-11-01
+  - title: "The Four One-Page Design Docs You Need (And How to Use Them)"
+    url: "https://gdcvault.com/play/1035120/The-Four-One-Page-Design"
+    publisher: "Ian Schreiber, GDC 2025 (GDC Vault)"
+    accessed: 2026-11-01
+  - title: "The Anatomy of a Design Document, Part 1: Documentation Guidelines for the Game Concept and Proposal"
+    url: "https://www.gamedeveloper.com/design/the-anatomy-of-a-design-document-part-1-documentation-guidelines-for-the-game-concept-and-proposal"
+    publisher: "Tim Ryan, Game Developer (1999)"
+    accessed: 2026-11-01
+  - title: "The Anatomy of a Design Document, Part 2: Documentation Guidelines for the Functional and Technical Specifications"
+    url: "https://www.gamedeveloper.com/design/the-anatomy-of-a-design-document-part-2-documentation-guidelines-for-the-functional-and-technical-specifications"
+    publisher: "Tim Ryan, Game Developer (1999)"
+    accessed: 2026-11-01
+  - title: "Creating a Great Design Document"
+    url: "https://www.gamedeveloper.com/design/creating-a-great-design-document"
+    publisher: "Tzvi Freeman, Game Developer (1997)"
+    accessed: 2026-11-01
+  - title: "Pre-production"
+    url: "https://book.leveldesignbook.com/process/preproduction"
+    publisher: "The Level Design Book"
+    accessed: 2026-11-01
+  - title: "Blockout"
+    url: "https://book.leveldesignbook.com/process/blockout"
+    publisher: "The Level Design Book"
+    accessed: 2026-11-01
+  - title: "Design Pillars – The Core of Your Game"
+    url: "https://www.gamedeveloper.com/design/design-pillars-the-core-of-your-game"
+    publisher: "Max Pears, blog di Game Developer (2017)"
+    accessed: 2026-11-01
+  - title: "Documenting Architecture Decisions"
+    url: "https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions"
+    publisher: "Michael Nygard, Cognitect (2011)"
+    accessed: 2026-11-01
+---
+
+import Aside from '~/components/Aside.astro'
+import Quiz from '~/components/Quiz.astro'
+
+<Aside type="note" title="Setelah pelajaran ini kamu bisa">
+- Menjelaskan untuk apa dokumentasi desain dibuat dan kenapa dokumen desain panjang sering ditinggalkan.
+- Menulis one-pager dan pilar desain untuk game yang sedang kamu rancang.
+- Menyusun spesifikasi sistem yang memuat tujuan, aturan, kasus tepi, angka penyetelan, dan pertanyaan terbuka.
+- Memilih bentuk dokumen yang cocok: level brief, wiki, log keputusan, prototipe, spreadsheet, atau diagram.
+- Menyesuaikan isi dokumen dengan pembacanya, dari programmer sampai publisher.
+- Menjaga dokumen tetap terpakai lewat pemilik, tanggal pembaruan, dan tautan dari pelacak tugas, serta memutuskan apa yang tidak perlu ditulis.
+</Aside>
+
+## Gambaran besar
+
+<Aside type="note" title="Model mental: peta jalan yang terus dicoret">
+Bayangkan rombongan yang pergi bersama ke kota yang belum pernah mereka kunjungi. Sebelum berangkat mereka sepakat tujuan dan beberapa aturan: tidak lewat jalan tol, berhenti makan siang di jalan. Di perjalanan, jalan ditutup dan rute berubah. Kalau perubahan itu dicoret di peta yang dipegang semua orang, rombongan tetap bersama. Kalau setiap sopir hanya mengingat versi masing-masing, mereka tiba di tempat yang berbeda. Dokumentasi desain adalah peta itu: tujuannya ditulis jelas, dan coretannya terus diperbarui.
+</Aside>
+
+**Dokumentasi desain** adalah semua catatan yang menjelaskan apa yang sedang dibuat, kenapa, dan bagaimana bagian-bagiannya seharusnya bekerja. Bentuknya bisa satu halaman teks, spreadsheet, diagram, atau prototipe yang bisa dimainkan.
+
+Kamu sudah menulis beberapa dokumen desain tanpa menyebutnya begitu: kartu loop di [Pelajaran 1](/belajar/desain-game/01-core-loop/#menulis-loop-secara-konkret), kartu MDA di [Pelajaran 3](/belajar/desain-game/03-mda/#merancang-dengan-mda), kartu level di [Pelajaran 4](/belajar/desain-game/04-level-design/#contoh-merancang-satu-level-platformer-2d), spreadsheet ekonomi di [Pelajaran 5](/belajar/desain-game/05-ekonomi-progres/#merancang-ekonomi-di-spreadsheet), dan rencana sesi serta daftar masalah di [Pelajaran 6](/belajar/desain-game/06-playtesting/#mengolah-hasil). Pelajaran terakhir jalur ini membahas cara menyusun dokumen-dokumen seperti itu menjadi kumpulan yang dipakai tim, dan kapan sebaiknya berhenti menulis lalu membuat prototipe.
+
+Contohnya tetap game bertani yang dikerjakan Laras (desainer) dan Dimas (programmer) di Pelajaran 6, ditambah platformer dengan pijakan rapuh dari Pelajaran 4.
+
+## Kenapa desain perlu ditulis
+
+Di tim dua orang yang duduk bersebelahan, menulis desain bisa terasa seperti pekerjaan tambahan. Alasan menulis biasanya baru terasa saat salah satu hal berikut terjadi.
+
+**Pemahaman bersama.** Tim Ryan, dalam artikel dua bagian tentang dokumen desain di Game Developer tahun 1999, menyebut tujuan dokumentasi secara umum adalah menyampaikan visi dengan cukup rinci supaya bisa dikerjakan. Menurutnya, dokumentasi mencegah programmer dan artist bekerja tanpa tahu bagaimana pekerjaannya tersambung dengan pekerjaan orang lain, sehingga usaha yang terbuang dan kebingungan berkurang. Ryan juga menulis bahwa dokumen tidak menggantikan rapat atau diskusi. Dokumen mencatat kesepakatan yang dicapai lewat diskusi itu dan menghilangkan bagian yang masih samar.
+
+**Keputusan dan alasannya.** Dimas tahu harga perluasan lahan naik bertahap. Tanpa catatan, ia mungkin tidak tahu bahwa alasannya adalah tabel Versi B di Pelajaran 5, yang menunjukkan pembelian terlalu rapat dan koin menumpuk jika harganya tetap. Saat ada yang mengusulkan "harga tetap saja biar sederhana", alasan tertulis mencegah tim mengulang perdebatan yang sama.
+
+**Orang baru.** Freelancer artist, programmer kedua, atau teman yang membantu menulis dialog perlu tahu cara kerja game tanpa harus mewawancarai semua orang. Bagian [Bus factor dan dokumentasi](/belajar/produksi/03-peran-tim-kecil/#bus-factor-dan-dokumentasi) di jalur Produksi membahas risiko pengetahuan yang hanya ada di kepala satu orang. Dokumen desain adalah salah satu cara menurunkan risiko itu untuk sisi desain.
+
+**Ingatan.** Proyek indie sering berjalan bertahun-tahun. Laras yang membuka proyek setelah tiga bulan mengerjakan hal lain akan berterima kasih kepada Laras yang dulu menulis kenapa penanda tetesan air berkedip ditambahkan.
+
+## Dokumen desain panjang dan kenapa sering usang
+
+**Dokumen desain game** (*game design document*, sering disingkat GDD) secara tradisional adalah satu dokumen besar yang menjelaskan seluruh game: cerita, mekanik, kontrol, antarmuka, level, aset, dan kadang jadwal. Dalam artikel Game Developer tahun 1997, Tzvi Freeman membagi dokumentasi menjadi tiga tahap: *concept paper* yang menjelaskan konsep dan meyakinkan pihak yang akan mendanai, dokumen desain yang menjabarkan seluruh proyek beserta detail cara setiap bagian dikerjakan, dan dokumen produksi seperti jadwal, anggaran, serta spesifikasi teknis.
+
+Artikel Ryan memberi pembagian yang lebih rinci: konsep satu sampai dua halaman, proposal untuk mendapatkan dana, **spesifikasi fungsional** yang menjelaskan apa yang ada di game dari sudut pandang pemain, dan **spesifikasi teknis** yang ditulis programmer tentang cara membangunnya. Menurut Ryan, panjang spesifikasi fungsional bisa sepuluh halaman sampai beberapa ratus, tergantung kerumitan game, dan ia menyarankan untuk tidak mengejar jumlah halaman. Ia juga menceritakan pengalaman membaca dokumen desain yang sangat tebal dan menemukan bahwa banyak isinya samar sehingga informasi penting sulit dicari.
+
+Dokumen seperti ini dibuat untuk alasan yang masuk akal: tim besar, kontrak dengan publisher, dan biaya perubahan yang mahal. Masalahnya muncul saat game mulai dibangun dan dimainkan.
+
+- **Desain berubah setelah playtest.** Ryan sendiri menulis bahwa ia belum pernah melihat desain yang tidak berubah selama implementasi, dan perubahan perlu dikirim ke semua orang lalu dilampirkan ke spesifikasi. Setiap perubahan yang lupa dicatat membuat dokumen sedikit lebih jauh dari game yang sebenarnya.
+- **Dokumen yang panjang jarang dibaca utuh.** Deskripsi sesi Stone Librande di GDC 2010 bertanya kenapa membuat dokumen lebih dari satu halaman jika kebanyakan orang hanya membaca halaman pertama.
+- **Dokumen yang tidak dibaca berhenti diperbarui.** The Level Design Book, di halaman tentang praproduksi, menulis bahwa developer modern jarang memakai GDD besar karena tidak ada yang akan membaca semuanya dan dokumen cepat usang saat game berkembang.
+
+Dokumen yang usang lebih berbahaya daripada tidak ada dokumen, karena orang masih memercayainya. Programmer yang membangun dari spesifikasi bulan Maret bisa menghabiskan seminggu untuk fitur yang sudah dipotong di bulan April.
+
+Ini tidak berarti dokumen besar selalu salah. Halaman yang sama dari The Level Design Book menyebut proyek kecil bisa berjalan dengan rencana kecil atau tanpa rencana, sedangkan proyek besar dan panjang mungkin butuh wiki internal yang besar. Yang berubah di banyak tim adalah bentuknya: satu dokumen raksasa dipecah menjadi beberapa dokumen kecil yang masing-masing punya tugas jelas dan bisa diperbarui sendiri-sendiri.
+
+## One-pager
+
+**One-pager** (dokumen satu halaman, kadang disebut *pitch page*) adalah ringkasan game yang muat di satu halaman. Fungsinya mirip dokumen konsep di artikel Ryan: menyampaikan inti game kepada siapa pun yang perlu memahaminya dengan cepat, termasuk timmu sendiri.
+
+Librande, dalam deskripsi sesinya, menyebut *one-page design* sebagai dokumen yang panjangnya tepat satu halaman, dan sesinya menunjukkan contoh dari Diablo III, The Simpsons, dan Spore. One-page design versi Librande sering berupa satu halaman besar yang padat gambar dan diagram untuk satu fitur atau sistem. One-pager di bagian ini lebih sempit: satu halaman untuk seluruh game. Ian Schreiber, dalam sesi GDC 2025, membahas empat dokumen satu halaman yang menurutnya berguna di sebagian besar proyek game: visi game, pilar, loop, dan aliran sumber daya. One-pager di bawah menggabungkan visi dan pilar. Loop dan aliran sumber daya dibahas di bagian diagram.
+
+### Isi one-pager
+
+| Bagian | Pertanyaan yang dijawab | Catatan |
+| --- | --- | --- |
+| **Hook** | Apa yang membuat orang ingin mencobanya? | Satu sampai dua kalimat. The Level Design Book menyebut ini *elevator pitch*: konsep inti dan apa yang membuatnya menarik. |
+| **Target pemain** | Untuk siapa game ini, dan game apa yang sudah mereka mainkan? | Lebih berguna daripada "semua orang". |
+| **Core loop** | Apa yang dilakukan pemain berulang kali? | Pakai kata kerja dari kartu loop di Pelajaran 1. |
+| **Pilar** | Dua sampai empat hal terpenting | Dibahas di bagian berikutnya. |
+| **Referensi** | Game, film, atau gambar yang mirip dalam hal tertentu | Sebutkan apa yang diambil dari setiap referensi. |
+| **Platform dan cakupan** | Di mana dimainkan, berapa lama, dikerjakan berapa orang | Mengikat ide ke kenyataan produksi. |
+| **Risiko terbesar** | Apa yang paling mungkin membuat game ini gagal? | Biasanya yang perlu diuji pertama di prototipe. |
+
+Ryan memberi dua catatan untuk dokumen konsep yang berlaku juga di sini. Pertama, ia menyarankan menulis deskripsi dari sudut pandang pemain, dengan menjelaskan apa yang dilakukan dan dilihat pemain, tidak hanya membandingkan dengan game lain. "Seperti game A ditambah game B" tidak menjelaskan aksi apa pun. Kedua, fitur yang sudah menjadi target setiap game, seperti grafik bagus dan musik yang menarik, tidak perlu dicantumkan kecuali memang menjadi pembeda.
+
+### Contoh one-pager game bertani
+
+Contoh berikut adalah one-pager untuk game bertani milik Laras dan Dimas. **Ilustrasi, bukan data.** Judul, angka, dan referensi dipilih untuk menunjukkan bentuknya.
+
+```text title="One-pager: Ladang Kecil (ilustrasi)"
+LADANG KECIL                               versi 0.4 · pemilik: Laras
+                                           diperbarui: 2026-11-01
+
+HOOK
+  Game bertani santai tentang mengubah lahan kosong di lereng gunung
+  menjadi ladang yang kamu tata sendiri, satu hari dalam game
+  setiap sesi.
+
+TARGET PEMAIN
+  Pemain dewasa muda yang suka game santai dan bermain 15 sampai
+  30 menit sebelum tidur, di PC atau laptop. Pernah memainkan
+  game bertani atau dekorasi rumah, tidak mencari tantangan refleks.
+
+CORE LOOP
+  momen ke momen : pilih petak → tanam / siram / panen → lihat
+                   tunas tumbuh dan angka panen
+  sesi           : satu hari dalam game, sekitar 12 menit
+  jangka panjang : jual panen → perluas lahan, beli alat,
+                   buka tanaman musim berikutnya
+
+PILAR
+  1. Pagi yang tenang   kesalahan kecil tidak dihukum keras
+  2. Ladang milikmu     tata letak dan dekorasi bebas
+  3. Selalu ada yang baru  tanaman, area, atau alat baru
+                           kira-kira setiap dua hari dalam game
+
+REFERENSI
+  Stardew Valley : ritme satu hari dalam game
+  Animal Crossing: dekorasi tanpa tujuan wajib
+  foto sawah terasering: palet warna dan bentuk lahan
+
+PLATFORM DAN CAKUPAN
+  PC (Steam), 2 orang + 1 freelancer audio, target 8 jam
+  sampai musim pertama selesai, rilis Early Access dalam 14 bulan
+
+RISIKO TERBESAR
+  Loop menanam terasa seperti pekerjaan setelah ladang besar.
+  Diuji di prototipe: durasi panen dikali jumlah petak.
+
+PERTANYAAN TERBUKA
+  Apakah perlu musim hujan yang menggantikan penyiraman?
+  (Laras, setelah playtest putaran 3)
+```
+
+Perhatikan bahwa one-pager ini punya versi, pemilik, dan tanggal. Ia juga menautkan ke hal yang sudah teruji: durasi sesi dari prototipe dan jarak antar-unlock dari spreadsheet ekonomi. Jika satu halaman sulit diisi, misalnya kamu tidak bisa menulis core loop dengan kata kerja yang jelas, itu biasanya tanda bahwa idenya yang perlu dipikirkan lagi.
+
+## Pilar desain
+
+**Pilar desain** adalah beberapa tujuan terpenting yang menopang seluruh desain. The Level Design Book menyebut pilar sebagai tujuan pengalaman paling penting di seluruh proyek, yang membantu tim menjaga visi yang utuh dan menahan pekerjaan yang tidak mendukung tujuan utama (*feature creep*). Buku itu menyarankan memberi setiap pilar nama pendek supaya mudah diingat, dan memberi contoh pilar internal God of War (2018) dari Sony Santa Monica: *Combat*, *Father/Son*, dan *Exploration*. Daftar periksa di halaman yang sama meminta dua sampai tiga pilar. Max Pears, dalam tulisan blognya di Game Developer tahun 2017, menyarankan tiga sampai lima. Jumlah pastinya tidak sepenting kebiasaan membatasinya: jika semuanya menjadi pilar, tidak ada yang bisa dipakai untuk memilih.
+
+Pilar yang berguna punya tiga ciri:
+
+- **Bisa dipakai menolak sesuatu.** "Game yang seru" tidak pernah menolak apa pun. "Pagi yang tenang" menolak kerusakan acak besar yang menghancurkan ladang semalaman.
+- **Terhubung ke pengalaman pemain.** Pilar dalam contoh ini diturunkan dari tujuan estetika di [Pelajaran 3](/belajar/desain-game/03-mda/#game-bertani): Submission, Expression, dan Discovery. Nama pilarnya lebih konkret supaya mudah dipakai sehari-hari.
+- **Dipakai bersama.** Pears menulis bahwa pilar membantu seluruh tim memahami gambaran besar sehingga anggota tim bisa membuat keputusan sendiri, dengan bertanya apakah sebuah mekanik atau ide melayani pilar game itu. Ia juga mencatat bahwa tidak setiap mekanik harus melayani pilar, dan mekanik di luar pilar kadang dipakai dengan sengaja untuk menimbulkan rasa yang berbeda.
+
+The Level Design Book juga memberi contoh bagaimana pilar menyelesaikan konflik antarbagian. Karena tim God of War sudah sepakat bahwa kualitas animasi *motion capture* termasuk prioritas, level designer yang levelnya membuat animasi terlihat buruk kemungkinan yang perlu menyesuaikan levelnya. Di game bertani, pilar "pagi yang tenang" bisa memutuskan perdebatan antara Laras dan Dimas tentang apakah tanaman yang lupa disiram langsung mati.
+
+## Spesifikasi fitur dan sistem
+
+**Spesifikasi** (*spec*) adalah dokumen yang menjelaskan satu fitur atau sistem dengan cukup rinci supaya bisa dibangun dan diuji. Di tim kecil, spesifikasi biasanya hanya ditulis untuk sistem yang akan segera dikerjakan, sehingga ia jarang sempat usang sebelum dipakai.
+
+Spesifikasi yang berguna biasanya memuat bagian berikut:
+
+| Bagian | Isi |
+| --- | --- |
+| **Tujuan** | Kenapa sistem ini ada, dan pilar mana yang dilayaninya |
+| **Aturan** | Apa yang terjadi, dari sudut pandang pemain |
+| **Kasus tepi** | Situasi yang tidak biasa: input bersamaan, nilai nol, simpan dan muat di tengah aksi |
+| **Angka penyetelan** | Nilai awal yang akan disetel, dan di mana nilai itu disimpan |
+| **Umpan balik** | Apa yang dilihat dan didengar pemain |
+| **Pertanyaan terbuka** | Hal yang belum diputuskan, siapa yang memutuskan, bagaimana dijawab |
+
+Ryan menyarankan spesifikasi fungsional ditulis dari sudut pandang pengguna, tentang apa yang dilihat dan dialami pemain, dan menghindari detail teknis yang akan ditulis programmer di spesifikasi teknis. Untuk tim kecil, dua dokumen itu sering digabung. Yang tetap berguna adalah memisahkan bagian "apa yang terjadi" dari bagian "cara membangunnya", sehingga programmer punya ruang untuk memilih cara implementasi.
+
+Bagian **kasus tepi** dan **pertanyaan terbuka** sering dilewati, padahal keduanya yang paling banyak menghemat waktu. Kasus tepi yang ditulis di depan adalah bug yang tidak perlu ditemukan saat QA. Pertanyaan terbuka memberi tahu programmer bagian mana yang sebaiknya dibuat mudah diubah.
+
+### Contoh spesifikasi: sistem penyiraman
+
+Contoh ini memakai hasil playtest di [Pelajaran 6](/belajar/desain-game/06-playtesting/#contoh-dua-putaran-playtest-game-bertani). **Ilustrasi, bukan data.** Angka dan keputusan dibuat untuk menunjukkan bentuk spesifikasi.
+
+```text title="Spesifikasi: penyiraman (ilustrasi)"
+SISTEM PENYIRAMAN                 status: dibangun · pemilik: Laras
+                                  diperbarui: 2026-11-01 · kartu: FARM-42
+
+TUJUAN
+  Memberi pemain rutinitas pagi yang punya keputusan kecil (petak mana
+  dulu, kapan isi ulang). Melayani pilar 1, "pagi yang tenang".
+
+ATURAN
+  - Pemain menyiram satu petak dengan menekan tombol aksi sambil
+    memegang kaleng penyiram.
+  - Petak yang disiram tetap basah sampai hari berganti.
+  - Tanaman di petak yang tidak disiram hari itu tidak tumbuh,
+    tetapi tidak mati.
+  - Tanaman yang tidak disiram dua hari berturut-turut layu.
+    Tanaman layu bisa dipulihkan dengan disiram, dan panennya
+    berkurang setengah.
+  - Kaleng punya isi terbatas dan diisi ulang di sumur.
+
+KASUS TEPI
+  - Petak kosong disiram: tanah basah, tidak ada efek lain.
+    Benih yang ditanam di petak basah ikut dihitung sudah disiram.
+  - Pemain menyimpan game di tengah hari: status basah ikut disimpan.
+  - Kaleng kosong: tombol aksi memutar suara kosong, tidak menyiram.
+  - Hari berganti saat animasi siram berjalan: siraman dihitung
+    untuk hari yang lama.
+
+ANGKA PENYETELAN (sumber: data/penyiraman.json)
+  isi kaleng           : 10 petak
+  durasi animasi siram : 0,3 detik
+  hari sampai layu     : 2
+  panen tanaman layu   : 50%
+
+UMPAN BALIK
+  - Tanah menggelap saat basah, suara percikan pendek.
+  - Petak yang belum disiram menampilkan tetesan air berkedip
+    mulai pukul 06.00 dalam game (ditambahkan setelah playtest 1).
+  - Indikator isi kaleng di pojok layar.
+
+PERTANYAAN TERBUKA
+  1. Apakah layu setelah 2 hari masih terlalu keras untuk pilar 1?
+     Pemilik: Laras. Dijawab di playtest putaran 3.
+  2. Apakah perlu alat siram area (3x3)? Menunggu hasil pertanyaan
+     durasi panen. Pemilik: Laras dan Dimas.
+
+RIWAYAT
+  2026-10-24  tetesan air berkedip ditambahkan (log keputusan K-07)
+  2026-10-31  tanaman tidak lagi mati, diganti layu (K-09)
+```
+
+Beberapa hal yang bisa kamu perhatikan:
+
+- **Durasi animasi 0,3 detik** dipilih dengan hitungan durasi kali pengulangan dari [Pelajaran 1](/belajar/desain-game/01-core-loop/#loop-dan-game-feel). Pemain yang menyiram 36 petak menunggu sekitar 11 detik, jauh lebih ringan daripada animasi 1,5 detik.
+- **Angka disimpan di satu file data**, dan spesifikasi hanya menyebut nilai awalnya. Saat angka disetel, file data yang menjadi sumbernya. Bagian [Yang tidak perlu ditulis](#yang-tidak-perlu-ditulis) membahas alasannya.
+- **Riwayat menautkan ke log keputusan**, sehingga orang yang bertanya "kenapa tanaman tidak mati lagi?" bisa menemukan alasannya.
+
+## Level brief
+
+**Level brief** adalah ringkasan satu level sebelum level itu dibangun. Isinya mirip kartu level di [Pelajaran 4](/belajar/desain-game/04-level-design/#contoh-merancang-satu-level-platformer-2d): tujuan pengalaman, player metrics yang dipakai, durasi target, landmark, dan rencana per bagian dengan intensitasnya. Kartu level platformer dengan pijakan rapuh di pelajaran itu sudah bisa dipakai sebagai level brief.
+
+Beberapa bagian yang biasanya ditambahkan saat level brief dipakai tim:
+
+- **Mekanik dan aset yang tersedia.** Ryan menyarankan tabel yang menunjukkan di level mana setiap aset (musuh, jebakan, kemampuan) pertama kali muncul, supaya level designer tahu apa yang sudah dikenal pemain.
+- **Posisi level dalam urutan.** Level sebelum dan sesudahnya, supaya ritme antarlevel terjaga.
+- **Kebutuhan dari bagian lain.** Misalnya suara khusus untuk pijakan rapuh yang mulai bergetar, atau satu tile baru.
+- **Pertanyaan untuk playtest pertama.** Seperti di akhir contoh Pelajaran 4.
+
+Ryan juga menulis bahwa desain level yang dibuat rinci di atas kertas sebelum desainer sempat mencoba alat dan membuat level pertama yang bisa dimainkan jarang bertahan utuh. Ia menyarankan menulis "benih" untuk setiap level: tujuan, gameplay, dan hubungannya dengan cerita. The Level Design Book menyebut contoh serupa dari level designer Steve Lee, yang menulis garis besar kejadian di level dalam teks sebelum menggambar layout atau membuka editor. Level brief yang baik berhenti di titik ini. Detail sisanya ditemukan di blockout.
+
+## Wiki dan log keputusan
+
+### Wiki yang hidup
+
+Saat dokumen kecil bertambah banyak, tim perlu satu tempat untuk menemukannya. **Wiki** adalah kumpulan halaman yang saling bertaut dan bisa diedit oleh tim, sehingga setiap sistem, level, atau karakter punya halamannya sendiri. Contoh alat yang dipakai untuk ini antara lain Notion, Confluence, Google Docs dengan satu halaman indeks, atau folder file Markdown di repositori. Urutan penyebutan ini tidak menunjukkan peringkat.
+
+Struktur sederhana untuk game kecil:
+
+```text title="Struktur wiki (ilustrasi)"
+Ladang Kecil
+├── 00 Mulai di sini      one-pager, pilar, cara membuka proyek
+├── 01 Sistem             penyiraman, ekonomi, waktu dan hari, toko
+├── 02 Level dan area     satu halaman per area
+├── 03 Seni dan suara     panduan gaya, daftar aset
+├── 04 Playtest           rencana sesi dan daftar masalah per putaran
+└── 05 Log keputusan
+```
+
+Halaman "Mulai di sini" adalah yang pertama dibuka orang baru. Ia menjawab tiga pertanyaan: game apa ini, di mana semua hal disimpan, dan dokumen mana yang masih berlaku.
+
+### Log keputusan
+
+**Log keputusan** adalah catatan berurutan tentang keputusan penting, alasan, dan statusnya. Versi paling sederhana, dengan tanggal, keputusan, alasan, dan pemilik, sudah dibahas di bagian [Ritme komunikasi](/belajar/produksi/03-peran-tim-kecil/#ritme-komunikasi) jalur Produksi. Bagian ini menambahkan satu kebiasaan dari dunia perangkat lunak.
+
+Dalam tulisan tahun 2011, Michael Nygard mengusulkan *architecture decision record* (ADR): catatan pendek untuk setiap keputusan arsitektur yang penting. Ia menjelaskan bahwa salah satu hal tersulit untuk dilacak sepanjang proyek adalah motivasi di balik keputusan. Orang baru yang tidak tahu alasannya hanya punya dua pilihan: menerima keputusan itu begitu saja, atau mengubahnya begitu saja, dan keduanya bisa merugikan. Formatnya terdiri dari judul, konteks, keputusan, status, dan konsekuensi. Catatan diberi nomor berurutan yang tidak dipakai ulang, dan keputusan yang dibatalkan tetap disimpan dengan tanda bahwa ia sudah digantikan. Nygard juga menyarankan menulis konsekuensi negatif, tidak hanya yang positif.
+
+ADR dibuat untuk arsitektur perangkat lunak, tetapi bentuknya cocok untuk keputusan desain:
+
+```text title="Log keputusan K-09 (ilustrasi)"
+K-09  Tanaman tidak mati karena lupa disiram, diganti layu
+tanggal    : 2026-10-31
+status     : diterima (menggantikan sebagian K-03)
+konteks    : Di playtest putaran 2, satu pemain kehilangan semua
+             tanaman setelah lupa menyiram, lalu berhenti bermain.
+             Pilar 1 adalah "pagi yang tenang".
+keputusan  : Tanaman yang tidak disiram 2 hari layu, bisa dipulihkan,
+             panen berkurang 50%. Tanaman tidak pernah mati.
+konsekuensi: + kesalahan tidak menghapus kemajuan berhari-hari
+             - penyiraman bisa terasa kurang penting, perlu dicek
+             - spreadsheet ekonomi perlu kolom panen layu
+```
+
+Tidak semua keputusan perlu dicatat. Ukuran yang bisa dipakai: apakah orang lain mungkin bertanya "kenapa begini?" tiga bulan lagi, atau mungkin mengubahnya tanpa tahu alasannya? Jika ya, catat.
+
+## Prototipe dan spreadsheet sebagai dokumen
+
+Sebagian pertanyaan desain lebih cepat dijawab dengan sesuatu yang bisa dimainkan atau dihitung daripada dengan paragraf.
+
+**Prototipe** menjawab pertanyaan tentang rasa. Seberapa tinggi lompatan yang enak, apakah pijakan rapuh terbaca tanpa teks, apakah menyiram terasa seperti rutinitas yang tenang atau pekerjaan. The Level Design Book menulis bahwa kamu tidak bisa mem-playtest dokumen desain atau sketsa layout, tetapi kamu bisa mem-playtest blockout, seperti dibahas di [Pelajaran 4](/belajar/desain-game/04-level-design/#dari-blockout-ke-art-pass). Prototipe greybox dari [Pelajaran 1](/belajar/desain-game/01-core-loop/#prototipe-greybox-sebelum-konten) yang disimpan dengan catatan singkat ("v0.2: lompatan variabel, coyote time 0,1 detik, ini yang disepakati") adalah dokumen yang lebih jelas daripada deskripsi panjang tentang rasa lompatan.
+
+**Spreadsheet** menjawab pertanyaan tentang angka yang berjalan lama. Spreadsheet ekonomi di [Pelajaran 5](/belajar/desain-game/05-ekonomi-progres/#merancang-ekonomi-di-spreadsheet) menjelaskan kenapa harga perluasan naik bertahap lebih baik daripada tiga paragraf penjelasan, karena pembaca bisa melihat koin menumpuk di Versi A dan mengubah angkanya sendiri.
+
+Supaya prototipe dan spreadsheet berfungsi sebagai dokumen, ada beberapa syarat:
+
+- **Bisa ditemukan.** Tautkan dari halaman sistemnya di wiki, dengan nama versi yang jelas.
+- **Diberi catatan.** Satu sampai tiga kalimat tentang pertanyaan apa yang dijawab dan apa kesimpulannya. Tanpa catatan, orang lain tidak tahu bagian mana yang sengaja dan mana yang belum selesai.
+- **Disimpan versinya.** Prototipe yang menghasilkan keputusan penting disimpan di version control atau setidaknya sebagai build yang diarsipkan, supaya bisa dimainkan lagi saat ada yang bertanya.
+
+## Diagram
+
+Diagram menunjukkan hubungan antarbagian lebih cepat daripada teks. Tiga jenis yang paling sering berguna:
+
+### Flowchart
+
+**Flowchart** menunjukkan urutan langkah dan percabangan. Ryan menyarankan memulai bagian antarmuka di spesifikasi dengan flowchart navigasi antarlayar, sebelum merinci setiap layar. Untuk game bertani:
+
+```text title="Flowchart navigasi (ilustrasi)"
+[Layar judul] ──▶ [Pilih slot simpan] ──▶ [Ladang]
+                                            │
+             ┌──────────────┬───────────────┼──────────────┐
+             ▼              ▼               ▼              ▼
+          [Toko]       [Inventaris]     [Peta area]     [Jeda]
+             │              │               │              │
+             └──────────────┴───────────────┴──▶ kembali ke [Ladang]
+```
+
+Flowchart seperti ini sering menemukan masalah sebelum ada kode: layar yang tidak punya jalan kembali, atau menu yang butuh empat langkah untuk aksi yang sering dipakai.
+
+### Diagram state
+
+**Diagram state** menunjukkan keadaan yang bisa dimiliki sebuah objek dan kejadian yang memindahkannya dari satu keadaan ke keadaan lain. Bentuknya sama dengan [state machine animasi](/kamus/animasi/state-machine/) di engine, hanya saja yang digambar adalah aturan desain. Satu petak ladang di game bertani:
+
+```text title="Diagram state petak (ilustrasi)"
+               tanam                    hari berganti (disiram)
+ [Kosong] ───────────▶ [Tumbuh] ─────────────────────────▶ [Siap panen]
+    ▲                   │    ▲                                  │
+    │     2 hari tanpa  │    │ disiram                          │
+    │         air       ▼    │                                  │
+    │                  [Layu]                                   │
+    │                                                           │
+    └──────────────────────────── panen ◀───────────────────────┘
+```
+
+Diagram state memaksa kamu menjawab pertanyaan yang mudah terlewat di teks. Apa yang terjadi jika tanaman layu tepat di hari ia seharusnya siap panen? Bisakah petak yang siap panen ikut layu? Setiap panah yang belum ada adalah kasus tepi yang perlu diputuskan, lalu ditulis di spesifikasi.
+
+### Diagram loop dan aliran sumber daya
+
+Diagram loop sudah kamu buat di Pelajaran 1. Diagram **aliran sumber daya** menunjukkan dari mana setiap mata uang datang dan ke mana ia pergi, versi gambar dari sumber dan penguras di [Pelajaran 5](/belajar/desain-game/05-ekonomi-progres/#sumber-dan-penguras). Keduanya termasuk empat dokumen satu halaman dalam sesi Schreiber.
+
+The Level Design Book juga menyebut **diagram kata benda dan kata kerja** (*noun-verb diagram*): kotak untuk benda di game (pemain, tanaman, toko, koin) dan panah berlabel kata kerja di antaranya (menanam, menjual, membeli). Buku itu mengutip tulisan Leena van Deventer bahwa diagram ini berguna untuk menemukan celah dan mempertanyakan asumsi tentang motivasi pemain, dan bahwa diagram itu sebaiknya memuat hal yang penting saja.
+
+Satu aturan untuk semua diagram: gambar hanya yang membantu menjawab sebuah pertanyaan. Diagram yang memuat semua kemungkinan sulit dibaca dan sulit diperbarui.
+
+## Menulis untuk pembaca yang berbeda
+
+Ryan menulis bahwa dokumentasi berarti hal yang berbeda bagi anggota tim yang berbeda. Isinya bisa sama, tetapi setiap pembaca datang dengan pertanyaan yang berbeda.
+
+| Pembaca | Yang dicari | Yang membantu | Yang mengganggu |
+| --- | --- | --- | --- |
+| **Programmer** | Aturan pasti, kasus tepi, angka mana yang perlu bisa diubah | Diagram state, daftar kasus tepi, pertanyaan terbuka yang jelas | Kalimat samar seperti "tanaman tumbuh dengan wajar" |
+| **Artist** | Suasana, referensi, daftar aset, batas teknis | Papan referensi, ukuran sprite atau jumlah frame, contoh warna | Daftar fitur tanpa gambaran suasana |
+| **Producer** | Cakupan, ketergantungan, risiko | Daftar fitur dengan prioritas, hal yang bisa dipotong | Detail aturan yang tidak memengaruhi jadwal |
+| **Publisher atau pendana** | Hook, target pemain, cakupan, risiko, biaya | One-pager, video atau build singkat, jadwal milestone | Istilah internal yang tidak dijelaskan |
+
+Beberapa kebiasaan yang membantu semua pembaca:
+
+- **Ringkasan di awal setiap bagian.** Ryan menyarankan paragraf ringkasan di awal setiap bagian spesifikasi, supaya pembaca bisa menangkap intinya tanpa melewatkan bagian.
+- **Satu istilah untuk satu hal.** Jika "perluasan lahan" disebut "ekspansi" di dokumen lain dan "upgrade ladang" di chat, orang baru akan mengira ada tiga fitur.
+- **Contoh konkret.** "Pemain yang lupa menyiram dua hari melihat tanaman menguning dan panen berkurang setengah" lebih jelas daripada "ada konsekuensi ringan untuk kelalaian".
+
+Untuk publisher, artikel Ryan menjelaskan bahwa proposal di masa itu berisi konsep yang sudah direvisi, analisis pasar, analisis teknis, analisis legal jika perlu, proyeksi biaya dan pendapatan, serta art. Ia juga menyarankan agar angka di proposal punya dasar yang jelas. Bekerja dengan publisher dan menyiapkan diri sebelum mencari dana dibahas di [Pelajaran 2 Bisnis Indie](/belajar/bisnis-indie/02-pendanaan/#menyiapkan-diri-sebelum-mencari-dana), jadi pelajaran ini tidak mengulangnya.
+
+## Menjaga dokumen tetap hidup
+
+Dokumen yang tidak diperbarui pelan-pelan berhenti dipercaya, lalu berhenti dibaca. Kebiasaan berikut tidak butuh alat khusus.
+
+**Satu pemilik untuk setiap dokumen.** Pemilik tidak harus menulis semuanya. Ia bertanggung jawab memastikan isinya masih benar. Dokumen yang dimiliki "semua orang" biasanya tidak dirawat siapa pun.
+
+**Tanggal pembaruan dan status di bagian atas.** Pembaca langsung tahu apakah dokumen masih berlaku. Status sederhana sudah cukup: *draf*, *dibangun*, *selesai*, *usang*. Dokumen usang tidak perlu dihapus. Tandai dengan jelas dan tautkan ke penggantinya, seperti ADR yang digantikan dalam usulan Nygard.
+
+**Ditautkan dari pelacak tugas.** Kartu "bangun sistem penyiraman" di papan tugas menautkan ke spesifikasinya, dan spesifikasi menautkan balik ke kartunya (seperti `kartu: FARM-42` di contoh). Cara menyusun papan dan kartu dibahas di bagian [Pelacak tugas](/belajar/produksi/04-alat-kerja/#pelacak-tugas) jalur Produksi. Dengan tautan dua arah, dokumen ikut terbuka setiap kali pekerjaan dimulai, sehingga yang usang cepat ketahuan.
+
+**Perbarui sebagai bagian dari pekerjaan.** Jika desain berubah setelah playtest, memperbarui spesifikasi dan log keputusan adalah bagian dari tugas perubahan itu. Tim bisa memasukkannya ke definition of done, misalnya "dokumen sistem sudah sesuai dengan build".
+
+**Riwayat versi.** Kebanyakan alat dokumen dan wiki menyimpan riwayat perubahan. Jika timmu menyimpan dokumen sebagai file teks di repositori, version control dari [Pelajaran 4 Produksi](/belajar/produksi/04-alat-kerja/#version-control-konsep-dasar) mencatat siapa mengubah apa dan kapan. Bagian "riwayat" singkat di dalam dokumen tetap berguna untuk perubahan penting, karena pembaca tidak perlu membuka riwayat lengkap.
+
+**Tinjau berkala.** Misalnya setiap akhir milestone, buka halaman "Mulai di sini" dan periksa apakah semua tautan masih menunjuk ke dokumen yang berlaku.
+
+## Yang tidak perlu ditulis
+
+Menulis juga punya biaya: waktu menulis, waktu membaca, dan waktu memperbarui. Beberapa hal biasanya tidak layak ditulis, atau tidak layak ditulis sekarang.
+
+- **Hal yang lebih cepat dijawab prototipe.** Tiga paragraf tentang "rasa lompatan yang ringan tapi bertenaga" kalah jelas dibanding greybox yang bisa dimainkan dua menit.
+- **Angka penyetelan yang sudah punya sumber.** Angka yang disalin ke beberapa dokumen akan berbeda setelah penyetelan berikutnya. Tulis nilai awal dan lokasi sumbernya, lalu biarkan spreadsheet atau file data menjadi acuan.
+- **Detail yang belum bisa diputuskan.** Posisi setiap tombol di menu toko sebelum alur toko diuji, atau dialog lengkap untuk karakter yang mungkin dipotong. Ryan menyebut desain level rinci di atas kertas jarang bertahan sebelum level pertama dibuat. Tulis sebagai pertanyaan terbuka, lalu isi saat sudah waktunya.
+- **Instruksi tentang keahlian orang lain.** Ryan memasukkan ini ke kesalahan umum: memberi tahu artist cara mengatur palet warnanya atau programmer cara menyusun struktur data. Tulis apa yang dibutuhkan dan kenapa, lalu biarkan ahlinya memilih caranya.
+- **Notulen lengkap setiap rapat.** Yang perlu bertahan adalah keputusan dan alasannya, jadi masukkan ke log keputusan.
+- **Lore yang belum dibutuhkan.** Sejarah seribu tahun dunia game jarang membantu tim kecil yang belum membuktikan core loop-nya. Tulis secukupnya untuk level dan aset yang sedang dibuat.
+- **Daftar keinginan tanpa keputusan.** Ide yang menarik tetapi belum dijadwalkan lebih cocok di backlog daripada di spesifikasi, supaya pembaca tidak mengira semuanya akan dibangun.
+
+Ukuran sederhana: dokumen layak ditulis jika ada orang yang akan membacanya untuk membuat sesuatu atau memutuskan sesuatu dalam waktu dekat.
+
+## Kesalahan umum
+
+### Dokumen ditulis sekali lalu ditinggalkan
+
+```text title="✗ Keliru"
+GDD 60 halaman selesai di bulan pertama
+→ tiga playtest kemudian, separuh isinya tidak sesuai build
+→ tim berhenti membukanya, tetapi orang baru masih membacanya
+```
+
+```text title="✓ Benar"
+one-pager + spesifikasi untuk sistem yang sedang dibangun
+→ setiap dokumen punya pemilik, tanggal, status
+→ diperbarui sebagai bagian dari tugas perubahan
+```
+
+### Pilar yang tidak bisa menolak apa pun
+
+```text title="✗ Keliru"
+pilar: seru, imersif, berkualitas tinggi
+```
+
+```text title="✓ Benar"
+pilar: pagi yang tenang, ladang milikmu, selalu ada yang baru
+→ uji: usulan hama acak bertabrakan dengan pilar 1
+```
+
+### Spesifikasi tanpa kasus tepi dan pertanyaan terbuka
+
+```text title="✗ Keliru"
+"Pemain menyiram tanaman. Tanaman yang tidak disiram layu."
+→ programmer menebak: kapan layu? bisa pulih? bagaimana jika disimpan?
+```
+
+```text title="✓ Benar"
+aturan + kasus tepi (simpan di tengah hari, kaleng kosong, petak kosong)
++ angka awal dan lokasi sumbernya
++ pertanyaan terbuka dengan pemilik dan cara menjawabnya
+```
+
+### Angka yang sama di banyak tempat
+
+```text title="✗ Keliru"
+harga perluasan 1: 200 di one-pager, 250 di wiki, 200 di spreadsheet,
+220 di game → tidak ada yang tahu mana yang berlaku
+```
+
+```text title="✓ Benar"
+harga hanya di spreadsheet ekonomi dan file data game
+→ dokumen lain menulis "lihat spreadsheet ekonomi, tab harga"
+```
+
+### Keputusan tanpa alasan
+
+```text title="✗ Keliru"
+wiki: "Tanaman tidak mati."
+→ programmer baru menambahkan kematian tanaman supaya "lebih menantang"
+```
+
+```text title="✓ Benar"
+log keputusan K-09: konteks, keputusan, status, konsekuensi
+→ wiki menautkan ke K-09
+```
+
+## Cek pemahaman
+
+Pilih satu jawaban. Penjelasan muncul setelah kamu menjawab, jadi baca juga penjelasan untuk jawaban yang benar.
+
+<Quiz />
+
+## Latihan
+
+Latihan ini memakai game yang kamu rancang di latihan pelajaran sebelumnya. Jika belum punya, pakai game bertani atau platformer dari jalur ini.
+
+1. Tulis one-pager untuk game-mu dengan bagian hook, target pemain, core loop (dengan kata kerja yang konkret), dua sampai empat pilar, referensi beserta apa yang diambil dari masing-masing, platform dan cakupan, risiko terbesar, dan pertanyaan terbuka. Batasi benar-benar satu halaman.
+2. Uji pilarmu dengan tiga usulan fitur, satu yang menurutmu cocok, satu yang tidak, dan satu yang ragu-ragu. Tulis untuk masing-masing pilar mana yang dilayani atau dilanggarnya, lalu putuskan: terima, ubah, atau tolak.
+3. Pilih satu sistem yang akan segera kamu bangun. Tulis spesifikasinya dengan tujuan, aturan, minimal tiga kasus tepi, angka awal beserta lokasi sumbernya, umpan balik, dan pertanyaan terbuka. Gambar diagram state untuk objek utamanya, lalu periksa apakah ada panah yang belum kamu putuskan.
+4. Minta seseorang yang belum mengenal game-mu membaca one-pager dan spesifikasi itu, lalu menjelaskan kembali dengan kata-katanya sendiri apa yang dilakukan pemain. Catat setiap pertanyaan yang ia ajukan. Tambahkan jawabannya ke dokumen, dan catat satu keputusan yang muncul dari diskusi itu di log keputusan dengan format konteks, keputusan, status, dan konsekuensi.
+
+Ini pelajaran terakhir dari rencana jalur Desain Game. Untuk mengulang topik tertentu, buka kembali [halaman jalur](/belajar/desain-game/).

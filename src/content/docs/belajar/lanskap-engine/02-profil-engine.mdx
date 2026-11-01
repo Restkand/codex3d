@@ -5,7 +5,7 @@ fundamental: "Engine yang dipilih dari daftar fitur atau pendapat orang sering m
 kind: lesson
 minutes: 35
 status: draf
-lastReviewed: 2026-10-30
+lastReviewed: 2026-11-01
 terms:
   - scene
   - renderer
@@ -51,14 +51,14 @@ quiz:
       - "Dengan JavaScript di browser"
     answer: 1
     explain: "Manual GameMaker menjelaskan dua cara memakai GML: GML Visual yang menyusun blok aksi, dan GML Code yang ditulis manual. Pilihannya ditanyakan setiap kali kamu membuat event atau script baru."
-  - q: "Kamu ingin membagikan aset berbayar untuk Godot. Apa kata dokumentasi Godot tentang Asset Library resminya?"
+  - q: "Kamu ingin menjual aset berbayar untuk Godot. Menurut dokumentasi Godot versi stable (diakses 1 November 2026), apa yang benar?"
     options:
-      - "Aset berbayar boleh diunggah dengan bagi hasil"
-      - "Aset di Asset Library resmi dibagikan gratis dengan lisensi open source, dan aset berbayar tidak bisa diunggah ke sana"
-      - "Asset Library hanya menerima aset dari Godot Foundation"
-      - "Godot tidak punya Asset Library"
+      - "Aset berbayar boleh diunggah ke Asset Store dengan bagi hasil"
+      - "Asset Store resmi belum bisa dipakai untuk menjual aset (fiturnya masih direncanakan), dan Asset Library lama hanya berisi aset gratis berlisensi open source"
+      - "Asset Store hanya menerima aset dari Godot Foundation"
+      - "Godot tidak punya tempat resmi untuk membagikan aset"
     answer: 1
-    explain: "Dokumentasi Godot menyebut semua aset di Asset Library resmi gratis dan memakai lisensi open source seperti MIT atau GPL. Aset berbayar tidak bisa diunggah ke sana, tetapi boleh dijual di tempat lain."
+    explain: "Dokumentasi Godot menyebut Asset Store, yang masih beta, sebagai penerus Asset Library. FAQ Asset Store menjawab bahwa aset belum bisa dijual di sana, tetapi fitur itu ada dalam rencana. Asset Library lama masih bisa diakses, dan semua asetnya gratis dengan lisensi open source seperti MIT atau GPL. Aset berbayar boleh dijual di luar Asset Library."
   - q: "Menurut halaman dukungan konsol di situs Godot, bagaimana game Godot bisa dirilis di konsol?"
     options:
       - "Godot Foundation menyediakan ekspor konsol resmi untuk semua orang"
@@ -88,6 +88,14 @@ sources:
     url: "https://docs.godotengine.org/en/stable/community/asset_library/what_is_assetlib.html"
     publisher: "Godot Engine Documentation"
     accessed: 2026-10-30
+  - title: "About the Asset Store"
+    url: "https://docs.godotengine.org/en/stable/community/asset_store/what_is_asset_store.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-11-01
+  - title: "Asset Store: Frequently asked questions"
+    url: "https://docs.godotengine.org/en/stable/community/asset_store/faq.html"
+    publisher: "Godot Engine Documentation"
+    accessed: 2026-11-01
   - title: "License"
     url: "https://godotengine.org/license/"
     publisher: "Godot Engine"
@@ -307,7 +315,7 @@ Godot adalah engine open source yang dikembangkan komunitas dan dinaungi Godot F
 | Platform target | Windows, macOS, Linux, *BSD, Android, iOS, dan Web. Godot Foundation tidak merawat port konsol resmi. Pengembang yang disetujui pemilik platform memakai middleware dari pihak ketiga atau membangun export template sendiri dengan SDK resmi. |
 | Akses kode sumber | Open source, lisensi MIT. |
 | Cocok untuk tim yang | Ingin bisa membaca dan mengubah kode engine tanpa perjanjian tambahan, mengerjakan 2D atau 3D, dan, jika menargetkan konsol, siap bekerja dengan penyedia port pihak ketiga. |
-| Ekosistem | Asset Library resmi, yang bisa dibuka dari dalam editor. Semua asetnya gratis dengan lisensi open source; aset berbayar dijual di luar Asset Library. Dokumentasi resmi dengan Manual dan Class reference. |
+| Ekosistem | Asset Store resmi (masih beta), yang bisa dibuka dari tab Asset Store di editor dan di Project Manager. Asset Store adalah penerus Asset Library. Menurut FAQ-nya, aset belum bisa dijual di sana, tetapi fitur itu sudah direncanakan. Asset Library lama masih bisa diakses, dan semua asetnya gratis dengan lisensi open source. Dokumentasi resmi dengan Manual dan Class reference. |
 | Dipakai untuk | *Brotato* (Blobfish) dan *Dome Keeper* (Bippinbits), tercantum di halaman Showcase situs Godot. |
 
 Lisensi MIT juga punya akibat praktis: game yang dirilis wajib menyertakan pemberitahuan hak cipta dan teks lisensi Godot. Dokumentasi Godot punya halaman khusus tentang cara memenuhinya.
@@ -359,7 +367,7 @@ Engine buatan sendiri dibahas lengkap di [Pelajaran 1](/belajar/lanskap-engine/0
 | Kriteria | Engine buatan sendiri |
 | --- | --- |
 | Bahasa scripting | Ditentukan tim. Sering C atau C++ untuk runtime, kadang dengan bahasa scripting yang disematkan, misalnya Lua. |
-| Model scene | Ditentukan tim, bisa salah satu dari empat model di Pelajaran 1 atau campurannya. |
+| Model scene | Ditentukan tim, bisa salah satu dari empat model di [Pelajaran 1](/belajar/lanskap-engine/01-apa-itu-engine/) atau campurannya. |
 | Editor dan alur kerja | Harus dibuat sendiri, atau memakai alat luar seperti editor level pihak ketiga. |
 | 2D dan 3D | Sesuai kebutuhan game-nya. |
 | Platform target | Setiap platform harus diporting sendiri. Konsol tetap butuh persetujuan pemilik platform. |
@@ -380,7 +388,7 @@ Tabel ini meringkas profil di atas. Isinya sengaja pendek; baca profil masing-ma
 | 2D dan 3D | Keduanya | Terutama 3D | Keduanya | 2D | Tergantung library | Sesuai kebutuhan |
 | Platform | Desktop, mobile, web, XR; konsol lewat akses pemilik platform | Desktop, mobile; konsol lewat persetujuan | Desktop, mobile, web; konsol lewat pihak ketiga | Desktop, mobile, web, konsol di paket tertentu | Browser | Diporting sendiri |
 | Kode sumber | Tertutup; akses lewat paket tertentu | Source available dengan EULA | Open source, MIT | Tertutup; akses di paket Enterprise | Open source (MIT, Apache 2.0) | Milik studio |
-| Ekosistem | Asset Store, Package Manager | Fab, plugin | Asset Library (gratis, open source) | Marketplace | npm, contoh, forum | Dibuat sendiri |
+| Ekosistem | Asset Store, Package Manager | Fab, plugin | Asset Store (beta) dan Asset Library lama | Marketplace | npm, contoh, forum | Dibuat sendiri |
 
 ## Cara membaca tabel
 

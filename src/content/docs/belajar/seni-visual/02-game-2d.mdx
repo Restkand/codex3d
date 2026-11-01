@@ -5,7 +5,7 @@ fundamental: "Karakter yang tampil di depan pohon padahal berdiri di belakangnya
 kind: lesson
 minutes: 35
 status: draf
-lastReviewed: 2026-10-30
+lastReviewed: 2026-11-01
 terms:
   - 2d/sprite
   - 2d/sprite-sheet
@@ -128,6 +128,10 @@ sources:
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/sort-sprites/2d-renderer-sorting"
     publisher: "Unity Documentation"
     accessed: 2026-10-30
+  - title: "Create an isometric tilemap"
+    url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/tilemaps/isometric-tilemap/create-isometric-tilemap"
+    publisher: "Unity Documentation"
+    accessed: 2026-11-01
   - title: "Prevent 2D GameObjects mixing in sorting layers"
     url: "https://docs.unity.com/en-us/engine/6000.0/manual/unity2d/sprite/sort-sprites/use-sorting-groups"
     publisher: "Unity Documentation"
@@ -486,7 +490,7 @@ Karakter yang tersusun dari banyak potongan, misalnya rig tulang, memakai nomor 
 
 Kriteria Unity, menurut dokumentasi *2D rendering order*: **Sorting Layer** (urutan daftar di **Tags and Layers**, lapisan paling bawah di daftar tampil paling depan), **Order in Layer** (angka kecil di belakang), **Render Queue** material (bawaan 2D 3000), lalu jarak ke kamera. Jika semuanya sama, urutan internal Unity tidak dijamin.
 
-**Y-sort.** Di aset 2D Renderer, atur **Transparency Sort Mode** ke **Custom Axis** dengan **Transparency Sort Axis** (0, 1, 0). Untuk game isometrik, dokumentasi memberi contoh (1, 1, 0). Atur **Sprite Sort Point** ke **Pivot** pada Sprite Renderer, dan letakkan pivot di titik pijak.
+**Y-sort.** Di aset 2D Renderer, atur **Transparency Sort Mode** ke **Custom Axis** dengan **Transparency Sort Axis** (0, 1, 0), sehingga objek yang lebih tinggi di layar dianggap lebih jauh. Halaman *Change the sorting order of 2D GameObjects* juga memberi contoh sumbu diagonal (1, 1, 0) untuk game isometrik, tetapi panduan tilemap isometrik Unity tetap memakai (0, 1, 0). Perbedaan keduanya dibahas di [Pelajaran 3](/belajar/seni-visual/03-2-5d/#urutan-gambar). Atur **Sprite Sort Point** ke **Pivot** pada Sprite Renderer, dan letakkan pivot di titik pijak.
 
 **Kelompok.** Tambahkan **Sorting Group** di objek induk karakter. Semua anaknya digambar di Sorting Layer dan Order in Layer milik Sorting Group, dengan jarak ke kamera dihitung dari posisi objek induk. Sorting Group bisa bersarang. **Sorting Type: Sort At Root** mengeluarkan kelompok bersarang ke tingkat teratas tanpa memindahkannya di Hierarchy.
 

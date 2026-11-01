@@ -1,21 +1,9 @@
 {
   "fondasi-engine": [],
   "lanskap-engine": [],
-  "desain-game": [
-    {
-      "num": 7,
-      "title": "Dokumentasi Desain",
-      "subtitle": "Dari dokumen desain panjang ke one-pager dan prototipe."
-    }
-  ],
+  "desain-game": [],
   "produksi": [],
-  "bisnis-indie": [
-    {
-      "num": 7,
-      "title": "Bekerja dengan Publisher dan Mitra",
-      "subtitle": "Membaca term sheet, milestone pembayaran, hak dan kewajiban."
-    }
-  ],
+  "bisnis-indie": [],
   "industri-karier": [],
   "seni-visual": [],
   "web-threejs": [
