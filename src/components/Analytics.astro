@@ -1,0 +1,13 @@
+---
+/**
+ * Cloudflare Web Analytics: menghitung kunjungan tanpa cookie dan tanpa menyimpan data pribadi.
+ * Hasilnya dilihat di dasbor Cloudflare (Analytics & Logs → Web Analytics).
+ * Hanya dimuat di build produksi, jadi `npm run dev` tidak ikut tercatat.
+ * Token ini memang publik (ikut terkirim ke setiap pengunjung), bukan rahasia.
+ */
+const token = '02f52e6cb37745c292de43bfd866af9a'
+---
+
+{import.meta.env.PROD && (
+  <script is:inline type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token })}></script>
+)}

@@ -15,6 +15,7 @@ import '../styles/theme.css'
 import '../site/lesson.css'
 import { SITE } from '../site.config.mjs'
 import SocialMeta from '../components/SocialMeta.astro'
+import Analytics from '../components/Analytics.astro'
 import { withBase } from '../lib/inline.js'
 import BottomNav from '../components/BottomNav.astro'
 
@@ -44,6 +45,7 @@ const { title, description = SITE.tagline, crumbs = [], greeting, readingProgres
     <title>{title} · {SITE.name}</title>
     <meta name="description" content={description} />
     <SocialMeta title={`${title} · ${SITE.name}`} description={description} type={lessonId ? 'article' : 'website'} />
+    <Analytics />
   </head>
   <body class="lesson-page">
     <!-- Elemen pertama yang bisa difokus: pengguna keyboard langsung melompati bilah atas dan navigasi kiri -->
