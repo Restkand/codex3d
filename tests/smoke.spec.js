@@ -11,6 +11,14 @@ function watchErrors(page) {
   return errors
 }
 
+// Beacon Cloudflare Web Analytics diganti skrip kosong: tes tidak boleh tercatat sebagai kunjungan,
+// dan dari localhost permintaannya ditolak CORS sehingga muncul sebagai error console
+test.beforeEach(async ({ page }) => {
+  await page.route('https://static.cloudflareinsights.com/**', (route) =>
+    route.fulfill({ contentType: 'text/javascript', body: '' }),
+  )
+})
+
 const POS = ['mulai', 'kenapa', 'jalur', 'kamus', 'prinsip', 'bergabung']
 const html = (page) => page.locator('html')
 

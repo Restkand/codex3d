@@ -7,6 +7,7 @@
  */
 import { SITE } from '../../site.config.mjs'
 import SocialMeta from '../../components/SocialMeta.astro'
+import Analytics from '../../components/Analytics.astro'
 import BottomNav from '../../components/BottomNav.astro'
 import { withBase } from '../../lib/inline.js'
 import '@fontsource-variable/bricolage-grotesque/opsz.css'
@@ -104,6 +105,7 @@ const experiments = [
     <meta name="description" content={description} />
     <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
     <SocialMeta title={`Bedah Krekit · Lab · ${SITE.name}`} description={description} />
+    <Analytics />
   </head>
   <body class="lab">
     <header class="labbar">

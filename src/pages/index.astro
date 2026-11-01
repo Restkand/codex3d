@@ -15,6 +15,7 @@ import { TRACKS, KAMUS_CHAPTERS } from '../lib/sections.js'
 import { withBase } from '../lib/inline.js'
 import BottomNav from '../components/BottomNav.astro'
 import SocialMeta from '../components/SocialMeta.astro'
+import Analytics from '../components/Analytics.astro'
 import ShareButton from '../components/ShareButton.astro'
 import { LEVELS, LESSON_XP } from '../lib/progress.js'
 
@@ -121,6 +122,7 @@ const progressItems = docs
       document.documentElement.classList.add('js')
       setTimeout(() => document.documentElement.classList.contains('js-ready') || document.documentElement.classList.remove('js'), 4000)
     </script>
+    <Analytics />
   </head>
   <body>
     <a class="skip-link" href="#konten">Langsung ke isi</a>
