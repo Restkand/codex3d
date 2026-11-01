@@ -5,7 +5,7 @@ fundamental: "Grafik node bisa membuat efek tanpa satu baris kode. Lalu efek itu
 kind: lesson
 minutes: 30
 status: draf
-lastReviewed: 2026-10-30
+lastReviewed: 2026-11-01
 terms:
   - shader
   - pipeline-raster
@@ -261,7 +261,7 @@ untuk setiap fragment:                              // FRAGMENT SHADER (bisa dip
     jika lolos depth test: tulis warna ke layar
 ```
 
-1. **[Vertex shader](/kamus/shader/vertex-shader/)** dijalankan sekali untuk setiap titik. Tugas wajibnya menghitung posisi titik itu di layar dari transform objek (Pelajaran 2) dan kamera (Pelajaran 1), yang digabung menjadi [matriks model, view, dan projection](/kamus/ruang/matrices/).
+1. **[Vertex shader](/kamus/shader/vertex-shader/)** dijalankan sekali untuk setiap titik. Tugas wajibnya menghitung posisi titik itu di layar dari transform objek ([Pelajaran 2](/belajar/fondasi-engine/02-ruang/)) dan kamera ([Pelajaran 1](/belajar/fondasi-engine/01-frame/)), yang digabung menjadi [matriks model, view, dan projection](/kamus/ruang/matrices/).
 2. **[Rasterization](/kamus/shader/pipeline-raster/)** menentukan piksel mana saja yang tertutup setiap segitiga, lalu membuat satu **fragment** (calon piksel) untuk masing-masing. Tahap ini dijalankan perangkat keras dan tidak bisa diprogram.
 3. **[Fragment shader](/kamus/shader/fragment-shader/)** dijalankan sekali untuk setiap fragment, untuk menentukan warnanya. Fragment yang tertutup objek lain dibuang oleh [depth test](/kamus/geometri/depth-buffer/).
 
@@ -322,7 +322,7 @@ Pergeseran ini hanya mengubah **gambar**. Physics, raycast, dan collision tetap 
 
 ## Fragment shader: mewarnai piksel
 
-Di engine, kamu jarang menulis warna akhir piksel secara langsung. Pada material yang bereaksi terhadap cahaya (*lit*), fragment shader mengisi **sifat permukaan** yang kamu kenal dari Pelajaran 3: warna dasar, roughness atau smoothness, metalness, normal, dan emission. Engine lalu menghitung cahaya, bayangan, dan kabut dari sifat-sifat itu. Dengan cara ini shader buatanmu tetap mengikuti lampu di scene.
+Di engine, kamu jarang menulis warna akhir piksel secara langsung. Pada material yang bereaksi terhadap cahaya (*lit*), fragment shader mengisi **sifat permukaan** yang kamu kenal dari [Pelajaran 3](/belajar/fondasi-engine/03-permukaan/): warna dasar, roughness atau smoothness, metalness, normal, dan emission. Engine lalu menghitung cahaya, bayangan, dan kabut dari sifat-sifat itu. Dengan cara ini shader buatanmu tetap mengikuti lampu di scene.
 
 Jika ingin menentukan warna akhir sendiri, pilih mode **unlit**. Hasilnya lebih murah, tetapi tidak terkena cahaya sama sekali. Contoh denyut di Gambaran besar memakai mode ini.
 
@@ -477,7 +477,7 @@ Biaya shader adalah biaya per eksekusi dikali jumlah eksekusinya. Jumlah eksekus
 - **Membaca tekstur** di fragment shader butuh akses memori, dan beberapa kali membaca tekstur per piksel cepat terasa di GPU yang lemah.
 - **Shader variant.** Satu shader sering dikompilasi menjadi banyak versi untuk kombinasi fitur yang berbeda, misalnya dengan atau tanpa normal map. Versi yang dipakai pertama kali harus disiapkan driver GPU, dan proses itu bisa membuat frame terlambat. Gejalanya game tersendat saat efek baru pertama kali muncul, lalu lancar setelahnya. Penjelasan dan cara mencegahnya ada di [Shader Variant & Stutter Kompilasi](/kamus/shader/shader-variant/).
 
-Jika profiler menunjukkan game [GPU-bound](/kamus/performa/cpu-gpu-bound/), periksa dulu shader objek yang paling banyak menutupi layar. Bayangan dan pencahayaan global dibahas di [Pelajaran 5](/belajar/fondasi-engine/05-bayangan-gi/), efek layar penuh di Pelajaran 6, dan cara membaca profiler secara lengkap di Pelajaran 8.
+Jika profiler menunjukkan game [GPU-bound](/kamus/performa/cpu-gpu-bound/), periksa dulu shader objek yang paling banyak menutupi layar. Bayangan dan pencahayaan global dibahas di [Pelajaran 5](/belajar/fondasi-engine/05-bayangan-gi/), efek layar penuh di [Pelajaran 6](/belajar/fondasi-engine/06-post-processing/), dan cara membaca profiler secara lengkap di [Pelajaran 8](/belajar/fondasi-engine/08-profiling/).
 
 ## Kesalahan umum
 

@@ -5,7 +5,7 @@ fundamental: "Karakter yang telat bereaksi saat tombol serang ditekan, kaki yang
 kind: lesson
 minutes: 35
 status: draf
-lastReviewed: 2026-10-30
+lastReviewed: 2026-11-01
 terms:
   - tween
   - easing
@@ -362,7 +362,7 @@ Satu **AnimationPlayer** menyimpan banyak klip (resource `Animation`). Jenis tra
 
 Karakter punya ribuan titik ([vertex](/kamus/geometri/vertex/)). Menyimpan posisi setiap titik di setiap keyframe akan sangat boros dan hampir mustahil diedit. Karena itu karakter digerakkan lewat **kerangka** (*skeleton*): sekumpulan tulang tak terlihat yang tersusun dalam [hierarki](/kamus/ruang/hierarchy/), seperti panggul → tulang belakang → bahu → lengan atas → lengan bawah → tangan. Klip animasi hanya menyimpan transform setiap tulang, biasanya hanya rotasinya.
 
-Hierarki ini bekerja persis seperti induk dan anak di Pelajaran 2. Putar bahu, maka lengan atas, lengan bawah, dan tangan ikut berputar. Inilah yang disebut **forward kinematics**: pose ujung (tangan) adalah hasil dari rotasi semua tulang di atasnya.
+Hierarki ini bekerja persis seperti induk dan anak di [Pelajaran 2](/belajar/fondasi-engine/02-ruang/). Putar bahu, maka lengan atas, lengan bawah, dan tangan ikut berputar. Inilah yang disebut **forward kinematics**: pose ujung (tangan) adalah hasil dari rotasi semua tulang di atasnya.
 
 Mesh karakter dibuat dalam satu pose netral, biasanya berdiri dengan lengan terbuka (pose T atau pose A). Posisi tulang pada saat mesh itu dipasangkan ke kerangka disebut **bind pose**. Setiap titik mesh lalu diberi **bobot** (*bone weight*) ke satu atau beberapa tulang. Proses memasang tulang dan mengatur bobot ini disebut *rigging* dan *weight painting*, dan dikerjakan di aplikasi 3D.
 
@@ -642,7 +642,7 @@ Tambahkan **Call Method Track** di AnimationPlayer. Track ini memanggil fungsi p
 
 ## Biaya animasi
 
-Animasi karakter punya biaya. Untuk setiap karakter, setiap frame, engine harus mengambil sampel semua klip yang aktif, mencampurnya, menjalankan IK, menghitung matriks setiap tulang lewat hierarki, lalu menjalankan skinning untuk setiap titik mesh. Untuk satu karakter pemain, ini kecil. Untuk 200 prajurit di medan perang, ini bisa menghabiskan anggaran 16,7 ms dari Pelajaran 1.
+Animasi karakter punya biaya. Untuk setiap karakter, setiap frame, engine harus mengambil sampel semua klip yang aktif, mencampurnya, menjalankan IK, menghitung matriks setiap tulang lewat hierarki, lalu menjalankan skinning untuk setiap titik mesh. Untuk satu karakter pemain, ini kecil. Untuk 200 prajurit di medan perang, ini bisa menghabiskan anggaran 16,7 ms dari [Pelajaran 1](/belajar/fondasi-engine/01-frame/).
 
 Pekerjaan ini terbagi antara CPU dan GPU:
 
@@ -654,7 +654,7 @@ Cara mengurangi biayanya, dari yang paling besar pengaruhnya:
 1. **Jangan animasikan yang tidak terlihat.** Karakter di belakang kamera tidak perlu dihitung pose atau skinning-nya. Hati-hati dengan karakter yang digerakkan root motion: jika animasinya berhenti, perpindahannya juga berhenti.
 2. **Turunkan laju update karakter jauh.** Karakter yang tampak kecil di layar bisa dihitung pose-nya setiap dua atau empat frame tanpa terlihat bedanya.
 3. **Kurangi tulang dan bobot.** Karakter jauh bisa memakai mesh LOD dengan tulang lebih sedikit dan batas tulang per titik yang lebih rendah. Jari dan wajah tidak perlu dianimasikan di karakter yang tingginya hanya 30 piksel.
-4. **Ukur dulu.** Buka profiler dari Pelajaran 1 dan lihat berapa milidetik yang dipakai animasi sebelum mengubah apa pun.
+4. **Ukur dulu.** Buka profiler dari [Pelajaran 1](/belajar/fondasi-engine/01-frame/) dan lihat berapa milidetik yang dipakai animasi sebelum mengubah apa pun.
 
 <EngineTabs>
 <div slot="unity">

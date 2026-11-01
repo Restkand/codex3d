@@ -5,7 +5,7 @@ fundamental: "Karakter sprite yang melayang di atas lantai 3D, bayangan yang hil
 kind: lesson
 minutes: 35
 status: draf
-lastReviewed: 2026-10-31
+lastReviewed: 2026-11-01
 terms:
   - 2d/sprite
   - 2d/tilemap
@@ -380,7 +380,9 @@ Aturan "satu titik per objek" dari [Sorting Layer & Urutan Gambar](/kamus/2d/sor
 
 **Cell Size.** Nilai y dihitung dari tinggi lantai tile dibagi lebarnya. Bawaannya (1, 0.5), yaitu perbandingan 2:1. Isi nilai yang sama di Tile Palette dan di Grid.
 
-**Urutan.** Di aset 2D Renderer, atur **Transparency Sort Mode** ke **Custom Axis** dan **Transparency Sort Axis** ke (0, 1, 0). Untuk Isometric Z as Y, nilai z sumbu itu dihitung dari `Cell Size.y × -0,5 - 0,01`. Untuk Cell Size y 0,5, hasilnya -0,26. Tanpa nilai ini, tile yang lebih tinggi bisa tampil di depan tile yang lebih rendah. Halaman *Change the sorting order of 2D GameObjects* memberi contoh lain untuk game isometrik, yaitu sumbu diagonal (1, 1, 0). Pilih sumbu yang cocok dengan arah grid dan pivot aset kamu, lalu uji dengan karakter yang berjalan memutari objek tinggi.
+**Urutan.** Di aset 2D Renderer, atur **Transparency Sort Mode** ke **Custom Axis** dan **Transparency Sort Axis** ke (0, 1, 0). Ini nilai yang dipakai dokumentasi *Create an isometric tilemap* dan *Add 3D height to an isometric tilemap*. Untuk Isometric Z as Y, nilai z sumbu itu dihitung dari `Cell Size.y × -0,5 - 0,01`. Untuk Cell Size y 0,5, hasilnya -0,26. Tanpa nilai ini, tile yang lebih tinggi bisa tampil di depan tile yang lebih rendah.
+
+Halaman umum *Change the sorting order of 2D GameObjects* memberi contoh lain untuk game isometrik, yaitu sumbu diagonal (1, 1, 0): makin ke kanan atas posisi objek, makin jauh ia dianggap. Dua angka ini melayani susunan yang berbeda. Di tilemap isometrik Unity, sel yang lebih jauh selalu lebih tinggi di layar (ingat rumus `layar_y` di atas), jadi sumbu vertikal (0, 1, 0) sudah cukup. Sumbu diagonal cocok untuk scene yang kedalamannya memang berjalan ke arah kanan atas, misalnya objek yang diletakkan bebas di sepanjang garis diagonal tanpa grid isometrik Unity. Untuk tilemap isometrik, ikuti panduan tilemap, lalu uji dengan karakter yang berjalan memutari objek tinggi.
 
 **Karakter di antara tile.** Tilemap Renderer memakai mode **Chunk** secara bawaan, sehingga sprite lain tidak bisa tampil di antara tile pada kedalaman berbeda. Ubah **Mode** ke **Individual** jika karakter harus bisa berjalan di belakang dinding dari tilemap. Dokumentasi mengingatkan bahwa mode ini bisa menurunkan performa, karena setiap tile digambar sendiri. Jika tetap memakai Chunk, kemas semua sprite tile ke satu atlas supaya tile dari tekstur berbeda tidak salah urut.
 
